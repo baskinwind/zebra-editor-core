@@ -37,6 +37,7 @@ export default {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.dataset.type = ComponentType.image;
+    figure.contentEditable = "false";
     let child;
     let image = document.createElement("img");
     image.src = src;

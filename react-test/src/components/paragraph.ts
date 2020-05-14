@@ -22,8 +22,11 @@ export default class Paragraph extends Collection<Inline> {
     return addInfo;
   }
 
-  removeChildren(componentOrIndex: Inline | number): Operator {
-    let removeInfo = super.removeChildren(componentOrIndex);
+  removeChildren(
+    componentOrIndex: Inline | number,
+    removeNumber: number = 1
+  ): Operator {
+    let removeInfo = super.removeChildren(componentOrIndex, removeNumber);
     if (removeInfo.index >= 0) {
       this.characterDecorateList?.splice(removeInfo.index, 1);
     }

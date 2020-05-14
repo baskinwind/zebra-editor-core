@@ -41,6 +41,19 @@ export default function createEnptyArticle() {
       "http://blog.acohome.cn/content/images/size/w100/2019/10/zebra.png"
     )
   );
-  article.addChildren(new Paragraph());
+  let paragraph2 = new Paragraph();
+  paragraph2.addIntoParent(article);
+  paragraph2.addChildren([
+    new Character("a"),
+    new Character("b"),
+    new Character("c"),
+    new Character("d"),
+  ]);
+  paragraph2.addChildren([
+    new Character("1"),
+    new Character("2"),
+    new Character("3"),
+    new Character("4"),
+  ]);
   return article;
 }

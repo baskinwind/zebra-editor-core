@@ -36,11 +36,16 @@ export default abstract class Collection<
     };
   }
 
-  removeChildren(componentOrIndex: T | number): Operator {
+  removeChildren(
+    componentOrIndex: T | number,
+    removeNumber: number = 1
+  ): Operator {
     let needRemoveComponent: T;
     let removeIndex: number;
+
     if (typeof componentOrIndex === "number") {
       let temp = this.children.get(componentOrIndex);
+      console.log(temp);
       if (!temp) throw Error("移除失败：index 不合法");
       needRemoveComponent = temp;
       removeIndex = componentOrIndex;
@@ -53,10 +58,14 @@ export default abstract class Collection<
       needRemoveComponent = componentOrIndex;
       removeIndex = temp;
     }
-    this.children.remove(removeIndex);
+    let removedComponent = this.children.slice(
+      removeIndex,
+      removeIndex + removeNumber
+    );
+    this.children = this.children.splice(removeIndex, removeNumber);
     return {
       type: "REMOVECHILDREN",
-      target: [needRemoveComponent],
+      target: removedComponent.toArray(),
       parent: this,
       index: removeIndex,
     };
