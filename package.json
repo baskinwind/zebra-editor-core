@@ -1,0 +1,22 @@
+{
+  "name": "zebra-draft",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --hot --config build/dev.webpack.config.js",
+    "build": "webpack --config build/prod.webpack.config.js && gulp build_ts",
+    "build:ts": "gulp build_ts",
+    "lint": "eslint src --ext .ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^16.9.35",
+    "@types/shortid": "^0.0.29",
+    "immutable": "^4.0.0-rc.12",
+    "react": "^16.13.1",
+    "shortid": "^2.2.15",
+    "typescript": "^3.8.3"
+  }
+}
