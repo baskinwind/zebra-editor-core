@@ -1,9 +1,8 @@
+import ComponentType from "../const/component-type";
 import { storeData } from "../decorate/base";
 
 import Inline from "./inline";
 import DataDecorate from "../decorate/data";
-
-import ComponentType from "../const/component-type";
 import { getBuilder } from "../builder";
 
 export default class InlineImage extends Inline {

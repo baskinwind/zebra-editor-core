@@ -1,6 +1,7 @@
+import { storeData } from "../decorate/base";
+
 import Component from "./component";
 import DataDecorate from "../decorate/data";
-import { storeData } from "../decorate/base";
 
 export default abstract class BlockComponent extends Component {
   decorate: DataDecorate;

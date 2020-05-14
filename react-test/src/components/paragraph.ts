@@ -1,19 +1,15 @@
-import { List, Map } from "immutable";
-
 import ComponentType from "../const/component-type";
 
+import { List } from "immutable";
 import Collection, { Operator } from "./collection";
-import Entity from "./entity";
 import Inline from "./inline";
 import Character from "./character";
 import CharacterDecorate from "../decorate/character";
-
 import { getBuilder } from "../builder";
 
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
   characterDecorateList: List<CharacterDecorate> = List();
-  childrenEntitys: List<Map<string, Entity>> = List();
 
   addChildren(component: Inline | Inline[], index?: number): Operator {
     let addInfo = super.addChildren(component, index);

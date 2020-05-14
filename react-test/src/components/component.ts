@@ -1,7 +1,7 @@
-import getId from "../util/get-id";
-import Collection, { Operator } from "./collection";
-import { saveComponent } from "../util/manage-component";
 import ComponentType from "../const/component-type";
+
+import Collection, { Operator } from "./collection";
+import { getId, saveComponent } from "./util";
 
 export default abstract class Component {
   id: string = getId();

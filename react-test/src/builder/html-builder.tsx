@@ -76,6 +76,7 @@ export default {
     const span = document.createElement("span");
     span.id = id;
     span.dataset.type = ComponentType.inlineImage;
+    span.contentEditable = "false";
     let child;
     let image = document.createElement("img");
     image.src = src;

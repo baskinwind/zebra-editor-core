@@ -1,8 +1,8 @@
-import BlockComponent from "./decorate-component";
-import { storeData } from "./entity";
-
-import { getBuilder } from "../builder";
 import ComponentType from "../const/component-type";
+import { storeData } from "../decorate/base";
+
+import BlockComponent from "./decorate-component";
+import { getBuilder } from "../builder";
 
 export default class Media extends BlockComponent {
   src: string;

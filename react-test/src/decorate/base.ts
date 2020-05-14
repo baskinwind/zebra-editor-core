@@ -1,5 +1,5 @@
 import { Map } from "immutable";
-import getId from "../util/get-id";
+import { getId, saveDecorete } from "./util";
 
 export interface storeData {
   [key: string]: any;
@@ -11,6 +11,7 @@ export default class BaseDecorate {
 
   constructor(style: storeData = {}) {
     this.style = Map(style);
+    saveDecorete(this);
   }
 
   getStyle() {

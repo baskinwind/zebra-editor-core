@@ -1,7 +1,8 @@
+import ComponentType from "../const/component-type";
+
 import Collection from "./collection";
 import Component from "./component";
 import { getBuilder } from "../builder/index";
-import ComponentType from "../const/component-type";
 
 export default class Article extends Collection<Component> {
   type = ComponentType.article;

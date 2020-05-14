@@ -1,6 +1,7 @@
+import ComponentType from "../const/component-type";
+
 import Inline from "./inline";
 import { getBuilder } from "../builder/index";
-import ComponentType from "../const/component-type";
 
 export default class Character extends Inline {
   type = ComponentType.character;
