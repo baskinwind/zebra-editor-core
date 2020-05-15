@@ -1,12 +1,13 @@
 import { getParent, getContainer, getElememtSize } from "./util";
 
-export interface sectionType {
+export interface selectionType {
   isCollapsed: boolean;
   range: { componentId: string; offset: number }[];
 }
 
-let sectionStore: sectionType;
+let selectionStore: selectionType;
 
+// 修复点击图片未选中图片的问题
 export const fixImageClick = (event: MouseEvent) => {
   let target: HTMLElement = event.target as HTMLElement;
   if (target && target.nodeName === "IMG") {
@@ -20,6 +21,7 @@ export const fixImageClick = (event: MouseEvent) => {
   }
 };
 
+// 获取选区信息
 export const getSelection = () => {
   let section = window.getSelection();
   let anchorOffect = section?.anchorOffset || 0;
@@ -38,7 +40,7 @@ export const getSelection = () => {
     if (element === focusContainer) break;
     focusOffset += getElememtSize(element as HTMLElement);
   }
-  sectionStore = {
+  selectionStore = {
     isCollapsed: section?.isCollapsed || true,
     range: [
       {
@@ -51,11 +53,10 @@ export const getSelection = () => {
       },
     ],
   };
-  return sectionStore;
+  return selectionStore;
 };
 
-export const blur = () => {};
-
+// 将光标定位在某个组件内 offset 的后方
 export const focusAt = (id: string, offset: number) => {
   let dom = document.getElementById(id);
   let focusNode = dom;
@@ -93,6 +94,6 @@ export const focusAt = (id: string, offset: number) => {
   section?.addRange(range);
 };
 
-export const getRange = (): sectionType => {
-  return sectionStore;
+export const getRange = (): selectionType => {
+  return selectionStore;
 };

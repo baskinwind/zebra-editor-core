@@ -10,7 +10,14 @@ export default function createEnptyArticle() {
   let paragraph = new Paragraph(
     "Ser Waymar Royce was the youngest son of an ancient house with too many heirs. He was ahandsome youth of eighteen, grey-eyed and graceful and slender as a knife. Mounted on his hugeblack destrier, the knight towered above Will and Gared on their smaller garrons. He wore blackleather boots, black woolen pants, black moleskin gloves, and a fine supple coat of gleaming blackringmail over layers of black wool and boiled leather. Ser Waymar had been a Sworn Brother of theNight’s Watch for less than half a year, but no one could say he had not prepared for his vocation. Atleast insofar as his wardrobe was concerned."
   );
+  // let paragraph = new Paragraph(
+  //   "Ser Waymar Royce was the youngest son of an ancient house with too many heirs. "
+  // );
   paragraph.addIntoParent(article);
+  paragraph.addText("fire");
+  paragraph.changeCharStyle("fontWeight", "bold", 0, 4);
+  paragraph.changeCharStyle("color", "red", 2, 8);
+  (window as any).para = paragraph;
   // paragraph.addText("abcd");
   // paragraph.addChildren(
   //   new InlineImage(

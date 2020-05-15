@@ -53,16 +53,18 @@ export default {
     figure.appendChild(child);
     return figure;
   },
-  buildCharacterList(
-    id: string,
-    charList: string[],
-    style: any,
-    data: any
-  ): HTMLElement {
+  buildCharacterList(id: string, charList: string[], style: any): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
     span.dataset.type = ComponentType.characterList;
     span.innerText = charList.join("");
+    console.log(style);
+    if (style) {
+      for (const key in style) {
+        span.style[key as any] = style[key];
+      }
+    }
+
     return span;
   },
   buildChar(id: string, char: string): string {

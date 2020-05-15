@@ -2,11 +2,12 @@ import ComponentType from "./const/component-type";
 
 import React, { PureComponent } from "react";
 import Article from "./components/article";
+import Paragraph from "./components/paragraph";
 import createEmptyArticle from "./util/create-empty-article";
 import { getComponentById } from "./components/util";
 import { fixImageClick, getSelection } from "./selection-operator";
 import { inParagraph, inImage } from "./event/keydown";
-import Paragraph from "./components/paragraph";
+import { changeSelectionStyle } from "./event/customer";
 
 export default class Draft extends PureComponent {
   article: Article;
@@ -53,11 +54,16 @@ export default class Draft extends PureComponent {
     );
   };
 
+  bold = () => {
+    changeSelectionStyle("fontWeight", "bold");
+  };
+
   render() {
     return (
       <div>
         <div contentEditable ref={(el) => (this.root = el)}></div>
         <button onClick={this.showArticle}>show article</button>
+        <button onClick={this.bold}>bold</button>
       </div>
     );
   }

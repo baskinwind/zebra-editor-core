@@ -1,7 +1,7 @@
 import ComponentType from "../const/component-type";
+import { storeData } from "../decorate/base";
 
 import { List } from "immutable";
-import { storeData } from "../decorate/base";
 
 import Collection, { Operator } from "./collection";
 import Inline from "./inline";
@@ -20,22 +20,26 @@ export default class Paragraph extends Collection<Inline> {
     }
   }
 
-  addText(text: string) {
+  addText(text: string, index?: number) {
     let componentList: Character[] = [];
     for (let char of text) {
       componentList.push(new Character(char));
     }
-    this.addChildren(componentList);
+    this.addChildren(componentList, index);
   }
 
   addChildren(component: Inline | Inline[], index?: number): Operator {
     let addInfo = super.addChildren(component, index);
-    addInfo.target.forEach((_, index) => {
-      this.characterDecorateList.insert(
-        addInfo.index + index,
-        new CharacterDecorate()
+    let list = addInfo.target.map(() => new CharacterDecorate());
+    if (typeof index === "number") {
+      this.characterDecorateList = this.characterDecorateList.splice(
+        index,
+        0,
+        ...list
       );
-    });
+    } else {
+      this.characterDecorateList = this.characterDecorateList.push(...list);
+    }
     return addInfo;
   }
 
@@ -44,8 +48,12 @@ export default class Paragraph extends Collection<Inline> {
     removeNumber: number = 1
   ): Operator {
     let removeInfo = super.removeChildren(componentOrIndex, removeNumber);
+    let size = removeInfo.target.length;
     if (removeInfo.index >= 0) {
-      this.characterDecorateList?.splice(removeInfo.index, 1);
+      this.characterDecorateList = this.characterDecorateList.splice(
+        removeInfo.index,
+        size
+      );
     }
     return removeInfo;
   }
@@ -70,34 +78,49 @@ export default class Paragraph extends Collection<Inline> {
     };
   }
 
+  changeCharStyle(type: string, value: string, start: number, end: number) {
+    for (let i = start; i <= end; i++) {
+      let decorate = this.characterDecorateList.get(i);
+      decorate?.setStyle(type, value);
+    }
+  }
+
   getContent() {
     const builder = getBuilder();
     let content: any[] = [];
     let acc: Character[] = [];
-    // TODO: 后期需要根据 characterDecorateList 动态生成内容
+    let prevDecorate: CharacterDecorate;
+    let createCharacterList = () => {
+      if (!acc.length) return;
+      content.push(
+        builder.buildCharacterList(
+          `${this.id}__${content.length}`,
+          acc.map((character) => character.getContent()),
+          prevDecorate.getStyle()
+        )
+      );
+      acc = [];
+    };
+
     this.children.forEach((value, index) => {
       if (value instanceof Character) {
+        let decorate = this.characterDecorateList.get(
+          index
+        ) as CharacterDecorate;
+        console.log(decorate?.isSame(prevDecorate));
+
+        if (!decorate?.isSame(prevDecorate)) {
+          createCharacterList();
+          prevDecorate = decorate;
+        }
         acc.push(value);
+        return;
       }
-      // 处理字符串列表
-      if (
-        (!(value instanceof Character) || index === this.children.size - 1) &&
-        acc.length !== 0
-      ) {
-        content.push(
-          builder.buildCharacterList(
-            `${this.id}__${content.length}`,
-            acc.map((character) => character.getContent()),
-            {},
-            {}
-          )
-        );
-        acc = [];
-      }
-      if (!(value instanceof Character)) {
-        content.push(value.getContent());
-      }
+      createCharacterList();
+      content.push(value.getContent());
     });
+    createCharacterList();
+
     return builder.buildParagraph(
       this.id,
       content,

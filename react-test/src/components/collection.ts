@@ -21,14 +21,11 @@ export default abstract class Collection<
     } else {
       components = component;
     }
-    components.forEach((component, offset) => {
-      component.parent = this;
-      if (typeof index === "number" && index + offset <= this.children.size) {
-        this.children = this.children.insert(index + offset, component);
-      } else {
-        this.children = this.children.push(component);
-      }
-    });
+    if (typeof index === "number") {
+      this.children = this.children.splice(index, 0, ...components);
+    } else {
+      this.children = this.children.push(...components);
+    }
     return {
       type: "ADDCHILDREN",
       target: components,
@@ -47,7 +44,7 @@ export default abstract class Collection<
         type: "REMOVECHILDREN",
         target: [],
         action: this,
-        index: 0,
+        index: -1,
       };
     if (typeof componentOrIndex === "number") {
       removeIndex = componentOrIndex;

@@ -5,17 +5,23 @@ export interface storeData {
 }
 
 export default class CharacterDecorate extends BaseDecorate {
-  blod: boolean = false;
-  delete: boolean = false;
-  underLine: boolean = false;
-  italic: boolean = false;
   link: string = "";
-
-  setType(type: "blod" | "delete" | "underLine" | "italic", value: boolean) {
-    this[type] = value;
-  }
 
   setLink(href: string) {
     this.link = href;
+  }
+
+  isSame(decorate?: CharacterDecorate): boolean {
+    if (decorate === undefined) return false;
+    if (decorate.style.size !== this.style.size) {
+      return false;
+    }
+    let style = this.getStyle();
+    for (const key in style) {
+      if (decorate.style.get(key) !== style[key]) {
+        return false;
+      }
+    }
+    return true;
   }
 }

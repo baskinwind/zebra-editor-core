@@ -91,3 +91,41 @@ fixImageClick(event: MouseEvent) {
   // ... 原本的处理逻辑
 },
 ```
+
+## 2020-05-15
+
+### focusAt(componentId, offset)
+
+将光标移动到某个组件的 offset 位置处。
+
+由于 Range 只能支持选中 Node，因此需要将 offset 装换为某个具体 span 的偏移量。
+
+1. 获取需要光标所在的 span 无内容是为父元素
+2. 获取相对于改 span 的偏移量。
+3. 清空 Selection 中的 Range
+4. 创建 Range。
+5. 设置 Range：setStart(xxx, 0) & setEnd(xxx, 偏移量)。
+6. Range 闭合至终点。
+7. 将该 Range 添加到 Selection 中。
+8. 光标停留位置符合要求。
+
+### Paragraph
+
+1. 支持直接创建有内容的段落
+2. 添加 addText 方法，支持在固定位置添加字符串内容
+3. 添加 subParagraph 方法，将段落依据固定位置分为两个段落，并添加到父容器内
+4. 添加 changeCharStyle 方法，支持修改段落内字符的样式
+5. 修改 getContent 方法，支持根据字符的样式分隔字符串
+
+### Collection
+
+1. 优化 addChildren 实现，支持同时添加多个字组件。
+2. 优化 removeChildren 实现，支持同时删除多个子组件。
+
+### CharacterDecorate
+
+1. 添加 isSame 实现，判断两个 CharacterDecorate 是否是一样的。
+
+### customer
+
+1. 添加 changeSelectionStyle，为选中的区域添加样式。
