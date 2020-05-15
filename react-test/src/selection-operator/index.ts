@@ -54,18 +54,23 @@ export const getSelection = () => {
   return sectionStore;
 };
 
+export const blur = () => {};
+
 export const focusAt = (id: string, offset: number) => {
   let dom = document.getElementById(id);
+  let focusNode = dom;
   if (dom === null) {
     console.error(`未获取到 id 为：${id}的元素`);
     return;
   }
   let sizeNow = 0;
-  let focusNode: Node;
   let focusOffset = 0;
   for (let i = 0; i < dom.children.length; i++) {
     const element = dom.children[i] as HTMLElement;
     let elementSize = getElememtSize(element);
+    if (elementSize === 0) {
+      break;
+    }
     if (sizeNow + elementSize < offset) {
       sizeNow += elementSize;
       continue;
@@ -75,17 +80,17 @@ export const focusAt = (id: string, offset: number) => {
     break;
   }
 
-  setTimeout(() => {
-    let section = window.getSelection();
-    try {
-      section?.removeAllRanges();
-    } catch {}
-    let range = new Range();
-    range.setStart(focusNode.childNodes[0], 0);
-    range.setEnd(focusNode.childNodes[0], focusOffset);
-    range.collapse();
-    section?.addRange(range);
-  });
+  let section = window.getSelection();
+  try {
+    section?.removeAllRanges();
+  } catch {}
+  let range = new Range();
+  if (focusNode) {
+    range.setStart(focusNode?.childNodes[0], 0);
+    range.setEnd(focusNode?.childNodes[0], focusOffset);
+  }
+  range.collapse();
+  section?.addRange(range);
 };
 
 export const getRange = (): sectionType => {

@@ -42,10 +42,14 @@ export default abstract class Collection<
     removeNumber: number = 1
   ): Operator {
     let removeIndex: number;
-
+    if (removeNumber === 0)
+      return {
+        type: "REMOVECHILDREN",
+        target: [],
+        action: this,
+        index: 0,
+      };
     if (typeof componentOrIndex === "number") {
-      let temp = this.children.get(componentOrIndex);
-      if (!temp) throw Error("移除失败：index 不合法");
       removeIndex = componentOrIndex;
     } else {
       let temp = this.children.findIndex(

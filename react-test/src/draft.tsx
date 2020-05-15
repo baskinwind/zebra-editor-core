@@ -31,8 +31,6 @@ export default class Draft extends PureComponent {
   }
 
   proxyKeyDown = (event: KeyboardEvent) => {
-    console.log(event);
-
     let selection = getSelection();
     let component = getComponentById(selection.range[0].componentId);
     let start = selection.range[0].offset;

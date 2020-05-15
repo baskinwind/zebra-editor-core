@@ -1,6 +1,8 @@
 import ComponentType from "../const/component-type";
 
 import { List } from "immutable";
+import { storeData } from "../decorate/base";
+
 import Collection, { Operator } from "./collection";
 import Inline from "./inline";
 import Character from "./character";
@@ -10,6 +12,21 @@ import { getBuilder } from "../builder";
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
   characterDecorateList: List<CharacterDecorate> = List();
+
+  constructor(text?: string, style?: storeData, data?: storeData) {
+    super(style, data);
+    if (text) {
+      this.addText(text);
+    }
+  }
+
+  addText(text: string) {
+    let componentList: Character[] = [];
+    for (let char of text) {
+      componentList.push(new Character(char));
+    }
+    this.addChildren(componentList);
+  }
 
   addChildren(component: Inline | Inline[], index?: number): Operator {
     let addInfo = super.addChildren(component, index);
