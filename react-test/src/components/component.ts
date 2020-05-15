@@ -23,7 +23,8 @@ export default abstract class Component {
     return (
       this.parent?.removeChildren(this) || {
         type: "NOPARENT",
-        target: [this],
+        target: [],
+        action: this,
         root: this,
       }
     );

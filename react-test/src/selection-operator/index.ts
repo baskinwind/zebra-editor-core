@@ -1,6 +1,6 @@
 import { getParent, getContainer, getElememtSize } from "./util";
 
-interface sectionType {
+export interface sectionType {
   isCollapsed: boolean;
   range: { componentId: string; offset: number }[];
 }
@@ -14,7 +14,7 @@ export const fixImageClick = (event: MouseEvent) => {
     try {
       section?.removeAllRanges();
     } catch {}
-    let range = document.createRange();
+    let range = new Range();
     range.selectNode(target);
     section?.addRange(range);
   }
@@ -52,6 +52,40 @@ export const getSelection = () => {
     ],
   };
   return sectionStore;
+};
+
+export const focusAt = (id: string, offset: number) => {
+  let dom = document.getElementById(id);
+  if (dom === null) {
+    console.error(`未获取到 id 为：${id}的元素`);
+    return;
+  }
+  let sizeNow = 0;
+  let focusNode: Node;
+  let focusOffset = 0;
+  for (let i = 0; i < dom.children.length; i++) {
+    const element = dom.children[i] as HTMLElement;
+    let elementSize = getElememtSize(element);
+    if (sizeNow + elementSize < offset) {
+      sizeNow += elementSize;
+      continue;
+    }
+    focusNode = element;
+    focusOffset = offset - sizeNow;
+    break;
+  }
+
+  setTimeout(() => {
+    let section = window.getSelection();
+    try {
+      section?.removeAllRanges();
+    } catch {}
+    let range = new Range();
+    range.setStart(focusNode.childNodes[0], 0);
+    range.setEnd(focusNode.childNodes[0], focusOffset);
+    range.collapse();
+    section?.addRange(range);
+  });
 };
 
 export const getRange = (): sectionType => {

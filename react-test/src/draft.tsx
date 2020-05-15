@@ -1,11 +1,12 @@
+import ComponentType from "./const/component-type";
+
 import React, { PureComponent } from "react";
 import Article from "./components/article";
-import createEnptyArticle from "./util/create-empty-article";
+import createEmptyArticle from "./util/create-empty-article";
 import { getComponentById } from "./components/util";
-import Character from "./components/character";
 import { fixImageClick, getSelection } from "./selection-operator";
 import { inParagraph, inImage } from "./event/keydown";
-import ComponentType from "./const/component-type";
+import Paragraph from "./components/paragraph";
 
 export default class Draft extends PureComponent {
   article: Article;
@@ -14,7 +15,7 @@ export default class Draft extends PureComponent {
 
   constructor(props: any) {
     super(props);
-    this.article = createEnptyArticle();
+    this.article = createEmptyArticle();
     this.contentDom = this.article.getContent();
   }
 
@@ -30,20 +31,20 @@ export default class Draft extends PureComponent {
   }
 
   proxyKeyDown = (event: KeyboardEvent) => {
-    let key = event.key;
-    console.log(key);
-    let range = getSelection();
-    let component = getComponentById(range.range[0].componentId);
+    console.log(event);
+
+    let selection = getSelection();
+    let component = getComponentById(selection.range[0].componentId);
+    let start = selection.range[0].offset;
+    let end = selection.range[1].offset;
+    if (start > end) {
+      [start, end] = [end, start];
+    }
     if (component.type === ComponentType.paragraph) {
-      let start = range.range[0].offset;
-      let end = range.range[1].offset;
-      if (start > end) {
-        [start, end] = [end, start];
-      }
-      inParagraph(key, component, start, end);
+      inParagraph(event, component as Paragraph, start, end);
     }
     if (component.type === ComponentType.image) {
-      inImage(key, component);
+      inImage(event, component);
     }
   };
 

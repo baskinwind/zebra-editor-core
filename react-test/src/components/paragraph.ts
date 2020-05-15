@@ -33,6 +33,26 @@ export default class Paragraph extends Collection<Inline> {
     return removeInfo;
   }
 
+  subParagraph(index: number) {
+    let moveInfo = this.removeChildren(index, -1);
+    let newParagraph = new Paragraph();
+    if (this.parent) {
+      let index = this.parent.children.findIndex(
+        (child) => child.id === this.id
+      );
+      newParagraph.addIntoParent(this.parent, index + 1);
+    }
+    moveInfo.target.forEach((comp) => {
+      comp.addIntoParent(newParagraph);
+    });
+    return {
+      type: "SUBPARAGRAPH",
+      target: [newParagraph],
+      action: this,
+      index: index,
+    };
+  }
+
   getContent() {
     const builder = getBuilder();
     let content: any[] = [];
