@@ -1,51 +1,57 @@
 import { List } from "immutable";
-import Component from "./component";
+import Component, { Operator } from "./component";
 import BlockComponent from "./decorate-component";
-
-export interface Operator {
-  type: string; // 操作类型
-  target: Component[]; // 操作新增或是删除的组件
-  action: Component; // 操作发生的组件
-  [key: string]: any;
-}
 
 export default abstract class Collection<
   T extends Component
 > extends BlockComponent {
   children: List<T> = List();
 
-  addChildren(component: T | T[], index?: number): Operator {
+  addChildren(
+    component: T | T[],
+    index?: number,
+    tiggerBy: string = "customer"
+  ): Operator {
     let components: T[];
     if (!Array.isArray(component)) {
       components = [component];
     } else {
       components = component;
     }
+    components.forEach((component) => (component.parent = this));
     if (typeof index === "number") {
       this.children = this.children.splice(index, 0, ...components);
     } else {
       this.children = this.children.push(...components);
     }
-    return {
-      type: "ADDCHILDREN",
+    let event = {
+      type: `ADDCHILDREN:${this.type}`,
       target: components,
       action: this,
       index: index ? index : this.children.size - 1,
+      tiggerBy,
     };
+    this.update(event);
+    return event;
   }
 
   removeChildren(
     componentOrIndex: T | number,
-    removeNumber: number = 1
-  ): Operator {
+    removeNumber: number = 1,
+    tiggerBy: string = "customer"
+  ): Operator<T> {
     let removeIndex: number;
-    if (removeNumber === 0)
-      return {
-        type: "REMOVECHILDREN",
+    if (removeNumber === 0) {
+      let event = {
+        type: `REMOVECHILDREN:${this.type}`,
         target: [],
         action: this,
         index: -1,
+        tiggerBy,
       };
+      this.update(event);
+      return event;
+    }
     if (typeof componentOrIndex === "number") {
       removeIndex = componentOrIndex;
     } else {
@@ -64,12 +70,15 @@ export default abstract class Collection<
       removeIndex + removeNumber
     );
     this.children = this.children.splice(removeIndex, removeNumber);
-    return {
-      type: "REMOVECHILDREN",
+    let event = {
+      type: `REMOVECHILDREN:${this.type}`,
       target: removedComponent.toArray(),
       action: this,
       index: removeIndex,
+      tiggerBy,
     };
+    this.update(event);
+    return event;
   }
 
   findChildrenIndex(componentOrIndex: T): number {

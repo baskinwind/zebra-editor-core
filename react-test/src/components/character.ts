@@ -1,6 +1,5 @@
-import ComponentType from "../const/component-type";
-
 import Inline from "./inline";
+import ComponentType from "../const/component-type";
 import { getBuilder } from "../builder/index";
 
 export default class Character extends Inline {
@@ -16,7 +15,7 @@ export default class Character extends Inline {
     this.content = char;
   }
 
-  getContent() {
-    return getBuilder().buildChar(this.id, this.content);
+  render() {
+    return this.content;
   }
 }

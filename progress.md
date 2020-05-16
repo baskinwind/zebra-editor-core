@@ -129,3 +129,14 @@ fixImageClick(event: MouseEvent) {
 ### customer
 
 1. 添加 changeSelectionStyle，为选中的区域添加样式。
+
+## 0516
+
+1. 组件添加 update 方法，当组件内容发生变化时，会触发该方法。
+2. 实现一个简单的事件触发器，当组价调用 update 方法时，会触发事件。
+3. 处理 contenteditadble 的 keydown 事件，将需要处理的原生行为放在 selection-operator 文件夹内。
+   1. on-click 当 contenteditadble 内触发点击时，需要做的行为
+   2. on-keydown 当 contenteditadble 内触发 keydown 时需要的行为，目前以处理单个字符输入，Backspace，Enter（发生在同个段落内的行为），删除图片的逻辑（待完善）。
+4. 优化分段 subParagraph 方法，将字符带样式转入下一个字符串
+5. 统一事件触发行为，放在 event-handle 文件夹下
+6. Operator（事件行为对象，在事件触发时会传入）添加 tiggerBy 属性，用于判断该修改由什么触发，inner 代表内部触发（不会触发事件）

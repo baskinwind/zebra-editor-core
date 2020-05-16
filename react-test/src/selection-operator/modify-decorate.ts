@@ -1,9 +1,9 @@
 import Paragraph from "../components/paragraph";
 import { getComponentById } from "../components/util";
-import { getSelection } from "../selection-operator/index";
+import { getSelection } from "../selection-operator/selection";
 
-// 将选区内的内容添加样式
-export const changeSelectionStyle = (name: string, value: string) => {
+// 修改选区内内容的表现行为
+const modifyDecorate = (name: string, value: string) => {
   let selection = getSelection();
   let start = selection.range[0].offset;
   let end = selection.range[1].offset;
@@ -12,5 +12,7 @@ export const changeSelectionStyle = (name: string, value: string) => {
   }
   let component = getComponentById(selection.range[0].componentId) as Paragraph;
   component.changeCharStyle(name, value, start, end);
-  document.getElementById(component.id)?.replaceWith(component.getContent());
+  document.getElementById(component.id)?.replaceWith(component.render());
 };
+
+export default modifyDecorate;

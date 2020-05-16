@@ -7,20 +7,6 @@ export interface selectionType {
 
 let selectionStore: selectionType;
 
-// 修复点击图片未选中图片的问题
-export const fixImageClick = (event: MouseEvent) => {
-  let target: HTMLElement = event.target as HTMLElement;
-  if (target && target.nodeName === "IMG") {
-    let section = window.getSelection();
-    try {
-      section?.removeAllRanges();
-    } catch {}
-    let range = new Range();
-    range.selectNode(target);
-    section?.addRange(range);
-  }
-};
-
 // 获取选区信息
 export const getSelection = () => {
   let section = window.getSelection();

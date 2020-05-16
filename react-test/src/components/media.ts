@@ -1,8 +1,7 @@
-import ComponentType from "../const/component-type";
-import { storeData } from "../decorate/base";
-
 import BlockComponent from "./decorate-component";
+import ComponentType from "../const/component-type";
 import { getBuilder } from "../builder";
+import { storeData } from "../decorate/base";
 
 export default class Media extends BlockComponent {
   src: string;
@@ -21,7 +20,7 @@ export default class Media extends BlockComponent {
   setSrc(src: string) {
     this.src = src;
   }
-  getContent() {
+  render() {
     let builder = getBuilder();
     let map = {
       [ComponentType.image]: builder.buildeImage,

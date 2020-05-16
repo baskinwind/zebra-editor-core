@@ -1,13 +1,11 @@
-import ComponentType from "./const/component-type";
-
 import React, { PureComponent } from "react";
 import Article from "./components/article";
-import Paragraph from "./components/paragraph";
 import createEmptyArticle from "./util/create-empty-article";
-import { getComponentById } from "./components/util";
-import { fixImageClick, getSelection } from "./selection-operator";
-import { inParagraph, inImage } from "./event/keydown";
-import { changeSelectionStyle } from "./event/customer";
+import onkeyDown from "./selection-operator/on-keydown";
+import onClick from "./selection-operator/on-click";
+import modifyDecorate from "./selection-operator/modify-decorate";
+import registerEvent from "./event-handle";
+import defaultHandle from "./event-handle/default";
 
 export default class Draft extends PureComponent {
   article: Article;
@@ -17,10 +15,11 @@ export default class Draft extends PureComponent {
   constructor(props: any) {
     super(props);
     this.article = createEmptyArticle();
-    this.contentDom = this.article.getContent();
+    this.contentDom = this.article.render();
   }
 
   componentDidMount() {
+    registerEvent(defaultHandle);
     this.root?.appendChild(this.contentDom);
     this.root?.addEventListener("click", this.proxyClick);
     this.root?.addEventListener("keydown", this.proxyKeyDown);
@@ -28,34 +27,23 @@ export default class Draft extends PureComponent {
 
   proxyClick(event: MouseEvent) {
     console.log("click");
-    fixImageClick(event);
+    onClick(event);
   }
 
   proxyKeyDown = (event: KeyboardEvent) => {
-    let selection = getSelection();
-    let component = getComponentById(selection.range[0].componentId);
-    let start = selection.range[0].offset;
-    let end = selection.range[1].offset;
-    if (start > end) {
-      [start, end] = [end, start];
-    }
-    if (component.type === ComponentType.paragraph) {
-      inParagraph(event, component as Paragraph, start, end);
-    }
-    if (component.type === ComponentType.image) {
-      inImage(event, component);
-    }
+    onkeyDown(event);
   };
 
   showArticle = () => {
+    console.log(this.article);
     this.root?.replaceChild(
-      this.article.getContent(),
+      this.article.render(),
       document.getElementById(this.article.id) as HTMLElement
     );
   };
 
   bold = () => {
-    changeSelectionStyle("fontWeight", "bold");
+    modifyDecorate("fontWeight", "bold");
   };
 
   render() {

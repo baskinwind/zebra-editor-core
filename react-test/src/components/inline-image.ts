@@ -1,9 +1,8 @@
-import ComponentType from "../const/component-type";
-import { storeData } from "../decorate/base";
-
 import Inline from "./inline";
+import ComponentType from "../const/component-type";
 import DataDecorate from "../decorate/data";
 import { getBuilder } from "../builder";
+import { storeData } from "../decorate/base";
 
 export default class InlineImage extends Inline {
   type = ComponentType.inlineImage;
@@ -21,7 +20,7 @@ export default class InlineImage extends Inline {
     this.src = src;
   }
 
-  getContent() {
+  render() {
     return getBuilder().buildInlineImage(
       this.id,
       this.src,

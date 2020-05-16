@@ -58,7 +58,6 @@ export default {
     span.id = id;
     span.dataset.type = ComponentType.characterList;
     span.innerText = charList.join("");
-    console.log(style);
     if (style) {
       for (const key in style) {
         span.style[key as any] = style[key];
@@ -66,9 +65,6 @@ export default {
     }
 
     return span;
-  },
-  buildChar(id: string, char: string): string {
-    return char;
   },
   buildInlineImage(
     id: string,

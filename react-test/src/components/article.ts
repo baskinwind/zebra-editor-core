@@ -1,15 +1,14 @@
-import ComponentType from "../const/component-type";
-
-import Collection from "./collection";
 import Component from "./component";
+import Collection from "./collection";
+import ComponentType from "../const/component-type";
 import { getBuilder } from "../builder/index";
 
 export default class Article extends Collection<Component> {
   type = ComponentType.article;
-  getContent() {
+  render() {
     console.log("test getContent couter");
     let children = this.children
-      .map((component) => component.getContent())
+      .map((component) => component.render())
       .toArray();
     return getBuilder().buildArticle(
       this.id,
