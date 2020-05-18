@@ -1,6 +1,7 @@
 import { List } from "immutable";
 import Component, { Operator } from "./component";
 import BlockComponent from "./decorate-component";
+import ComponentType from "../const/component-type";
 
 export default abstract class Collection<
   T extends Component
@@ -12,6 +13,8 @@ export default abstract class Collection<
     index?: number,
     tiggerBy: string = "customer"
   ): Operator {
+    console.log(index);
+
     let components: T[];
     if (!Array.isArray(component)) {
       components = [component];
@@ -28,10 +31,12 @@ export default abstract class Collection<
       type: `ADDCHILDREN:${this.type}`,
       target: components,
       action: this,
-      index: index ? index : this.children.size - 1,
+      index: typeof index === "number" ? index : this.children.size - 1,
       tiggerBy,
     };
-    this.update(event);
+    if (this.type !== ComponentType.paragraph) {
+      this.update(event);
+    }
     return event;
   }
 
@@ -77,7 +82,9 @@ export default abstract class Collection<
       index: removeIndex,
       tiggerBy,
     };
-    this.update(event);
+    if (this.type !== ComponentType.paragraph) {
+      this.update(event);
+    }
     return event;
   }
 

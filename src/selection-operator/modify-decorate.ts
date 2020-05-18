@@ -1,6 +1,6 @@
 import Paragraph from "../components/paragraph";
 import { getComponentById } from "../components/util";
-import { getSelection } from "../selection-operator/selection";
+import { getSelection } from "./selection";
 
 // 修改选区内内容的表现行为
 const modifyDecorate = (name: string, value: string) => {

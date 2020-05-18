@@ -4,11 +4,12 @@ import { focusAt } from "../selection-operator/selection";
 export default {
   "ADDCHILDREN:PARAGRAPH"(event: Operator) {
     console.log(event);
-    if (event.tiggerBy == "onkeydown") {
+    if (event.tiggerBy === "onkeydown") {
       // 以下内容非必要，强制更新 DOM 元素，使得表现一致。
-      // event.preventDefault();
-      // document.getElementById(component.id)?.replaceWith(component.getContent());
-      // focusAt(component.id, end + 1);
+      document
+        .getElementById(event.action.id)
+        ?.replaceWith(event.action.render());
+      focusAt(event.action.id, event.index + event.target.length);
     }
   },
   "REMOVECHILDREN:PARAGRAPH"(event: Operator) {

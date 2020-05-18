@@ -1,6 +1,7 @@
 import Character from "../components/character";
 import Collection from "../components/collection";
 import Paragraph from "../components/paragraph";
+import CharacterDecorate from "../decorate/character";
 import ComponentType from "../const/component-type";
 import { getComponentById } from "../components/util";
 import { getSelection } from "./selection";
@@ -32,7 +33,23 @@ const inParagraph = (
   let key = event.key;
   // 字符输入
   if (key.length === 1 && !event.ctrlKey && !event.altKey) {
-    component.addChildren(new Character(key), start, "onkeydown");
+    event.preventDefault();
+    if (key === " ") {
+      component.addChildren(new Character(key), start, "onkeydown");
+      return;
+    }
+    let decorateList = [];
+    if (start === 0) {
+      decorateList.push(component.decorateList.get(0));
+    } else {
+      decorateList.push(component.decorateList.get(start - 1));
+    }
+    component.addChildren(
+      new Character(key),
+      start,
+      "onkeydown",
+      decorateList as CharacterDecorate[]
+    );
     return;
   }
   // 触发删除

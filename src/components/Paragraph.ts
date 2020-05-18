@@ -1,45 +1,155 @@
-import Component from "./Component";
-import Entity from "./Entity";
+import { List } from "immutable";
+import { Operator } from "./component";
+import Collection from "./collection";
+import Inline from "./inline";
+import Character from "./character";
+import ComponentType from "../const/component-type";
+import CharacterDecorate from "../decorate/character";
 import { getBuilder } from "../builder";
+import { storeData } from "../decorate/base";
 
-export default class Paragraph extends Component {
-  childrenEntitys: Entity[][] = [];
+export default class Paragraph extends Collection<Inline> {
+  type = ComponentType.paragraph;
+  decorateList: List<CharacterDecorate> = List();
 
-  addChildren(component: Component, index?: number): number {
-    let addIndex = super.addChildren(component, index);
-    if (index) {
-      this.childrenEntitys?.splice(index, 0, []);
+  constructor(text?: string, style?: storeData, data?: storeData) {
+    super(style, data);
+    if (text) {
+      this.addText(text);
+    }
+  }
+
+  addText(text: string, index?: number, tiggerBy: string = "customer") {
+    let componentList: Character[] = [];
+    for (let char of text) {
+      componentList.push(new Character(char));
+    }
+    this.addChildren(componentList, index, tiggerBy);
+  }
+
+  addChildren(
+    component: Inline | Inline[],
+    index?: number,
+    tiggerBy: string = "customer",
+    list?: CharacterDecorate[]
+  ) {
+    let addInfo = super.addChildren(component, index, tiggerBy);
+    if (!list) {
+      list = addInfo.target.map(() => new CharacterDecorate());
+    }
+    if (typeof index === "number") {
+      this.decorateList = this.decorateList.splice(index, 0, ...list);
     } else {
-      this.childrenEntitys?.push([]);
+      this.decorateList = this.decorateList.push(...list);
     }
-    return addIndex;
+    this.update(addInfo);
+    return addInfo;
   }
 
-  removeChildren(componentOrIndex: Component | number): number {
-    let removeIndex = super.removeChildren(componentOrIndex);
-    if (removeIndex >= 0) {
-      this.childrenEntitys?.splice(removeIndex, 1);
+  removeChildren(
+    componentOrIndex: Inline | number,
+    removeNumber: number = 1,
+    tiggerBy: string = "customer"
+  ) {
+    let removeInfo = super.removeChildren(
+      componentOrIndex,
+      removeNumber,
+      tiggerBy
+    );
+    let size = removeInfo.target.length;
+    let removeDecorate;
+    if (removeInfo.index >= 0) {
+      removeDecorate = this.decorateList
+        .slice(removeInfo.index, this.decorateList.size)
+        .toArray();
+      this.decorateList = this.decorateList.splice(removeInfo.index, size);
     }
-    return removeIndex;
+    removeInfo.removedDecorate = removeDecorate;
+    this.update(removeInfo);
+    return removeInfo;
   }
 
-  getContent() {
+  subParagraph(
+    start: number,
+    end: number,
+    tiggerBy: string = "customer"
+  ): Operator {
+    if (start !== end) {
+      // 移除 start - end 的内容
+      this.removeChildren(start, end - start, "inner");
+    }
+    // 移除原段落拆分处之后的内容，Inline 集合与 Decorate 集合。
+    let removeInfo = this.removeChildren(start, -1, "inner");
+    // 将移除的内容添加到新段落内。
+    let newParagraph = new Paragraph();
+    newParagraph.addChildren(
+      removeInfo.target,
+      0,
+      "inner",
+      removeInfo.removedDecorate
+    );
+    // 将新段落放在原段落之后。
+    if (this.parent) {
+      let index = this.parent.children.findIndex(
+        (child) => child.id === this.id
+      );
+      newParagraph.addIntoParent(this.parent, index + 1, "inner");
+    }
+    let event = {
+      type: `SUBPARAGRAPH:${this.type}`,
+      target: [newParagraph],
+      action: this,
+      index: start,
+      tiggerBy,
+    };
+    this.update(event);
+    return event;
+  }
+
+  changeCharStyle(type: string, value: string, start: number, end: number) {
+    for (let i = start; i <= end; i++) {
+      let decorate = this.decorateList.get(i);
+      decorate?.setStyle(type, value);
+    }
+  }
+
+  render() {
     const builder = getBuilder();
-    let children = this.children?.map((inline) => inline.getContent());
-    let content = [];
-    let acc = [];
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
-      if (child.type === "CHARACTER") {
-        acc.push(child);
-        continue;
+    let content: any[] = [];
+    let acc: Character[] = [];
+    let prevDecorate: CharacterDecorate;
+    let createCharacterList = () => {
+      if (!acc.length) return;
+      content.push(
+        builder.buildCharacterList(
+          `${this.id}__${content.length}`,
+          acc.map((character) => character.render()),
+          prevDecorate.getStyle()
+        )
+      );
+      acc = [];
+    };
+
+    this.children.forEach((value, index) => {
+      if (value instanceof Character) {
+        let decorate = this.decorateList.get(index) as CharacterDecorate;
+        if (!decorate?.isSame(prevDecorate)) {
+          createCharacterList();
+          prevDecorate = decorate;
+        }
+        acc.push(value);
+        return;
       }
-      if (acc.length !== 0) {
-        content.push(builder.buildCharacterList(acc, {}, {}));
-        acc = [];
-      }
-      content.push(child);
-    }
-    return content;
+      createCharacterList();
+      content.push(value.render());
+    });
+    createCharacterList();
+
+    return builder.buildParagraph(
+      this.id,
+      content,
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 }

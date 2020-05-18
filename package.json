@@ -1,22 +1,39 @@
 {
-  "name": "zebra-draft",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "webpack-dev-server --hot --config build/dev.webpack.config.js",
-    "build": "webpack --config build/prod.webpack.config.js && gulp build_ts",
-    "build:ts": "gulp build_ts",
-    "lint": "eslint src --ext .ts"
-  },
-  "author": "",
-  "license": "ISC",
+  "name": "react-test",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@types/react": "^16.9.35",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
     "@types/shortid": "^0.0.29",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1",
     "shortid": "^2.2.15",
-    "typescript": "^3.8.3"
+    "typescript": "~3.7.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

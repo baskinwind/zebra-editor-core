@@ -1,17 +1,12 @@
-import Inline from "./Inline";
-import Entity from "./Entity";
-import { getBuilder } from "../builder";
+import Inline from "./inline";
+import ComponentType from "../const/component-type";
 
 export default class Character extends Inline {
-  type: string = "CHARACTER";
+  type = ComponentType.character;
   content: string;
 
-  constructor(
-    content: string,
-    style?: Entity["style"],
-    data?: Entity["style"]
-  ) {
-    super(style, data);
+  constructor(content: string) {
+    super();
     this.content = content;
   }
 
@@ -19,11 +14,7 @@ export default class Character extends Inline {
     this.content = char;
   }
 
-  getContent() {
-    return getBuilder().buildChar(
-      this.content,
-      this.entity.getStyle,
-      this.entity.getData
-    );
+  render() {
+    return this.content;
   }
 }

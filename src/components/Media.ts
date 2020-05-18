@@ -1,17 +1,17 @@
-import Component from "./Component";
-import Entity from "./Entity";
-
+import BlockComponent from "./decorate-component";
+import ComponentType from "../const/component-type";
 import { getBuilder } from "../builder";
+import { storeData } from "../decorate/base";
 
-export default class Media extends Component {
+export default class Media extends BlockComponent {
   src: string;
-  type: "IMAGE" | "AUDIO" | "VIDEO";
+  type: ComponentType.image | ComponentType.audio | ComponentType.video;
 
   constructor(
-    type: "IMAGE" | "AUDIO" | "VIDEO",
+    type: ComponentType.image | ComponentType.audio | ComponentType.video,
     src: string,
-    style?: Entity["style"],
-    data?: Entity["style"]
+    style?: storeData,
+    data?: storeData
   ) {
     super(style, data);
     this.type = type;
@@ -20,13 +20,18 @@ export default class Media extends Component {
   setSrc(src: string) {
     this.src = src;
   }
-  getContent() {
+  render() {
     let builder = getBuilder();
     let map = {
-      IMAGE: builder.buildeImage,
-      AUDIO: builder.buildeImage,
-      VIDEO: builder.buildeImage,
+      [ComponentType.image]: builder.buildeImage,
+      [ComponentType.audio]: builder.buildeImage,
+      [ComponentType.video]: builder.buildeImage,
     };
-    return map[this.type](this.src, this.entity.getStyle, this.entity.getData);
+    return map[this.type](
+      this.id,
+      this.src,
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 }

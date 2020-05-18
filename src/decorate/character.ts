@@ -24,4 +24,10 @@ export default class CharacterDecorate extends BaseDecorate {
     }
     return true;
   }
+
+  clone() {
+    let newDecorate = new CharacterDecorate(this.getStyle());
+    newDecorate.setLink(this.link);
+    return newDecorate;
+  }
 }

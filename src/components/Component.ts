@@ -1,65 +1,50 @@
-import getId from "../util/getId";
-import Entity from "./Entity";
+import Collection from "./collection";
+import ComponentType from "../const/component-type";
+import { getId, saveComponent } from "./util";
+import { $emit } from "../event";
+
+export interface Operator<T extends Component = Component> {
+  type: string; // 操作类型
+  target: T[]; // 操作新增或是删除的组件
+  action: Component; // 操作发生的组件
+  tiggerBy: string; // 触发该操作的标识，默认为 customer
+  [key: string]: any;
+}
 
 export default abstract class Component {
   id: string = getId();
-  entity: Entity;
-  parent?: Component;
-  children: Component[] = [];
-  changeCall: Function[] = [];
+  parent?: Collection<Component | Collection<Component>>;
+  abstract type: ComponentType;
 
-  constructor(style?: Entity["style"], data?: Entity["data"]) {
-    this.entity = new Entity(style, data);
+  constructor() {
+    saveComponent(this);
   }
 
-  postChange(event: any) {
-    let parent: Component | undefined = this;
-    while (parent) {
-      if (parent.changeCall.length !== 0) {
-        parent.changeCall.forEach((call) => call(event));
+  addIntoParent(
+    collection: Collection<Component | Collection<Component>>,
+    index?: number,
+    tiggerBy: string = "customer"
+  ): Operator {
+    return collection.addChildren(this, index, tiggerBy);
+  }
+
+  removeSelf(tiggerBy: string = "customer"): Operator {
+    return (
+      this.parent?.removeChildren(this, undefined, tiggerBy) || {
+        type: `NOPARENT:${this.type}`,
+        target: [],
+        action: this,
+        root: this,
+        tiggerBy,
       }
-      parent = parent.parent;
+    );
+  }
+
+  update(event: Operator) {
+    if (event.tiggerBy !== "inner") {
+      $emit(event.type, event);
     }
   }
 
-  findChildrenIndex(componentOrIndex: Component | number): number {
-    if (typeof componentOrIndex === "number") return componentOrIndex;
-    for (let i = 0; i < this.children?.length; i++) {
-      if ((this.children[i].id = componentOrIndex.id)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  addChildren(component: Component, index?: number): number {
-    this.postChange({ type: "ADDCHILDREN", target: this });
-    if (this.children) this.children = [];
-    if (index) {
-      this.children?.splice(index, 0, component);
-    } else {
-      this.children?.push(component);
-    }
-    return index ? index : this.children.length - 1;
-  }
-
-  removeChildren(componentOrIndex: Component | number): number {
-    this.postChange({ type: "REMOVECHILDREN", target: this });
-    let removeIndex = this.findChildrenIndex(componentOrIndex);
-    if (removeIndex >= 0) {
-      this.children?.splice(removeIndex, 1);
-    }
-    return removeIndex;
-  }
-
-  addIntoParent(component: Component) {
-    this.parent = component;
-    this.parent.addChildren(this);
-  }
-
-  removeSelf() {
-    this.parent?.removeChildren(this);
-  }
-
-  abstract getContent(): any;
+  abstract render(): any;
 }

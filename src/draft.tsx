@@ -45,13 +45,23 @@ export default class Draft extends PureComponent {
   bold = () => {
     modifyDecorate("fontWeight", "bold");
   };
+  delete = () => {};
+  underline = () => {};
+  itailc = () => {};
 
   render() {
     return (
       <div>
-        <div contentEditable ref={(el) => (this.root = el)}></div>
+        <div
+          contentEditable
+          ref={(el) => (this.root = el)}
+          style={{ whiteSpace: 'pre' }}
+        ></div>
         <button onClick={this.showArticle}>show article</button>
         <button onClick={this.bold}>bold</button>
+        <button onClick={this.delete}>delete</button>
+        <button onClick={this.underline}>underline</button>
+        <button onClick={this.itailc}>itailc</button>
       </div>
     );
   }
