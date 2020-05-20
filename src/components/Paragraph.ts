@@ -106,11 +106,26 @@ export default class Paragraph extends Collection<Inline> {
     return event;
   }
 
-  changeCharStyle(type: string, value: string, start: number, end: number) {
+  changeCharDecorate(
+    type: string,
+    value: string,
+    start: number,
+    end: number,
+    tiggerBy = "customer"
+  ) {
     for (let i = start; i <= end; i++) {
       let decorate = this.decorateList.get(i);
       decorate?.setStyle(type, value);
     }
+    let event = {
+      type: `CHANGECHARDECORATE:${this.type}`,
+      target: this.children.slice(start, end).toArray(),
+      action: this,
+      index: start,
+      tiggerBy,
+    };
+    this.update(event);
+    return event;
   }
 
   render() {

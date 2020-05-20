@@ -1,6 +1,7 @@
 {
   "fileheader.configObj": {
-    "autoAdd": false
+    "autoAdd": false,
+    "autoAlready": false,
   },
   "git.ignoreLimitWarning": true,
 }

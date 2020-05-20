@@ -13,8 +13,6 @@ export default abstract class Collection<
     index?: number,
     tiggerBy: string = "customer"
   ): Operator {
-    console.log(index);
-
     let components: T[];
     if (!Array.isArray(component)) {
       components = [component];

@@ -1,5 +1,10 @@
 import ComponentType from "../const/component-type";
 
+export interface cursorType {
+  id: string;
+  index: number;
+}
+
 export const getParent = (
   element: HTMLElement | Node | null | undefined
 ): HTMLElement => {
@@ -48,4 +53,43 @@ export const getElememtSize = (element?: HTMLElement): number => {
     return 1;
   }
   return 0;
+};
+
+export const getCursorPosition = (
+  cursor: cursorType
+): {
+  node: Node;
+  index: number;
+} | null => {
+  let dom = document.getElementById(cursor.id);
+  let node = dom;
+  let now = 0;
+  let index = 0;
+  if (dom === null) return null;
+  for (let i = 0; i < dom.children.length; i++) {
+    const element = dom.children[i] as HTMLElement;
+    let elementSize = getElememtSize(element);
+    if (elementSize === 0) {
+      continue;
+    }
+    if (now + elementSize < cursor.index) {
+      now += elementSize;
+    } else {
+      node = element;
+      index = cursor.index - now;
+      now = 0;
+      break;
+    }
+  }
+  if (now !== 0) {
+    let last = dom.children[dom.children.length - 1] as HTMLElement;
+    return {
+      node: last.childNodes[0],
+      index: getElememtSize(last),
+    };
+  }
+  return {
+    node: node?.childNodes[0] as Node,
+    index,
+  };
 };

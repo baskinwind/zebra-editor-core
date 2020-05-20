@@ -1,5 +1,5 @@
 import { Operator } from "../components/component";
-import { focusAt } from "../selection-operator/selection";
+import focusAt from "../selection-operator/focus-at";
 
 export default {
   "ADDCHILDREN:PARAGRAPH"(event: Operator) {
@@ -9,7 +9,10 @@ export default {
       document
         .getElementById(event.action.id)
         ?.replaceWith(event.action.render());
-      focusAt(event.action.id, event.index + event.target.length);
+      focusAt({
+        id: event.action.id,
+        index: event.index + event.target.length,
+      });
     }
   },
   "REMOVECHILDREN:PARAGRAPH"(event: Operator) {
@@ -35,6 +38,13 @@ export default {
     }
     oldDom?.replaceWith(event.action.render());
     // 设置光标位置
-    focusAt(event.target[0].id, 0);
+    focusAt({ id: event.target[0].id, index: 0 });
+  },
+  "CHANGECHARDECORATE:PARAGRAPH"(event: Operator) {
+    console.log(event);
+    document
+      .getElementById(event.action.id)
+      ?.replaceWith(event.action.render());
+    focusAt({ id: event.action.id, index: event.index });
   },
 };

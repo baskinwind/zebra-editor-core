@@ -18,7 +18,11 @@ export default class BaseDecorate {
     return this.style.toObject();
   }
   setStyle(name: string, value: string) {
-    this.style = this.style.set(name, value);
+    if (this.style.get(name) === value) {
+      this.style = this.style.delete(name);
+    } else {
+      this.style = this.style.set(name, value);
+    }
   }
   removeStyle(name: string) {
     this.style = this.style.delete(name);

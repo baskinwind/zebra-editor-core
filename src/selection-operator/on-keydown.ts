@@ -3,8 +3,8 @@ import Collection from "../components/collection";
 import Paragraph from "../components/paragraph";
 import CharacterDecorate from "../decorate/character";
 import ComponentType from "../const/component-type";
+import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
-import { getSelection } from "./selection";
 
 const onKeyDown = (event: KeyboardEvent) => {
   let selection = getSelection();

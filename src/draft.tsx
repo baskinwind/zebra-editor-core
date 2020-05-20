@@ -45,7 +45,9 @@ export default class Draft extends PureComponent {
   bold = () => {
     modifyDecorate("fontWeight", "bold");
   };
-  delete = () => {};
+  delete = () => {
+    modifyDecorate("textDecoration", "line-through");
+  };
   underline = () => {};
   itailc = () => {};
 
@@ -53,9 +55,10 @@ export default class Draft extends PureComponent {
     return (
       <div>
         <div
+          id="zebra-draft-root"
           contentEditable
           ref={(el) => (this.root = el)}
-          style={{ whiteSpace: 'pre' }}
+          style={{ whiteSpace: "pre" }}
         ></div>
         <button onClick={this.showArticle}>show article</button>
         <button onClick={this.bold}>bold</button>

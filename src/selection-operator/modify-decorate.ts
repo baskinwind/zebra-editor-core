@@ -1,6 +1,6 @@
 import Paragraph from "../components/paragraph";
+import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
-import { getSelection } from "./selection";
 
 // 修改选区内内容的表现行为
 const modifyDecorate = (name: string, value: string) => {
@@ -10,9 +10,15 @@ const modifyDecorate = (name: string, value: string) => {
   if (start > end) {
     [start, end] = [end, start];
   }
-  let component = getComponentById(selection.range[0].componentId) as Paragraph;
-  component.changeCharStyle(name, value, start, end);
-  document.getElementById(component.id)?.replaceWith(component.render());
+  if (start === end) {
+    return;
+  }
+  let component = getComponentById(selection.range[0].componentId);
+  console.log(start, end);
+
+  if (component) {
+    (component as Paragraph).changeCharDecorate(name, value, start, end - 1);
+  }
 };
 
 export default modifyDecorate;
