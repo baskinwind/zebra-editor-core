@@ -140,3 +140,7 @@ fixImageClick(event: MouseEvent) {
 4. 优化分段 subParagraph 方法，将字符带样式转入下一个字符串
 5. 统一事件触发行为，放在 event-handle 文件夹下
 6. Operator（事件行为对象，在事件触发时会传入）添加 tiggerBy 属性，用于判断该修改由什么触发，inner 代表内部触发（不会触发事件）
+
+## 0521
+
+实现选中多行操作，删除输入等

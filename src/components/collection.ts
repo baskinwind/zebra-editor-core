@@ -8,11 +8,7 @@ export default abstract class Collection<
 > extends BlockComponent {
   children: List<T> = List();
 
-  addChildren(
-    component: T | T[],
-    index?: number,
-    tiggerBy: string = "customer"
-  ): Operator {
+  addChildren(component: T | T[], index?: number): Operator {
     let components: T[];
     if (!Array.isArray(component)) {
       components = [component];
@@ -25,17 +21,14 @@ export default abstract class Collection<
     } else {
       this.children = this.children.push(...components);
     }
-    let event = {
+    let start = typeof index === "number" ? index : this.children.size - 1;
+    return {
       type: `ADDCHILDREN:${this.type}`,
       target: components,
       action: this,
-      index: typeof index === "number" ? index : this.children.size - 1,
-      tiggerBy,
+      start,
+      end: start + components.length,
     };
-    if (this.type !== ComponentType.paragraph) {
-      this.update(event);
-    }
-    return event;
   }
 
   removeChildren(
@@ -45,15 +38,13 @@ export default abstract class Collection<
   ): Operator<T> {
     let removeIndex: number;
     if (removeNumber === 0) {
-      let event = {
+      return {
         type: `REMOVECHILDREN:${this.type}`,
         target: [],
         action: this,
-        index: -1,
-        tiggerBy,
+        start: -1,
+        end: -1,
       };
-      this.update(event);
-      return event;
     }
     if (typeof componentOrIndex === "number") {
       removeIndex = componentOrIndex;
@@ -73,22 +64,38 @@ export default abstract class Collection<
       removeIndex + removeNumber
     );
     this.children = this.children.splice(removeIndex, removeNumber);
-    let event = {
+    return {
       type: `REMOVECHILDREN:${this.type}`,
       target: removedComponent.toArray(),
       action: this,
-      index: removeIndex,
       tiggerBy,
+      start: removeNumber,
+      end: removeIndex + removedComponent.size,
     };
-    if (this.type !== ComponentType.paragraph) {
-      this.update(event);
-    }
-    return event;
   }
 
   findChildrenIndex(componentOrIndex: T): number {
     return this.children.findIndex(
       (component) => component.id === componentOrIndex.id
     );
+  }
+
+  getIdList(...ids: [string, string]) {
+    let res: string[] = [];
+    if (ids[0] === ids[1]) {
+      return [ids[0]];
+    }
+    let flag = false;
+    this.children.forEach((component) => {
+      if (ids.includes(component.id)) {
+        res.push(component.id);
+        flag = !flag;
+        return;
+      }
+      if (flag) {
+        res.push(component.id);
+      }
+    });
+    return res;
   }
 }

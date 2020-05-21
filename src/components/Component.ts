@@ -7,7 +7,8 @@ export interface Operator<T extends Component = Component> {
   type: string; // 操作类型
   target: T[]; // 操作新增或是删除的组件
   action: Component; // 操作发生的组件
-  tiggerBy: string; // 触发该操作的标识，默认为 customer
+  start: number; // 开始受影响的位置
+  end: number; // 结束影响的位置
   [key: string]: any;
 }
 
@@ -17,33 +18,29 @@ export default abstract class Component {
   abstract type: ComponentType;
 
   constructor() {
-    saveComponent(this);
+    Promise.resolve().then(() => {
+      saveComponent(this);
+    });
   }
 
   addIntoParent(
     collection: Collection<Component | Collection<Component>>,
     index?: number,
-    tiggerBy: string = "customer"
   ): Operator {
-    return collection.addChildren(this, index, tiggerBy);
+    return collection.addChildren(this, index);
   }
 
-  removeSelf(tiggerBy: string = "customer"): Operator {
+  removeSelf(): Operator {
     return (
-      this.parent?.removeChildren(this, undefined, tiggerBy) || {
+      this.parent?.removeChildren(this, undefined) || {
         type: `NOPARENT:${this.type}`,
         target: [],
         action: this,
+        start: -1,
+        end: -1,
         root: this,
-        tiggerBy,
       }
     );
-  }
-
-  update(event: Operator) {
-    if (event.tiggerBy !== "inner") {
-      $emit(event.type, event);
-    }
   }
 
   abstract render(): any;

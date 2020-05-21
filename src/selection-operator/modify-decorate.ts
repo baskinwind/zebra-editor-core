@@ -14,7 +14,6 @@ const modifyDecorate = (name: string, value: string) => {
     return;
   }
   let component = getComponentById(selection.range[0].componentId);
-  console.log(start, end);
 
   if (component) {
     (component as Paragraph).changeCharDecorate(name, value, start, end - 1);

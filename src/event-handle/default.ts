@@ -2,19 +2,7 @@ import { Operator } from "../components/component";
 import focusAt from "../selection-operator/focus-at";
 
 export default {
-  "ADDCHILDREN:PARAGRAPH"(event: Operator) {
-    console.log(event);
-    if (event.tiggerBy === "onkeydown") {
-      // 以下内容非必要，强制更新 DOM 元素，使得表现一致。
-      document
-        .getElementById(event.action.id)
-        ?.replaceWith(event.action.render());
-      focusAt({
-        id: event.action.id,
-        index: event.index + event.target.length,
-      });
-    }
-  },
+  "ADDCHILDREN:PARAGRAPH"(event: Operator) {},
   "REMOVECHILDREN:PARAGRAPH"(event: Operator) {
     console.log(event);
     if (event.tiggerBy === "onkeydown") {
@@ -45,6 +33,9 @@ export default {
     document
       .getElementById(event.action.id)
       ?.replaceWith(event.action.render());
-    focusAt({ id: event.action.id, index: event.index });
+    focusAt(
+      { id: event.action.id, index: event.index },
+      { id: event.action.id, index: event.index + event.target.length + 1 }
+    );
   },
 };

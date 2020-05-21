@@ -48,8 +48,12 @@ export default class Draft extends PureComponent {
   delete = () => {
     modifyDecorate("textDecoration", "line-through");
   };
-  underline = () => {};
-  itailc = () => {};
+  underline = () => {
+    modifyDecorate("textDecoration", "underline");
+  };
+  itailc = () => {
+    modifyDecorate("fontStyle", "italic");
+  };
 
   render() {
     return (

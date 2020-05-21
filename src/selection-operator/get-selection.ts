@@ -52,12 +52,14 @@ const getSelection = () => {
     anchorOffect += getElememtSize(element as HTMLElement);
   }
   for (let i = 0; i < focusParent.children.length; i++) {
-    const element = anchorParent.children[i];
+    const element = focusParent.children[i];
     if (element === focusContainer) break;
     focusOffset += getElememtSize(element as HTMLElement);
   }
+
   selectionStore = {
-    isCollapsed: section?.isCollapsed || true,
+    isCollapsed:
+      section?.isCollapsed === undefined ? true : section.isCollapsed,
     range: [
       {
         componentId: anchorParent.id,
