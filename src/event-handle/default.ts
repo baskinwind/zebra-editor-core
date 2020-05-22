@@ -26,7 +26,7 @@ export default {
     }
     oldDom?.replaceWith(event.action.render());
     // 设置光标位置
-    focusAt({ id: event.target[0].id, index: 0 });
+    focusAt({ id: event.target[0].id, offset: 0 });
   },
   "CHANGECHARDECORATE:PARAGRAPH"(event: Operator) {
     console.log(event);
@@ -34,8 +34,8 @@ export default {
       .getElementById(event.action.id)
       ?.replaceWith(event.action.render());
     focusAt(
-      { id: event.action.id, index: event.index },
-      { id: event.action.id, index: event.index + event.target.length + 1 }
+      { id: event.action.id, offset: event.index },
+      { id: event.action.id, offset: event.index + event.target.length + 1 }
     );
   },
 };

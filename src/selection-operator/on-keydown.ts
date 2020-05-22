@@ -10,29 +10,13 @@ import deleteSelection from "./delete-selection";
 import input from "./input";
 
 const onKeyDown = (event: KeyboardEvent) => {
-  let selection = getSelection();
-  let start = selection.range[0].offset;
-  let end = selection.range[1].offset;
-  if (start > end) {
-    [start, end] = [end, start];
-  }
   if (event.ctrlKey || event.metaKey) return;
+  event.preventDefault();
+  deleteSelection(event);
   let key = event.key;
-  if (key === "Backspace") {
-    // 删除选中内容
-    deleteSelection();
-  }
   // 字符输入
   if (key.length === 1) {
-    // 删除选中内容
-    deleteSelection();
-    input(event.key);
-    return;
-  }
-  // 触发换行
-  if (key === "Enter") {
-    // 删除选中内容
-    deleteSelection(true);
+    input(event.key, event);
     return;
   }
 };

@@ -4,7 +4,7 @@ import Inline from "./inline";
 import Character from "./character";
 import ComponentType from "../const/component-type";
 import CharacterDecorate from "../decorate/character";
-import { getBuilder } from "../builder";
+import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/base";
 
 export default class Paragraph extends Collection<Inline> {
@@ -50,9 +50,9 @@ export default class Paragraph extends Collection<Inline> {
     let removeInfo = super.removeChildren(componentOrIndex, removeNumber);
     let size = removeInfo.target.length;
     let removeDecorate;
-    if (removeInfo.index >= 0) {
+    if (removeInfo.start >= 0) {
       removeDecorate = this.decorateList
-        .slice(removeInfo.index, this.decorateList.size)
+        .slice(removeInfo.start, removeInfo.end)
         .toArray();
       this.decorateList = this.decorateList.splice(removeInfo.index, size);
     }
@@ -77,7 +77,7 @@ export default class Paragraph extends Collection<Inline> {
   }
 
   render() {
-    const builder = getBuilder();
+    const builder = getContentBuilder();
     let content: any[] = [];
     let acc: Character[] = [];
     let prevDecorate: CharacterDecorate;

@@ -1,6 +1,6 @@
 import BlockComponent from "./decorate-component";
 import ComponentType from "../const/component-type";
-import { getBuilder } from "../builder";
+import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/base";
 
 export default class Media extends BlockComponent {
@@ -21,7 +21,7 @@ export default class Media extends BlockComponent {
     this.src = src;
   }
   render() {
-    let builder = getBuilder();
+    let builder = getContentBuilder();
     let map = {
       [ComponentType.image]: builder.buildeImage,
       [ComponentType.audio]: builder.buildeImage,

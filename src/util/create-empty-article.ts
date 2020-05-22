@@ -19,12 +19,12 @@ export default function createEnptyArticle() {
   paragraph.addIntoParent(article);
   paragraph.changeCharDecorate("color", "red", 1, 5);
   // paragraph.addText("abcd");
-  // paragraph.addChildren(
-  //   new InlineImage(
-  //     "http://blog.acohome.cn/content/images/size/w100/2019/10/zebra.png"
-  //   )
-  // );
-  // paragraph.addText("1234");
+  paragraph.addChildren(
+    new InlineImage(
+      "http://blog.acohome.cn/content/images/size/w100/2019/10/zebra.png"
+    )
+  );
+  paragraph.addText("1234");
   // let paragraph2 = new Paragraph();
   // paragraph2.addIntoParent(article);
   // paragraph2.addText("abcd1234");

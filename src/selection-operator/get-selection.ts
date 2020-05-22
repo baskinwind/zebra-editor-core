@@ -1,23 +1,20 @@
-import { getElememtSize, getParent, getContainer } from "./util";
+import { getElememtSize, getContainer, cursorType, getParent } from "./util";
 import ComponentType from "../const/component-type";
 
 export interface selectionType {
   isCollapsed: boolean;
-  range: [
-    { componentId: string; offset: number },
-    { componentId: string; offset: number }
-  ];
+  range: [cursorType, cursorType];
 }
 
 let selectionStore: selectionType = {
   isCollapsed: true,
   range: [
     {
-      componentId: "",
+      id: "",
       offset: 0,
     },
     {
-      componentId: "",
+      id: "",
       offset: 0,
     },
   ],
@@ -39,22 +36,56 @@ const getSelection = () => {
   ) {
     return selectionStore;
   }
-
+  let posiType = section?.anchorNode?.compareDocumentPosition(
+    section?.focusNode as Node
+  );
   let anchorOffect = section?.anchorOffset || 0;
-  let anchorParent = getParent(section?.anchorNode);
-  let anchorContainer = getContainer(section?.anchorNode);
   let focusOffset = section?.focusOffset || 0;
-  let focusParent = getParent(section?.focusNode);
-  let focusContainer = getContainer(section?.focusNode);
-  for (let i = 0; i < anchorParent.children.length; i++) {
-    const element = anchorParent.children[i];
-    if (element === anchorContainer) break;
-    anchorOffect += getElememtSize(element as HTMLElement);
+  let startOffset;
+  let startNode;
+  let endOffset;
+  let endNode;
+  // anchor 节点和 focus 节点在同一个元素内
+  if (posiType === 0) {
+    startOffset = Math.min(anchorOffect, focusOffset);
+    endOffset = Math.max(anchorOffect, focusOffset);
+    if (anchorOffect > focusOffset) {
+      startOffset = focusOffset;
+      startNode = section?.focusNode;
+      endOffset = anchorOffect;
+      endNode = section?.anchorNode;
+    } else {
+      startOffset = anchorOffect;
+      startNode = section?.anchorNode;
+      endOffset = focusOffset;
+      endNode = section?.focusNode;
+    }
+  } else if (posiType === 2) {
+    startOffset = focusOffset;
+    startNode = section?.focusNode;
+    endOffset = anchorOffect;
+    endNode = section?.anchorNode;
+  } else {
+    startOffset = anchorOffect;
+    startNode = section?.anchorNode;
+    endOffset = focusOffset;
+    endNode = section?.focusNode;
   }
-  for (let i = 0; i < focusParent.children.length; i++) {
-    const element = focusParent.children[i];
-    if (element === focusContainer) break;
-    focusOffset += getElememtSize(element as HTMLElement);
+
+  let startContainer: HTMLElement = getContainer(startNode);
+  let startParent: HTMLElement = getParent(startNode);
+  let endContainer: HTMLElement = getContainer(endNode);
+  let endParent: HTMLElement = getParent(endNode);
+
+  for (let i = 0; i < startParent.children.length; i++) {
+    const element = startParent.children[i];
+    if (element === startContainer) break;
+    startOffset += getElememtSize(element as HTMLElement);
+  }
+  for (let i = 0; i < endParent.children.length; i++) {
+    const element = endParent.children[i];
+    if (element === endContainer) break;
+    endOffset += getElememtSize(element as HTMLElement);
   }
 
   selectionStore = {
@@ -62,12 +93,12 @@ const getSelection = () => {
       section?.isCollapsed === undefined ? true : section.isCollapsed,
     range: [
       {
-        componentId: anchorParent.id,
-        offset: anchorOffect,
+        id: startParent.id,
+        offset: startOffset,
       },
       {
-        componentId: focusParent.id,
-        offset: focusOffset,
+        id: endParent.id,
+        offset: endOffset,
       },
     ],
   };

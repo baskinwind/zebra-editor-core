@@ -2,7 +2,7 @@ import ComponentType from "../const/component-type";
 
 export interface cursorType {
   id: string;
-  index: number;
+  offset: number;
 }
 
 export const getParent = (
@@ -72,11 +72,11 @@ export const getCursorPosition = (
     if (elementSize === 0) {
       continue;
     }
-    if (now + elementSize < cursor.index) {
+    if (now + elementSize < cursor.offset) {
       now += elementSize;
     } else {
       node = element;
-      index = cursor.index - now;
+      index = cursor.offset - now;
       now = 0;
       break;
     }

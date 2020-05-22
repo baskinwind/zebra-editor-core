@@ -12,7 +12,6 @@ export const saveComponent = (component: Component) => {
   store[component.id] = component;
   if (component.type === ComponentType.article) {
     store.article = component;
-    console.log(component);
   }
 };
 

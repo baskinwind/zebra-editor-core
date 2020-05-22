@@ -1,7 +1,7 @@
 import Component from "./component";
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
-import { getBuilder } from "../builder/index";
+import { getContentBuilder } from "../builder/index";
 
 export default class Article extends Collection<Component> {
   type = ComponentType.article;
@@ -10,7 +10,7 @@ export default class Article extends Collection<Component> {
     let children = this.children
       .map((component) => component.render())
       .toArray();
-    return getBuilder().buildArticle(
+    return getContentBuilder().buildArticle(
       this.id,
       children,
       this.decorate.getStyle(),

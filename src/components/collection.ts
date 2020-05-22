@@ -69,7 +69,7 @@ export default abstract class Collection<
       target: removedComponent.toArray(),
       action: this,
       tiggerBy,
-      start: removeNumber,
+      start: removeIndex,
       end: removeIndex + removedComponent.size,
     };
   }
