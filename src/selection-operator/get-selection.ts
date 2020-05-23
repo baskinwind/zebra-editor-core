@@ -22,25 +22,20 @@ let selectionStore: selectionType = {
 
 // 获取选区信息
 const getSelection = () => {
-  let root = document.getElementById("zebra-draft-root") as HTMLElement;
+  let root = document.getElementById("zebra-draft-root");
+  if (!root) return selectionStore
   let section = window.getSelection();
-  let anchorNode = section?.anchorNode;
-  let isArticleDom = (anchorNode as HTMLElement)?.dataset
-    ? (anchorNode as HTMLElement)?.dataset.type === ComponentType.article
-    : false;
   // 无选区，选区的焦点不在所在的根节点，以及选区的焦点在文章节点上时，直接返回之前的选区内容
-  if (
-    section?.type === "None" ||
-    !root.contains(section?.anchorNode as Node) ||
-    isArticleDom
-  ) {
-    return selectionStore;
-  }
-  let posiType = section?.anchorNode?.compareDocumentPosition(
-    section?.focusNode as Node
+  if (!section || !section.anchorNode || !section.focusNode || section?.type === "None") return selectionStore;
+  if (!root.contains(section.anchorNode)) return selectionStore;
+  let anchorNode = section?.anchorNode;
+  if (anchorNode instanceof HTMLElement && anchorNode.dataset.type === ComponentType.article) return selectionStore;
+
+  let posiType = section.anchorNode.compareDocumentPosition(
+    section.focusNode
   );
-  let anchorOffect = section?.anchorOffset || 0;
-  let focusOffset = section?.focusOffset || 0;
+  let anchorOffect = section.anchorOffset;
+  let focusOffset = section.focusOffset;
   let startOffset;
   let startNode;
   let endOffset;
@@ -80,12 +75,12 @@ const getSelection = () => {
   for (let i = 0; i < startParent.children.length; i++) {
     const element = startParent.children[i];
     if (element === startContainer) break;
-    startOffset += getElememtSize(element as HTMLElement);
+    startOffset += getElememtSize(element);
   }
   for (let i = 0; i < endParent.children.length; i++) {
     const element = endParent.children[i];
     if (element === endContainer) break;
-    endOffset += getElememtSize(element as HTMLElement);
+    endOffset += getElememtSize(element);
   }
 
   selectionStore = {

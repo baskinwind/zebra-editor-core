@@ -14,6 +14,7 @@ export interface Operator<T extends Component = Component> {
 export default abstract class Component {
   id: string = getId();
   parent?: Collection<Component | Collection<Component>>;
+  actived: boolean = false;
   abstract type: ComponentType;
 
   constructor() {
@@ -32,6 +33,19 @@ export default abstract class Component {
   removeSelf(): Operator {
     return (
       this.parent?.removeChildren(this, undefined) || {
+        type: `NOPARENT:${this.type}`,
+        target: [],
+        action: this,
+        start: -1,
+        end: -1,
+        root: this,
+      }
+    );
+  }
+
+  replaceSelf(component: Component) {
+    return (
+      this.parent?.replaceChild(component, this) || {
         type: `NOPARENT:${this.type}`,
         target: [],
         action: this,

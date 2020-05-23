@@ -11,7 +11,11 @@ const updateComponent = (component: Component | Component[]) => {
 const update = (component: Component) => {
   let dom = document.getElementById(component.id);
   if (dom) {
-    dom.parentElement?.replaceChild(component.render(), dom);
+    if (component.actived) {
+      dom.parentElement?.replaceChild(component.render(), dom);
+    } else {
+      dom.remove();
+    }
   } else {
     let parentComponent = component.parent;
     if (!parentComponent) return;

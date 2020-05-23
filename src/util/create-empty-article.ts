@@ -13,6 +13,19 @@ export default function createEnptyArticle() {
   article.addChildren(new Paragraph("0123456789"));
   article.addChildren(new Paragraph("0123456789"));
   article.addChildren(new Paragraph("0123456789"));
+  article.addChildren(
+    new Media(
+      ComponentType.image,
+      "http://blog.acohome.cn/content/images/size/w100/2019/10/zebra.png"
+    )
+  );
+  article.addChildren(new Paragraph("0123456789"));
+  article.addChildren(
+    new Media(
+      ComponentType.image,
+      "http://blog.acohome.cn/content/images/size/w100/2019/10/zebra.png"
+    )
+  );
   article.addChildren(new Paragraph("0123456789"));
   article.addChildren(new Paragraph("0123456789"));
   let paragraph = new Paragraph("0123456789");
@@ -25,16 +38,5 @@ export default function createEnptyArticle() {
     )
   );
   paragraph.addText("1234");
-  // let paragraph2 = new Paragraph();
-  // paragraph2.addIntoParent(article);
-  // paragraph2.addText("abcd1234");
-
-  // article.addChildren(new Paragraph());
-  // article.addChildren(
-  //   new Media(
-  //     ComponentType.image,
-  //     "http://blog.acohome.cn/content/images/size/w100/2019/10/zebra.png"
-  //   )
-  // );
   return article;
 }

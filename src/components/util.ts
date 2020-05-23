@@ -1,18 +1,17 @@
 import { generate } from "shortid";
 import Component from "./component";
-import Collection from "./collection";
 import ComponentType from "../const/component-type";
-const store: { [key: string]: Component } = {};
+const store: { [key: string]: any } = {};
 
 export const getId = () => {
   return generate();
 };
 
-export const saveComponent = (component: Component) => {
+export const saveComponent = <T extends Component = Component>(component: T) => {
   store[component.id] = component;
   if (component.type === ComponentType.article) {
     store.article = component;
   }
 };
 
-export const getComponentById = (id: string) => store[id] as Collection<any>;
+export const getComponentById = <T extends Component = Component>(id: string): T => store[id];

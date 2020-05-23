@@ -5,7 +5,7 @@ import ComponentType from "../const/component-type";
 
 export default abstract class Collection<
   T extends Component
-> extends BlockComponent {
+  > extends BlockComponent {
   children: List<T> = List();
 
   addChildren(component: T | T[], index?: number): Operator {
@@ -15,7 +15,7 @@ export default abstract class Collection<
     } else {
       components = component;
     }
-    components.forEach((component) => (component.parent = this));
+    components.forEach((component) => { component.parent = this; component.actived = true });
     if (typeof index === "number") {
       this.children = this.children.splice(index, 0, ...components);
     } else {
@@ -49,6 +49,8 @@ export default abstract class Collection<
     if (typeof componentOrIndex === "number") {
       removeIndex = componentOrIndex;
     } else {
+      console.log(componentOrIndex);
+
       let temp = this.children.findIndex(
         (component) => component.id === componentOrIndex.id
       );
@@ -63,6 +65,9 @@ export default abstract class Collection<
       removeIndex,
       removeIndex + removeNumber
     );
+    removedComponent.forEach(component => {
+      component.actived = false;
+    })
     this.children = this.children.splice(removeIndex, removeNumber);
     return {
       type: `REMOVECHILDREN:${this.type}`,
@@ -74,9 +79,21 @@ export default abstract class Collection<
     };
   }
 
-  findChildrenIndex(componentOrIndex: T): number {
+  replaceChild(component: T, oldComponent: T) {
+    let index = oldComponent ? this.findChildrenIndex(oldComponent) : -1;
+    component.actived = true;
+    component.parent = this;
+    oldComponent.actived = false;
+    if (index !== -1) {
+      this.children = this.children.splice(index, 1, component)
+    } else {
+      this.children = this.children.push(component)
+    }
+  }
+
+  findChildrenIndex(component: T): number {
     return this.children.findIndex(
-      (component) => component.id === componentOrIndex.id
+      (item) => item.id === component.id
     );
   }
 
@@ -97,5 +114,9 @@ export default abstract class Collection<
       }
     });
     return res;
+  }
+
+  getNext(id: string) {
+
   }
 }

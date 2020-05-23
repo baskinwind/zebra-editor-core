@@ -54,7 +54,7 @@ export default class Paragraph extends Collection<Inline> {
       removeDecorate = this.decorateList
         .slice(removeInfo.start, removeInfo.end)
         .toArray();
-      this.decorateList = this.decorateList.splice(removeInfo.index, size);
+      this.decorateList = this.decorateList.splice(removeInfo.start, size);
     }
     removeInfo.removedDecorate = removeDecorate;
     return removeInfo;
@@ -95,7 +95,8 @@ export default class Paragraph extends Collection<Inline> {
 
     this.children.forEach((value, index) => {
       if (value instanceof Character) {
-        let decorate = this.decorateList.get(index) as CharacterDecorate;
+        let decorate = this.decorateList.get(index);
+        if (!decorate) return;
         if (!decorate?.isSame(prevDecorate)) {
           createCharacterList();
           prevDecorate = decorate;

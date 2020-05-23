@@ -1,5 +1,9 @@
 import ComponentType from "../const/component-type";
 
+export interface mapData {
+  [key: string]: any;
+}
+
 export default {
   buildArticle(
     id: string,
@@ -33,11 +37,10 @@ export default {
     }
     return parapraph;
   },
-  buildeImage(id: string, src: string, style: any, data: any) {
+  buildeImage(id: string, src: string, style: mapData, data: mapData) {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.dataset.type = ComponentType.image;
-    figure.contentEditable = "false";
     let child;
     let image = document.createElement("img");
     image.src = src;
@@ -53,14 +56,14 @@ export default {
     figure.appendChild(child);
     return figure;
   },
-  buildCharacterList(id: string, charList: string[], style: any): HTMLElement {
+  buildCharacterList(id: string, charList: string[], style: mapData): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
     span.dataset.type = ComponentType.characterList;
     span.innerText = charList.join("");
     if (style) {
-      for (const key in style) {
-        span.style[key as any] = style[key];
+      for (let key in style) {
+        span.style[key] = style[key];
       }
     }
 
@@ -69,13 +72,12 @@ export default {
   buildInlineImage(
     id: string,
     src: string,
-    style: any,
-    data: any
+    style: mapData,
+    data: mapData
   ): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
     span.dataset.type = ComponentType.inlineImage;
-    span.contentEditable = "false";
     let child;
     let image = document.createElement("img");
     image.src = src;

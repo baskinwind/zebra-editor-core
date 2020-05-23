@@ -36,6 +36,11 @@ const input = (char: string, event?: Event) => {
       decorate = component.decorateList.get(offset - 1)?.clone();
     }
     component.addChildren(new Character(char), offset, decorate);
+    updateComponent(component)
+    focusAt({
+      id: component.id,
+      offset: offset + 1,
+    })
   }
 };
 
