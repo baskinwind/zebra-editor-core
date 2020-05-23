@@ -1,4 +1,4 @@
-import Inline from "./iinline";
+import Inline from "./inline";
 import ComponentType from "../const/component-type";
 import DataDecorate from "../decorate/data";
 import { getBuilder } from "../builder";

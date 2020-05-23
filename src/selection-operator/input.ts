@@ -1,7 +1,7 @@
 import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
-import Paragraph from "../components/pparagraph";
-import Character from "../components/ccharacter";
+import Paragraph from "../components/paragraph";
+import Character from "../components/character";
 
 const input = (char: string) => {
   let selection = getSelection();

@@ -1,4 +1,4 @@
-import Event from "./eevent";
+import Event from "./event";
 
 const event = new Event();
 

@@ -1,7 +1,7 @@
 import { List } from "immutable";
 import Collection from "./collection";
-import Inline from "./iinline";
-import Character from "./ccharacter";
+import Inline from "./inline";
+import Character from "./character";
 import ComponentType from "../const/component-type";
 import CharacterDecorate from "../decorate/character";
 import { getBuilder } from "../builder";
