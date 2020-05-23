@@ -4,8 +4,6 @@ import Paragraph from "../components/paragraph";
 import updateComponent from "./update-component";
 import focusAt from "./focus-at";
 import Article from "../components/article";
-import Collection from "../components/collection";
-import Character from "../components/character";
 
 const deleteSelection = (event?: KeyboardEvent) => {
   let selection = getSelection();

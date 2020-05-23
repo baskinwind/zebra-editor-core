@@ -1,4 +1,3 @@
-import Collection from "../components/collection";
 import deleteSelection from "./delete-selection";
 import input from "./input";
 import escapeKey from "./escape-key";
@@ -15,13 +14,3 @@ const onKeyDown = (event: KeyboardEvent) => {
 };
 
 export default onKeyDown;
-
-const inImage = (event: KeyboardEvent, component: Collection<any>) => {
-  let key = event.key;
-  if (key === "Backspace") {
-    component.removeSelf();
-    let dom = document.getElementById(component.id);
-    dom?.remove();
-    return;
-  }
-};

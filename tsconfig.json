@@ -21,7 +21,10 @@
       "react-dom",
       "shortid"
     ],
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "noEmit": true
   },
   "include": [
     "src"

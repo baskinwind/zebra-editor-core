@@ -1,7 +1,6 @@
 import { List } from "immutable";
 import Component, { Operator } from "./component";
 import BlockComponent from "./decorate-component";
-import ComponentType from "../const/component-type";
 
 export default abstract class Collection<
   T extends Component
