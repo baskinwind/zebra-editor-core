@@ -1,7 +1,6 @@
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
 import { getId, saveComponent } from "./util";
-import { $emit } from "../event";
 
 export interface Operator<T extends Component = Component> {
   type: string; // 操作类型

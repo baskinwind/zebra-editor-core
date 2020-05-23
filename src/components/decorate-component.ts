@@ -1,4 +1,4 @@
-import Component from "./ccomponent";
+import Component from "./component";
 import DataDecorate from "../decorate/data";
 import { storeData } from "../decorate/base";
 

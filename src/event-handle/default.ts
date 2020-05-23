@@ -1,4 +1,4 @@
-import { Operator } from "../components/ccomponent";
+import { Operator } from "../components/component";
 import focusAt from "../selection-operator/focus-at";
 
 export default {
