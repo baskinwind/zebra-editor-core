@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import Article from "./components/aarticle";
+import Article from "./components/article";
 import createEmptyArticle from "./util/create-empty-article";
 import onkeyDown from "./selection-operator/on-keydown";
 import onClick from "./selection-operator/on-click";
