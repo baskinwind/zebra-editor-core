@@ -1,4 +1,4 @@
-import Inline from "./inline";
+import Inline from "./iinline";
 import ComponentType from "../const/component-type";
 
 export default class Character extends Inline {

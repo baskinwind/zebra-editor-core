@@ -1,7 +1,7 @@
-import Article from "../components/article";
-import Paragraph from "../components/paragraph";
-import Character from "../components/character";
-import Media from "../components/media";
+import Article from "../components/aarticle";
+import Paragraph from "../components/pparagraph";
+import Character from "../components/ccharacter";
+import Media from "../components/mmedia";
 import InlineImage from "../components/inline-image";
 import ComponentType from "../const/component-type";
 

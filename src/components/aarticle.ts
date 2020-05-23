@@ -1,4 +1,4 @@
-import Component from "./component";
+import Component from "./ccomponent";
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
 import { getBuilder } from "../builder/index";

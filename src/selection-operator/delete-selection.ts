@@ -1,6 +1,6 @@
 import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
-import Paragraph from "../components/paragraph";
+import Paragraph from "../components/pparagraph";
 
 const deleteSelection = (lineBreak: boolean = false) => {
   let selection = getSelection();

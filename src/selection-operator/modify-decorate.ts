@@ -1,4 +1,4 @@
-import Paragraph from "../components/paragraph";
+import Paragraph from "../components/pparagraph";
 import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
 

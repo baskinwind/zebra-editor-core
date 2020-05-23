@@ -1,5 +1,5 @@
 import { generate } from "shortid";
-import Component from "./component";
+import Component from "./ccomponent";
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
 const store: { [key: string]: Component } = {};
