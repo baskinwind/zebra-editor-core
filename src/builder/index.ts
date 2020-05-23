@@ -1,8 +1,8 @@
-import htmlBuilder from "./html-builder";
-let nowBuiler = htmlBuilder;
+import contentBulider from "./content-builder";
+let nowContentBuiler = contentBulider;
 
-export const getBuilder = () => nowBuiler;
+export const getContentBuilder = () => nowContentBuiler;
 
-export const changeBuiler = (builder: any) => {
-  nowBuiler = builder;
+export const changeContentBuiler = (builder: any) => {
+  nowContentBuiler = builder;
 };

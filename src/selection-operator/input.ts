@@ -2,10 +2,12 @@ import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
 import Paragraph from "../components/paragraph";
 import Character from "../components/character";
+import updateComponent from "./update-component";
+import focusAt from "./focus-at";
 
-const input = (char: string) => {
+const input = (char: string, event?: Event) => {
   let selection = getSelection();
-  let component = getComponentById(selection.range[0].componentId);
+  let component = getComponentById(selection.range[0].id);
   let offset = selection.range[0].offset;
   if (component instanceof Paragraph) {
     let escape =
@@ -17,6 +19,14 @@ const input = (char: string) => {
           ?.isSame(component.decorateList.get(offset + 1)));
     if (escape) {
       component.addChildren(new Character(char), offset);
+      if (event) {
+        event.preventDefault();
+        updateComponent(component);
+        focusAt({
+          id: component.id,
+          offset: offset + 1,
+        });
+      }
       return;
     }
     let decorate;
