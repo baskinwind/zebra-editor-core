@@ -1,5 +1,5 @@
 import { List } from "immutable";
-import Component, { Operator } from "./component";
+import Component, { Operator } from "./ccomponent";
 import BlockComponent from "./decorate-component";
 import ComponentType from "../const/component-type";
 
