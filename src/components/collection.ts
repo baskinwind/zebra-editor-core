@@ -1,10 +1,9 @@
 import { List } from "immutable";
 import Component, { Operator } from "./component";
-import BlockComponent from "./decorate-component";
 
 export default abstract class Collection<
   T extends Component
-  > extends BlockComponent {
+  > extends Component {
   children: List<T> = List();
 
   addChildren(component: T | T[], index?: number): Operator {
@@ -48,8 +47,6 @@ export default abstract class Collection<
     if (typeof componentOrIndex === "number") {
       removeIndex = componentOrIndex;
     } else {
-      console.log(componentOrIndex);
-
       let temp = this.children.findIndex(
         (component) => component.id === componentOrIndex.id
       );
@@ -90,9 +87,10 @@ export default abstract class Collection<
     }
   }
 
-  findChildrenIndex(component: T): number {
+  findChildrenIndex(idOrComponent: string | T): number {
+    let id = typeof idOrComponent === "string" ? idOrComponent : idOrComponent.id;
     return this.children.findIndex(
-      (item) => item.id === component.id
+      (item) => item.id === id
     );
   }
 
@@ -115,7 +113,13 @@ export default abstract class Collection<
     return res;
   }
 
-  getNext(id: string) {
+  getNext(idOrComponent: string | T) {
+    let index = this.findChildrenIndex(idOrComponent);
+    return this.children.get(index + 1);
+  }
 
+  getPrev(idOrComponent: string | T) {
+    let index = this.findChildrenIndex(idOrComponent);
+    return this.children.get(index - 1);
   }
 }

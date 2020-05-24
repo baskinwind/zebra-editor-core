@@ -13,6 +13,7 @@ export default {
   ): HTMLElement {
     const article = document.createElement("article");
     article.id = id;
+    article.classList.add("zebra-draft-article");
     article.dataset.type = ComponentType.article;
     componentList.forEach((component) => {
       article.appendChild(component);
@@ -27,6 +28,7 @@ export default {
   ): HTMLElement {
     const parapraph = document.createElement("p");
     parapraph.id = id;
+    parapraph.classList.add("zebra-draft-parapraph");
     parapraph.dataset.type = ComponentType.paragraph;
     if (inlineList.length) {
       inlineList.forEach((component) => {
@@ -40,6 +42,7 @@ export default {
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
     const figure = document.createElement("figure");
     figure.id = id;
+    figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.image;
     let child;
     let image = document.createElement("img");
@@ -77,6 +80,7 @@ export default {
   ): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
+    span.classList.add("zebra-draft-inline-image");
     span.dataset.type = ComponentType.inlineImage;
     let child;
     let image = document.createElement("img");

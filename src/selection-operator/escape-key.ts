@@ -1,3 +1,4 @@
+// 判断不需要控制的输入
 const escapeKey = (event: KeyboardEvent) => {
   if (event.ctrlKey || event.metaKey) return true;
   let key = event.key;

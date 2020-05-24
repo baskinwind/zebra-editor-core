@@ -1,9 +1,10 @@
-import Component from "./component";
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
+import Media from "./media";
+import Paragraph from "./paragraph";
 import { getContentBuilder } from "../builder/index";
 
-export default class Article extends Collection<Component> {
+export default class Article extends Collection<Paragraph | Media> {
   type = ComponentType.article;
   render() {
     console.log("test getContent couter");

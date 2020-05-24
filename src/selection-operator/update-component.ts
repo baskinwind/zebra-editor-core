@@ -1,5 +1,6 @@
 import Component from "../components/component";
 
+// 更新组件
 const updateComponent = (component: Component | Component[]) => {
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));

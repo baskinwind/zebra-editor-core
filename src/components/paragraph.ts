@@ -1,15 +1,13 @@
-import { List } from "immutable";
 import Collection from "./collection";
 import Inline from "./inline";
 import Character from "./character";
+import Decorate from "../decorate";
 import ComponentType from "../const/component-type";
-import CharacterDecorate from "../decorate/character";
 import { getContentBuilder } from "../builder";
-import { storeData } from "../decorate/base";
+import { storeData } from "../decorate/index";
 
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
-  decorateList: List<CharacterDecorate> = List();
 
   constructor(text?: string, style?: storeData, data?: storeData) {
     super(style, data);
@@ -18,7 +16,7 @@ export default class Paragraph extends Collection<Inline> {
     }
   }
 
-  addText(text: string, index?: number, tiggerBy: string = "customer") {
+  addText(text: string, index?: number) {
     let componentList: Character[] = [];
     for (let char of text) {
       componentList.push(new Character(char));
@@ -26,43 +24,9 @@ export default class Paragraph extends Collection<Inline> {
     this.addChildren(componentList, index);
   }
 
-  addChildren(
-    component: Inline | Inline[],
-    index?: number,
-    list?: CharacterDecorate | CharacterDecorate[]
-  ) {
-    let addInfo = super.addChildren(component, index);
-    if (!list) {
-      list = addInfo.target.map(() => new CharacterDecorate());
-    }
-    if (!Array.isArray(list)) {
-      list = [list];
-    }
-    if (typeof index === "number") {
-      this.decorateList = this.decorateList.splice(index, 0, ...list);
-    } else {
-      this.decorateList = this.decorateList.push(...list);
-    }
-    return addInfo;
-  }
-
-  removeChildren(componentOrIndex: Inline | number, removeNumber: number = 1) {
-    let removeInfo = super.removeChildren(componentOrIndex, removeNumber);
-    let size = removeInfo.target.length;
-    let removeDecorate;
-    if (removeInfo.start >= 0) {
-      removeDecorate = this.decorateList
-        .slice(removeInfo.start, removeInfo.end)
-        .toArray();
-      this.decorateList = this.decorateList.splice(removeInfo.start, size);
-    }
-    removeInfo.removedDecorate = removeDecorate;
-    return removeInfo;
-  }
-
   changeCharDecorate(type: string, value: string, start: number, end: number) {
     for (let i = Math.min(start, end); i <= Math.max(end, start); i++) {
-      let decorate = this.decorateList.get(i);
+      let decorate = this.children.get(i)?.decorate;
       if (decorate !== undefined) {
         decorate?.setStyle(type, value);
       }
@@ -76,11 +40,21 @@ export default class Paragraph extends Collection<Inline> {
     };
   }
 
+  mergaParagraph(paragraph: Paragraph) {
+    paragraph.removeSelf();
+    this.children = this.children.push(...paragraph.children);
+    return {
+      type: `MEGRAPARAGRAPH:${this.type}`,
+      target: [paragraph],
+      action: this,
+    }
+  }
+
   render() {
     const builder = getContentBuilder();
     let content: any[] = [];
     let acc: Character[] = [];
-    let prevDecorate: CharacterDecorate;
+    let prevDecorate: Decorate;
     let createCharacterList = () => {
       if (!acc.length) return;
       content.push(
@@ -95,9 +69,9 @@ export default class Paragraph extends Collection<Inline> {
 
     this.children.forEach((value, index) => {
       if (value instanceof Character) {
-        let decorate = this.decorateList.get(index);
+        let decorate = value.decorate;
         if (!decorate) return;
-        if (!decorate?.isSame(prevDecorate)) {
+        if (!decorate.isSame(prevDecorate)) {
           createCharacterList();
           prevDecorate = decorate;
         }

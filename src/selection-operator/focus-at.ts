@@ -1,6 +1,6 @@
 import { cursorType, getCursorPosition } from "./util";
 
-// 将光标定位在某个组件内 start 的后方，或是选中 start 到 end 的选区
+// 选中 start 到 end 的内容
 const focusAt = (start: cursorType, end?: cursorType) => {
   let startPosition = getCursorPosition(start);
   if (!startPosition) return;
@@ -16,8 +16,26 @@ const focusAt = (start: cursorType, end?: cursorType) => {
     section?.removeAllRanges();
   } catch { }
   let range = new Range();
-  range.setStart(startPosition.node, startPosition.index);
-  range.setEnd(endPosition.node, endPosition.index);
+  if (startPosition.node instanceof HTMLImageElement) {
+    if (startPosition.index === 0) {
+      range.setStartBefore(startPosition.node);
+    }
+    if (startPosition.index === 1) {
+      range.setStartAfter(startPosition.node);
+    }
+  } else {
+    range.setStart(startPosition.node, startPosition.index);
+  }
+  if (endPosition.node instanceof HTMLImageElement) {
+    if (endPosition.index === 0) {
+      range.setEndBefore(endPosition.node);
+    }
+    if (endPosition.index === 1) {
+      range.setEndAfter(endPosition.node);
+    }
+  } else {
+    range.setEnd(endPosition.node, endPosition.index);
+  }
   section?.addRange(range);
 };
 

@@ -1,0 +1,16 @@
+.zebra-draft-root {
+  white-space: pre-wrap;
+  outline: none;
+  border: 1px solid #a5a5a5;
+  padding: 20px;
+  img::selection {
+    background: rgba(0, 0, 0, 0.5);
+  }
+  .zebra-draft-article {
+    overflow: auto;
+  }
+  .zebra-draft-inline-image img {
+    display: inline;
+    vertical-align: bottom;
+  }
+}

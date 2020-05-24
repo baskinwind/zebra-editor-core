@@ -1,5 +1,5 @@
-import { getElememtSize, getContainer, cursorType, getParent } from "./util";
 import ComponentType from "../const/component-type";
+import { getElememtSize, getContainer, cursorType, getParent } from "./util";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -22,15 +22,18 @@ let selectionStore: selectionType = {
 
 // 获取选区信息
 const getSelection = () => {
-  let root = document.getElementById("zebra-draft-root");
+  let root = [...document.querySelectorAll(".zebra-draft-root")];
   if (!root) return selectionStore
   let section = window.getSelection();
-  // 无选区，选区的焦点不在所在的根节点，以及选区的焦点在文章节点上时，直接返回之前的选区内容
+  // 无选区，直接返回之前的选区内容
   if (!section || !section.anchorNode || !section.focusNode || section?.type === "None") return selectionStore;
-  if (!root.contains(section.anchorNode)) return selectionStore;
+  // 光标焦点不在根节点内，直接返回之前的选区内容
+  if (!root.some(item => item.contains(section!.anchorNode))) return selectionStore;
+  // 光标焦点在 Article 组件上，直接返回之前的选区内容
   let anchorNode = section?.anchorNode;
   if (anchorNode instanceof HTMLElement && anchorNode.dataset.type === ComponentType.article) return selectionStore;
 
+  // 判断开始节点和结束节点的位置关系，0：同一节点，2：focusNode 在 anchorNode 节点前，4：anchorNode 在 focusNode 节点前
   let posiType = section.anchorNode.compareDocumentPosition(
     section.focusNode
   );
@@ -40,10 +43,8 @@ const getSelection = () => {
   let startNode;
   let endOffset;
   let endNode;
-  // anchor 节点和 focus 节点在同一个元素内
+  // 获得选取的开始节点和结束节点
   if (posiType === 0) {
-    startOffset = Math.min(anchorOffect, focusOffset);
-    endOffset = Math.max(anchorOffect, focusOffset);
     if (anchorOffect > focusOffset) {
       startOffset = focusOffset;
       startNode = section?.focusNode;
@@ -67,11 +68,12 @@ const getSelection = () => {
     endNode = section?.focusNode;
   }
 
+  // 修正光标节点的位置
+  // 获得光标距离所在段落的位置
   let startContainer: HTMLElement = getContainer(startNode);
   let startParent: HTMLElement = getParent(startNode);
   let endContainer: HTMLElement = getContainer(endNode);
   let endParent: HTMLElement = getParent(endNode);
-
   for (let i = 0; i < startParent.children.length; i++) {
     const element = startParent.children[i];
     if (element === startContainer) break;

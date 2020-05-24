@@ -38,14 +38,7 @@ export const getContainer = (
     return getContainer(element.parentElement);
   }
   if (element instanceof HTMLElement) {
-    let type = element.dataset.type;
-    if (
-      type === ComponentType.article ||
-      type === ComponentType.paragraph ||
-      type === ComponentType.image ||
-      type === ComponentType.audio ||
-      type === ComponentType.video
-    ) {
+    if (element.dataset.type) {
       return element;
     }
   }

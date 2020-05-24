@@ -1,18 +1,15 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import DataDecorate from "../decorate/data";
 import { getContentBuilder } from "../builder";
-import { storeData } from "../decorate/base";
+import { storeData } from "../decorate/index";
 
 export default class InlineImage extends Inline {
   type = ComponentType.inlineImage;
   content: string = "$$$INLINEIMAGE$$$";
   src: string;
-  decorate: DataDecorate;
 
   constructor(src: string, style?: storeData, data?: storeData) {
-    super();
-    this.decorate = new DataDecorate(style, data);
+    super(style, data);
     this.src = src;
   }
 

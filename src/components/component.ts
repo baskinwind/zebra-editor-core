@@ -1,6 +1,8 @@
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
+import Decorate from "../decorate";
 import { getId, saveComponent } from "./util";
+import { storeData } from "../decorate/index";
 
 export interface Operator<T extends Component = Component> {
   type: string; // 操作类型
@@ -15,9 +17,11 @@ export default abstract class Component {
   id: string = getId();
   parent?: Collection<Component | Collection<Component>>;
   actived: boolean = false;
+  decorate: Decorate;
   abstract type: ComponentType;
 
-  constructor() {
+  constructor(style?: storeData, data?: storeData) {
+    this.decorate = new Decorate(style, data);
     Promise.resolve().then(() => {
       saveComponent(this);
     });
