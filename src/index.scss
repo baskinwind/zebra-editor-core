@@ -1,6 +1,4 @@
 .stick {
-  position: sticky;
-  top: 0;
   padding: 0 20px;
   background-color: rgba($color: #fff, $alpha: 0.8);
   span {
@@ -9,7 +7,7 @@
 }
 
 .draft-wrap {
-  height: 600px;
+  max-height: 500px;
   border: 1px solid #a5a5a5;
   overflow: auto;
   padding: 20px;

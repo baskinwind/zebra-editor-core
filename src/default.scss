@@ -2,7 +2,7 @@
   white-space: pre-wrap;
   outline: none;
   .zebra-draft-image {
-    margin: 0 40px;
+    margin: 0;
     img {
       max-width: 100%;
       display: block;
@@ -13,7 +13,6 @@
   }
   .zebra-draft-inline-image {
     img {
-      display: inline;
       vertical-align: bottom;
     }
   }
