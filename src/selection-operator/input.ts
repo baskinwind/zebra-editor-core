@@ -5,8 +5,10 @@ import Character from "../components/character";
 import updateComponent from "./update-component";
 import focusAt from "./focus-at";
 import Inline from "../components/inline";
+import deleteSelection from "./delete-selection";
 
 const input = (charOrInline: string | Inline, event?: Event) => {
+  deleteSelection();
   let selection = getSelection();
   let component = getComponentById(selection.range[0].id);
   let offset = selection.range[0].offset;
@@ -26,9 +28,9 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       char === " " &&
       (offset === 0 ||
         offset === component.children.size ||
-        !component.decorateList
+        !component.children
           .get(offset - 1)
-          ?.isSame(component.decorateList.get(offset + 1)));
+          ?.decorate?.isSame(component.children.get(offset + 1)?.decorate));
     if (escape) {
       component.addChildren(new Character(char), offset);
       if (event) {
@@ -42,18 +44,23 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       return;
     }
     // 字符默认使用之前字符的样式，如果第一个字符前输入字符，则使用第一个字符的样式
-    let decorate;
+    let index;
     if (offset === 0) {
-      decorate = component.decorateList.get(0)?.clone();
+      index = 0;
     } else {
-      decorate = component.decorateList.get(offset - 1)?.clone();
+      index = offset - 1;
     }
-    component.addChildren(new Character(char), offset, decorate);
-    updateComponent(component)
+    let decorate = component.children.get(index)?.decorate;
+
+    component.addChildren(
+      new Character(char, decorate?.getStyle(), decorate?.getData()),
+      offset
+    );
+    updateComponent(component);
     focusAt({
       id: component.id,
       offset: offset + 1,
-    })
+    });
   }
 };
 

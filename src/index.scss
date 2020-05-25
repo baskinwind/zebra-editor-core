@@ -6,11 +6,18 @@
   img::selection {
     background: rgba(0, 0, 0, 0.5);
   }
+  .zebra-draft-image {
+    img {
+      max-width: 100%;
+    }
+  }
   .zebra-draft-article {
     overflow: auto;
   }
-  .zebra-draft-inline-image img {
-    display: inline;
-    vertical-align: bottom;
+  .zebra-draft-inline-image {
+    img {
+      display: inline;
+      vertical-align: bottom;
+    }
   }
 }

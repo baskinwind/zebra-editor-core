@@ -14,7 +14,8 @@ const modifyDecorate = (name: string, value: string) => {
   let start = selection.range[0];
   let end = selection.range[1];
   let article = getComponentById<Article>("article");
-  let idList = article.getIdList(start.id, end.id);
+  let idList = article.getIdList(start.id, end.id)[2];
+
   if (idList.length === 0) return;
   if (idList.length === 1) {
     let component = getComponentById(idList[0]);
@@ -46,7 +47,7 @@ const modifyDecorate = (name: string, value: string) => {
       component.changeCharDecorate(name, value, 0, component.children.size);
     }
   }
-  updateComponent(idList.map(id => getComponentById(id)));
+  updateComponent(idList.map((id) => getComponentById(id)));
   focusAt(selection.range[0], selection.range[1]);
 };
 

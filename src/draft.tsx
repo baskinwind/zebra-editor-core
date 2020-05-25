@@ -20,19 +20,34 @@ export default class Draft extends PureComponent {
     super(props);
     this.article = createEmptyArticle();
     this.article.removeChildren(0);
-    this.article.addChildren(new Media(ComponentType.image, "https://w.wallhaven.cc/full/0p/wallhaven-0p2jwj.jpg"))
-    this.article.addChildren(new Paragraph(
-      "Ser Waymar Royce was the youngest son of an ancient house with too many heirs. He was ahandsome youth of eighteen, grey-eyed and graceful and slender as a knife. Mounted on his hugeblack destrier, the knight towered above Will and Gared on their smaller garrons. He wore blackleather boots, black woolen pants, black moleskin gloves, and a fine supple coat of gleaming blackringmail over layers of black wool and boiled leather. Ser Waymar had been a Sworn Brother of theNight’s Watch for less than half a year, but no one could say he had not prepared for his vocation. Atleast insofar as his wardrobe was concerned."
-    ));
-    this.article.addChildren(new Paragraph(
-      "His cloak was his crowning glory; sable, thick and black and soft as sin. “Bet he killed them allhimself, he did,” Gared told the barracks over wine, “twisted their little heads off, our mightywarrior.” They had all shared the laugh."
-    ));
-    this.article.addChildren(new Paragraph(
-      "It is hard to take orders from a man you laughed at in your cups, Will reflected as he sat shiveringatop his garron. Gared must have felt the same."
-    ));
+    this.article.addChildren(
+      new Media(
+        ComponentType.image,
+        "https://w.wallhaven.cc/full/0p/wallhaven-0p2jwj.jpg"
+      )
+    );
+    this.article.addChildren(
+      new Paragraph(
+        "Ser Waymar Royce was the youngest son of an ancient house with too many heirs. He was ahandsome youth of eighteen, grey-eyed and graceful and slender as a knife. Mounted on his hugeblack destrier, the knight towered above Will and Gared on their smaller garrons. He wore blackleather boots, black woolen pants, black moleskin gloves, and a fine supple coat of gleaming blackringmail over layers of black wool and boiled leather. Ser Waymar had been a Sworn Brother of theNight’s Watch for less than half a year, but no one could say he had not prepared for his vocation. Atleast insofar as his wardrobe was concerned."
+      )
+    );
+    this.article.addChildren(
+      new Paragraph(
+        "His cloak was his crowning glory; sable, thick and black and soft as sin. “Bet he killed them allhimself, he did,” Gared told the barracks over wine, “twisted their little heads off, our mightywarrior.” They had all shared the laugh."
+      )
+    );
+    this.article.addChildren(
+      new Paragraph(
+        "It is hard to take orders from a man you laughed at in your cups, Will reflected as he sat shiveringatop his garron. Gared must have felt the same."
+      )
+    );
     let paragraph = new Paragraph("happy!!! ");
-    paragraph.addChildren(new InlineImage('http://cdn.acohome.cn/1.png?imageMogr2/auto-orient/thumbnail/x20'));
-    paragraph.addText(" happy!!!")
+    paragraph.addChildren(
+      new InlineImage(
+        "http://cdn.acohome.cn/1.png?imageMogr2/auto-orient/thumbnail/x20"
+      )
+    );
+    paragraph.addText(" happy!!!");
     paragraph.addIntoParent(this.article);
   }
 
@@ -75,9 +90,13 @@ export default class Draft extends PureComponent {
     modifyDecorate("color", "red");
   };
   addCake = () => {
-    let index = Math.floor(Math.random() * 56 + 1)
-    input(new InlineImage(`http://cdn.acohome.cn/${index}.png?imageMogr2/auto-orient/thumbnail/x20`))
-  }
+    let index = Math.floor(Math.random() * 56 + 1);
+    input(
+      new InlineImage(
+        `http://cdn.acohome.cn/${index}.png?imageMogr2/auto-orient/thumbnail/x20`
+      )
+    );
+  };
 
   render() {
     return (

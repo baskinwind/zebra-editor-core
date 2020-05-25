@@ -14,7 +14,7 @@ const focusAt = (start: cursorType, end?: cursorType) => {
   let section = window.getSelection();
   try {
     section?.removeAllRanges();
-  } catch { }
+  } catch {}
   let range = new Range();
   if (startPosition.node instanceof HTMLImageElement) {
     if (startPosition.index === 0) {

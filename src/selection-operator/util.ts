@@ -61,10 +61,12 @@ export const getElememtSize = (element?: Element): number => {
 
 export const getCursorPosition = (
   cursor: cursorType
-): {
-  node: Node;
-  index: number;
-} | undefined => {
+):
+  | {
+      node: Node;
+      index: number;
+    }
+  | undefined => {
   let dom: Element | null = document.getElementById(cursor.id);
   let node = dom;
   let now = 0;
@@ -92,7 +94,7 @@ export const getCursorPosition = (
       index: getElememtSize(last),
     };
   }
-  if (!node?.childNodes[0]) return
+  if (!node?.childNodes[0]) return;
   return {
     node: node?.childNodes[0],
     index,

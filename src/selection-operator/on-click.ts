@@ -5,7 +5,7 @@ const onClick = (event: MouseEvent) => {
     let section = window.getSelection();
     try {
       section?.removeAllRanges();
-    } catch { }
+    } catch {}
     let range = new Range();
     range.selectNode(target);
     section?.addRange(range);
