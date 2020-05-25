@@ -8,6 +8,7 @@ import { getComponentById } from "../components/util";
 
 const deleteSelection = (key?: string) => {
   let selection = getSelection();
+  console.log(selection);
   let isEnter = key === "Enter";
   let isBackspace = key === "Backspace";
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回

@@ -20,7 +20,13 @@ export const getParent = (
       type === ComponentType.paragraph ||
       type === ComponentType.image ||
       type === ComponentType.audio ||
-      type === ComponentType.video
+      type === ComponentType.video ||
+      type === ComponentType.h1 ||
+      type === ComponentType.h2 ||
+      type === ComponentType.h3 ||
+      type === ComponentType.h4 ||
+      type === ComponentType.h5 ||
+      type === ComponentType.h6
     ) {
       return element;
     }

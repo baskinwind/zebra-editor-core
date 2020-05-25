@@ -39,6 +39,27 @@ export default {
     }
     return parapraph;
   },
+  buildTitle(
+    id: string,
+    type: ComponentType.h1 | ComponentType.h2 | ComponentType.h3 | ComponentType.h4 | ComponentType.h5 | ComponentType.h6,
+    inlineList: HTMLElement[],
+    style: any,
+    data: any
+  ): HTMLElement {
+    let tag = type.toLocaleLowerCase();
+    const title = document.createElement(tag);
+    title.id = id;
+    title.classList.add(`zebra-draft-title-${tag}`);
+    title.dataset.type = type;
+    if (inlineList.length) {
+      inlineList.forEach((component) => {
+        title.appendChild(component);
+      });
+    } else {
+      title.appendChild(document.createElement("br"));
+    }
+    return title;
+  },
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
     const figure = document.createElement("figure");
     figure.id = id;
@@ -93,7 +114,6 @@ export default {
         span.style[key] = style[key];
       }
     }
-
     return span;
   },
   buildInlineImage(

@@ -40,7 +40,7 @@ export default class Paragraph extends Collection<Inline> {
     this.children = this.children.push(...paragraph.children);
   }
 
-  render() {
+  getCharList() {
     const builder = getContentBuilder();
     let content: any[] = [];
     let acc: Character[] = [];
@@ -72,10 +72,14 @@ export default class Paragraph extends Collection<Inline> {
       content.push(value.render());
     });
     createCharacterList();
+    return content;
+  }
 
+  render() {
+    const builder = getContentBuilder();
     return builder.buildParagraph(
       this.id,
-      content,
+      this.getCharList(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );
