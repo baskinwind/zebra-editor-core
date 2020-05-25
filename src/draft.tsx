@@ -3,7 +3,6 @@ import "./index.scss";
 
 import React, { PureComponent } from "react";
 import Article from "./components/article";
-import createEmptyArticle from "./util/create-empty-article";
 import modifyDecorate from "./selection-operator/modify-decorate";
 import Paragraph from "./components/paragraph";
 import Media from "./components/media";
@@ -14,8 +13,7 @@ import mount from "./util/mount";
 import updateComponent from "./selection-operator/update-component";
 import insertBlock from "./selection-operator/insert-block";
 
-let article = createEmptyArticle();
-article.removeChildren(0);
+let article = new Article();
 article.addChildren(new Paragraph("A Song of Ice and Fire"));
 article.addChildren(
   new Media(ComponentType.image, "https://blogcdn.acohome.cn/demo-draft-1.jpg")

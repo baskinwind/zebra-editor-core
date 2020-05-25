@@ -48,6 +48,8 @@ export const getContainer = (
 export const getElememtSize = (element?: Element): number => {
   if (element === undefined) return 0;
   if (element instanceof HTMLImageElement) return 1;
+  if (element instanceof HTMLAudioElement) return 1;
+  if (element instanceof HTMLVideoElement) return 1;
   if (element instanceof HTMLElement) {
     let type = element.dataset.type;
     if (type === ComponentType.characterList) {
@@ -64,9 +66,9 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-      node: Node | Element;
-      index: number;
-    }
+    node: Node | Element;
+    index: number;
+  }
   | undefined => {
   let dom = document.getElementById(cursor.id);
   let node = dom as Element;

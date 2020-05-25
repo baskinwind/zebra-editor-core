@@ -59,6 +59,26 @@ export default {
     figure.appendChild(child);
     return figure;
   },
+  buildeAudio(id: string, src: string, style: mapData, data: mapData) {
+    const figure = document.createElement("figure");
+    figure.id = id;
+    figure.classList.add("zebra-draft-image");
+    figure.dataset.type = ComponentType.image;
+    let audio = document.createElement("audio");
+    audio.src = src;
+    figure.appendChild(audio);
+    return figure;
+  },
+  buildeVideo(id: string, src: string, style: mapData, data: mapData) {
+    const figure = document.createElement("figure");
+    figure.id = id;
+    figure.classList.add("zebra-draft-image");
+    figure.dataset.type = ComponentType.image;
+    let video = document.createElement("video");
+    video.src = src;
+    figure.appendChild(video);
+    return figure;
+  },
   buildCharacterList(
     id: string,
     charList: string[],
