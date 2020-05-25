@@ -1,0 +1,19 @@
+.zebra-draft-root {
+  white-space: pre-wrap;
+  outline: none;
+  .zebra-draft-image {
+    margin: 0;
+    img {
+      max-width: 100%;
+      display: block;
+    }
+  }
+  .zebra-draft-article {
+    overflow: auto;
+  }
+  .zebra-draft-inline-image {
+    img {
+      vertical-align: bottom;
+    }
+  }
+}

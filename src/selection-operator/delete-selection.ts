@@ -6,9 +6,8 @@ import focusAt from "./focus-at";
 import updateComponent from "./update-component";
 import { getComponentById } from "../components/util";
 
-const deleteSelection = (event?: KeyboardEvent) => {
+const deleteSelection = (key?: string) => {
   let selection = getSelection();
-  let key = event?.key;
   let isEnter = key === "Enter";
   let isBackspace = key === "Backspace";
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回
@@ -67,7 +66,6 @@ const deleteSelection = (event?: KeyboardEvent) => {
   }
   if (selection.isCollapsed && isEnter) {
     let component = getComponentById(selection.range[0].id);
-    console.log(selection);
     // 多媒体直接删除
     if (component instanceof Media) {
       if (!component.parent) return;
@@ -91,7 +89,7 @@ const deleteSelection = (event?: KeyboardEvent) => {
   let end = selection.range[1];
   let article = getComponentById<Article>("article");
   // 根据开始和结束的 id 获取所有选中的组件
-  let idList = article.getIdList(start.id, end.id);
+  let idList = article.getIdList(start.id, end.id)[2];
   if (idList.length === 0) return;
   // 仅选中一行
   if (idList.length === 1) {
@@ -103,10 +101,9 @@ const deleteSelection = (event?: KeyboardEvent) => {
       // 为 Enter 的处理
       if (isEnter) {
         let content = component.children.slice(end.offset).toArray();
-        let decorate = component.decorateList.slice(end.offset).toArray();
         let index = component.parent.findChildrenIndex(component);
         let newParagraph = new Paragraph();
-        newParagraph.addChildren(content, 0, decorate);
+        newParagraph.addChildren(content, 0);
         component.parent.addChildren(newParagraph, index + 1);
         component.removeChildren(start.offset, component.children.size);
         updateComponent([component, newParagraph]);
@@ -117,10 +114,7 @@ const deleteSelection = (event?: KeyboardEvent) => {
         return;
       }
       // 其他情况直接删除选中内容
-      component.removeChildren(
-        start.offset,
-        end.offset - start.offset
-      );
+      component.removeChildren(start.offset, end.offset - start.offset);
       updateComponent(component);
       focusAt({
         id: component.id,
@@ -148,7 +142,10 @@ const deleteSelection = (event?: KeyboardEvent) => {
   let firstIndex = firstComponent.parent.findChildrenIndex(firstComponent);
   // 首行是段落，删除选中内容
   if (firstComponent instanceof Paragraph) {
-    firstComponent.removeChildren(start.offset, firstComponent.children.size - 1);
+    firstComponent.removeChildren(
+      start.offset,
+      firstComponent.children.size - 1
+    );
   }
   // 首行是多媒体，直接删除
   if (firstComponent instanceof Media) {
@@ -164,8 +161,10 @@ const deleteSelection = (event?: KeyboardEvent) => {
   }
   // 若为 Enter 则删除中间行即可
   if (isEnter) {
-    article.removeChildren(getComponentById(idList[1]), idList.length - 2);
-    updateComponent(idList.map(id => getComponentById(id)));
+    for (let i = 1; i < idList.length - 2; i++) {
+      getComponentById(idList[i]).removeSelf();
+    }
+    updateComponent(idList.map((id) => getComponentById(id)));
     focusAt({
       id: lastComponent.id,
       offset: 0,
@@ -175,12 +174,16 @@ const deleteSelection = (event?: KeyboardEvent) => {
 
   // 其他情况
   // 首行和尾行都为段落，则需要合并
-  if (firstComponent instanceof Paragraph && lastComponent instanceof Paragraph) {
+  if (
+    firstComponent instanceof Paragraph &&
+    lastComponent instanceof Paragraph
+  ) {
     let lastContent = lastComponent.children.slice(0).toArray();
-    let lastDecorate = lastComponent.decorateList.slice(0).toArray();
-    firstComponent.addChildren(lastContent, undefined, lastDecorate);
-    article.removeChildren(getComponentById(idList[1]), idList.length - 1);
-    updateComponent(idList.map(id => getComponentById(id)));
+    firstComponent.addChildren(lastContent, undefined);
+    for (let i = 1; i < idList.length - 1; i++) {
+      getComponentById(idList[i]).removeSelf();
+    }
+    updateComponent(idList.map((id) => getComponentById(id)));
     focusAt({
       id: firstComponent.id,
       offset: start.offset,
@@ -188,16 +191,19 @@ const deleteSelection = (event?: KeyboardEvent) => {
     return;
   }
 
-  // 不是都段落的情况，保留一行
+  // 不都是段落的情况，保留一行
   // 都不是段落，则新生成一行
-  article.removeChildren(getComponentById(idList[1]), idList.length - 2);
-  let updateList = idList.map(id => getComponentById(id));
+  for (let i = 1; i < idList.length - 2; i++) {
+    getComponentById(idList[i]).removeSelf();
+  }
+  let updateList = idList.map((id) => getComponentById(id));
   if (!firstComponent.actived && !lastComponent.actived) {
     let newParagraph = new Paragraph();
     updateList.push(newParagraph);
     article.addChildren(newParagraph, firstIndex);
   }
   updateComponent(updateList);
+  // 调整光标的位置
   if (firstComponent.actived) {
     focusAt({
       id: firstComponent.id,
@@ -212,7 +218,7 @@ const deleteSelection = (event?: KeyboardEvent) => {
     focusAt({
       id: updateList[updateList.length - 1].id,
       offset: 0,
-    })
+    });
   }
   return;
 };

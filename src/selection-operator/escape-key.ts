@@ -6,6 +6,6 @@ const escapeKey = (event: KeyboardEvent) => {
   if (reg.test(key)) return true;
   event.preventDefault();
   return false;
-}
+};
 
 export default escapeKey;

@@ -23,20 +23,29 @@ let selectionStore: selectionType = {
 // 获取选区信息
 const getSelection = () => {
   let root = [...document.querySelectorAll(".zebra-draft-root")];
-  if (!root) return selectionStore
+  if (!root) return selectionStore;
   let section = window.getSelection();
   // 无选区，直接返回之前的选区内容
-  if (!section || !section.anchorNode || !section.focusNode || section?.type === "None") return selectionStore;
+  if (
+    !section ||
+    !section.anchorNode ||
+    !section.focusNode ||
+    section?.type === "None"
+  )
+    return selectionStore;
   // 光标焦点不在根节点内，直接返回之前的选区内容
-  if (!root.some(item => item.contains(section!.anchorNode))) return selectionStore;
+  if (!root.some((item) => item.contains(section!.anchorNode)))
+    return selectionStore;
   // 光标焦点在 Article 组件上，直接返回之前的选区内容
   let anchorNode = section?.anchorNode;
-  if (anchorNode instanceof HTMLElement && anchorNode.dataset.type === ComponentType.article) return selectionStore;
+  if (
+    anchorNode instanceof HTMLElement &&
+    anchorNode.dataset.type === ComponentType.article
+  )
+    return selectionStore;
 
   // 判断开始节点和结束节点的位置关系，0：同一节点，2：focusNode 在 anchorNode 节点前，4：anchorNode 在 focusNode 节点前
-  let posiType = section.anchorNode.compareDocumentPosition(
-    section.focusNode
-  );
+  let posiType = section.anchorNode.compareDocumentPosition(section.focusNode);
   let anchorOffect = section.anchorOffset;
   let focusOffset = section.focusOffset;
   let startOffset;
@@ -74,15 +83,20 @@ const getSelection = () => {
   let startParent: HTMLElement = getParent(startNode);
   let endContainer: HTMLElement = getContainer(endNode);
   let endParent: HTMLElement = getParent(endNode);
-  for (let i = 0; i < startParent.children.length; i++) {
-    const element = startParent.children[i];
-    if (element === startContainer) break;
-    startOffset += getElememtSize(element);
+
+  if (startParent.dataset.type === ComponentType.paragraph) {
+    for (let i = 0; i < startParent.children.length; i++) {
+      const element = startParent.children[i];
+      if (element === startContainer) break;
+      startOffset += getElememtSize(element);
+    }
   }
-  for (let i = 0; i < endParent.children.length; i++) {
-    const element = endParent.children[i];
-    if (element === endContainer) break;
-    endOffset += getElememtSize(element);
+  if (endContainer.dataset.type === ComponentType.paragraph) {
+    for (let i = 0; i < endParent.children.length; i++) {
+      const element = endParent.children[i];
+      if (element === endContainer) break;
+      endOffset += getElememtSize(element);
+    }
   }
 
   selectionStore = {

@@ -47,6 +47,7 @@ export const getContainer = (
 
 export const getElememtSize = (element?: Element): number => {
   if (element === undefined) return 0;
+  if (element instanceof HTMLImageElement) return 1;
   if (element instanceof HTMLElement) {
     let type = element.dataset.type;
     if (type === ComponentType.characterList) {
@@ -61,15 +62,23 @@ export const getElememtSize = (element?: Element): number => {
 
 export const getCursorPosition = (
   cursor: cursorType
-): {
-  node: Node;
-  index: number;
-} | undefined => {
-  let dom: Element | null = document.getElementById(cursor.id);
-  let node = dom;
+):
+  | {
+      node: Node | Element;
+      index: number;
+    }
+  | undefined => {
+  let dom = document.getElementById(cursor.id);
+  let node = dom as Element;
   let now = 0;
   let index = 0;
-  if (dom === null) return;
+  if (!dom) return;
+  if (dom.dataset.type === ComponentType.image) {
+    return {
+      node,
+      index: cursor.offset === 0 ? 0 : 1,
+    };
+  }
   for (let i = 0; i < dom.children.length; i++) {
     const element = dom.children[i];
     let elementSize = getElememtSize(element);
@@ -92,7 +101,7 @@ export const getCursorPosition = (
       index: getElememtSize(last),
     };
   }
-  if (!node?.childNodes[0]) return
+  if (!node?.childNodes[0]) return;
   return {
     node: node?.childNodes[0],
     index,

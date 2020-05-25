@@ -3,11 +3,13 @@ import Inline from "./inline";
 import Character from "./character";
 import Decorate from "../decorate";
 import ComponentType from "../const/component-type";
+import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
+  structureType = StructureType.content;
 
   constructor(text?: string, style?: storeData, data?: storeData) {
     super(style, data);
@@ -31,23 +33,11 @@ export default class Paragraph extends Collection<Inline> {
         decorate?.setStyle(type, value);
       }
     }
-    return {
-      type: `CHANGECHARDECORATE:${this.type}`,
-      target: this.children.slice(start, end).toArray(),
-      action: this,
-      start,
-      end,
-    };
   }
 
   mergaParagraph(paragraph: Paragraph) {
     paragraph.removeSelf();
     this.children = this.children.push(...paragraph.children);
-    return {
-      type: `MEGRAPARAGRAPH:${this.type}`,
-      target: [paragraph],
-      action: this,
-    }
   }
 
   render() {

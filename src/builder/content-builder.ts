@@ -59,7 +59,11 @@ export default {
     figure.appendChild(child);
     return figure;
   },
-  buildCharacterList(id: string, charList: string[], style: mapData): HTMLElement {
+  buildCharacterList(
+    id: string,
+    charList: string[],
+    style: mapData
+  ): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
     span.dataset.type = ComponentType.characterList;

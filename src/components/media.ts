@@ -1,11 +1,13 @@
-import BlockComponent from "./block-component";
+import Component from "./component";
 import ComponentType from "../const/component-type";
+import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
-export default class Media extends BlockComponent {
+export default class Media extends Component {
   src: string;
   type: ComponentType.image | ComponentType.audio | ComponentType.video;
+  structureType = StructureType.content;
 
   constructor(
     type: ComponentType.image | ComponentType.audio | ComponentType.video,
