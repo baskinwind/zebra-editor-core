@@ -6,9 +6,8 @@ import focusAt from "./focus-at";
 import updateComponent from "./update-component";
 import { getComponentById } from "../components/util";
 
-const deleteSelection = (event?: KeyboardEvent) => {
+const deleteSelection = (key?: string) => {
   let selection = getSelection();
-  let key = event?.key;
   let isEnter = key === "Enter";
   let isBackspace = key === "Backspace";
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回

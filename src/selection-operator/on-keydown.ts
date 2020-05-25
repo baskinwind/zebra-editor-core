@@ -4,7 +4,7 @@ import escapeKey from "./escape-key";
 
 const onKeyDown = (event: KeyboardEvent) => {
   if (escapeKey(event)) return;
-  deleteSelection(event);
+  deleteSelection(event.key);
   let key = event.key;
   // 字符输入
   if (key.length === 1) {

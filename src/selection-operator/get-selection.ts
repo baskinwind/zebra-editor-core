@@ -83,15 +83,20 @@ const getSelection = () => {
   let startParent: HTMLElement = getParent(startNode);
   let endContainer: HTMLElement = getContainer(endNode);
   let endParent: HTMLElement = getParent(endNode);
-  for (let i = 0; i < startParent.children.length; i++) {
-    const element = startParent.children[i];
-    if (element === startContainer) break;
-    startOffset += getElememtSize(element);
+
+  if (startParent.dataset.type === ComponentType.paragraph) {
+    for (let i = 0; i < startParent.children.length; i++) {
+      const element = startParent.children[i];
+      if (element === startContainer) break;
+      startOffset += getElememtSize(element);
+    }
   }
-  for (let i = 0; i < endParent.children.length; i++) {
-    const element = endParent.children[i];
-    if (element === endContainer) break;
-    endOffset += getElememtSize(element);
+  if (endContainer.dataset.type === ComponentType.paragraph) {
+    for (let i = 0; i < endParent.children.length; i++) {
+      const element = endParent.children[i];
+      if (element === endContainer) break;
+      endOffset += getElememtSize(element);
+    }
   }
 
   selectionStore = {

@@ -1,6 +1,8 @@
 import Component from "../components/component";
 
 // 更新组件
+// 注：受限于 insertBefore，排在后面的组件要先注入
+// TODO: 有缺陷，后期修复
 const updateComponent = (component: Component | Component[]) => {
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));

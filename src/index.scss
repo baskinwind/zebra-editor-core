@@ -1,23 +1,16 @@
-.zebra-draft-root {
-  white-space: pre-wrap;
-  outline: none;
+.stick {
+  position: sticky;
+  top: 0;
+  padding: 0 20px;
+  background-color: rgba($color: #fff, $alpha: 0.8);
+  span {
+    font-size: 14px;
+  }
+}
+
+.draft-wrap {
+  height: 600px;
   border: 1px solid #a5a5a5;
+  overflow: auto;
   padding: 20px;
-  img::selection {
-    background: rgba(0, 0, 0, 0.5);
-  }
-  .zebra-draft-image {
-    img {
-      max-width: 100%;
-    }
-  }
-  .zebra-draft-article {
-    overflow: auto;
-  }
-  .zebra-draft-inline-image {
-    img {
-      display: inline;
-      vertical-align: bottom;
-    }
-  }
 }
