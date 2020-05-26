@@ -4,6 +4,7 @@ import { storeData } from "../decorate";
 import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
+import Component, { operatorType } from "./component";
 
 type listType = 'ol' | 'ul';
 
@@ -17,13 +18,13 @@ class List extends Collection<Paragraph> {
     this.decorate.setData("tag", this.listType);
   }
 
-  addChildren(component: Paragraph | Paragraph[], index?: number) {
-    super.addChildren(component, index);
+  addChildren(component: Paragraph | Paragraph[], index?: number): operatorType {
     if (Array.isArray(component)) {
       component.forEach(item => item.decorate.setData('tag', 'li'));
     } else {
       component.decorate.setData('tag', 'li');
     }
+    return super.addChildren(component, index);
   }
 
   render() {
