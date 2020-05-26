@@ -67,4 +67,13 @@ export default class Decorate {
     }
     return true;
   }
+
+  isEmpty(): boolean {
+    return this.style.size === 0 && this.data.size === 0;
+  }
+
+  clear() {
+    this.clearData();
+    this.clearStyle();
+  }
 }

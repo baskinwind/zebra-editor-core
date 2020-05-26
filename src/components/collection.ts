@@ -4,7 +4,7 @@ import StructureType from "../const/structure-type";
 
 export default abstract class Collection<
   T extends Component
-> extends Component {
+  > extends Component {
   children: List<T> = List();
 
   addChildren(component: T | T[], index?: number) {
@@ -73,11 +73,13 @@ export default abstract class Collection<
 
   getNext(idOrComponent: string | T) {
     let index = this.findChildrenIndex(idOrComponent);
+    if (index === -1 || index === this.children.size - 1) return
     return this.children.get(index + 1);
   }
 
   getPrev(idOrComponent: string | T) {
     let index = this.findChildrenIndex(idOrComponent);
+    if (index <= 0) return
     return this.children.get(index - 1);
   }
 

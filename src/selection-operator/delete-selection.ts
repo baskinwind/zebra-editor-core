@@ -8,7 +8,6 @@ import { getComponentById } from "../components/util";
 
 const deleteSelection = (key?: string) => {
   let selection = getSelection();
-  console.log(selection);
   let isEnter = key === "Enter";
   let isBackspace = key === "Backspace";
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回
@@ -22,7 +21,21 @@ const deleteSelection = (key?: string) => {
       if (selection.range[0].offset === 0) {
         let prev = component.parent?.getPrev(component);
         // 无前一块，直接返回
-        if (!prev) return;
+        if (!prev) {
+          if (component.parent?.parent) {
+            component.removeSelf();
+            updateComponent([component]);
+            component.decorate.removeData('tag');
+            let index = component.parent?.parent.findChildrenIndex(component.parent);
+            component.addIntoParent(component.parent?.parent, index);
+            updateComponent([component]);
+            focusAt({
+              id: component.id,
+              offset: 0,
+            });
+          }
+          return
+        };
         // 前一段为段落，则将该段落的内容放到前一段落内
         if (prev instanceof Paragraph) {
           prev.mergaParagraph(component);
@@ -33,7 +46,7 @@ const deleteSelection = (key?: string) => {
           });
           return;
         }
-        // 前一段为媒体文件，直接删除
+        // 前一段为媒体文件，直接删除前一段
         if (prev instanceof Media) {
           prev.removeSelf();
           updateComponent([prev]);
@@ -105,7 +118,7 @@ const deleteSelection = (key?: string) => {
         let index = component.parent.findChildrenIndex(component);
         let newParagraph = new Paragraph();
         newParagraph.addChildren(content, 0);
-        component.parent.addChildren(newParagraph, index + 1);
+        newParagraph.addIntoParent(component.parent, index + 1);
         component.removeChildren(start.offset, component.children.size);
         updateComponent([component, newParagraph]);
         focusAt({

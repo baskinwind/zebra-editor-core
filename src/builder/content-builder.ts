@@ -22,6 +22,23 @@ export default {
     });
     return article;
   },
+  buildList(
+    id: string,
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ): HTMLElement {
+    let tag = data.tag || "ul";
+    const list = document.createElement(tag);
+    list.id = id;
+    list.classList.add("zebra-draft-list");
+    list.dataset.type = ComponentType.article;
+    list.dataset.structure = StructureType.collection;
+    componentList.forEach((component) => {
+      list.appendChild(component);
+    });
+    return list;
+  },
   buildParagraph(
     id: string,
     inlineList: HTMLElement[],
@@ -45,16 +62,16 @@ export default {
   },
   buildTitle(
     id: string,
-    type: ComponentType.h1 | ComponentType.h2 | ComponentType.h3 | ComponentType.h4 | ComponentType.h5 | ComponentType.h6,
     inlineList: HTMLElement[],
     style: any,
     data: any
   ): HTMLElement {
-    let tag = type.toLocaleLowerCase();
-    const title = document.createElement(tag);
+    let type = data.tag.toLocaleLowerCase() || 'h1';
+    const title = document.createElement(type);
     title.id = id;
-    title.classList.add(`zebra-draft-title-${tag}`);
+    title.classList.add(`zebra-draft-title-${type}`);
     title.dataset.type = type;
+    title.dataset.structure = StructureType.content;
     if (inlineList.length) {
       inlineList.forEach((component) => {
         title.appendChild(component);
