@@ -12,9 +12,15 @@ import input from "./selection-operator/input";
 import mount from "./util/mount";
 import updateComponent from "./selection-operator/update-component";
 import insertBlock from "./selection-operator/insert-block";
+import Title from "./components/titile";
 
 let article = new Article();
-article.addChildren(new Paragraph("A Song of Ice and Fire"));
+article.addChildren(new Title("h1", "A Song of Ice and Fire"));
+article.addChildren(new Title("h2", "A Song of Ice and Fire"));
+article.addChildren(new Title("h3", "A Song of Ice and Fire"));
+article.addChildren(new Title("h4", "A Song of Ice and Fire"));
+article.addChildren(new Title("h5", "A Song of Ice and Fire"));
+article.addChildren(new Title("h6", "A Song of Ice and Fire"));
 article.addChildren(
   new Media(ComponentType.image, "https://blogcdn.acohome.cn/demo-draft-1.jpg")
 );

@@ -97,7 +97,7 @@ export default abstract class Collection<
       if (endFlag) return;
       if (
         component instanceof Collection &&
-        component.structureType === StructureType.structure
+        component.structureType === StructureType.collection
       ) {
         let temp = component.getIdList(startFlag ? "" : startId, endId);
         startFlag = startFlag || temp[0];

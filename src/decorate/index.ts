@@ -59,7 +59,7 @@ export default class Decorate {
     if (decorate.data.size !== this.data.size) {
       return false;
     }
-    let data = this.getStyle();
+    let data = this.getData();
     for (const key in data) {
       if (decorate.data.get(key) !== data[key]) {
         return false;

@@ -91,7 +91,7 @@ const getSelection = () => {
       startOffset += getElememtSize(element);
     }
   }
-  if (endContainer.dataset.type === ComponentType.paragraph) {
+  if (endParent.dataset.type === ComponentType.paragraph) {
     for (let i = 0; i < endParent.children.length; i++) {
       const element = endParent.children[i];
       if (element === endContainer) break;
