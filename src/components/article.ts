@@ -7,7 +7,7 @@ import StructureType from "../const/structure-type";
 
 export default class Article extends Collection<Paragraph | Media> {
   type = ComponentType.article;
-  structureType = StructureType.structure;
+  structureType = StructureType.collection;
   actived = true;
   render() {
     console.log("test getContent couter");

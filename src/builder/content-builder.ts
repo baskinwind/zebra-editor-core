@@ -1,4 +1,5 @@
 import ComponentType from "../const/component-type";
+import StructureType from "../const/structure-type";
 
 export interface mapData {
   [key: string]: any;
@@ -8,13 +9,14 @@ export default {
   buildArticle(
     id: string,
     componentList: HTMLElement[],
-    style: any,
-    data: any
+    style: mapData,
+    data: mapData
   ): HTMLElement {
     const article = document.createElement("article");
     article.id = id;
     article.classList.add("zebra-draft-article");
     article.dataset.type = ComponentType.article;
+    article.dataset.structure = StructureType.collection;
     componentList.forEach((component) => {
       article.appendChild(component);
     });
@@ -23,13 +25,15 @@ export default {
   buildParagraph(
     id: string,
     inlineList: HTMLElement[],
-    style: any,
-    data: any
+    style: mapData,
+    data: mapData
   ): HTMLElement {
-    const parapraph = document.createElement("p");
+    let tag = data.tag || "p";
+    const parapraph = document.createElement(tag);
     parapraph.id = id;
-    parapraph.classList.add("zebra-draft-parapraph");
+    parapraph.classList.add(`zebra-draft-${tag}`);
     parapraph.dataset.type = ComponentType.paragraph;
+    parapraph.dataset.structure = StructureType.content;
     if (inlineList.length) {
       inlineList.forEach((component) => {
         parapraph.appendChild(component);
@@ -65,6 +69,7 @@ export default {
     figure.id = id;
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.image;
+    figure.dataset.structure = StructureType.content;
     let child;
     let image = document.createElement("img");
     image.src = src;
@@ -84,7 +89,8 @@ export default {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.image;
+    figure.dataset.type = ComponentType.audio;
+    figure.dataset.structure = StructureType.content;
     let audio = document.createElement("audio");
     audio.src = src;
     figure.appendChild(audio);
@@ -94,7 +100,8 @@ export default {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.image;
+    figure.dataset.type = ComponentType.video;
+    figure.dataset.structure = StructureType.content;
     let video = document.createElement("video");
     video.src = src;
     figure.appendChild(video);
@@ -108,6 +115,7 @@ export default {
     const span = document.createElement("span");
     span.id = id;
     span.dataset.type = ComponentType.characterList;
+    span.dataset.structure = StructureType.partialContent;
     span.innerText = charList.join("");
     if (style) {
       for (let key in style) {
@@ -126,6 +134,7 @@ export default {
     span.id = id;
     span.classList.add("zebra-draft-inline-image");
     span.dataset.type = ComponentType.inlineImage;
+    span.dataset.structure = StructureType.partialContent;
     let child;
     let image = document.createElement("img");
     image.src = src;

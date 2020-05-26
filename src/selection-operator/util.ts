@@ -1,4 +1,5 @@
 import ComponentType from "../const/component-type";
+import StructureType from "../const/structure-type";
 
 export interface cursorType {
   id: string;
@@ -14,20 +15,7 @@ export const getParent = (
     return getParent(element.parentElement);
   }
   if (element instanceof HTMLElement) {
-    let type = element.dataset.type;
-    if (
-      type === ComponentType.article ||
-      type === ComponentType.paragraph ||
-      type === ComponentType.image ||
-      type === ComponentType.audio ||
-      type === ComponentType.video ||
-      type === ComponentType.h1 ||
-      type === ComponentType.h2 ||
-      type === ComponentType.h3 ||
-      type === ComponentType.h4 ||
-      type === ComponentType.h5 ||
-      type === ComponentType.h6
-    ) {
+    if (element.dataset.structure === StructureType.content) {
       return element;
     }
   }
@@ -38,13 +26,16 @@ export const getContainer = (
   element: HTMLElement | Node | null | undefined
 ): HTMLElement => {
   if (element === null || element === undefined)
-    throw Error("获取容器节点失败");
+    throw Error("容器节点获取失败");
   // 文本节点处理
   if (element.nodeType === 3) {
     return getContainer(element.parentElement);
   }
   if (element instanceof HTMLElement) {
-    if (element.dataset.type) {
+    if (
+      element.dataset.structure === StructureType.content ||
+      element.dataset.structure === StructureType.partialContent
+    ) {
       return element;
     }
   }

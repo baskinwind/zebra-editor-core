@@ -15,7 +15,12 @@ import insertBlock from "./selection-operator/insert-block";
 import Title from "./components/title";
 
 let article = new Article();
-article.addChildren(new Title(ComponentType.h1, "A Song of Ice and Fire"));
+article.addChildren(new Title("h1", "A Song of Ice and Fire"));
+article.addChildren(new Title("h2", "A Song of Ice and Fire"));
+article.addChildren(new Title("h3", "A Song of Ice and Fire"));
+article.addChildren(new Title("h4", "A Song of Ice and Fire"));
+article.addChildren(new Title("h5", "A Song of Ice and Fire"));
+article.addChildren(new Title("h6", "A Song of Ice and Fire"));
 article.addChildren(
   new Media(ComponentType.image, "https://blogcdn.acohome.cn/demo-draft-1.jpg")
 );

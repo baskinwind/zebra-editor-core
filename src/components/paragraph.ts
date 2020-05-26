@@ -40,7 +40,7 @@ export default class Paragraph extends Collection<Inline> {
     this.children = this.children.push(...paragraph.children);
   }
 
-  getCharList() {
+  getContent() {
     const builder = getContentBuilder();
     let content: any[] = [];
     let acc: Character[] = [];
@@ -57,7 +57,7 @@ export default class Paragraph extends Collection<Inline> {
       acc = [];
     };
 
-    this.children.forEach((value, index) => {
+    this.children.forEach((value) => {
       if (value instanceof Character) {
         let decorate = value.decorate;
         if (!decorate) return;
@@ -79,7 +79,7 @@ export default class Paragraph extends Collection<Inline> {
     const builder = getContentBuilder();
     return builder.buildParagraph(
       this.id,
-      this.getCharList(),
+      this.getContent(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );
