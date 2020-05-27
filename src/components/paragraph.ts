@@ -99,6 +99,9 @@ export default class Paragraph extends Collection<Inline> {
     end: number,
     customerUpdate: boolean = false
   ): operatorType {
+    if (end < 0) {
+      end = this.children.size + end + 1;
+    }
     if (start >= end) {
       console.error(Error(`start：${start}、end：${end}不合法。`));
       return;

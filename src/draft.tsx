@@ -49,6 +49,12 @@ paragraph.addChildren(
 paragraph.addText(" happy!!!");
 paragraph.addIntoParent(article); */
 
+article.addChildren(new Paragraph("0123456789"));
+article.addChildren(new Paragraph("0123456789"));
+article.addChildren(new Paragraph("0123456789"));
+article.addChildren(new Paragraph("0123456789"));
+article.addChildren(new Paragraph("0123456789"));
+
 let list = new List();
 list.addChildren(new Paragraph("0123456789"));
 list.addChildren(new Paragraph("0123456789"));
