@@ -1,8 +1,9 @@
-import Component from "./component";
+import Component, { operatorType } from "./component";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
+import Paragraph from "./paragraph";
 
 export default class Media extends Component {
   src: string;
@@ -19,9 +20,17 @@ export default class Media extends Component {
     this.type = type;
     this.src = src;
   }
+
   setSrc(src: string) {
     this.src = src;
   }
+
+  removeSelf(): operatorType {
+    let newParagraph = new Paragraph();
+    this.replaceSelf(newParagraph);
+    return [newParagraph, 0, 0];
+  }
+
   render() {
     let builder = getContentBuilder();
     let map = {

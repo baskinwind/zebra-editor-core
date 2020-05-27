@@ -6,6 +6,9 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
+import Media from "./media";
+import updateComponent from "../selection-operator/update-component";
+import Component, { operatorType } from "./component";
 
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
@@ -33,11 +36,41 @@ export default class Paragraph extends Collection<Inline> {
         decorate?.setStyle(type, value);
       }
     }
+    updateComponent(this);
   }
 
   mergaParagraph(paragraph: Paragraph) {
     paragraph.removeSelf();
     this.children = this.children.push(...paragraph.children);
+    updateComponent(this);
+  }
+
+  removeChildren(indexOrComponent: Inline | number, removeNumber: number = 1): operatorType {
+    if (indexOrComponent < 0 && removeNumber === 1) {
+      let parent = this.parent;
+      if (!parent) return;
+      let prev = parent.getPrev(this);
+      if (prev) {
+        if (prev instanceof Media) {
+          prev.removeSelf();
+          return [this, 0, 0];
+        }
+        if (prev instanceof Paragraph) {
+          let index = prev.children.size;
+          prev.mergaParagraph(this);
+          return [prev, index, index];
+        }
+        return;
+      }
+      let grandParent = parent?.parent;
+      if (!grandParent) return;
+      let parentIndex = grandParent.findChildrenIndex(parent);
+      this.removeSelf();
+      this.decorate.removeData('tag');
+      this.addIntoParent(grandParent, parentIndex);
+      return [this, 0, 0];
+    }
+    return super.removeChildren(indexOrComponent, removeNumber);
   }
 
   getContent() {

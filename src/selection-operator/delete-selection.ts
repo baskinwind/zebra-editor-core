@@ -17,49 +17,21 @@ const deleteSelection = (key?: string) => {
     let component = getComponentById(selection.range[0].id);
     // 段落的处理
     if (component instanceof Paragraph) {
-      // 在第一个位置时，需要控制前一块内容
-      if (selection.range[0].offset === 0) {
-        let prev = component.parent?.getPrev(component);
-        // 无前一块，直接返回
-        if (!prev) return;
-        // 前一段为段落，则将该段落的内容放到前一段落内
-        if (prev instanceof Paragraph) {
-          prev.mergaParagraph(component);
-          updateComponent([prev, component]);
-          focusAt({
-            id: prev.id,
-            offset: prev.children.size - component.children.size,
-          });
-          return;
-        }
-        // 前一段为媒体文件，直接删除
-        if (prev instanceof Media) {
-          prev.removeSelf();
-          updateComponent([prev]);
-          focusAt({
-            id: component.id,
-            offset: 0,
-          });
-          return;
-        }
-      }
-      // 删除前一个字符
-      component.removeChildren(selection.range[0].offset - 1);
-      updateComponent(component);
+      let focus = component.removeChildren(selection.range[0].offset - 1);
+      if (!focus) return
       focusAt({
-        id: component.id,
-        offset: selection.range[0].offset - 1,
-      });
+        id: focus[0].id,
+        offset: focus[1]
+      })
       return;
     }
     // 多媒体直接删除
     if (component instanceof Media) {
-      let newParagraph = new Paragraph();
-      component.replaceSelf(newParagraph);
-      updateComponent([component, newParagraph]);
+      let focus = component.removeSelf();
+      if (!focus) return
       focusAt({
-        id: newParagraph.id,
-        offset: 0,
+        id: focus[0].id,
+        offset: focus[1],
       });
       return;
     }
@@ -104,7 +76,7 @@ const deleteSelection = (key?: string) => {
         let index = component.parent.findChildrenIndex(component);
         let newParagraph = new Paragraph();
         newParagraph.addChildren(content, 0);
-        component.parent.addChildren(newParagraph, index + 1);
+        newParagraph.addIntoParent(component.parent, index + 1);
         component.removeChildren(start.offset, component.children.size);
         updateComponent([component, newParagraph]);
         focusAt({

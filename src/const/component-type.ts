@@ -6,6 +6,7 @@ enum ComponentType {
   character = "CHARACTER",
   characterList = "CHARACTERLIST",
   paragraph = "PARAGRAPH",
+  list = "LIST",
   article = "ARTICLE",
 }
 export default ComponentType;

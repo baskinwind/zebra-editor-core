@@ -1,13 +1,14 @@
 import { List } from "immutable";
-import Component from "./component";
+import Component, { operatorType } from "./component";
 import StructureType from "../const/structure-type";
+import updateComponent from "../selection-operator/update-component";
 
 export default abstract class Collection<
   T extends Component
-> extends Component {
+  > extends Component {
   children: List<T> = List();
 
-  addChildren(component: T | T[], index?: number) {
+  addChildren(component: T | T[], index?: number): operatorType {
     let components: T[];
     if (!Array.isArray(component)) {
       components = [component];
@@ -18,14 +19,20 @@ export default abstract class Collection<
       component.parent = this;
       component.actived = true;
     });
-    if (typeof index === "number") {
-      this.children = this.children.splice(index, 0, ...components);
-    } else {
-      this.children = this.children.push(...components);
+    let addIndex = index !== undefined ? index : this.children.size
+    this.children = this.children.splice(addIndex, 0, ...components);
+
+    if (this.structureType === StructureType.collection) {
+      updateComponent(components);
+      return;
+    }
+    if (this.structureType === StructureType.content) {
+      updateComponent(this);
+      return [this, addIndex + components.length, addIndex + components.length];
     }
   }
 
-  removeChildren(indexOrComponent: T | number, removeNumber: number = 1) {
+  removeChildren(indexOrComponent: T | number, removeNumber: number = 1): operatorType {
     let removeIndex: number;
     if (removeNumber === 0) return;
     if (typeof indexOrComponent === "number") {
@@ -51,9 +58,17 @@ export default abstract class Collection<
       component.actived = false;
     });
     this.children = this.children.splice(removeIndex, removeNumber);
+    if (this.structureType === StructureType.collection) {
+      updateComponent(removedComponent.toArray());
+      return;
+    }
+    if (this.structureType === StructureType.content) {
+      updateComponent(this);
+      return [this, removeIndex, removeIndex];
+    }
   }
 
-  replaceChild(component: T, oldComponent: T) {
+  replaceChild(component: T, oldComponent: T): operatorType {
     let index = oldComponent ? this.findChildrenIndex(oldComponent) : -1;
     component.actived = true;
     component.parent = this;
@@ -63,6 +78,8 @@ export default abstract class Collection<
     } else {
       this.children = this.children.push(component);
     }
+    updateComponent([oldComponent, component]);
+    return [component, 0, 0]
   }
 
   findChildrenIndex(idOrComponent: string | T): number {
@@ -73,11 +90,13 @@ export default abstract class Collection<
 
   getNext(idOrComponent: string | T) {
     let index = this.findChildrenIndex(idOrComponent);
+    if (index === -1 || index === this.children.size - 1) return
     return this.children.get(index + 1);
   }
 
   getPrev(idOrComponent: string | T) {
     let index = this.findChildrenIndex(idOrComponent);
+    if (index <= 0) return
     return this.children.get(index - 1);
   }
 

@@ -12,10 +12,11 @@ import input from "./selection-operator/input";
 import mount from "./util/mount";
 import updateComponent from "./selection-operator/update-component";
 import insertBlock from "./selection-operator/insert-block";
-import Title from "./components/titile";
+import Title from "./components/title";
+import List from "./components/list";
 
 let article = new Article();
-article.addChildren(new Title("h1", "A Song of Ice and Fire"));
+/* article.addChildren(new Title("h1", "A Song of Ice and Fire"));
 article.addChildren(new Title("h2", "A Song of Ice and Fire"));
 article.addChildren(new Title("h3", "A Song of Ice and Fire"));
 article.addChildren(new Title("h4", "A Song of Ice and Fire"));
@@ -46,7 +47,15 @@ paragraph.addChildren(
   )
 );
 paragraph.addText(" happy!!!");
-paragraph.addIntoParent(article);
+paragraph.addIntoParent(article); */
+
+let list = new List();
+list.addChildren(new Paragraph('0123456789'));
+list.addChildren(new Paragraph('0123456789'));
+list.addChildren(new Paragraph('0123456789'));
+list.addChildren(new Paragraph('0123456789'));
+list.addChildren(new Paragraph('0123456789'));
+list.addIntoParent(article);
 
 export default class Draft extends PureComponent {
   root: HTMLElement | null = null;
