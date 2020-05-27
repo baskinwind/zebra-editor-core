@@ -6,6 +6,7 @@ import updateComponent from "./update-component";
 import focusAt from "./focus-at";
 import Inline from "../components/inline";
 import deleteSelection from "./delete-selection";
+import { getCursorPosition } from "./util";
 
 const input = (charOrInline: string | Inline, event?: Event) => {
   deleteSelection();
@@ -56,11 +57,27 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       new Character(char, decorate?.getStyle(), decorate?.getData()),
       offset
     );
-    updateComponent(component);
+    let startPosition = getCursorPosition(selection.range[0]);
+    console.log(startPosition);
+    let node = startPosition?.node;
+    if (node) {
+      console.log(node);
+      console.log(node.nodeValue);
+      node.nodeValue = `${node.nodeValue?.slice(
+        0,
+        offset
+      )}${char}${node.nodeValue?.slice(offset)}`;
+    }
     focusAt({
       id: component.id,
       offset: offset + 1,
     });
+
+    // updateComponent(component);
+    // focusAt({
+    //   id: component.id,
+    //   offset: offset + 1,
+    // });
   }
 };
 

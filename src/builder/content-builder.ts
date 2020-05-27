@@ -46,13 +46,18 @@ export default {
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
     const figure = document.createElement("figure");
     figure.id = id;
-    figure.classList.add("zebra-draft-image");
+    figure.classList.add("zebra-draft-image", "zebra-draft-image-loading");
     figure.dataset.type = ComponentType.image;
     figure.dataset.structure = StructureType.content;
     let child;
     let image = document.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
+    image.addEventListener("load", () => {
+      setTimeout(() => {
+        figure.classList.remove("zebra-draft-image-loading");
+      }, 300);
+    });
     if (data.link) {
       const link = document.createElement("a");
       link.href = data.link;
@@ -112,13 +117,19 @@ export default {
   ): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
-    span.classList.add("zebra-draft-inline-image");
+    span.classList.add("zebra-draft-inline-image", "zebra-draft-image-loading");
     span.dataset.type = ComponentType.inlineImage;
     span.dataset.structure = StructureType.partialContent;
     let child;
     let image = document.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
+    image.addEventListener("load", () => {
+      span.classList.remove("zebra-draft-image-loading");
+    });
+    image.addEventListener("error", () => {
+      span.classList.remove("zebra-draft-image-loading");
+    });
     if (data.link) {
       const link = document.createElement("a");
       link.href = data.link;

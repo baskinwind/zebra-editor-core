@@ -1,17 +1,41 @@
 .zebra-draft-root {
   white-space: pre-wrap;
   outline: none;
+
   .zebra-draft-image {
     margin: 0;
+    text-align: center;
+    &.zebra-draft-image-loading {
+      background: #e5e5e5;
+      padding: 10% 0;
+      &::before {
+        content: "图片加载中···";
+        color: #a5a5a5;
+      }
+      img {
+        height: 1px;
+        opacity: 0;
+        width: 100%;
+      }
+    }
     img {
       max-width: 100%;
       display: block;
+      margin: auto;
     }
   }
   .zebra-draft-article {
     overflow: auto;
   }
   .zebra-draft-inline-image {
+    &.zebra-draft-image-loading {
+      background: #e5e5e5;
+      img {
+        height: 1px;
+        padding: 0.5em;
+        opacity: 0;
+      }
+    }
     img {
       vertical-align: bottom;
     }
