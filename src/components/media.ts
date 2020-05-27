@@ -25,10 +25,38 @@ export default class Media extends Component {
     this.src = src;
   }
 
-  removeSelf(): operatorType {
+  removeSelf(customerUpdate: boolean = false): operatorType {
     let newParagraph = new Paragraph();
-    this.replaceSelf(newParagraph);
+    this.replaceSelf(newParagraph, customerUpdate);
     return [newParagraph, 0, 0];
+  }
+
+  addIntoTail(
+    component: Paragraph,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return this.removeSelf(customerUpdate);
+  }
+
+  split(index: number, customerUpdate: boolean = false): operatorType {
+    if (!this.parent) return;
+    let newParagraph = new Paragraph();
+    let componentIndex = this.parent.findChildrenIndex(this);
+    if (index === 0) {
+      this.parent.addChildren(newParagraph, componentIndex);
+    }
+    if (index === 1) {
+      this.parent.addChildren(newParagraph, componentIndex + 1);
+    }
+    return [newParagraph, 0, 0];
+  }
+
+  remove(
+    start?: number,
+    end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return this.replaceSelf(new Paragraph(), customerUpdate);
   }
 
   render() {

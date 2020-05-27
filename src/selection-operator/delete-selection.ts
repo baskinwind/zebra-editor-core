@@ -5,6 +5,7 @@ import getSelection from "./get-selection";
 import focusAt from "./focus-at";
 import updateComponent from "./update-component";
 import { getComponentById } from "../components/util";
+import { getCursorPosition } from "./util";
 
 const deleteSelection = (key?: string) => {
   let selection = getSelection();
@@ -17,18 +18,36 @@ const deleteSelection = (key?: string) => {
     let component = getComponentById(selection.range[0].id);
     // 段落的处理
     if (component instanceof Paragraph) {
-      let focus = component.removeChildren(selection.range[0].offset - 1);
-      if (!focus) return
+      let startPosition = getCursorPosition(selection.range[0]);
+      if (!startPosition) return;
+      // 优化段落内删除，不需要整段更新
+      if (selection.range[0].offset !== 0) {
+        if (startPosition.node.nodeValue?.length) {
+          startPosition.node.nodeValue = startPosition.node.nodeValue.slice(
+            0,
+            -1
+          );
+        }
+        if (startPosition.node instanceof HTMLImageElement) {
+          startPosition.node.parentElement?.remove();
+        }
+      }
+      let focus = component.removeChildren(
+        selection.range[0].offset - 1,
+        1,
+        selection.range[0].offset !== 0
+      );
+      if (!focus) return;
       focusAt({
         id: focus[0].id,
-        offset: focus[1]
-      })
+        offset: focus[1],
+      });
       return;
     }
     // 多媒体直接删除
     if (component instanceof Media) {
       let focus = component.removeSelf();
-      if (!focus) return
+      if (!focus) return;
       focusAt({
         id: focus[0].id,
         offset: focus[1],
@@ -38,24 +57,13 @@ const deleteSelection = (key?: string) => {
   }
   if (selection.isCollapsed && isEnter) {
     let component = getComponentById(selection.range[0].id);
-    // 多媒体直接删除
-    if (component instanceof Media) {
-      if (!component.parent) return;
-      let newParagraph = new Paragraph();
-      let index = component.parent.findChildrenIndex(component);
-      if (selection.range[0].offset === 0) {
-        component.parent.addChildren(newParagraph, index);
-      }
-      if (selection.range[0].offset === 1) {
-        component.parent.addChildren(newParagraph, index + 1);
-      }
-      updateComponent([component, newParagraph]);
-      focusAt({
-        id: newParagraph.id,
-        offset: 0,
-      });
-      return;
-    }
+    let focus = component.split(selection.range[0].offset);
+    if (!focus) return;
+    focusAt({
+      id: focus[0].id,
+      offset: focus[1],
+    });
+    return;
   }
   let start = selection.range[0];
   let end = selection.range[1];
@@ -67,46 +75,19 @@ const deleteSelection = (key?: string) => {
   if (idList.length === 1) {
     let id = idList[0];
     let component = getComponentById(id);
-    // 段落的处理
-    if (component instanceof Paragraph) {
-      if (!component.parent) return;
-      // 为 Enter 的处理
-      if (isEnter) {
-        let content = component.children.slice(end.offset).toArray();
-        let index = component.parent.findChildrenIndex(component);
-        let newParagraph = new Paragraph();
-        newParagraph.addChildren(content, 0);
-        newParagraph.addIntoParent(component.parent, index + 1);
-        component.removeChildren(start.offset, component.children.size);
-        updateComponent([component, newParagraph]);
-        focusAt({
-          id: newParagraph.id,
-          offset: 0,
-        });
-        return;
-      }
-      // 其他情况直接删除选中内容
-      component.removeChildren(start.offset, end.offset - start.offset);
-      updateComponent(component);
-      focusAt({
-        id: component.id,
-        offset: start.offset,
-      });
-      return;
+    let focus = component.remove(start.offset, end.offset);
+    // 为 Enter 的处理
+    if (isEnter) {
+      focus = component.split(start.offset) || focus;
     }
-    // 多媒体内容直接删除，换成一个空行
-    if (component instanceof Media) {
-      let newParagraph = new Paragraph();
-      component.replaceSelf(newParagraph);
-      updateComponent([component, newParagraph]);
-      focusAt({
-        id: newParagraph.id,
-        offset: 0,
-      });
-      return;
-    }
+    if (!focus) return;
+    focusAt({
+      id: focus[0].id,
+      offset: focus[1],
+    });
     return;
   }
+
   // 选中多行
   let firstComponent = getComponentById(idList[0]);
   let lastComponent = getComponentById(idList[idList.length - 1]);

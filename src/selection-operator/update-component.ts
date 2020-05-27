@@ -4,21 +4,22 @@ let canUpdate = false;
 
 const startUpdate = () => {
   canUpdate = true;
-}
+};
 
 const stopUpdate = () => {
   canUpdate = false;
-}
+};
 
-export {
-  startUpdate,
-  stopUpdate
-}
+export { startUpdate, stopUpdate };
 
 // 更新组件
 // 注：受限于 insertBefore，排在后面的组件要先注入
 // TODO: 有缺陷，后期修复
-const updateComponent = (component: Component | Component[]) => {
+const updateComponent = (
+  component: Component | Component[],
+  customerUpdate: boolean = false
+) => {
+  if (customerUpdate) return;
   if (!canUpdate) return;
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));

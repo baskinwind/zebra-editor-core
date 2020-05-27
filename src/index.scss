@@ -3,6 +3,15 @@
   background-color: rgba($color: #fff, $alpha: 0.8);
   span {
     font-size: 14px;
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+  }
+  div {
+    margin: 5px 0;
+  }
+  button {
+    margin: 0 5px;
   }
 }
 

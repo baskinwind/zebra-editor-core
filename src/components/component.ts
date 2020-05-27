@@ -24,17 +24,40 @@ export default abstract class Component {
 
   addIntoParent(
     collection: Collection<Component | Collection<Component>>,
-    index?: number
+    index?: number,
+    customerUpdate: boolean = false
   ): operatorType {
-    return collection.addChildren(this, index);
+    return collection.addChildren(this, index, customerUpdate);
   }
 
-  removeSelf(): operatorType {
-    return this.parent?.removeChildren(this);
+  removeSelf(customerUpdate: boolean = false): operatorType {
+    return this.parent?.removeChildren(this, undefined, customerUpdate);
   }
 
-  replaceSelf(component: Component): operatorType {
-    return this.parent?.replaceChild(component, this);
+  replaceSelf(
+    component: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return this.parent?.replaceChild(component, this, customerUpdate);
+  }
+
+  addIntoTail(
+    component: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return;
+  }
+
+  split(index: number, customerUpdate: boolean = false): operatorType {
+    return;
+  }
+
+  remove(
+    start?: number,
+    end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return;
   }
 
   abstract render(): any;

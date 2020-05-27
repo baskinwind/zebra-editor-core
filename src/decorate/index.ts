@@ -19,6 +19,10 @@ export default class Decorate {
     return this.style.toObject();
   }
   setStyle(name: string, value: string) {
+    if (name === "clear" && value === "style") {
+      this.clearStyle();
+      return;
+    }
     if (this.style.get(name) === value) {
       this.style = this.style.delete(name);
     } else {

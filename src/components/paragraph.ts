@@ -8,7 +8,7 @@ import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 import Media from "./media";
 import updateComponent from "../selection-operator/update-component";
-import Component, { operatorType } from "./component";
+import { operatorType } from "./component";
 
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
@@ -21,12 +21,12 @@ export default class Paragraph extends Collection<Inline> {
     }
   }
 
-  addText(text: string, index?: number) {
+  addText(text: string, index?: number, customerUpdate: boolean = false) {
     let componentList: Character[] = [];
     for (let char of text) {
       componentList.push(new Character(char));
     }
-    this.addChildren(componentList, index);
+    return this.addChildren(componentList, index, customerUpdate);
   }
 
   changeCharDecorate(type: string, value: string, start: number, end: number) {
@@ -39,38 +39,72 @@ export default class Paragraph extends Collection<Inline> {
     updateComponent(this);
   }
 
-  mergaParagraph(paragraph: Paragraph) {
+  mergaParagraph(
+    paragraph: Paragraph,
+    customerUpdate: boolean = false
+  ): operatorType {
     paragraph.removeSelf();
+    let size = this.children.size;
     this.children = this.children.push(...paragraph.children);
-    updateComponent(this);
+    updateComponent(this, customerUpdate);
+    return [this, size, size];
   }
 
-  removeChildren(indexOrComponent: Inline | number, removeNumber: number = 1): operatorType {
+  removeChildren(
+    indexOrComponent: Inline | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ): operatorType {
     if (indexOrComponent < 0 && removeNumber === 1) {
       let parent = this.parent;
       if (!parent) return;
       let prev = parent.getPrev(this);
       if (prev) {
-        if (prev instanceof Media) {
-          prev.removeSelf();
-          return [this, 0, 0];
-        }
-        if (prev instanceof Paragraph) {
-          let index = prev.children.size;
-          prev.mergaParagraph(this);
-          return [prev, index, index];
-        }
-        return;
+        return prev.addIntoTail(this);
       }
       let grandParent = parent?.parent;
       if (!grandParent) return;
       let parentIndex = grandParent.findChildrenIndex(parent);
       this.removeSelf();
-      this.decorate.removeData('tag');
       this.addIntoParent(grandParent, parentIndex);
       return [this, 0, 0];
     }
-    return super.removeChildren(indexOrComponent, removeNumber);
+    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+  }
+
+  addIntoTail(
+    component: Paragraph,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return this?.mergaParagraph(component, customerUpdate);
+  }
+
+  split(index: number, customerUpdate: boolean = false): operatorType {
+    let tail = this.children.slice(index).toArray();
+    if (!this.parent) return;
+    let componentIndex = this.parent.findChildrenIndex(this);
+    let newParagraph = new Paragraph(
+      "",
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
+    newParagraph.addChildren(tail, 0);
+    newParagraph.addIntoParent(this.parent, componentIndex + 1);
+    this.removeChildren(index, this.children.size);
+    return [newParagraph, 0, 0];
+  }
+
+  remove(
+    start: number,
+    end: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (start >= end) {
+      console.error(Error(`start：${start}、end：${end}不合法。`));
+      return;
+    }
+    this.removeChildren(start, end - start, customerUpdate);
+    return [this, start, start];
   }
 
   getContent() {

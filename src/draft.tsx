@@ -16,8 +16,8 @@ import Title from "./components/title";
 import List from "./components/list";
 
 let article = new Article();
-/* article.addChildren(new Title("h1", "A Song of Ice and Fire"));
-article.addChildren(new Title("h2", "A Song of Ice and Fire"));
+article.addChildren(new Title("h1", "A Song of Ice and Fire"));
+/* article.addChildren(new Title("h2", "A Song of Ice and Fire"));
 article.addChildren(new Title("h3", "A Song of Ice and Fire"));
 article.addChildren(new Title("h4", "A Song of Ice and Fire"));
 article.addChildren(new Title("h5", "A Song of Ice and Fire"));
@@ -50,12 +50,22 @@ paragraph.addText(" happy!!!");
 paragraph.addIntoParent(article); */
 
 let list = new List();
-list.addChildren(new Paragraph('0123456789'));
-list.addChildren(new Paragraph('0123456789'));
-list.addChildren(new Paragraph('0123456789'));
-list.addChildren(new Paragraph('0123456789'));
-list.addChildren(new Paragraph('0123456789'));
+list.addChildren(new Paragraph("0123456789"));
+list.addChildren(new Paragraph("0123456789"));
+list.addChildren(new Paragraph("0123456789"));
+list.addChildren(new Paragraph("0123456789"));
+list.addChildren(new Paragraph("0123456789"));
 list.addIntoParent(article);
+
+article.addChildren(new Paragraph("12345"));
+
+let list2 = new List();
+list2.addChildren(new Paragraph("0123456789"));
+list2.addChildren(new Paragraph("0123456789"));
+list2.addChildren(new Paragraph("0123456789"));
+list2.addChildren(new Paragraph("0123456789"));
+list2.addChildren(new Paragraph("0123456789"));
+list2.addIntoParent(article);
 
 export default class Draft extends PureComponent {
   root: HTMLElement | null = null;
@@ -69,6 +79,7 @@ export default class Draft extends PureComponent {
   showArticle = () => {
     updateComponent(article);
   };
+
   bold = () => {
     modifyDecorate("fontWeight", "bold");
   };
@@ -84,6 +95,10 @@ export default class Draft extends PureComponent {
   red = () => {
     modifyDecorate("color", "red");
   };
+  clearStyle = () => {
+    modifyDecorate("clear", "style");
+  };
+
   insertInlineImage = () => {
     let index = Math.floor(Math.random() * 56 + 1);
     input(
@@ -114,6 +129,7 @@ export default class Draft extends PureComponent {
             <button onClick={this.underline}>underline</button>
             <button onClick={this.itailc}>itailc</button>
             <button onClick={this.red}>red</button>
+            <button onClick={this.clearStyle}>clearStyle</button>
           </div>
           <div>
             <span>添加内联的块：</span>

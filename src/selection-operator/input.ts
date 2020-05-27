@@ -34,17 +34,14 @@ const input = (charOrInline: string | Inline, event?: Event) => {
           ?.decorate?.isSame(component.children.get(offset + 1)?.decorate));
     if (escape) {
       component.addChildren(new Character(char), offset);
-      if (event) {
-        event.preventDefault();
-        updateComponent(component);
-        focusAt({
-          id: component.id,
-          offset: offset + 1,
-        });
-      }
+      updateComponent(component);
+      focusAt({
+        id: component.id,
+        offset: offset + 1,
+      });
       return;
     }
-    // 字符默认使用之前字符的样式，如果第一个字符前输入字符，则使用第一个字符的样式
+    // 字符默认使用前一个字符的样式，如果第一个字符前输入字符，则使用第一个字符的样式
     let index;
     if (offset === 0) {
       index = 0;
@@ -55,29 +52,24 @@ const input = (charOrInline: string | Inline, event?: Event) => {
 
     component.addChildren(
       new Character(char, decorate?.getStyle(), decorate?.getData()),
-      offset
+      offset,
+      true
     );
     let startPosition = getCursorPosition(selection.range[0]);
-    console.log(startPosition);
     let node = startPosition?.node;
     if (node) {
-      console.log(node);
-      console.log(node.nodeValue);
       node.nodeValue = `${node.nodeValue?.slice(
         0,
-        offset
-      )}${char}${node.nodeValue?.slice(offset)}`;
+        startPosition?.index
+      )}${char}${node.nodeValue?.slice(startPosition?.index)}`;
+    }
+    if (node instanceof HTMLBRElement) {
+      updateComponent(component);
     }
     focusAt({
       id: component.id,
       offset: offset + 1,
     });
-
-    // updateComponent(component);
-    // focusAt({
-    //   id: component.id,
-    //   offset: offset + 1,
-    // });
   }
 };
 
