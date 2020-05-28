@@ -29,13 +29,10 @@ class List extends Collection<Paragraph> {
       this.children.get(index - 1)?.children.size === 0
     ) {
       this.removeChildren(index - 1, 1, customerUpdate);
-      component.decorate.removeData("tag");
-      this.split(index - 1, component, customerUpdate);
-      return;
+      return this.split(index - 1, customerUpdate);
     }
-    if (Array.isArray(component)) {
-      console.log(component);
 
+    if (Array.isArray(component)) {
       component.forEach((item) => item.decorate.setData("tag", "li"));
     } else {
       component.decorate.setData("tag", "li");
@@ -48,15 +45,10 @@ class List extends Collection<Paragraph> {
     customerUpdate: boolean = false
   ): operatorType {
     component.removeSelf();
-    this.addChildren(component, undefined, customerUpdate);
-    return [component, 0, 0];
+    return this.addChildren(component, undefined, customerUpdate);
   }
 
-  split(
-    index: number,
-    component: Component,
-    customerUpdate: boolean = false
-  ): operatorType {
+  split(index: number, customerUpdate: boolean = false): operatorType {
     let tail = this.children.slice(index).toArray();
     this.removeChildren(index, this.children.size, customerUpdate);
     if (!this.parent) return;
@@ -67,9 +59,10 @@ class List extends Collection<Paragraph> {
       this.decorate.getData()
     );
     newList.addChildren(tail, 0, customerUpdate);
-    this.parent.addChildren(component, componentIndex + 1, customerUpdate);
+    let newParagraph = new Paragraph();
+    newParagraph.addIntoParent(this.parent, componentIndex + 1, customerUpdate);
     newList.addIntoParent(this.parent, componentIndex + 2, customerUpdate);
-    return [component, 0, 0];
+    return [newParagraph, 0, 0];
   }
 
   render() {
@@ -91,6 +84,8 @@ export class ListItem extends Paragraph {
     if (data) {
       delete data.tag;
     }
+    console.log(style);
+    
     return super.modifyDecorate(style, data);
   }
 }

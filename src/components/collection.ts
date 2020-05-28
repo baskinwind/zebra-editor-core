@@ -28,7 +28,7 @@ export default abstract class Collection<
 
     if (this.structureType === StructureType.collection) {
       updateComponent(components, customerUpdate);
-      return;
+      return [components[0], 0, 0];
     }
     if (this.structureType === StructureType.content) {
       updateComponent(this, customerUpdate);
@@ -110,14 +110,7 @@ export default abstract class Collection<
 
   getPrev(idOrComponent: string | T) {
     let index = this.findChildrenIndex(idOrComponent);
-    if (index <= 0) {
-      // let parent = this.parent;
-      // if (!parent) return;
-      // let parentIndex = parent.findChildrenIndex(this);
-      // if (parentIndex <= 0) return;
-      // return parent.children.get(parentIndex - 1);
-      return;
-    }
+    if (index <= 0) return;
     return this.children.get(index - 1);
   }
 

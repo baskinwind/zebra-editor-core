@@ -1,6 +1,6 @@
 import { generate } from "shortid";
 import Component from "./component";
-import ComponentType from "../const/component-type";
+import Article from "./article";
 const store: { [key: string]: any } = {};
 
 export const getId = () => {
@@ -11,7 +11,7 @@ export const saveComponent = <T extends Component = Component>(
   component: T
 ) => {
   store[component.id] = component;
-  if (component.type === ComponentType.article) {
+  if (component instanceof Article) {
     store.article = component;
   }
 };

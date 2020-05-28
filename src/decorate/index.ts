@@ -46,11 +46,7 @@ export default class Decorate {
     return this.data.toObject();
   }
   setData(name: string, value: string) {
-    if (this.data.get(name) === value) {
-      this.data = this.data.delete(name);
-    } else {
-      this.data = this.data.set(name, value);
-    }
+    this.data = this.data.set(name, value);
   }
   mergeData(data?: storeData) {
     if (!data) return;

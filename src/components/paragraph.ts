@@ -71,6 +71,22 @@ export default class Paragraph extends Collection<Inline> {
     return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
+  add(
+    component: Inline | string,
+    index: number,
+    customerUpdate: boolean = false
+  ) {
+    if (typeof component === "string") {
+      let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
+      component = new Character(
+        component,
+        decorate?.getStyle(),
+        decorate?.getData()
+      );
+    }
+    return this.addChildren(component, index, customerUpdate);
+  }
+
   addIntoTail(
     component: Paragraph,
     customerUpdate: boolean = false
@@ -88,9 +104,8 @@ export default class Paragraph extends Collection<Inline> {
       this.decorate.getData()
     );
     newParagraph.addChildren(tail, 0);
-    newParagraph.addIntoParent(this.parent, componentIndex + 1);
     this.removeChildren(index, this.children.size);
-    return [newParagraph, 0, 0];
+    return newParagraph.addIntoParent(this.parent, componentIndex + 1);
   }
 
   remove(

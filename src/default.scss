@@ -29,10 +29,9 @@
   }
   .zebra-draft-inline-image {
     &.zebra-draft-image-loading {
-      background: #e5e5e5;
       img {
         height: 1px;
-        padding: 0.5em;
+        padding: 0.2em;
         opacity: 0;
       }
     }

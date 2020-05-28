@@ -17,9 +17,7 @@ export default abstract class Component {
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
-    Promise.resolve().then(() => {
-      saveComponent(this);
-    });
+    saveComponent(this);
   }
 
   addIntoParent(
@@ -39,6 +37,14 @@ export default abstract class Component {
     customerUpdate: boolean = false
   ): operatorType {
     return this.parent?.replaceChild(component, this, customerUpdate);
+  }
+
+  add(
+    component: any,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return;
   }
 
   addIntoTail(
