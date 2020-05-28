@@ -15,14 +15,10 @@ import insertBlock from "./selection-operator/insert-block";
 import Title from "./components/title";
 import List, { ListItem } from "./components/list";
 import modifyComponentDecorate from "./selection-operator/modify-component-decorate";
+import exchangeParagraph from "./selection-operator/exchange-paragraph";
 
 let article = new Article();
 article.addChildren(new Title("h1", "A Song of Ice and Fire"));
-article.addChildren(new Title("h2", "A Song of Ice and Fire"));
-article.addChildren(new Title("h3", "A Song of Ice and Fire"));
-article.addChildren(new Title("h4", "A Song of Ice and Fire"));
-article.addChildren(new Title("h5", "A Song of Ice and Fire"));
-article.addChildren(new Title("h6", "A Song of Ice and Fire"));
 article.addChildren(
   new Media(ComponentType.image, "https://blogcdn.acohome.cn/demo-draft-1.jpg")
 );
@@ -78,22 +74,22 @@ export default class Draft extends PureComponent {
   };
 
   bold = () => {
-    modifySelectionDecorate("fontWeight", "bold");
+    modifySelectionDecorate({ fontWeight: "bold" });
   };
   delete = () => {
-    modifySelectionDecorate("textDecoration", "line-through");
+    modifySelectionDecorate({ textDecoration: "line-through" });
   };
   underline = () => {
-    modifySelectionDecorate("textDecoration", "underline");
+    modifySelectionDecorate({ textDecoration: "underline" });
   };
   itailc = () => {
-    modifySelectionDecorate("fontStyle", "italic");
+    modifySelectionDecorate({ fontStyle: "italic" });
   };
   red = () => {
-    modifySelectionDecorate("color", "red");
+    modifySelectionDecorate({ color: "red" });
   };
   clearStyle = () => {
-    modifySelectionDecorate("clear", "style");
+    modifySelectionDecorate({ clear: "style" });
   };
 
   insertInlineImage = () => {
@@ -113,8 +109,15 @@ export default class Draft extends PureComponent {
       )
     );
   };
+
   modifyType = (tag: string) => {
-    modifyComponentDecorate(undefined, { tag });
+    if (tag === 'normal') {
+      exchangeParagraph(Paragraph, tag);
+    } else if (tag === 'li') {
+      exchangeParagraph(ListItem, 'ul');
+    } else {
+      exchangeParagraph(Title, tag);
+    }
   };
   modifyStyle = (name: string, value: string) => {
     modifyComponentDecorate({ [name]: value });
@@ -150,7 +153,8 @@ export default class Draft extends PureComponent {
             <button onClick={() => this.modifyType("h4")}>h4</button>
             <button onClick={() => this.modifyType("h5")}>h5</button>
             <button onClick={() => this.modifyType("h6")}>h6</button>
-            <button onClick={() => this.modifyType("")}>normal</button>
+            <button onClick={() => this.modifyType("normal")}>normal</button>
+            <button onClick={() => this.modifyType("li")}>li</button>
           </div>
           <div>
             <span>修改块级样式：</span>

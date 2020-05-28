@@ -1,6 +1,5 @@
 import Article from "../components/article";
 import Paragraph from "../components/paragraph";
-import Media from "../components/media";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
@@ -21,18 +20,19 @@ const deleteSelection = (key?: string) => {
       let startPosition = getCursorPosition(selection.range[0]);
       if (!startPosition) return;
       let node = startPosition.node;
-      if (start > 1) {
+      let index = startPosition.index
+      if (index > 0) {
         if (node.nodeValue?.length) {
           node.nodeValue = `${node.nodeValue.slice(
             0,
-            start - 1
-          )}${node.nodeValue.slice(start)}`;
+            index - 1
+          )}${node.nodeValue.slice(index)}`;
         }
         if (node instanceof HTMLImageElement) {
           node.parentElement?.remove();
         }
       }
-      let focus = component.removeChildren(start - 1, 1, start > 1);
+      let focus = component.remove(start - 1, 1, start > 0);
       focusAt(focus);
       return;
     }
@@ -58,7 +58,7 @@ const deleteSelection = (key?: string) => {
   if (idList.length === 1) {
     let id = idList[0];
     let component = getComponentById(id);
-    let focus = component.remove(start.offset, end.offset);
+    let focus = component.remove(start.offset, end.offset - 1);
     // 为 Enter 的处理
     if (isEnter) {
       focus = component.split(start.offset) || focus;
@@ -66,14 +66,13 @@ const deleteSelection = (key?: string) => {
     focusAt(focus);
     return;
   }
-  console.log(idList);
 
   // 选中多行
   let firstComponent = getComponentById(idList[0]);
   let lastComponent = getComponentById(idList[idList.length - 1]);
   if (!firstComponent.parent || !lastComponent.parent) return;
   firstComponent.remove(start.offset, -1);
-  lastComponent.remove(0, end.offset);
+  lastComponent.remove(0, end.offset - 1);
 
   // 若为 Enter 则删除中间行即可
   if (isEnter) {

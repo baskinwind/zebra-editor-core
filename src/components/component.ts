@@ -4,6 +4,7 @@ import Decorate from "../decorate";
 import StructureType from "../const/structure-type";
 import { getId, saveComponent } from "./util";
 import { storeData } from "../decorate/index";
+import updateComponent from "../selection-operator/update-component";
 
 export type operatorType = [Component, number, number] | undefined;
 
@@ -18,6 +19,10 @@ export default abstract class Component {
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
     saveComponent(this);
+  }
+
+  exchangeToOther(builder: { exchang: Function }, args: any[]) {
+    return
   }
 
   addIntoParent(
@@ -54,7 +59,10 @@ export default abstract class Component {
     return;
   }
 
-  split(...args: any[]): operatorType {
+  split(
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     return;
   }
 
@@ -66,11 +74,24 @@ export default abstract class Component {
     return;
   }
 
+  modifyContentDecorate(
+    start: number,
+    end: number,
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
+    return;
+  }
+
   modifyDecorate(
     style?: storeData,
     data?: storeData,
     customerUpdate: boolean = false
   ) {
+    this.decorate.mergeStyle(style);
+    this.decorate.mergeData(data);
+    updateComponent(this, customerUpdate);
     return;
   }
 

@@ -13,6 +13,13 @@ export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
   structureType = StructureType.content;
 
+  static exchang(component: Paragraph, args: any[], customerUpdate: boolean = false) {
+    component.decorate.removeData("tag");
+    Reflect.setPrototypeOf(component, Paragraph.prototype);
+    updateComponent(component, customerUpdate);
+    return component;
+  }
+
   constructor(text?: string, style?: storeData, data?: storeData) {
     super(style, data);
     if (text) {
@@ -28,14 +35,21 @@ export default class Paragraph extends Collection<Inline> {
     return this.addChildren(componentList, index, customerUpdate);
   }
 
-  changeCharDecorate(type: string, value: string, start: number, end: number) {
-    for (let i = Math.min(start, end); i <= Math.max(end, start); i++) {
+  exchangeToOther(builder: { exchang: Function }, args: any[]): operatorType {
+    builder.exchang(this, args);
+    return;
+  }
+
+  changeCharDecorate(start: number, end: number, style?: storeData, data?: storeData, customerUpdate: boolean = false) {
+    if (!style && !data) return;
+    for (let i = start; i <= end; i++) {
       let decorate = this.children.get(i)?.decorate;
-      if (decorate !== undefined) {
-        decorate?.setStyle(type, value);
-      }
+      if (decorate === undefined) break;
+      decorate.mergeData(data);
+      decorate.mergeStyle(style);
     }
-    updateComponent(this);
+    updateComponent(this, customerUpdate);
+    return [this, start, end];
   }
 
   mergaParagraph(
@@ -113,26 +127,34 @@ export default class Paragraph extends Collection<Inline> {
     end: number,
     customerUpdate: boolean = false
   ): operatorType {
-    if (end < 0) {
-      end = this.children.size + end + 1;
-    }
+    end = end < 0 ? this.children.size + end : end;
     if (start > end) {
       console.error(Error(`start：${start}、end：${end}不合法。`));
       return;
     }
-    this.removeChildren(start, end - start, customerUpdate);
+    this.removeChildren(start, end - start + 1, customerUpdate);
     return [this, start, start];
   }
 
-  modifyDecorate(
+  modifyContentDecorate(
+    start: number = 0,
+    end: number = -1,
     style?: storeData,
     data?: storeData,
     customerUpdate: boolean = false
   ) {
-    this.decorate.mergeStyle(style);
-    this.decorate.mergeData(data);
-    updateComponent(this, customerUpdate);
-    return;
+    end = end < 0 ? this.children.size + end : end;
+    if (start > end) {
+      console.error(Error(`start：${start}、end：${end}不合法。`));
+      return;
+    }
+    return this.changeCharDecorate(
+      start,
+      end,
+      style,
+      data,
+      customerUpdate
+    );
   }
 
   getContent() {

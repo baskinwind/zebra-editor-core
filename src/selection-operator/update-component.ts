@@ -19,7 +19,7 @@ const updateComponent = (
 ) => {
   if (customerUpdate) return;
   if (!canUpdate) return;
-  console.log("update");
+  console.log("update!!!!");
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));
   } else {
@@ -28,8 +28,8 @@ const updateComponent = (
 };
 
 const update = (component: Component) => {
+  console.log(component.id);
   let dom = document.getElementById(component.id);
-
   if (dom) {
     if (component.actived) {
       dom.replaceWith(component.render());
