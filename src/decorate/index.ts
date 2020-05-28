@@ -29,6 +29,12 @@ export default class Decorate {
       this.style = this.style.set(name, value);
     }
   }
+  mergeStyle(style?: storeData) {
+    if (!style) return;
+    for (let key in style) {
+      this.setStyle(key, style[key]);
+    }
+  }
   removeStyle(name: string) {
     this.style = this.style.delete(name);
   }
@@ -40,7 +46,17 @@ export default class Decorate {
     return this.data.toObject();
   }
   setData(name: string, value: string) {
-    this.data = this.data.set(name, value);
+    if (this.data.get(name) === value) {
+      this.data = this.data.delete(name);
+    } else {
+      this.data = this.data.set(name, value);
+    }
+  }
+  mergeData(data?: storeData) {
+    if (!data) return;
+    for (let key in data) {
+      this.setData(key, data[key]);
+    }
   }
   removeData(name: string) {
     this.data = this.data.delete(name);

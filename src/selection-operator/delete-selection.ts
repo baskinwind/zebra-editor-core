@@ -15,36 +15,30 @@ const deleteSelection = (key?: string) => {
   // 删除光标前一个位置
   if (selection.isCollapsed && isBackspace) {
     let component = getComponentById(selection.range[0].id);
-    // 段落的处理
+    let start = selection.range[0].offset;
+    // 优化段落内删除逻辑，不需要整段更新
     if (component instanceof Paragraph) {
       let startPosition = getCursorPosition(selection.range[0]);
       if (!startPosition) return;
-      // 优化段落内删除逻辑，不需要整段更新
-      if (selection.range[0].offset !== 0) {
-        if (startPosition.node.nodeValue?.length) {
-          startPosition.node.nodeValue = startPosition.node.nodeValue.slice(
+      let node = startPosition.node;
+      if (start > 1) {
+        if (node.nodeValue?.length) {
+          node.nodeValue = `${node.nodeValue.slice(
             0,
-            -1
-          );
+            start - 1
+          )}${node.nodeValue.slice(start)}`;
         }
-        if (startPosition.node instanceof HTMLImageElement) {
-          startPosition.node.parentElement?.remove();
+        if (node instanceof HTMLImageElement) {
+          node.parentElement?.remove();
         }
       }
-      let focus = component.removeChildren(
-        selection.range[0].offset - 1,
-        1,
-        selection.range[0].offset !== 0
-      );
+      let focus = component.removeChildren(start - 1, 1, start > 1);
       focusAt(focus);
       return;
     }
-    // 多媒体直接删除
-    if (component instanceof Media) {
-      let focus = component.removeSelf();
-      focusAt(focus);
-      return;
-    }
+    let focus = component.remove(start, start + 1);
+    focusAt(focus);
+    return;
   }
   if (selection.isCollapsed && isEnter) {
     let component = getComponentById(selection.range[0].id);

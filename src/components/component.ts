@@ -48,7 +48,7 @@ export default abstract class Component {
     return;
   }
 
-  split(index: number, customerUpdate: boolean = false): operatorType {
+  split(...args: any[]): operatorType {
     return;
   }
 
@@ -57,6 +57,14 @@ export default abstract class Component {
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
+    return;
+  }
+
+  modifyDecorate(
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
     return;
   }
 

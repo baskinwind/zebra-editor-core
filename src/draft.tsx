@@ -3,7 +3,7 @@ import "./index.scss";
 
 import React, { PureComponent } from "react";
 import Article from "./components/article";
-import modifyDecorate from "./selection-operator/modify-decorate";
+import modifySelectionDecorate from "./selection-operator/modify-selection-decorate";
 import Paragraph from "./components/paragraph";
 import Media from "./components/media";
 import ComponentType from "./const/component-type";
@@ -13,11 +13,12 @@ import mount from "./util/mount";
 import updateComponent from "./selection-operator/update-component";
 import insertBlock from "./selection-operator/insert-block";
 import Title from "./components/title";
-import List from "./components/list";
+import List, { ListItem } from "./components/list";
+import modifyComponentDecorate from "./selection-operator/modify-component-decorate";
 
 let article = new Article();
 article.addChildren(new Title("h1", "A Song of Ice and Fire"));
-/* article.addChildren(new Title("h2", "A Song of Ice and Fire"));
+article.addChildren(new Title("h2", "A Song of Ice and Fire"));
 article.addChildren(new Title("h3", "A Song of Ice and Fire"));
 article.addChildren(new Title("h4", "A Song of Ice and Fire"));
 article.addChildren(new Title("h5", "A Song of Ice and Fire"));
@@ -47,30 +48,20 @@ paragraph.addChildren(
   )
 );
 paragraph.addText(" happy!!!");
-paragraph.addIntoParent(article); */
+paragraph.addIntoParent(article);
 
-article.addChildren(new Paragraph("0123456789"));
-article.addChildren(new Paragraph("0123456789"));
-article.addChildren(new Paragraph("0123456789"));
-article.addChildren(new Paragraph("0123456789"));
-article.addChildren(new Paragraph("0123456789"));
-
-let list = new List();
-list.addChildren(new Paragraph("0123456789"));
-list.addChildren(new Paragraph("0123456789"));
-list.addChildren(new Paragraph("0123456789"));
-list.addChildren(new Paragraph("0123456789"));
-list.addChildren(new Paragraph("0123456789"));
+let list = new List("ul");
+list.addChildren(new ListItem("part1"));
+list.addChildren(new ListItem("part2"));
+list.addChildren(new ListItem("part3"));
+list.addChildren(new ListItem("part4"));
 list.addIntoParent(article);
 
-article.addChildren(new Paragraph("12345"));
-
-let list2 = new List();
-list2.addChildren(new Paragraph("0123456789"));
-list2.addChildren(new Paragraph("0123456789"));
-list2.addChildren(new Paragraph("0123456789"));
-list2.addChildren(new Paragraph("0123456789"));
-list2.addChildren(new Paragraph("0123456789"));
+let list2 = new List("ol");
+list2.addChildren(new ListItem("part1"));
+list2.addChildren(new ListItem("part2"));
+list2.addChildren(new ListItem("part3"));
+list2.addChildren(new ListItem("part4"));
 list2.addIntoParent(article);
 
 export default class Draft extends PureComponent {
@@ -87,22 +78,22 @@ export default class Draft extends PureComponent {
   };
 
   bold = () => {
-    modifyDecorate("fontWeight", "bold");
+    modifySelectionDecorate("fontWeight", "bold");
   };
   delete = () => {
-    modifyDecorate("textDecoration", "line-through");
+    modifySelectionDecorate("textDecoration", "line-through");
   };
   underline = () => {
-    modifyDecorate("textDecoration", "underline");
+    modifySelectionDecorate("textDecoration", "underline");
   };
   itailc = () => {
-    modifyDecorate("fontStyle", "italic");
+    modifySelectionDecorate("fontStyle", "italic");
   };
   red = () => {
-    modifyDecorate("color", "red");
+    modifySelectionDecorate("color", "red");
   };
   clearStyle = () => {
-    modifyDecorate("clear", "style");
+    modifySelectionDecorate("clear", "style");
   };
 
   insertInlineImage = () => {
@@ -121,6 +112,12 @@ export default class Draft extends PureComponent {
         `https://blogcdn.acohome.cn/demo-draft-${index}.jpg`
       )
     );
+  };
+  modifyType = (tag: string) => {
+    modifyComponentDecorate(undefined, { tag });
+  };
+  modifyStyle = (name: string, value: string) => {
+    modifyComponentDecorate({ [name]: value });
   };
 
   render() {
@@ -144,6 +141,34 @@ export default class Draft extends PureComponent {
           <div>
             <span>添加块级元素：</span>
             <button onClick={this.insertImage}>insertImage</button>
+          </div>
+          <div>
+            <span>切换块级类型：</span>
+            <button onClick={() => this.modifyType("h1")}>h1</button>
+            <button onClick={() => this.modifyType("h2")}>h2</button>
+            <button onClick={() => this.modifyType("h3")}>h3</button>
+            <button onClick={() => this.modifyType("h4")}>h4</button>
+            <button onClick={() => this.modifyType("h5")}>h5</button>
+            <button onClick={() => this.modifyType("h6")}>h6</button>
+            <button onClick={() => this.modifyType("")}>normal</button>
+          </div>
+          <div>
+            <span>修改块级样式：</span>
+            <button onClick={() => this.modifyStyle("padding", "10px")}>
+              padding10
+            </button>
+            <button onClick={() => this.modifyStyle("margin", "10px")}>
+              margin10
+            </button>
+            <button onClick={() => this.modifyStyle("border", "1px solid")}>
+              border
+            </button>
+            <button onClick={() => this.modifyStyle("backgroundColor", "grey")}>
+              backgroundGrey
+            </button>
+            <button onClick={() => this.modifyStyle("color", "white")}>
+              textWhite
+            </button>
           </div>
         </div>
         <div className="draft-wrap" ref={(el) => (this.root = el)}></div>

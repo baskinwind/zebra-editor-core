@@ -38,6 +38,9 @@ export const getContainer = (
     ) {
       return element;
     }
+    if(element.dataset.structure === StructureType.content){
+      
+    }
   }
   return getContainer(element.parentElement);
 };

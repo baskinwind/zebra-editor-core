@@ -43,7 +43,6 @@ const getSelection = () => {
     anchorNode.dataset.type === ComponentType.article
   )
     return selectionStore;
-
   // 判断开始节点和结束节点的位置关系，0：同一节点，2：focusNode 在 anchorNode 节点前，4：anchorNode 在 focusNode 节点前
   let posiType = section.anchorNode.compareDocumentPosition(section.focusNode);
   let anchorOffect = section.anchorOffset;
@@ -84,19 +83,35 @@ const getSelection = () => {
   let endContainer: HTMLElement = getContainer(endNode);
   let endParent: HTMLElement = getParent(endNode);
 
-  if (startParent.dataset.type === ComponentType.paragraph) {
+  if (
+    startParent !== startContainer &&
+    startParent.dataset.type === ComponentType.paragraph
+  ) {
     for (let i = 0; i < startParent.children.length; i++) {
       const element = startParent.children[i];
       if (element === startContainer) break;
       startOffset += getElememtSize(element);
     }
   }
-  if (endParent.dataset.type === ComponentType.paragraph) {
+  if (
+    endParent !== endContainer &&
+    endParent.dataset.type === ComponentType.paragraph
+  ) {
     for (let i = 0; i < endParent.children.length; i++) {
       const element = endParent.children[i];
       if (element === endContainer) break;
       endOffset += getElememtSize(element);
     }
+  }
+
+  // fix 当全选中某个段落时，focusNode 有可能是下一行的第 0 个位置，修复
+  if (startParent.id !== endParent.id && startOffset === 0 && endOffset === 0) {
+    for (let i = 0; i < startParent.children.length; i++) {
+      const element = startParent.children[i];
+      if (element === startContainer) break;
+      endOffset += getElememtSize(element);
+    }
+    endParent = startParent;
   }
 
   selectionStore = {

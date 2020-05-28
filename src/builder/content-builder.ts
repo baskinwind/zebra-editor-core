@@ -58,6 +58,11 @@ export default {
     } else {
       parapraph.appendChild(document.createElement("br"));
     }
+    if (style) {
+      for (let key in style) {
+        parapraph.style[key] = style[key];
+      }
+    }
     return parapraph;
   },
   buildTitle(
@@ -66,7 +71,7 @@ export default {
     style: any,
     data: any
   ): HTMLElement {
-    let type = data.tag.toLocaleLowerCase() || 'h1';
+    let type = data.tag.toLocaleLowerCase() || "h1";
     const title = document.createElement(type);
     title.id = id;
     title.classList.add(`zebra-draft-title-${type}`);
@@ -78,6 +83,11 @@ export default {
       });
     } else {
       title.appendChild(document.createElement("br"));
+    }
+    if (style) {
+      for (let key in style) {
+        title.style[key] = style[key];
+      }
     }
     return title;
   },

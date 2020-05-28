@@ -10,6 +10,7 @@ export default class Article extends Collection<Paragraph | Media> {
   type = ComponentType.article;
   structureType = StructureType.collection;
   actived = true;
+
   render() {
     console.log("test getContent couter");
     startUpdate();

@@ -6,7 +6,6 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
-import Media from "./media";
 import updateComponent from "../selection-operator/update-component";
 import { operatorType } from "./component";
 
@@ -102,12 +101,23 @@ export default class Paragraph extends Collection<Inline> {
     if (end < 0) {
       end = this.children.size + end + 1;
     }
-    if (start >= end) {
+    if (start > end) {
       console.error(Error(`start：${start}、end：${end}不合法。`));
       return;
     }
     this.removeChildren(start, end - start, customerUpdate);
     return [this, start, start];
+  }
+
+  modifyDecorate(
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
+    this.decorate.mergeStyle(style);
+    this.decorate.mergeData(data);
+    updateComponent(this, customerUpdate);
+    return;
   }
 
   getContent() {

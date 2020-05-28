@@ -15,12 +15,8 @@ const input = (charOrInline: string | Inline, event?: Event) => {
   let offset = selection.range[0].offset;
   if (component instanceof Paragraph) {
     if (typeof charOrInline !== "string") {
-      component.addChildren(charOrInline, offset);
-      updateComponent(component);
-      focusAt({
-        id: component.id,
-        offset: offset + 1,
-      });
+      let focus = component.addChildren(charOrInline, offset);
+      focusAt(focus);
       return;
     }
     let char = charOrInline;

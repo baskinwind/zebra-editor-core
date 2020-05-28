@@ -1,17 +1,20 @@
 import { cursorType, getCursorPosition } from "./util";
+import getSelection from "./get-selection";
 
 // 选中 start 到 end 的内容
 const focusAt = (
-  start:
-    | cursorType
-    | [{ id: string; [key: string]: any }, number, number]
-    | undefined,
+  start?: cursorType | [{ id: string; [key: string]: any }, number, number],
   end?: cursorType
 ) => {
-  if (!start) return;
+  if (!start) {
+    let selecttion = getSelection();
+    if (!selecttion) return;
+    start = selecttion.range[0];
+    end = selecttion.range[1];
+  }
   if (Array.isArray(start)) {
-    start = { id: start[0].id, offset: start[1] };
     end = { id: start[0].id, offset: start[2] };
+    start = { id: start[0].id, offset: start[1] };
   }
   let startPosition = getCursorPosition(start);
   if (!startPosition) return;
