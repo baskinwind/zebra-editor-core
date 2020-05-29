@@ -3,7 +3,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 
-export default class Character extends Inline {
+class Character extends Inline {
   type = ComponentType.character;
   structureType = StructureType.none;
   content: string;
@@ -21,3 +21,5 @@ export default class Character extends Inline {
     return this.content;
   }
 }
+
+export default Character;

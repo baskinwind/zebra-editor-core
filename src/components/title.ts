@@ -8,12 +8,12 @@ type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 class Title extends Paragraph {
   titleType: titleType;
 
-  static exchang(
+  static exchange(
     component: Paragraph,
     args: any[],
     customerUpdate: boolean = false
   ) {
-    let newComponet = super.exchang(component, args, true) as Title;
+    let newComponet = super.exchange(component, args, true) as Title;
     newComponet.titleType = args[0] as titleType | "h1";
     updateComponent(newComponet);
     return newComponet;
@@ -27,6 +27,15 @@ class Title extends Paragraph {
   ) {
     super(text, style, data);
     this.titleType = type;
+  }
+
+  createEmpty() {
+    return new Title(
+      this.titleType,
+      "",
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 
   render() {

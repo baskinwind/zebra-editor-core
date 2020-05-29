@@ -5,7 +5,7 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
-export default class Media extends Component {
+class Media extends Component {
   src: string;
   type: ComponentType.image | ComponentType.audio | ComponentType.video;
   structureType = StructureType.content;
@@ -54,7 +54,7 @@ export default class Media extends Component {
     if (index === 1) {
       this.parent.addChildren(component, componentIndex + 1);
     }
-    return [component, 0, 0];
+    return [component, index, index];
   }
 
   remove(
@@ -80,3 +80,5 @@ export default class Media extends Component {
     );
   }
 }
+
+export default Media;

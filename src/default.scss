@@ -6,7 +6,7 @@
     margin: 0;
     text-align: center;
     &.zebra-draft-image-loading {
-      background: #e5e5e5;
+      background: #efefef;
       padding: 10% 0;
       &::before {
         content: "图片加载中···";
@@ -22,6 +22,8 @@
       max-width: 100%;
       display: block;
       margin: auto;
+      opacity: 1;
+      transition: 1s;
     }
   }
   .zebra-draft-article {

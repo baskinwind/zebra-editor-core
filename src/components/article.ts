@@ -7,7 +7,7 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
 
-export default class Article extends Collection<List | Paragraph | Media> {
+class Article extends Collection<List | Paragraph | Media> {
   type = ComponentType.article;
   structureType = StructureType.collection;
   actived = true;
@@ -26,3 +26,5 @@ export default class Article extends Collection<List | Paragraph | Media> {
     );
   }
 }
+
+export default Article;

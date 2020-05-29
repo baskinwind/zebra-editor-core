@@ -18,7 +18,7 @@ import modifyComponentDecorate from "./selection-operator/modify-component-decor
 import exchangeParagraph from "./selection-operator/exchange-paragraph";
 
 let article = new Article();
-article.addChildren(new Title("h1", "A Song of Ice and Fire"));
+article.addChildren(new Title("h3", "A Song of Ice and Fire"));
 article.addChildren(
   new Media(ComponentType.image, "https://blogcdn.acohome.cn/demo-draft-1.jpg")
 );
@@ -32,33 +32,30 @@ article.addChildren(
     "His cloak was his crowning glory; sable, thick and black and soft as sin. “Bet he killed them allhimself, he did,” Gared told the barracks over wine, “twisted their little heads off, our mightywarrior.” They had all shared the laugh."
   )
 );
-article.addChildren(
-  new Paragraph(
-    "It is hard to take orders from a man you laughed at in your cups, Will reflected as he sat shiveringatop his garron. Gared must have felt the same."
-  )
-);
-let paragraph = new Paragraph("happy!!! ");
+let paragraph = new Paragraph("InlineImage ");
 paragraph.addChildren(
   new InlineImage(
     "http://cdn.acohome.cn/1.png?imageMogr2/auto-orient/thumbnail/x20"
   )
 );
-paragraph.addText(" happy!!!");
+paragraph.addText(" InlineImage");
 paragraph.addIntoParent(article);
 
-let list = new List("ul");
-list.addChildren(new ListItem("part1"));
-list.addChildren(new ListItem("part2"));
-list.addChildren(new ListItem("part3"));
-list.addChildren(new ListItem("part4"));
-list.addIntoParent(article);
+let ul = new List("ul");
+ul.addChildren(new ListItem("unorder list part 1"));
+ul.addChildren(new ListItem("unorder list part 2"));
+ul.addChildren(new ListItem("unorder list part 3"));
+ul.addChildren(new ListItem("unorder list part 4"));
+ul.addChildren(new ListItem("unorder list part 5"));
+ul.addIntoParent(article);
 
-let list2 = new List("ol");
-list2.addChildren(new ListItem("part1"));
-list2.addChildren(new ListItem("part2"));
-list2.addChildren(new ListItem("part3"));
-list2.addChildren(new ListItem("part4"));
-list2.addIntoParent(article);
+let ol = new List("ol");
+ol.addChildren(new ListItem("order list part 1"));
+ol.addChildren(new ListItem("order list part 2"));
+ol.addChildren(new ListItem("order list part 3"));
+ol.addChildren(new ListItem("order list part 4"));
+ol.addChildren(new ListItem("order list part 5"));
+ol.addIntoParent(article);
 
 export default class Draft extends PureComponent {
   root: HTMLElement | null = null;
@@ -111,10 +108,10 @@ export default class Draft extends PureComponent {
   };
 
   modifyType = (tag: string) => {
-    if (tag === 'normal') {
+    if (tag === "normal") {
       exchangeParagraph(Paragraph, tag);
-    } else if (tag === 'li') {
-      exchangeParagraph(ListItem, 'ul');
+    } else if (tag === "li") {
+      exchangeParagraph(ListItem, "ul");
     } else {
       exchangeParagraph(Title, tag);
     }

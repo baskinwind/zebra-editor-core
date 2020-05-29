@@ -7,8 +7,9 @@ import { getId, saveComponent } from "./util";
 import { storeData } from "../decorate/index";
 
 export type operatorType = [Component, number, number] | undefined;
+export type classType = typeof Component;
 
-export default abstract class Component {
+abstract class Component {
   id: string = getId();
   parent?: Collection<Component | Collection<Component>>;
   actived: boolean = false;
@@ -16,12 +17,27 @@ export default abstract class Component {
   abstract type: ComponentType;
   abstract structureType: StructureType;
 
+  static exchange(
+    component: Component,
+    args?: any[],
+    customerUpdate: boolean = false
+  ) {
+    return component;
+  }
+
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
     saveComponent(this);
   }
 
-  exchangeToOther(builder: { exchang: Function }, args: any[]) {
+  createEmpty() {
+    return Reflect.construct(this.constructor, [
+      this.decorate.getStyle(),
+      this.decorate.getData(),
+    ]);
+  }
+
+  exchangeToOther(builder: classType, args: any[]) {
     return;
   }
 
@@ -98,3 +114,5 @@ export default abstract class Component {
 
   abstract render(): any;
 }
+
+export default Component;

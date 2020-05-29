@@ -4,7 +4,7 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
-export default class InlineImage extends Inline {
+class InlineImage extends Inline {
   type = ComponentType.inlineImage;
   structureType = StructureType.none;
   content: string = "$$$INLINEIMAGE$$$";
@@ -28,3 +28,5 @@ export default class InlineImage extends Inline {
     );
   }
 }
+
+export default InlineImage;

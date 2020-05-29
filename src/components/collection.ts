@@ -3,9 +3,7 @@ import Component, { operatorType } from "./component";
 import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 
-export default abstract class Collection<
-  T extends Component
-> extends Component {
+abstract class Collection<T extends Component> extends Component {
   children: List<T> = List();
 
   addChildren(
@@ -99,6 +97,30 @@ export default abstract class Collection<
     return [component, 0, 0];
   }
 
+  split(
+    index: number,
+    component?: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (!this.parent) return;
+    let tail = this.children.slice(index).toArray();
+    this.removeChildren(index, this.children.size - index, customerUpdate);
+    let componentIndex = this.parent.findChildrenIndex(this);
+    let newCollection = this.createEmpty();
+    if (!component || tail.length !== 0) {
+      newCollection.addChildren(tail, 0, true);
+      newCollection.addIntoParent(this.parent, componentIndex + 1);
+    }
+    if (component) {
+      component.addIntoParent(this.parent, componentIndex + 1, customerUpdate);
+    }
+    return component
+      ? [component, 0, 0]
+      : newCollection.structureType === StructureType.collection
+      ? undefined
+      : [newCollection, 0, 0];
+  }
+
   findChildrenIndex(idOrComponent: string | T): number {
     let id =
       typeof idOrComponent === "string" ? idOrComponent : idOrComponent.id;
@@ -162,3 +184,5 @@ export default abstract class Collection<
     return [startFlag, endFlag, res];
   }
 }
+
+export default Collection;

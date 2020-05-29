@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "downlevelIteration": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,17 +12,10 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "jsx": "react",
-    "types": [
-      "react",
-      "react-dom",
-      "shortid"
-    ],
+    "types": ["react", "react-dom", "shortid"],
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": true,
-    "resolveJsonModule": true,
-    "noEmit": true
+    "resolveJsonModule": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

@@ -5,20 +5,25 @@ import Decorate from "../decorate";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
-import Component, { operatorType } from "./component";
+import { operatorType, classType } from "./component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
-export default class Paragraph extends Collection<Inline> {
+class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
   structureType = StructureType.content;
 
-  static exchang(
+  static exchangeOnly(component: Paragraph, args?: any[]) {
+    Reflect.setPrototypeOf(component, this.prototype);
+    return component;
+  }
+
+  static exchange(
     component: Paragraph,
-    args: any[],
+    args?: any[],
     customerUpdate: boolean = false
   ) {
-    Reflect.setPrototypeOf(component, this.prototype);
+    this.exchangeOnly(component, args);
     updateComponent(component, customerUpdate);
     return component;
   }
@@ -30,8 +35,13 @@ export default class Paragraph extends Collection<Inline> {
     }
   }
 
-  exchangeToOther(builder: { exchang: Function }, args: any[]): operatorType {
-    builder.exchang(this, args);
+  createEmpty() {
+    return new Paragraph("", this.decorate.getStyle(), this.decorate.getData());
+  }
+
+  exchangeToOther(builder: classType, args: any[]): operatorType {
+    if (builder === this.constructor) return;
+    builder.exchange(this, args);
     return;
   }
 
@@ -112,31 +122,6 @@ export default class Paragraph extends Collection<Inline> {
     return this?.mergaParagraph(component, customerUpdate);
   }
 
-  split(
-    index: number,
-    component?: Component,
-    customerUpdate: boolean = false
-  ): operatorType {
-    let tail = this.children.slice(index).toArray();
-    if (!this.parent) return;
-    let componentIndex = this.parent.findChildrenIndex(this);
-    // @ts-ignore
-    let newParagraph = new this.constructor(
-      "",
-      this.decorate.getStyle(),
-      this.decorate.getData()
-    );
-    this.removeChildren(index, this.children.size);
-    if (!component || tail.length !== 0) {
-      newParagraph.addChildren(tail, 0);
-      newParagraph.addIntoParent(this.parent, componentIndex + 1);
-    }
-    if (component) {
-      component.addIntoParent(this.parent, componentIndex + 1);
-    }
-    return component ? [component, 0, 0] : [newParagraph, 0, 0];
-  }
-
   remove(
     start: number,
     end: number,
@@ -210,3 +195,5 @@ export default class Paragraph extends Collection<Inline> {
     );
   }
 }
+
+export default Paragraph;

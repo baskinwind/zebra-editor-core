@@ -5,7 +5,7 @@ export interface storeData {
   [key: string]: any;
 }
 
-export default class Decorate {
+class Decorate {
   id: string = getId();
   style: Map<string, string>;
   data: Map<string, string>;
@@ -93,3 +93,5 @@ export default class Decorate {
     this.clearStyle();
   }
 }
+
+export default Decorate;
