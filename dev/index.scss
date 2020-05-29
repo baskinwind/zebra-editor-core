@@ -22,17 +22,23 @@ body {
   overflow: auto;
   flex: 0 0 30%;
   font-size: 14px;
-  button {
-    margin: 0 0 5px;
-  }
+  button,
   input {
-    margin: 0 0 5px;
+    margin: 5px 0 5px;
   }
   .key {
     display: inline-block;
-    width: 90px;
+    width: 60px;
     text-align: right;
-    margin-right: 10px;
+  }
+  > div {
+    border: 1px solid #a5a5a5;
+    border-radius: 4px;
+    margin: 10px;
+    padding: 10px;
+    p {
+      margin: 0;
+    }
   }
 }
 

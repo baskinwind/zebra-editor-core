@@ -4,7 +4,6 @@
 
   .zebra-draft-image {
     margin: 0;
-    text-align: center;
     &.zebra-draft-image-loading {
       background: #efefef;
       padding: 10% 0;
@@ -23,11 +22,8 @@
       display: block;
       margin: auto;
       opacity: 1;
-      transition: 1s;
+      transition: opacity 1s;
     }
-  }
-  .zebra-draft-article {
-    overflow: auto;
   }
   .zebra-draft-inline-image {
     &.zebra-draft-image-loading {
@@ -39,6 +35,8 @@
     }
     img {
       vertical-align: bottom;
+      opacity: 1;
+      transition: opacity 1s;
     }
   }
 }

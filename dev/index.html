@@ -8,9 +8,15 @@
   </head>
   <script id="operator-template" type="text/x-template">
     <div class="operator">
-      <button @click="showArticle">show article</button>
       <div>
-        <p>控制段落内容样式：</p>
+        <div>
+          <span>强制刷新文章</span>
+          <button @click="showArticle">show article</button>
+        </div>
+      </div>
+
+      <div>
+        <p>控制选中内容样式：</p>
         <div>
           <button @click="bold">bold</button>
           <button @click="deleteType">delete</button>
@@ -19,17 +25,19 @@
           <button @click="red">red</button>
           <button @click="clearStyle">clearStyle</button>
         </div>
-        <p>自定义段落内容样式：</p>
+        <p>自定义选中内容样式：</p>
         <div>
-          <span class="key">样式名：</span><input type="text" v-model="inlineStyle">
+          <span class="key">样式名：</span>
+          <input type="text" v-model="inlineStyle">
         </div>
         <div>
-          <span class="key">值：</span><input type="text" v-model="inlineStyleValue">
+          <span class="key">值：</span>
+          <input type="text" v-model="inlineStyleValue">
         </div>
         <button @click="customerInlineStyle">确定</button>
       </div>
       <div>
-        <p>修改块级样式：</p>
+        <p>修改段落样式：</p>
         <div>
           <button @click="modifyStyle('padding', '10px')">padding10</button>
           <button @click="modifyStyle('margin', '10px')">margin10</button>
@@ -37,12 +45,14 @@
           <button @click="modifyStyle('color', 'white')">textWhite</button>
           <button @click="modifyStyle('clear', 'style')">clearStyle</button>
         </div>
-        <p>自定义段落内容样式：</p>
+        <p>自定义段落样式：</p>
         <div>
-          <span class="key">样式名：</span><input type="text" v-model="blockStyle">
+          <span class="key">样式名：</span>
+          <input type="text" v-model="blockStyle">
         </div>
         <div>
-          <span class="key">值：</span><input type="text" v-model="blockStyleValue">
+          <span class="key">值：</span>
+          <input type="text" v-model="blockStyleValue">
         </div>
         <button @click="customerBlockStyle">确定</button>
       </div>
