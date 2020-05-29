@@ -75,7 +75,7 @@ class List extends Collection<ListItem> {
 
   render() {
     let children = this.children
-      .map((component) => component.render())
+      .map((component: ListItem) => component.render())
       .toArray();
     return getContentBuilder().buildList(
       this.id,

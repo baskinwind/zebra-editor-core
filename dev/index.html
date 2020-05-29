@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Draft Demo</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  </head>
-  <script id="operator-template" type="text/x-template">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Draft Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
         <div>
           <span>强制刷新文章</span>
-          <button @click="showArticle">show article</button>
+          <button @click="showArticle">update</button>
+        </div>
+        <div>
+          <span>log Html</span>
+          <button @click="logHtml">log</button>
         </div>
       </div>
 
@@ -92,10 +97,12 @@
       </div>
     </div>
   </script>
-  <body>
-    <div class="flex">
-      <div id="operator"></div>
-      <div class="draft-wrap" id="root"></div>
-    </div>
-  </body>
+
+<body>
+  <div class="flex">
+    <div id="operator"></div>
+    <div class="draft-wrap" id="root"></div>
+  </div>
+</body>
+
 </html>

@@ -13,9 +13,9 @@ import Title from "../src/components/title";
 import Media from "../src/components/media";
 import InlineImage from "../src/components/inline-image";
 import { ListItem } from "../src/components/list";
+import getHtml from "../src/util/get-html";
 
-//@ts-ignore
-let vm = new Vue({
+new Vue({
   el: "#operator",
   template: "#operator-template",
   data() {
@@ -31,6 +31,9 @@ let vm = new Vue({
   methods: {
     showArticle() {
       updateComponent(article);
+    },
+    logHtml() {
+      console.log(getHtml(article));
     },
     bold() {
       modifySelectionDecorate({ fontWeight: "bold" });
@@ -56,7 +59,7 @@ let vm = new Vue({
       }
     },
 
-    modifyStyle(name: string, value: string) {
+    modifyStyle(name, value) {
       modifyComponentDecorate({ [name]: value });
     },
     customerBlockStyle() {
@@ -90,7 +93,7 @@ let vm = new Vue({
       insertBlock(new Media(ComponentType.image, this.image));
     },
 
-    modifyType(tag: string) {
+    modifyType(tag) {
       if (tag === "normal") {
         exchangeParagraph(Paragraph, tag);
       } else if (tag === "li") {

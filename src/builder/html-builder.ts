@@ -2,7 +2,15 @@ export interface mapData {
   [key: string]: any;
 }
 
-export default {
+const formatStyle = (styleName: string) => {
+  return styleName.replace(/([A-Z])/, '-$1').toLocaleLowerCase();
+}
+
+const getStyle = (style: mapData) => {
+  return Object.keys(style).map((key) => `${formatStyle(key)}:${style[key]};`);
+}
+
+const htmlBuilder = {
   buildArticle(
     id: string,
     componentList: string[],
@@ -10,8 +18,7 @@ export default {
     data: mapData
   ): string {
     let className = "zebra-draft-article";
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<article class="${className}" style="${styleList}">${componentList.reduce(
+    return `<article class="${className}" style="${getStyle(style)}">${componentList.reduce(
       (acc, item) => acc + item,
       ""
     )}</article>`;
@@ -23,8 +30,7 @@ export default {
     data: mapData
   ): string {
     let className = "zebra-draft-list";
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<ul class="${className}" style="${styleList}">${componentList.reduce(
+    return `<ul class="${className}" style="${getStyle(style)}">${componentList.reduce(
       (acc, item) => acc + item,
       ""
     )}</ul>`;
@@ -37,8 +43,7 @@ export default {
   ): string {
     let tag = data.tag || "p";
     let className = `zebra-draft-${tag}`;
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<${tag} class="${className}" style="${styleList}">${inlineList.reduce(
+    return `<${tag} class="${className}" style="${getStyle(style)}">${inlineList.reduce(
       (acc, item) => acc + item,
       ""
     )}</${tag}>`;
@@ -51,8 +56,7 @@ export default {
   ): string {
     let tag = data.tag || "p";
     let className = `zebra-draft-${tag}`;
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<${tag} class="${className}" style="${styleList}">${inlineList.reduce(
+    return `<${tag} class="${className}" style="${getStyle(style)}">${inlineList.reduce(
       (acc, item) => acc + item,
       ""
     )}</${tag}>`;
@@ -63,20 +67,17 @@ export default {
       image = `<a href="${data.link}">${image}</a>`;
     }
     let className = `zebra-draft-image`;
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<figure class="${className}" style="${styleList}">${image}</figure>`;
+    return `<figure class="${className}" style="${getStyle(style)}">${image}</figure>`;
   },
   buildeAudio(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<audio src="${src}" alt="${data.alt}" />`;
     let className = `zebra-draft-image`;
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<figure class="${className}" style="${styleList}">${image}</figure>`;
+    return `<figure class="${className}" style="${getStyle(style)}">${image}</figure>`;
   },
   buildeVideo(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<video src="${src}" alt="${data.alt}" />`;
     let className = `zebra-draft-image`;
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<figure class="${className}" style="${styleList}">${image}</figure>`;
+    return `<figure class="${className}" style="${getStyle(style)}">${image}</figure>`;
   },
   buildCharacterList(
     id: string,
@@ -84,8 +85,7 @@ export default {
     style: mapData,
     data: mapData
   ): string {
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<span style="${styleList}">${charList.join("")}</span>`;
+    return `<span style="${getStyle(style)}">${charList.join("")}</span>`;
   },
   buildInlineImage(
     id: string,
@@ -98,7 +98,8 @@ export default {
       image = `<a href="${data.link}">${image}</a>`;
     }
     let className = `zebra-draft-inline-image`;
-    let styleList = Object.keys(style).map((key) => `${key}:${style[key]};`);
-    return `<span class="${className}" style="${styleList}">${image}</span>`;
+    return `<span class="${className}" style="${getStyle(style)}">${image}</span>`;
   },
 };
+
+export default htmlBuilder;

@@ -4,7 +4,7 @@ const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
-  entry: "./dev/index.ts",
+  entry: "./dev/index.js",
   devtool: "eval-source-map",
   module: {
     rules: [

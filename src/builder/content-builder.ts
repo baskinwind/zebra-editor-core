@@ -5,7 +5,7 @@ export interface mapData {
   [key: string]: any;
 }
 
-export default {
+const contentBuilder = {
   buildArticle(
     id: string,
     componentList: HTMLElement[],
@@ -187,3 +187,5 @@ export default {
     return span;
   },
 };
+
+export default contentBuilder;
