@@ -12,4 +12,5 @@ enum ComponentType {
   tableRow = "TABLEROW",
   article = "ARTICLE",
 }
+
 export default ComponentType;

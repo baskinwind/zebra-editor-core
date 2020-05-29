@@ -4,4 +4,5 @@ enum StructureType {
   partialContent = "PARTIALCONTENT",
   none = "NONE",
 }
+
 export default StructureType;

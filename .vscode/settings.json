@@ -1,7 +1,5 @@
 {
-  "fileheader.configObj": {
-    "autoAdd": false,
-    "autoAlready": false,
-  },
-  "git.ignoreLimitWarning": true,
+  "editor.fontFamily": "Source Code Pro",
+  "javascript.format.semicolons": "insert",
+  "typescript.format.semicolons": "insert"
 }
