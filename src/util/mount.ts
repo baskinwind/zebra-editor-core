@@ -2,6 +2,7 @@ import Article from "../components/article";
 import createEmptyArticle from "./create-empty-article";
 import onClick from "../selection-operator/on-click";
 import onKeyDown from "../selection-operator/on-keydown";
+import getSelection from "../selection-operator/get-selection";
 
 const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   if (!article) article = createEmptyArticle();
@@ -15,6 +16,9 @@ const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("zebra-draft-root");
   editorWrap.appendChild(article.render());
+  editorWrap.addEventListener("blur", (event) => {
+    getSelection();
+  });
   editorWrap.addEventListener("click", (event) => {
     onClick(event);
   });
@@ -23,10 +27,12 @@ const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   });
   editorWrap.addEventListener("dragstart", (event) => {
     event.preventDefault();
+    alert("拖拽功能暂不能用！！！");
     console.error("拖拽功能暂不能用！！！");
   });
   editorWrap.addEventListener("paste", (event) => {
     event.preventDefault();
+    alert("复制功能暂不能用！！！");
     console.error("复制功能暂不能用！！！");
   });
   if (!root) throw Error("请传入正确的节点或节点 id");

@@ -18,6 +18,16 @@ import { ListItem } from "../src/components/list";
 let vm = new Vue({
   el: "#operator",
   template: "#operator-template",
+  data() {
+    return {
+      inlineStyle: "fontSize",
+      inlineStyleValue: "20px",
+      blockStyle: "textAlign",
+      blockStyleValue: "center",
+      inlineImage: "",
+      image: "",
+    };
+  },
   methods: {
     showArticle() {
       updateComponent(article);
@@ -40,6 +50,21 @@ let vm = new Vue({
     clearStyle() {
       modifySelectionDecorate({ clear: "style" });
     },
+    customerInlineStyle() {
+      if (this.inlineStyle && this.inlineStyleValue) {
+        modifySelectionDecorate({ [this.inlineStyle]: this.inlineStyleValue });
+      }
+    },
+
+    modifyStyle(name: string, value: string) {
+      modifyComponentDecorate({ [name]: value });
+    },
+    customerBlockStyle() {
+      if (this.blockStyle && this.blockStyleValue) {
+        modifyComponentDecorate({ [this.blockStyle]: this.blockStyleValue });
+      }
+    },
+
     insertInlineImage() {
       let index = Math.floor(Math.random() * 56 + 1);
       input(
@@ -48,6 +73,10 @@ let vm = new Vue({
         )
       );
     },
+    customerInlineImage() {
+      input(new InlineImage(this.inlineImage));
+    },
+
     insertImage() {
       let index = Math.random() > 0.5 ? 1 : 3;
       insertBlock(
@@ -57,6 +86,10 @@ let vm = new Vue({
         )
       );
     },
+    customerImage() {
+      insertBlock(new Media(ComponentType.image, this.image));
+    },
+
     modifyType(tag: string) {
       if (tag === "normal") {
         exchangeParagraph(Paragraph, tag);
@@ -66,10 +99,5 @@ let vm = new Vue({
         exchangeParagraph(Title, tag);
       }
     },
-    modifyStyle(name: string, value: string) {
-      modifyComponentDecorate({ [name]: value });
-    },
   },
 });
-
-console.log(vm);

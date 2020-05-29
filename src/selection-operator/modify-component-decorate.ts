@@ -11,7 +11,7 @@ const modifyComponentDecorate = (style?: storeData, data?: storeData) => {
   let article = getComponentById<Article>("article");
   let idList = article.getIdList(start.id, end.id)[2];
   idList.forEach((id) => {
-    let customerUpdate = !data;
+    let customerUpdate = !data && style?.clear !== "style";
     let component = getComponentById(id);
     component.modifyDecorate(style, data, customerUpdate);
     if (customerUpdate && style) {

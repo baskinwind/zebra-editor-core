@@ -14,8 +14,6 @@ const modifySelectionDecorate = (style?: storeData, data?: storeData) => {
   let end = selection.range[1];
   let article = getComponentById<Article>("article");
   let idList = article.getIdList(start.id, end.id)[2];
-  console.log(idList);
-
 
   if (idList.length === 0) return;
   if (idList.length === 1) {

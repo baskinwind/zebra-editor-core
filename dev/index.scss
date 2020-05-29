@@ -2,20 +2,42 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  padding: 10px;
+}
+
 .flex {
   display: flex;
+  height: 100%;
 }
 
 .operator {
-  flex: 0 0 300px;
+  height: 100%;
+  overflow: auto;
+  flex: 0 0 30%;
   font-size: 14px;
   button {
     margin: 0 0 5px;
   }
+  input {
+    margin: 0 0 5px;
+  }
+  .key {
+    display: inline-block;
+    width: 90px;
+    text-align: right;
+    margin-right: 10px;
+  }
 }
 
 .draft-wrap {
-  height: 96vh;
+  height: 100%;
   border: 1px solid #a5a5a5;
   border-radius: 4px;
   overflow: auto;
