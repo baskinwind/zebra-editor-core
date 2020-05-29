@@ -34,7 +34,7 @@ class List extends Collection<ListItem> {
       let parentIndex = this.parent.findChildrenIndex(this);
       if (!parentIndex) return;
       this.removeChildren(index - 1, 1, customerUpdate);
-      this.split(index - 1, customerUpdate);
+      this.split(index - 1, undefined, customerUpdate);
       Reflect.setPrototypeOf(component, Paragraph.prototype);
       return component.addIntoParent(this.parent, parentIndex + 1);
     }
@@ -63,8 +63,8 @@ class List extends Collection<ListItem> {
 
   split(
     index: number,
-    customerUpdate: boolean = false,
-    component?: Component
+    component?: Component,
+    customerUpdate: boolean = false
   ): operatorType {
     let tail = this.children.slice(index).toArray();
     this.removeChildren(index, this.children.size, customerUpdate);
@@ -135,7 +135,7 @@ export class ListItem extends Paragraph {
     let newParagraph = builder.exchang(this, args, true);
     if (this.parent) {
       let index = parent.findChildrenIndex(this);
-      this.parent.split(index, customerUpdate, newParagraph);
+      this.parent.split(index, newParagraph, customerUpdate);
     } else {
       newParagraph.addIntoParent(grandParent, parentIndex);
     }

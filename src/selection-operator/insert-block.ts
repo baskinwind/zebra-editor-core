@@ -12,7 +12,7 @@ const insertBlock = (component: Media | Paragraph) => {
   let index = nowComponent.parent?.findChildrenIndex(nowComponent);
   if (index === undefined) return;
   let start = selection.range[0].offset;
-  let focus = nowComponent.split(start, false, component);
+  let focus = nowComponent.split(start, component);
   focusAt(focus);
   return;
 };

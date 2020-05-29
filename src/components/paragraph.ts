@@ -114,8 +114,8 @@ export default class Paragraph extends Collection<Inline> {
 
   split(
     index: number,
-    customerUpdate: boolean = false,
-    component?: Component
+    component?: Component,
+    customerUpdate: boolean = false
   ): operatorType {
     let tail = this.children.slice(index).toArray();
     if (!this.parent) return;

@@ -40,8 +40,8 @@ export default class Media extends Component {
 
   split(
     index: number,
-    customerUpdate: boolean = false,
-    component?: Component
+    component?: Component,
+    customerUpdate: boolean = false
   ): operatorType {
     if (!this.parent) return;
     if (!component) {

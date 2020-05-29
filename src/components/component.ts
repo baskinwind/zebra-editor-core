@@ -61,8 +61,8 @@ export default abstract class Component {
 
   split(
     index: number,
-    customerUpdate: boolean = false,
-    component?: Component
+    component?: Component,
+    customerUpdate: boolean = false
   ): operatorType {
     return;
   }
