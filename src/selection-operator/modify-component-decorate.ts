@@ -1,8 +1,8 @@
 import Article from "../components/article";
 import getSelection from "./get-selection";
+import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 import { storeData } from "../decorate";
-import focusAt from "./focus-at";
 
 const modifyComponentDecorate = (style?: storeData, data?: storeData) => {
   let selection = getSelection();

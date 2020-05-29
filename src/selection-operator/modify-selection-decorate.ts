@@ -1,7 +1,7 @@
-import getSelection from "./get-selection";
-import { getComponentById } from "../components/util";
-import focusAt from "./focus-at";
 import Article from "../components/article";
+import getSelection from "./get-selection";
+import focusAt from "./focus-at";
+import { getComponentById } from "../components/util";
 import { storeData } from "../decorate";
 
 // 修改选区内内容的表现行为

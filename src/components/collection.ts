@@ -30,6 +30,7 @@ export default abstract class Collection<
       updateComponent(components, customerUpdate);
       return [components[0], 0, 0];
     }
+
     if (this.structureType === StructureType.content) {
       updateComponent(this, customerUpdate);
       return [this, addIndex + components.length, addIndex + components.length];
@@ -58,14 +59,16 @@ export default abstract class Collection<
     if (removeNumber < 0) {
       removeNumber = this.children.size - removeIndex;
     }
+
     let removedComponent = this.children.slice(
       removeIndex,
       removeIndex + removeNumber
     );
     removedComponent.forEach((component) => {
       component.actived = false;
-      component.decorate.removeData("tag");
+      component.parent = undefined;
     });
+
     this.children = this.children.splice(removeIndex, removeNumber);
     if (this.structureType === StructureType.collection) {
       updateComponent(removedComponent.toArray(), customerUpdate);
@@ -102,16 +105,16 @@ export default abstract class Collection<
     return this.children.findIndex((item) => item.id === id);
   }
 
-  getNext(idOrComponent: string | T) {
-    let index = this.findChildrenIndex(idOrComponent);
-    if (index === -1 || index === this.children.size - 1) return;
-    return this.children.get(index + 1);
-  }
-
   getPrev(idOrComponent: string | T) {
     let index = this.findChildrenIndex(idOrComponent);
     if (index <= 0) return;
     return this.children.get(index - 1);
+  }
+
+  getNext(idOrComponent: string | T) {
+    let index = this.findChildrenIndex(idOrComponent);
+    if (index === -1 || index === this.children.size - 1) return;
+    return this.children.get(index + 1);
   }
 
   getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {

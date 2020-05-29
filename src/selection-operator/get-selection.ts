@@ -104,7 +104,7 @@ const getSelection = () => {
     }
   }
 
-  // fix 当全选中某个段落时，focusNode 有可能是下一行的第 0 个位置，修复
+  // 修复：当全选中某个段落时，focusNode 有可能是下一行的第 0 个位置
   if (startParent.id !== endParent.id && startOffset === 0 && endOffset === 0) {
     for (let i = 0; i < startParent.children.length; i++) {
       const element = startParent.children[i];

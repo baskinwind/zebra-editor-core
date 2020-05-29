@@ -1,7 +1,7 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import { storeData } from "../decorate";
 import StructureType from "../const/structure-type";
+import { storeData } from "../decorate";
 
 export default class Character extends Inline {
   type = ComponentType.character;

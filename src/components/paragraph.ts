@@ -4,18 +4,21 @@ import Character from "./character";
 import Decorate from "../decorate";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import updateComponent from "../selection-operator/update-component";
+import Component, { operatorType } from "./component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
-import updateComponent from "../selection-operator/update-component";
-import { operatorType } from "./component";
 
 export default class Paragraph extends Collection<Inline> {
   type = ComponentType.paragraph;
   structureType = StructureType.content;
 
-  static exchang(component: Paragraph, args: any[], customerUpdate: boolean = false) {
-    component.decorate.removeData("tag");
-    Reflect.setPrototypeOf(component, Paragraph.prototype);
+  static exchang(
+    component: Paragraph,
+    args: any[],
+    customerUpdate: boolean = false
+  ) {
+    Reflect.setPrototypeOf(component, this.prototype);
     updateComponent(component, customerUpdate);
     return component;
   }
@@ -27,6 +30,11 @@ export default class Paragraph extends Collection<Inline> {
     }
   }
 
+  exchangeToOther(builder: { exchang: Function }, args: any[]): operatorType {
+    builder.exchang(this, args);
+    return;
+  }
+
   addText(text: string, index?: number, customerUpdate: boolean = false) {
     let componentList: Character[] = [];
     for (let char of text) {
@@ -35,12 +43,30 @@ export default class Paragraph extends Collection<Inline> {
     return this.addChildren(componentList, index, customerUpdate);
   }
 
-  exchangeToOther(builder: { exchang: Function }, args: any[]): operatorType {
-    builder.exchang(this, args);
-    return;
+  removeChildren(
+    indexOrComponent: Inline | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (indexOrComponent < 0 && removeNumber === 1) {
+      let parent = this.parent;
+      if (!parent) return;
+      let prev = parent.getPrev(this);
+      if (prev) {
+        return prev.addIntoTail(this);
+      }
+      return [this, 0, 0];
+    }
+    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
-  changeCharDecorate(start: number, end: number, style?: storeData, data?: storeData, customerUpdate: boolean = false) {
+  changeCharDecorate(
+    start: number,
+    end: number,
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
     if (!style && !data) return;
     for (let i = start; i <= end; i++) {
       let decorate = this.children.get(i)?.decorate;
@@ -61,28 +87,6 @@ export default class Paragraph extends Collection<Inline> {
     this.children = this.children.push(...paragraph.children);
     updateComponent(this, customerUpdate);
     return [this, size, size];
-  }
-
-  removeChildren(
-    indexOrComponent: Inline | number,
-    removeNumber: number = 1,
-    customerUpdate: boolean = false
-  ): operatorType {
-    if (indexOrComponent < 0 && removeNumber === 1) {
-      let parent = this.parent;
-      if (!parent) return;
-      let prev = parent.getPrev(this);
-      if (prev) {
-        return prev.addIntoTail(this);
-      }
-      let grandParent = parent?.parent;
-      if (!grandParent) return;
-      let parentIndex = grandParent.findChildrenIndex(parent);
-      this.removeSelf();
-      this.addIntoParent(grandParent, parentIndex);
-      return [this, 0, 0];
-    }
-    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
   add(
@@ -108,18 +112,29 @@ export default class Paragraph extends Collection<Inline> {
     return this?.mergaParagraph(component, customerUpdate);
   }
 
-  split(index: number, customerUpdate: boolean = false): operatorType {
+  split(
+    index: number,
+    customerUpdate: boolean = false,
+    component?: Component
+  ): operatorType {
     let tail = this.children.slice(index).toArray();
     if (!this.parent) return;
     let componentIndex = this.parent.findChildrenIndex(this);
-    let newParagraph = new Paragraph(
+    // @ts-ignore
+    let newParagraph = new this.constructor(
       "",
       this.decorate.getStyle(),
       this.decorate.getData()
     );
-    newParagraph.addChildren(tail, 0);
     this.removeChildren(index, this.children.size);
-    return newParagraph.addIntoParent(this.parent, componentIndex + 1);
+    if (!component || tail.length !== 0) {
+      newParagraph.addChildren(tail, 0);
+      newParagraph.addIntoParent(this.parent, componentIndex + 1);
+    }
+    if (component) {
+      component.addIntoParent(this.parent, componentIndex + 1);
+    }
+    return component ? [component, 0, 0] : [newParagraph, 0, 0];
   }
 
   remove(
@@ -127,13 +142,12 @@ export default class Paragraph extends Collection<Inline> {
     end: number,
     customerUpdate: boolean = false
   ): operatorType {
-    end = end < 0 ? this.children.size + end : end;
+    end = end < 0 && start >= 0 ? this.children.size + end : end;
     if (start > end) {
       console.error(Error(`start：${start}、end：${end}不合法。`));
       return;
     }
-    this.removeChildren(start, end - start + 1, customerUpdate);
-    return [this, start, start];
+    return this.removeChildren(start, end - start + 1, customerUpdate);
   }
 
   modifyContentDecorate(
@@ -148,13 +162,7 @@ export default class Paragraph extends Collection<Inline> {
       console.error(Error(`start：${start}、end：${end}不合法。`));
       return;
     }
-    return this.changeCharDecorate(
-      start,
-      end,
-      style,
-      data,
-      customerUpdate
-    );
+    return this.changeCharDecorate(start, end, style, data, customerUpdate);
   }
 
   getContent() {

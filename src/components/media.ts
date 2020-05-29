@@ -1,9 +1,9 @@
 import Component, { operatorType } from "./component";
+import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
-import Paragraph from "./paragraph";
 
 export default class Media extends Component {
   src: string;
@@ -38,17 +38,23 @@ export default class Media extends Component {
     return this.removeSelf(customerUpdate);
   }
 
-  split(index: number, customerUpdate: boolean = false): operatorType {
+  split(
+    index: number,
+    customerUpdate: boolean = false,
+    component?: Component
+  ): operatorType {
     if (!this.parent) return;
-    let newParagraph = new Paragraph();
+    if (!component) {
+      component = new Paragraph();
+    }
     let componentIndex = this.parent.findChildrenIndex(this);
     if (index === 0) {
-      this.parent.addChildren(newParagraph, componentIndex);
+      this.parent.addChildren(component, componentIndex);
     }
     if (index === 1) {
-      this.parent.addChildren(newParagraph, componentIndex + 1);
+      this.parent.addChildren(component, componentIndex + 1);
     }
-    return [newParagraph, 0, 0];
+    return [component, 0, 0];
   }
 
   remove(

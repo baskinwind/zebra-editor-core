@@ -1,11 +1,11 @@
+import Component, { operatorType } from "./component";
+import Inline from "./inline";
 import Collection from "./collection";
 import Paragraph from "./paragraph";
-import { storeData } from "../decorate";
 import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
-import { operatorType } from "./component";
-import updateComponent from "../selection-operator/update-component";
+import { storeData } from "../decorate";
 
 type listType = "ol" | "ul";
 
@@ -21,7 +21,7 @@ class List extends Collection<ListItem> {
   }
 
   addChildren(
-    component: Paragraph | Paragraph[],
+    component: ListItem | ListItem[],
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
@@ -30,21 +30,27 @@ class List extends Collection<ListItem> {
       !Array.isArray(component) &&
       this.children.get(index - 1)?.children.size === 0
     ) {
-      if (!this.parent) return
+      if (!this.parent) return;
       let parentIndex = this.parent.findChildrenIndex(this);
       if (!parentIndex) return;
       this.removeChildren(index - 1, 1, customerUpdate);
       this.split(index - 1, customerUpdate);
-      component.decorate.removeData('tag');
+      Reflect.setPrototypeOf(component, Paragraph.prototype);
       return component.addIntoParent(this.parent, parentIndex + 1);
     }
-
-    if (Array.isArray(component)) {
-      component.forEach((item) => item.decorate.setData("tag", "li"));
-    } else {
-      component.decorate.setData("tag", "li");
-    }
     return super.addChildren(component, index, customerUpdate);
+  }
+
+  removeChildren(
+    indexOrComponent: Paragraph | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ): operatorType {
+    super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+    if (this.children.size === 0) {
+      this.removeSelf();
+    }
+    return;
   }
 
   addIntoTail(
@@ -55,18 +61,28 @@ class List extends Collection<ListItem> {
     return this.addChildren(component, undefined, customerUpdate);
   }
 
-  split(index: number, customerUpdate: boolean = false): operatorType {
+  split(
+    index: number,
+    customerUpdate: boolean = false,
+    component?: Component
+  ): operatorType {
     let tail = this.children.slice(index).toArray();
     this.removeChildren(index, this.children.size, customerUpdate);
     if (!this.parent) return;
     let componentIndex = this.parent.findChildrenIndex(this);
+    componentIndex += 1;
+    if (component) {
+      component.addIntoParent(this.parent, componentIndex, customerUpdate);
+      componentIndex += 1;
+    }
+    if (tail.length === 0) return;
     let newList = new List(
       this.listType,
       this.decorate.getStyle(),
       this.decorate.getData()
     );
     newList.addChildren(tail, 0, customerUpdate);
-    newList.addIntoParent(this.parent, componentIndex + 1, customerUpdate);
+    newList.addIntoParent(this.parent, componentIndex, customerUpdate);
     return;
   }
 
@@ -84,42 +100,77 @@ class List extends Collection<ListItem> {
 }
 
 export class ListItem extends Paragraph {
-
-  static exchang(component: Paragraph, args: any[]) {
-    component.decorate.setData("tag", "li");
-    Reflect.setPrototypeOf(component, ListItem.prototype);
+  static exchang(
+    component: Paragraph,
+    args: any[],
+    customerUpdate: boolean = false
+  ) {
+    component = super.exchang(component, args, true) as ListItem;
     if (!component.parent) return component;
     let prev = component.parent.getPrev(component);
-    let index = component.parent.findChildrenIndex(component)
+    let index = component.parent.findChildrenIndex(component);
     if (prev instanceof List) {
-      prev.addIntoTail(component);
+      prev.addIntoTail(component, customerUpdate);
     } else {
+      let parent = component.parent;
       component.removeSelf();
       let newList = new List(args[0]);
-      newList.addChildren(component);
-      newList.addIntoParent(component.parent, index);
+      newList.addChildren(component, undefined, customerUpdate);
+      newList.addIntoParent(parent, index, customerUpdate);
     }
     return component;
   }
 
-  exchangeToOther(builder: { exchang: Function }, args: any[]): operatorType {
-    if (!this.parent) return
-    if (!this.parent.parent) return
-    let index = this.parent.findChildrenIndex(this);
-    let parentIndex = this.parent.parent.findChildrenIndex(this.parent);
+  exchangeToOther(
+    builder: { exchang: Function },
+    args: any[],
+    customerUpdate: boolean = false
+  ): operatorType {
+    let parent = this.parent;
+    let grandParent = parent?.parent;
+    if (!parent) return;
+    if (!grandParent) return;
+    let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
     let newParagraph = builder.exchang(this, args, true);
-    this.parent.split(index);
-    newParagraph.addIntoParent(this.parent.parent, parentIndex + 1);
+    if (this.parent) {
+      let index = parent.findChildrenIndex(this);
+      this.parent.split(index, customerUpdate, newParagraph);
+    } else {
+      newParagraph.addIntoParent(grandParent, parentIndex);
+    }
     return [newParagraph, 0, 0];
   }
 
-  modifyDecorate(style?: storeData, data?: storeData, customerUpdate: boolean = false) {
-    // 列表项，不允许修改标签
-    if (data) {
-      delete data.tag;
+  removeChildren(
+    indexOrComponent: Inline | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (indexOrComponent === 0 && removeNumber === 1) {
+      let parent = this.parent;
+      if (!parent) return;
+      let prev = parent.getPrev(this);
+      if (!prev) {
+        let grandParent = parent.parent;
+        if (!grandParent) return;
+        let parentIndex = grandParent.findChildrenIndex(parent);
+        this.removeSelf();
+        this.addIntoParent(grandParent, parentIndex);
+        return [this, 0, 0];
+      }
     }
-    return super.modifyDecorate(style, data, customerUpdate);
+    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+  }
+
+  render() {
+    const builder = getContentBuilder();
+    return builder.buildParagraph(
+      this.id,
+      this.getContent(),
+      this.decorate.getStyle(),
+      { ...this.decorate.getData(), tag: "li" }
+    );
   }
 }
 

@@ -38,8 +38,7 @@ export const getContainer = (
     ) {
       return element;
     }
-    if(element.dataset.structure === StructureType.content){
-      
+    if (element.dataset.structure === StructureType.content) {
     }
   }
   return getContainer(element.parentElement);
@@ -66,9 +65,9 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-    node: Node | Element;
-    index: number;
-  }
+      node: Node | Element;
+      index: number;
+    }
   | undefined => {
   let dom = document.getElementById(cursor.id);
   let node = dom as Element;

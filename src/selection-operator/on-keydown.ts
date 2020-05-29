@@ -1,6 +1,6 @@
-import deleteSelection from "./delete-selection";
-import input from "./input";
 import escapeKey from "./escape-key";
+import input from "./input";
+import deleteSelection from "./delete-selection";
 
 const onKeyDown = (event: KeyboardEvent) => {
   if (escapeKey(event)) return;

@@ -1,17 +1,22 @@
 import Paragraph from "./paragraph";
-import { storeData } from "../decorate";
+import { getContentBuilder } from "../builder";
 import updateComponent from "../selection-operator/update-component";
+import { storeData } from "../decorate";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 class Title extends Paragraph {
   titleType: titleType;
 
-  static exchang(component: Paragraph, args: any[], customerUpdate: boolean = false) {
-    component.decorate.setData("tag", args[0] || 'h1');
-    Reflect.setPrototypeOf(component, Title.prototype);
-    updateComponent(component, customerUpdate);
-    return component;
+  static exchang(
+    component: Paragraph,
+    args: any[],
+    customerUpdate: boolean = false
+  ) {
+    let newComponet = super.exchang(component, args, true) as Title;
+    newComponet.titleType = args[0] as titleType | "h1";
+    updateComponent(newComponet);
+    return newComponet;
   }
 
   constructor(
@@ -22,7 +27,16 @@ class Title extends Paragraph {
   ) {
     super(text, style, data);
     this.titleType = type;
-    this.decorate.setData("tag", this.titleType);
+  }
+
+  render() {
+    const builder = getContentBuilder();
+    return builder.buildParagraph(
+      this.id,
+      this.getContent(),
+      this.decorate.getStyle(),
+      { ...this.decorate.getData(), tag: this.titleType }
+    );
   }
 }
 

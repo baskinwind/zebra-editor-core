@@ -1,11 +1,11 @@
-import getSelection from "./get-selection";
-import { getComponentById } from "../components/util";
-import Character from "../components/character";
-import focusAt from "./focus-at";
 import Inline from "../components/inline";
-import deleteSelection from "./delete-selection";
-import { getCursorPosition } from "./util";
+import Character from "../components/character";
 import InlineImage from "../components/inline-image";
+import getSelection from "./get-selection";
+import deleteSelection from "./delete-selection";
+import focusAt from "./focus-at";
+import { getComponentById } from "../components/util";
+import { getCursorPosition } from "./util";
 
 const input = (charOrInline: string | Inline, event?: Event) => {
   deleteSelection();

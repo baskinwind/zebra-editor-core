@@ -1,12 +1,13 @@
 import Collection from "./collection";
-import ComponentType from "../const/component-type";
+import List from "./list";
 import Media from "./media";
 import Paragraph from "./paragraph";
-import { getContentBuilder } from "../builder/index";
+import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
 
-export default class Article extends Collection<Paragraph | Media> {
+export default class Article extends Collection<List | Paragraph | Media> {
   type = ComponentType.article;
   structureType = StructureType.collection;
   actived = true;

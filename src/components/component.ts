@@ -1,10 +1,10 @@
 import Collection from "./collection";
-import ComponentType from "../const/component-type";
 import Decorate from "../decorate";
+import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import updateComponent from "../selection-operator/update-component";
 import { getId, saveComponent } from "./util";
 import { storeData } from "../decorate/index";
-import updateComponent from "../selection-operator/update-component";
 
 export type operatorType = [Component, number, number] | undefined;
 
@@ -22,7 +22,7 @@ export default abstract class Component {
   }
 
   exchangeToOther(builder: { exchang: Function }, args: any[]) {
-    return
+    return;
   }
 
   addIntoParent(
@@ -61,7 +61,8 @@ export default abstract class Component {
 
   split(
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
+    component?: Component
   ): operatorType {
     return;
   }
