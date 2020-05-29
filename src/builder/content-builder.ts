@@ -22,6 +22,43 @@ const contentBuilder = {
     });
     return article;
   },
+  buildTable(
+    id: string,
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ) {
+    const table = document.createElement("table");
+    table.id = id;
+    table.dataset.structure = StructureType.collection;
+    componentList.forEach(item => table.appendChild(item));
+    return table
+  },
+  buildTableRow(
+    id: string,
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ) {
+    const tr = document.createElement("tr");
+    tr.id = id;
+    tr.dataset.structure = StructureType.collection;
+    componentList.forEach(item => tr.appendChild(item));
+    return tr;
+  },
+  buildTableCell(
+    id: string,
+    cellType: 'th' | 'td',
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ) {
+    const td = document.createElement(cellType);
+    td.id = id;
+    td.dataset.structure = StructureType.collection;
+    componentList.forEach(item => td.appendChild(item));
+    return td;
+  },
   buildList(
     id: string,
     componentList: HTMLElement[],

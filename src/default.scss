@@ -1,6 +1,20 @@
 .zebra-draft-root {
   white-space: pre-wrap;
   outline: none;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    p {
+      margin: 0;
+    }
+    td,
+    th {
+      border: 1px solid #a5a5a5;
+      padding: 0;
+      width: 100px;
+      word-break: break-all;
+    }
+  }
 
   .zebra-draft-image {
     margin: 0;

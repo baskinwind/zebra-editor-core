@@ -5,7 +5,7 @@ const webpack = require("webpack");
 module.exports = {
   mode: "development",
   entry: "./dev/index.js",
-  devtool: "eval-source-map",
+  devtool: "source-map",
   module: {
     rules: [
       {

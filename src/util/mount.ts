@@ -2,7 +2,7 @@ import Article from "../components/article";
 import createEmptyArticle from "./create-empty-article";
 import onClick from "../selection-operator/on-click";
 import onKeyDown from "../selection-operator/on-keydown";
-import getSelection from "../selection-operator/get-selection";
+import { flushSelection } from "../selection-operator/get-selection";
 
 const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   if (!article) article = createEmptyArticle();
@@ -17,7 +17,9 @@ const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   editorWrap.classList.add("zebra-draft-root");
   editorWrap.appendChild(article.render());
   editorWrap.addEventListener("blur", (event) => {
-    getSelection();
+    try {
+      flushSelection();
+    } catch{ }
   });
   editorWrap.addEventListener("click", (event) => {
     onClick(event);

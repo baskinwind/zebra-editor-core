@@ -8,6 +8,8 @@ enum ComponentType {
   paragraph = "PARAGRAPH",
   list = "LIST",
   table = "TABLE",
+  tableCell = "TABLECELL",
+  tableRow = "TABLEROW",
   article = "ARTICLE",
 }
 export default ComponentType;

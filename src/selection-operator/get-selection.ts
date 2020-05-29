@@ -20,6 +20,11 @@ let selectionStore: selectionType = {
   ],
 };
 
+const flushSelection = () => {
+  if (selectionStore.range[0].id && selectionStore.range[1].id) return;
+  getSelection();
+}
+
 // 获取选区信息
 const getSelection = () => {
   let root = [...document.querySelectorAll(".zebra-draft-root")];
@@ -75,7 +80,6 @@ const getSelection = () => {
     endOffset = focusOffset;
     endNode = section?.focusNode;
   }
-
   // 修正光标节点的位置
   // 获得光标距离所在段落的位置
   let startContainer: HTMLElement = getContainer(startNode);
@@ -132,3 +136,7 @@ const getSelection = () => {
 };
 
 export default getSelection;
+
+export {
+  flushSelection
+}
