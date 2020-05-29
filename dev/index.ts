@@ -1,11 +1,14 @@
-import mount from "./util/mount";
-import Article from "./components/article";
-import Title from "./components/title";
-import Media from "./components/media";
-import ComponentType from "./const/component-type";
-import Paragraph from "./components/paragraph";
-import InlineImage from "./components/inline-image";
-import List, { ListItem } from "./components/list";
+import "../src/default.scss";
+import "./operator";
+
+import mount from "../src/util/mount";
+import Article from "../src/components/article";
+import Title from "../src/components/title";
+import Media from "../src/components/media";
+import ComponentType from "../src/const/component-type";
+import Paragraph from "../src/components/paragraph";
+import InlineImage from "../src/components/inline-image";
+import List, { ListItem } from "../src/components/list";
 
 let article = new Article();
 article.addChildren(new Title("h3", "A Song of Ice and Fire"));
@@ -48,3 +51,5 @@ ol.addChildren(new ListItem("order list part 5"));
 ol.addIntoParent(article);
 
 mount("root", article);
+
+export default article;

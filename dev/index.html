@@ -4,8 +4,53 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Draft Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   </head>
+  <script id="operator-template" type="text/x-template">
+    <div class="operator">
+      <button @click="showArticle">show article</button>
+      <div>
+        <p>控制段落内容样式：</p>
+        <button @click="bold">bold</button>
+        <button @click="deleteType">delete</button>
+        <button @click="underline">underline</button>
+        <button @click="itailc">itailc</button>
+        <button @click="red">red</button>
+        <button @click="clearStyle">clearStyle</button>
+      </div>
+      <div>
+        <p>添加内联的块：</p>
+        <button @click="insertInlineImage">insertInlineImage</button>
+      </div>
+      <div>
+        <p>添加块级元素：</p>
+        <button @click="insertImage">insertImage</button>
+      </div>
+      <div>
+        <p>切换块级类型：</p>
+        <button @click="modifyType('h1')">h1</button>
+        <button @click="modifyType('h2')">h2</button>
+        <button @click="modifyType('h3')">h3</button>
+        <button @click="modifyType('h4')">h4</button>
+        <button @click="modifyType('h5')">h5</button>
+        <button @click="modifyType('h6')">h6</button>
+        <button @click="modifyType('normal')">normal</button>
+        <button @click="modifyType('li')">li</button>
+      </div>
+      <div>
+        <p>修改块级样式：</p>
+        <button @click="modifyStyle('padding', '10px')">padding10</button>
+        <button @click="modifyStyle('margin', '10px')">margin10</button>
+        <button @click="modifyStyle('border', '1px solid')">border</button>
+        <button @click="modifyStyle('backgroundColor', 'grey')">backgroundGrey</button>
+        <button @click="modifyStyle('color', 'white')">textWhite</button>
+      </div>
+    </div>
+  </script>
   <body>
-    <div id="root"></div>
+    <div class="flex">
+      <div id="operator"></div>
+      <div class="draft-wrap" id="root"></div>
+    </div>
   </body>
 </html>

@@ -4,7 +4,7 @@ const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
-  entry: "./src/index.ts",
+  entry: "./dev/index.ts",
   devtool: "eval-source-map",
   module: {
     rules: [
@@ -14,13 +14,13 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /.css$/,
-        use: ["style-loader", "css-loader"],
+        test: /\.s?css$/,
+        use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"],
       },
     ],
   },
   devServer: {
-    clientLogLevel: "warning",
+    clientLogLevel: "silent",
     hot: true,
     compress: true,
   },

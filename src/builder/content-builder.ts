@@ -102,9 +102,7 @@ export default {
     image.src = src;
     image.alt = data.alt || "";
     image.addEventListener("load", () => {
-      setTimeout(() => {
-        figure.classList.remove("zebra-draft-image-loading");
-      }, 300);
+      figure.classList.remove("zebra-draft-image-loading");
     });
     if (data.link) {
       const link = document.createElement("a");
