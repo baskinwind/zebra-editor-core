@@ -10,25 +10,19 @@
 <script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
-        <div>
-          <span>强制刷新文章</span>
-          <button @click="showArticle">update</button>
-        </div>
-        <div>
-          <span>log Html</span>
-          <button @click="logHtml">log</button>
-        </div>
+        <button @click="showArticle">强制更新</button>
+        <button @click="logHtml">输出HTML</button>
       </div>
 
       <div>
         <p>控制选中内容样式：</p>
         <div>
-          <button @click="bold">bold</button>
-          <button @click="deleteType">delete</button>
-          <button @click="underline">underline</button>
-          <button @click="itailc">itailc</button>
-          <button @click="red">red</button>
-          <button @click="clearStyle">clearStyle</button>
+          <button @click="bold">加粗</button>
+          <button @click="deleteType">删除</button>
+          <button @click="underline">下划线</button>
+          <button @click="itailc">斜体</button>
+          <button @click="red">红色</button>
+          <button @click="clearStyle">清除所有样式</button>
         </div>
         <p>自定义选中内容样式：</p>
         <div>
@@ -44,11 +38,11 @@
       <div>
         <p>修改段落样式：</p>
         <div>
-          <button @click="modifyStyle('padding', '10px')">padding10</button>
-          <button @click="modifyStyle('margin', '10px')">margin10</button>
-          <button @click="modifyStyle('backgroundColor', 'grey')">bgGrey</button>
-          <button @click="modifyStyle('color', 'white')">textWhite</button>
-          <button @click="modifyStyle('clear', 'style')">clearStyle</button>
+          <button @click="modifyStyle('padding', '10px')">内边距10</button>
+          <button @click="modifyStyle('margin', '10px')">外边距10</button>
+          <button @click="modifyStyle('backgroundColor', 'grey')">灰色背景</button>
+          <button @click="modifyStyle('color', 'white')">白色字体</button>
+          <button @click="modifyStyle('clear', 'style')">清除所有样式</button>
         </div>
         <p>自定义段落样式：</p>
         <div>
@@ -63,9 +57,9 @@
       </div>
       <div>
         <p>
-          <span>添加段落内图片：</span>
-          <button @click="insertInlineImage">insertInlineImage</button></p>
-        <p>自定义图片地址：</p>
+          <span>随机添加表情：</span>
+          <button @click="insertInlineImage">添加</button></p>
+        <p>使用网络图片：</p>
         <div>
           <input type="text" v-model="inlineImage">
           <button @click="customerInlineImage">确定</button>
@@ -74,9 +68,9 @@
       <div>
         <p>
           <span>添加占用一行的图片：</span>
-          <button @click="insertImage">insertImage</button>
+          <button @click="insertImage">添加</button>
         </p>
-        <p>自定义图片地址：</p>
+        <p>使用网络图片：</p>
         <div>
           <input type="text" v-model="image">
           <button @click="customerImage">确定</button>

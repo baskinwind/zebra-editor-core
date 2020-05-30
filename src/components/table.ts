@@ -5,7 +5,7 @@ import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
 import { List } from "immutable";
-import { operatorType } from "./component";
+import { operatorType, classType } from "./component";
 
 class Table extends Collection<TableRow>{
   type: ComponentType = ComponentType.table;
@@ -20,13 +20,15 @@ class Table extends Collection<TableRow>{
     this.col = col;
     this.needHead = needHead;
     this.decorate.setData("tag", 'table');
+    this.decorate.setStyle('width', "100%");
+    this.decorate.setStyle('borderCollapse', "collapse");
     let list = [];
     if (needHead) {
-      list.push(new TableRow(col, 'th'))
+      list.push(new TableRow(col, 'th'));
     }
     for (let i = 0; i < row; i++) {
       let item = new TableRow(col);
-      list.push(item)
+      list.push(item);
     }
     this.addChildren(list);
   }
@@ -92,15 +94,18 @@ class TableCell extends Collection<TableItem> {
 }
 
 class TableItem extends Paragraph {
+  exchangeToOther(builder: classType, args: any[]): operatorType {
+    console.error('表格内段落不允许切换！！');
+    return;
+  }
+
   remove(
     start: number,
     end: number,
     customerUpdate: boolean = false
   ) {
-    console.log(start, end);
-
     if (start < 0) {
-      return
+      return;
     }
     return super.remove(start, end, customerUpdate);
   }

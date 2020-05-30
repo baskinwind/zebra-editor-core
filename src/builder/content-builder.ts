@@ -31,8 +31,13 @@ const contentBuilder = {
     const table = document.createElement("table");
     table.id = id;
     table.dataset.structure = StructureType.collection;
+    if (style) {
+      for (let key in style) {
+        table.style[key] = style[key];
+      }
+    }
     componentList.forEach(item => table.appendChild(item));
-    return table
+    return table;
   },
   buildTableRow(
     id: string,
@@ -43,6 +48,11 @@ const contentBuilder = {
     const tr = document.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.collection;
+    if (style) {
+      for (let key in style) {
+        tr.style[key] = style[key];
+      }
+    }
     componentList.forEach(item => tr.appendChild(item));
     return tr;
   },
@@ -56,6 +66,11 @@ const contentBuilder = {
     const td = document.createElement(cellType);
     td.id = id;
     td.dataset.structure = StructureType.collection;
+    if (style) {
+      for (let key in style) {
+        td.style[key] = style[key];
+      }
+    }
     componentList.forEach(item => td.appendChild(item));
     return td;
   },
@@ -138,6 +153,8 @@ const contentBuilder = {
     let image = document.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
+    image.style.maxWidth = '100%';
+    image.style.display = "block";
     image.addEventListener("load", () => {
       figure.classList.remove("zebra-draft-image-loading");
     });
@@ -206,10 +223,14 @@ const contentBuilder = {
     let image = document.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
+    image.style.verticalAlign = "bottom";
+    image.style.width = "1em";
     image.addEventListener("load", () => {
+      image.style.width = "";
       span.classList.remove("zebra-draft-image-loading");
     });
     image.addEventListener("error", () => {
+      image.style.width = "";
       span.classList.remove("zebra-draft-image-loading");
     });
     if (data.link) {

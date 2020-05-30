@@ -4,11 +4,11 @@ export interface mapData {
 
 const formatStyle = (styleName: string) => {
   return styleName.replace(/([A-Z])/, '-$1').toLocaleLowerCase();
-}
+};
 
 const getStyle = (style: mapData) => {
   return Object.keys(style).map((key) => `${formatStyle(key)}:${style[key]};`);
-}
+};
 
 const htmlBuilder = {
   buildArticle(
@@ -22,6 +22,43 @@ const htmlBuilder = {
       (acc, item) => acc + item,
       ""
     )}</article>`;
+  },
+  buildTable(
+    id: string,
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ) {
+    let className = "zebra-draft-table";
+    return `<table class="${className}" style="${getStyle(style)}">${componentList.reduce(
+      (acc, item) => acc + item,
+      ""
+    )}</table>`;
+  },
+  buildTableRow(
+    id: string,
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ) {
+    let className = "zebra-draft-tr";
+    return `<tr class="${className}" style="${getStyle(style)}">${componentList.reduce(
+      (acc, item) => acc + item,
+      ""
+    )}</tr>`;
+  },
+  buildTableCell(
+    id: string,
+    cellType: 'th' | 'td',
+    componentList: HTMLElement[],
+    style: mapData,
+    data: mapData
+  ) {
+    let className = `zebra-draft-${cellType}`;
+    return `<${cellType} class="${className}" style="${getStyle(style)}">${componentList.reduce(
+      (acc, item) => acc + item,
+      ""
+    )}</${cellType}>`;
   },
   buildList(
     id: string,

@@ -1,5 +1,4 @@
 .zebra-draft-root {
-  white-space: pre-wrap;
   outline: none;
   table {
     width: 100%;
@@ -9,9 +8,9 @@
     }
     td,
     th {
-      border: 1px solid #a5a5a5;
-      padding: 0;
       width: 100px;
+      padding: 0;
+      border: 1px solid #a5a5a5;
       word-break: break-all;
     }
   }
@@ -20,7 +19,7 @@
     margin: 0;
     &.zebra-draft-image-loading {
       background: #efefef;
-      padding: 10% 0;
+      padding: 50px 0;
       &::before {
         content: "图片加载中···";
         color: #a5a5a5;
@@ -32,8 +31,6 @@
       }
     }
     img {
-      max-width: 100%;
-      display: block;
       opacity: 1;
       transition: opacity 1s;
     }
@@ -47,7 +44,6 @@
       }
     }
     img {
-      vertical-align: bottom;
       opacity: 1;
       transition: opacity 1s;
     }

@@ -21,7 +21,7 @@ const deleteSelection = (key?: string) => {
       if (!startPosition) return;
       let node = startPosition.node;
       let index = startPosition.index;
-      if (index > 0) {
+      if (index > 1) {
         if (node.nodeValue?.length) {
           node.nodeValue = `${node.nodeValue.slice(
             0,
@@ -32,7 +32,7 @@ const deleteSelection = (key?: string) => {
           node.parentElement?.remove();
         }
       }
-      let focus = component.remove(start - 1, start - 1, start > 0);
+      let focus = component.remove(start - 1, start - 1, start > 1);
       focusAt(focus);
       return;
     }

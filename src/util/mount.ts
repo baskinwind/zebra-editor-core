@@ -15,6 +15,7 @@ const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   let editorWrap = document.createElement("div");
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("zebra-draft-root");
+  editorWrap.style.whiteSpace = 'pre-wrap';
   editorWrap.appendChild(article.render());
   editorWrap.addEventListener("blur", (event) => {
     try {
