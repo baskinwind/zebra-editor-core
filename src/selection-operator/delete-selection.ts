@@ -9,6 +9,12 @@ const deleteSelection = (key?: string) => {
   let selection = getSelection();
   let isEnter = key === "Enter";
   let isBackspace = key === "Backspace";
+  let article = getComponentById<Article>("article");
+  if (selection.selectStructure && isEnter) {
+    focusAt(article.addChildren(new Paragraph(), selection.range[0].offset));
+    return;
+  }
+  if (selection.selectStructure) return;
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回
   if (selection.isCollapsed && !(isEnter || isBackspace)) return;
   // 删除光标前一个位置
@@ -32,23 +38,19 @@ const deleteSelection = (key?: string) => {
           node.parentElement?.remove();
         }
       }
-      let focus = component.remove(start - 1, start - 1, start > 1);
-      focusAt(focus);
+      focusAt(component.remove(start - 1, start - 1, start > 1));
       return;
     }
-    let focus = component.remove(start, start + 1);
-    focusAt(focus);
+    focusAt(component.remove(start, start + 1));
     return;
   }
   if (selection.isCollapsed && isEnter) {
     let component = getComponentById(selection.range[0].id);
-    let focus = component.split(selection.range[0].offset);
-    focusAt(focus);
+    focusAt(component.split(selection.range[0].offset));
     return;
   }
   let start = selection.range[0];
   let end = selection.range[1];
-  let article = getComponentById<Article>("article");
 
   // 根据开始和结束的 id 获取所有选中的组件 id
   let idList = article.getIdList(start.id, end.id)[2];

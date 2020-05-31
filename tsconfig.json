@@ -21,7 +21,8 @@
       "shortid"
     ],
     "suppressImplicitAnyIndexErrors": true,
-    "allowJs": true
+    "allowJs": true,
+    "sourceMap": true,
   },
   "include": [
     "src",

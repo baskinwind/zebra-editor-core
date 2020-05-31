@@ -49,6 +49,8 @@ ol.addIntoParent(article);
 let table = new Table(3, 9);
 table.addIntoParent(article);
 
+article.addChildren(new Paragraph());
+
 mount("root", article);
 
 export default article;

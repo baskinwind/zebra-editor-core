@@ -10,6 +10,7 @@ import { getCursorPosition } from "./util";
 const input = (charOrInline: string | Inline, event?: Event) => {
   deleteSelection();
   let selection = getSelection();
+  if (selection.selectStructure) return;
   let component = getComponentById(selection.range[0].id);
   let offset = selection.range[0].offset;
   let startPosition = getCursorPosition(selection.range[0]);
@@ -29,8 +30,8 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       typeof charOrInline === "string"
         ? new Character(charOrInline)
         : charOrInline;
-    let focus = component.add(inline, offset);
-    return focusAt(focus);
+    focusAt(component.add(inline, offset));
+    return;
   }
 
   component.add(charOrInline, offset, true);

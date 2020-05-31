@@ -1,13 +1,17 @@
 import ComponentType from "../const/component-type";
 import { getElememtSize, getContainer, cursorType, getParent } from "./util";
+import { getComponentById } from "../components/util";
+import Article from "../components/article";
 
 export interface selectionType {
   isCollapsed: boolean;
+  selectStructure?: boolean;
   range: [cursorType, cursorType];
 }
 
 let selectionStore: selectionType = {
   isCollapsed: true,
+  selectStructure: false,
   range: [
     {
       id: "",
@@ -23,7 +27,7 @@ let selectionStore: selectionType = {
 const flushSelection = () => {
   if (selectionStore.range[0].id && selectionStore.range[1].id) return;
   getSelection();
-}
+};
 
 // 获取选区信息
 const getSelection = () => {
@@ -46,8 +50,24 @@ const getSelection = () => {
   if (
     anchorNode instanceof HTMLElement &&
     anchorNode.dataset.type === ComponentType.article
-  )
+  ) {
+    if (section.anchorOffset > 0) {
+      let article = getComponentById<Article>('article');
+      let child = article.children.get(section.anchorOffset - 1);
+      return {
+        isCollapsed: true,
+        selectStructure: true,
+        range: [{
+          id: child?.id || '',
+          offset: section.anchorOffset
+        }, {
+          id: child?.id || '',
+          offset: section.anchorOffset
+        }]
+      };
+    }
     return selectionStore;
+  }
   // 判断开始节点和结束节点的位置关系，0：同一节点，2：focusNode 在 anchorNode 节点前，4：anchorNode 在 focusNode 节点前
   let posiType = section.anchorNode.compareDocumentPosition(section.focusNode);
   let anchorOffect = section.anchorOffset;
@@ -139,4 +159,4 @@ export default getSelection;
 
 export {
   flushSelection
-}
+};
