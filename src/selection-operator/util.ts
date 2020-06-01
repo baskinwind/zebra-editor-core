@@ -18,12 +18,15 @@ export const getParent = (
     if (element.dataset.structure === StructureType.content) {
       return element;
     }
+    if (element.dataset.structure === StructureType.collection) {
+      return getContainer(element.children[0]);
+    }
   }
   return getParent(element.parentElement);
 };
 
 export const getContainer = (
-  element: HTMLElement | Node | null | undefined
+  element: Element | Node | null | undefined
 ): HTMLElement => {
   if (element === null || element === undefined)
     throw Error("容器节点获取失败");
@@ -38,7 +41,8 @@ export const getContainer = (
     ) {
       return element;
     }
-    if (element.dataset.structure === StructureType.content) {
+    if (element.dataset.structure === StructureType.collection) {
+      return getContainer(element.children[0]);
     }
   }
   return getContainer(element.parentElement);
@@ -65,9 +69,9 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-    node: Node | Element;
-    index: number;
-  }
+      node: Node | Element | HTMLElement;
+      index: number;
+    }
   | undefined => {
   let dom = document.getElementById(cursor.id);
   let node = dom as Element;

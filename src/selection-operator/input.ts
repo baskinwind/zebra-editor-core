@@ -7,10 +7,18 @@ import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition } from "./util";
 
-const input = (charOrInline: string | Inline, event?: Event) => {
+const input = (
+  charOrInline: string | Inline,
+  isComposition: boolean = false
+) => {
   deleteSelection();
   let selection = getSelection();
   if (selection.selectStructure) return;
+  // 修正混合输入时，光标位置获取错误的问题
+  if (isComposition && typeof charOrInline === "string") {
+    selection.range[0].offset -= charOrInline.length;
+    selection.range[1].offset -= charOrInline.length;
+  }
   let component = getComponentById(selection.range[0].id);
   let offset = selection.range[0].offset;
   let startPosition = getCursorPosition(selection.range[0]);
@@ -22,6 +30,7 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       startPosition.index === startNode.nodeValue?.length);
 
   if (
+    startNode instanceof HTMLImageElement ||
     startNode instanceof HTMLBRElement ||
     escape ||
     charOrInline instanceof Character
@@ -30,14 +39,14 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       typeof charOrInline === "string"
         ? new Character(charOrInline)
         : charOrInline;
-    focusAt(component.add(inline, offset));
-    return;
+    return focusAt(component.add(inline, offset));
   }
-
-  component.add(charOrInline, offset, true);
   let node = startPosition?.node;
-  if (!node) return;
+  component.add(charOrInline, offset, true);
   if (typeof charOrInline === "string") {
+    if (charOrInline.length > 1) {
+      return;
+    }
     node.nodeValue = `${node.nodeValue?.slice(
       0,
       startPosition?.index
@@ -47,6 +56,7 @@ const input = (charOrInline: string | Inline, event?: Event) => {
       offset: offset + 1,
     });
   }
+
   if (charOrInline instanceof InlineImage) {
     if (node instanceof HTMLImageElement) {
       node.parentElement?.replaceWith(

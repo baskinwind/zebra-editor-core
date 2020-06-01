@@ -1,7 +1,9 @@
 import Article from "../components/article";
 import createEmptyArticle from "./create-empty-article";
 import onClick from "../selection-operator/on-click";
-import onKeyDown from "../selection-operator/on-keydown";
+import onComposttion from "../selection-operator/on-composition";
+import escapeKey from "../selection-operator/escape-key";
+import onKeyUp from "../selection-operator/on-keyup";
 import { flushSelection } from "../selection-operator/get-selection";
 
 const mount = (idOrDom: string | HTMLElement, article?: Article) => {
@@ -13,20 +15,41 @@ const mount = (idOrDom: string | HTMLElement, article?: Article) => {
     root = idOrDom;
   }
   let editorWrap = document.createElement("div");
+  // 是否正在混合输入
+  let isComposition = false;
+  // 混合输入是否结束，包括输入结束的选中输入
+  let compositionEnd = true;
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("zebra-draft-root");
-  editorWrap.style.whiteSpace = 'pre-wrap';
+  editorWrap.style.whiteSpace = "pre-wrap";
   editorWrap.appendChild(article.render());
   editorWrap.addEventListener("blur", (event) => {
     try {
       flushSelection();
-    } catch{ }
+    } catch {}
   });
   editorWrap.addEventListener("click", (event) => {
     onClick(event);
   });
   editorWrap.addEventListener("keydown", (event) => {
-    onKeyDown(event);
+    escapeKey(event);
+  });
+  editorWrap.addEventListener("keyup", (event) => {
+    if (!compositionEnd) {
+      if (!isComposition) {
+        compositionEnd = true;
+      }
+      return;
+    }
+    onKeyUp(event);
+  });
+  editorWrap.addEventListener("compositionstart", (event) => {
+    isComposition = true;
+    compositionEnd = false;
+  });
+  editorWrap.addEventListener("compositionend", (event) => {
+    onComposttion(event as any);
+    isComposition = false;
   });
   editorWrap.addEventListener("dragstart", (event) => {
     event.preventDefault();

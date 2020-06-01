@@ -24,13 +24,23 @@ let selectionStore: selectionType = {
   ],
 };
 
+let flushTimer: any = null;
+
 const flushSelection = () => {
-  if (selectionStore.range[0].id && selectionStore.range[1].id) return;
-  getSelection();
+  if (flushTimer) return;
+  flushTimer = setTimeout(() => {
+    getSelection();
+    flushTimer = null;
+  }, 300);
+};
+
+const getBeforeSelection = () => {
+  return selectionStore;
 };
 
 // 获取选区信息
-const getSelection = () => {
+// isComposition 是否为混合输入
+const getSelection = (isComposition: boolean = false) => {
   let root = [...document.querySelectorAll(".zebra-draft-root")];
   if (!root) return selectionStore;
   let section = window.getSelection();
@@ -52,18 +62,21 @@ const getSelection = () => {
     anchorNode.dataset.type === ComponentType.article
   ) {
     if (section.anchorOffset > 0) {
-      let article = getComponentById<Article>('article');
+      let article = getComponentById<Article>("article");
       let child = article.children.get(section.anchorOffset - 1);
       return {
         isCollapsed: true,
         selectStructure: true,
-        range: [{
-          id: child?.id || '',
-          offset: section.anchorOffset
-        }, {
-          id: child?.id || '',
-          offset: section.anchorOffset
-        }]
+        range: [
+          {
+            id: child?.id || "",
+            offset: section.anchorOffset,
+          },
+          {
+            id: child?.id || "",
+            offset: section.anchorOffset,
+          },
+        ],
       };
     }
     return selectionStore;
@@ -157,6 +170,4 @@ const getSelection = () => {
 
 export default getSelection;
 
-export {
-  flushSelection
-};
+export { flushSelection, getBeforeSelection };

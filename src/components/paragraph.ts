@@ -100,17 +100,19 @@ class Paragraph extends Collection<Inline> {
   }
 
   add(
-    component: Inline | string,
+    component: Inline[] | Inline | string,
     index: number,
     customerUpdate: boolean = false
   ) {
     if (typeof component === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
-      component = new Character(
-        component,
-        decorate?.getStyle(),
-        decorate?.getData()
-      );
+      let list = [];
+      for (let char of component) {
+        list.push(
+          new Character(char, decorate?.getStyle(), decorate?.getData())
+        );
+      }
+      component = list;
     }
     return this.addChildren(component, index, customerUpdate);
   }

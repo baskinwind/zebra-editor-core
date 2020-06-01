@@ -23,8 +23,10 @@ body {
   flex: 0 0 30%;
   font-size: 14px;
   button,
-  input {
-    margin: 5px 0 5px;
+  input,
+  select {
+    margin: 2px 0;
+    height: 2em;
   }
   .key {
     display: inline-block;

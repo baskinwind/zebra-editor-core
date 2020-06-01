@@ -1,5 +1,5 @@
 import { cursorType, getCursorPosition } from "./util";
-import getSelection from "./get-selection";
+import getSelection, { getBeforeSelection } from "./get-selection";
 
 // 选中 start 到 end 的内容
 const focusAt = (
@@ -7,10 +7,9 @@ const focusAt = (
   end?: cursorType
 ) => {
   if (!start) {
-    let selecttion = getSelection();
-    if (!selecttion) return;
-    start = selecttion.range[0];
-    end = selecttion.range[1];
+    let selection = getBeforeSelection();
+    start = selection.range[0];
+    end = selection.range[1];
   }
   if (Array.isArray(start)) {
     end = { id: start[0].id, offset: start[2] };

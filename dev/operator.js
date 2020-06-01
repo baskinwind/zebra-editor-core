@@ -22,8 +22,8 @@ new Vue({
     return {
       inlineStyle: "fontSize",
       inlineStyleValue: "20px",
-      blockStyle: "textAlign",
-      blockStyleValue: "center",
+      blockStyle: "lineHeight",
+      blockStyleValue: "2em",
       inlineImage: "",
       image: "",
     };
@@ -40,9 +40,6 @@ new Vue({
     },
     deleteType() {
       modifySelectionDecorate({ textDecoration: "line-through" });
-    },
-    underline() {
-      modifySelectionDecorate({ textDecoration: "underline" });
     },
     itailc() {
       modifySelectionDecorate({ fontStyle: "italic" });
@@ -96,8 +93,8 @@ new Vue({
     modifyType(tag) {
       if (tag === "normal") {
         exchangeParagraph(Paragraph, tag);
-      } else if (tag === "li") {
-        exchangeParagraph(ListItem, "ul");
+      } else if (tag === "ul" || tag === "ol") {
+        exchangeParagraph(ListItem, tag);
       } else {
         exchangeParagraph(Title, tag);
       }

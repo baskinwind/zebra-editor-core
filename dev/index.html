@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Draft Demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
-<script id="operator-template" type="text/x-template">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Draft Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
         <button @click="showArticle">强制更新</button>
@@ -15,11 +14,25 @@
       </div>
 
       <div>
-        <p>控制选中内容样式：</p>
+        <p>转换段落类型：</p>
+        <div>
+          <button @click="modifyType('h1')">一级标题</button>
+          <button @click="modifyType('h2')">二级标题</button>
+          <button @click="modifyType('h3')">三级标题</button>
+          <button @click="modifyType('h4')">四级标题</button>
+          <button @click="modifyType('h5')">五级标题</button>
+          <button @click="modifyType('h6')">六级标题</button>
+          <button @click="modifyType('normal')">普通段落</button>
+          <button @click="modifyType('ul')">无序列表</button>
+          <button @click="modifyType('ol')">有序列表</button>
+        </div>
+      </div>
+
+      <div>
+        <p>设置选中内容样式：</p>
         <div>
           <button @click="bold">加粗</button>
           <button @click="deleteType">删除</button>
-          <button @click="underline">下划线</button>
           <button @click="itailc">斜体</button>
           <button @click="red">红色</button>
           <button @click="clearStyle">清除所有样式</button>
@@ -38,8 +51,7 @@
       <div>
         <p>修改段落样式：</p>
         <div>
-          <button @click="modifyStyle('padding', '10px')">内边距10</button>
-          <button @click="modifyStyle('margin', '10px')">外边距10</button>
+          <button @click="modifyStyle('textAlign', 'center')">文字居中</button>
           <button @click="modifyStyle('backgroundColor', 'grey')">灰色背景</button>
           <button @click="modifyStyle('color', 'white')">白色字体</button>
           <button @click="modifyStyle('clear', 'style')">清除所有样式</button>
@@ -57,7 +69,7 @@
       </div>
       <div>
         <p>
-          <span>随机添加表情：</span>
+          <span>段落内添加表情图片：</span>
           <button @click="insertInlineImage">添加</button></p>
         <p>使用网络图片：</p>
         <div>
@@ -76,27 +88,13 @@
           <button @click="customerImage">确定</button>
         </div>
       </div>
-      <div>
-        <p>切换块级类型：</p>
-        <div>
-          <button @click="modifyType('h1')">h1</button>
-          <button @click="modifyType('h2')">h2</button>
-          <button @click="modifyType('h3')">h3</button>
-          <button @click="modifyType('h4')">h4</button>
-          <button @click="modifyType('h5')">h5</button>
-          <button @click="modifyType('h6')">h6</button>
-          <button @click="modifyType('normal')">normal</button>
-          <button @click="modifyType('li')">li</button>
-        </div>
-      </div>
     </div>
   </script>
 
-<body>
-  <div class="flex">
-    <div id="operator"></div>
-    <div class="draft-wrap" id="root"></div>
-  </div>
-</body>
-
+  <body>
+    <div class="flex">
+      <div id="operator"></div>
+      <div class="draft-wrap" id="root"></div>
+    </div>
+  </body>
 </html>

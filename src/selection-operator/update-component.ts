@@ -28,7 +28,6 @@ const updateComponent = (
 };
 
 const update = (component: Component) => {
-  console.log(component.id);
   let dom = document.getElementById(component.id);
   if (dom) {
     if (component.actived) {

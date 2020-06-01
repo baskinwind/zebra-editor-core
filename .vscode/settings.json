@@ -1,5 +1,21 @@
 {
   "editor.fontFamily": "Source Code Pro",
   "javascript.format.semicolons": "insert",
-  "typescript.format.semicolons": "insert"
+  "typescript.format.semicolons": "insert",
+  "fileheader.customMade": {},
+  "fileheader.configObj": {
+    "autoAdd": false,
+    "autoAlready": false,
+    "prohibitAutoAdd": [
+      "scss",
+      "sass",
+      "less",
+      "stylus",
+      "json",
+      "md",
+      "html",
+      "htm",
+      "sh"
+    ]
+  }
 }

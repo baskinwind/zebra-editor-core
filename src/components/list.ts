@@ -6,6 +6,7 @@ import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
+import updateComponent from "../selection-operator/update-component";
 
 type listType = "ol" | "ul";
 
@@ -17,7 +18,11 @@ class List extends Collection<ListItem> {
   constructor(type: listType = "ul", style?: storeData, data?: storeData) {
     super(style, data);
     this.listType = type;
-    this.decorate.setData("tag", this.listType);
+  }
+
+  setListType(type: listType = "ul") {
+    this.listType = type;
+    updateComponent(this);
   }
 
   createEmpty() {
@@ -81,7 +86,7 @@ class List extends Collection<ListItem> {
       this.id,
       children,
       this.decorate.getStyle(),
-      this.decorate.getData()
+      { ...this.decorate.getData(), tag: this.listType }
     );
   }
 }
@@ -117,7 +122,13 @@ class ListItem extends Paragraph {
     args: any[],
     customerUpdate: boolean = false
   ): operatorType {
-    if (builder === ListItem) return;
+    if (builder === ListItem) {
+      if (!this.parent) return;
+      let parent = this.parent as List;
+      if (args[0] === parent.listType) return;
+      parent.setListType(args[0]);
+      return;
+    }
     let parent = this.parent;
     let grandParent = parent?.parent;
     if (!parent) return;
