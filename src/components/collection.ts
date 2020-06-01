@@ -109,8 +109,6 @@ abstract class Collection<T extends Component> extends Component {
     let newCollection = this.createEmpty();
     if (!component || tail.length !== 0) {
       newCollection.addChildren(tail, 0, true);
-      console.log(this.parent);
-
       newCollection.addIntoParent(this.parent, componentIndex + 1);
     }
     if (component) {
