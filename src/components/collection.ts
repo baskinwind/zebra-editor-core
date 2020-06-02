@@ -21,17 +21,16 @@ abstract class Collection<T extends Component> extends Component {
       component.parent = this;
       component.actived = true;
     });
-    let addIndex = index !== undefined ? index : this.children.size;
+    let addIndex = typeof index === "number" ? index : this.children.size;
     this.children = this.children.splice(addIndex, 0, ...components);
-
-    if (this.structureType === StructureType.collection) {
-      updateComponent(components, customerUpdate);
-      return [components[0], 0, 0];
-    }
 
     if (this.structureType === StructureType.content) {
       updateComponent(this, customerUpdate);
       return [this, addIndex + components.length, addIndex + components.length];
+    }
+    if (this.structureType === StructureType.collection) {
+      updateComponent(components, customerUpdate);
+      return;
     }
   }
 
@@ -41,6 +40,10 @@ abstract class Collection<T extends Component> extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     let removeIndex: number;
+    if (removeNumber < 0) {
+      console.error(Error(`子组件移除数量错误：${removeNumber}`));
+      return;
+    }
     if (removeNumber === 0) return;
     if (typeof indexOrComponent === "number") {
       removeIndex = indexOrComponent;
@@ -53,9 +56,6 @@ abstract class Collection<T extends Component> extends Component {
         return;
       }
       removeIndex = temp;
-    }
-    if (removeNumber < 0) {
-      removeNumber = this.children.size - removeIndex;
     }
 
     let removedComponent = this.children.slice(
@@ -83,23 +83,23 @@ abstract class Collection<T extends Component> extends Component {
     oldComponent: T,
     customerUpdate: boolean = false
   ): operatorType {
-    let index = oldComponent ? this.findChildrenIndex(oldComponent) : -1;
+    let index = this.findChildrenIndex(oldComponent);
+    if (index === -1) {
+      console.error(Error("该组件不是此组件子组件！"));
+      return;
+    }
     component.actived = true;
     component.parent = this;
     oldComponent.actived = false;
     oldComponent.parent = undefined;
-    if (index !== -1) {
-      this.children = this.children.splice(index, 1, component);
-    } else {
-      this.children = this.children.push(component);
-    }
+    this.children = this.children.splice(index, 1, component);
     updateComponent([oldComponent, component], customerUpdate);
     return [component, 0, 0];
   }
 
   split(
     index: number,
-    component?: Component,
+    component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
     if (!this.parent) return;
@@ -109,16 +109,18 @@ abstract class Collection<T extends Component> extends Component {
     let newCollection = this.createEmpty();
     if (!component || tail.length !== 0) {
       newCollection.addChildren(tail, 0, true);
-      newCollection.addIntoParent(this.parent, componentIndex + 1);
+      this.parent.addChildren(
+        newCollection,
+        componentIndex + 1,
+        customerUpdate
+      );
     }
     if (component) {
-      component.addIntoParent(this.parent, componentIndex + 1, customerUpdate);
+      this.parent.addChildren(component, componentIndex + 1, customerUpdate);
     }
-    return component
-      ? [component, 0, 0]
-      : newCollection.structureType === StructureType.collection
-        ? undefined
-        : [newCollection, 0, 0];
+    return newCollection.structureType === StructureType.collection
+      ? undefined
+      : [newCollection, 0, 0];
   }
 
   findChildrenIndex(idOrComponent: string | T): number {

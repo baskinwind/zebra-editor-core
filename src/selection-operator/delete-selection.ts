@@ -11,8 +11,9 @@ const deleteSelection = (key?: string) => {
   let isBackspace = key === "Backspace";
   let article = getComponentById<Article>("article");
   if (selection.selectStructure && isEnter) {
-    focusAt(article.addChildren(new Paragraph(), selection.range[0].offset));
-    return;
+    return focusAt(
+      article.addChildren(new Paragraph(), selection.range[0].offset)
+    );
   }
   if (selection.selectStructure) return;
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回
@@ -27,31 +28,27 @@ const deleteSelection = (key?: string) => {
       if (!startPosition) return;
       let node = startPosition.node;
       let index = startPosition.index;
-      if (index > 1) {
-        if (node.nodeValue?.length) {
-          node.nodeValue = `${node.nodeValue.slice(
-            0,
-            index - 1
-          )}${node.nodeValue.slice(index)}`;
-        }
-        if (node instanceof HTMLImageElement) {
-          node.parentElement?.remove();
-        }
+      if (node.nodeValue?.length) {
+        node.nodeValue = `${node.nodeValue.slice(
+          0,
+          index - 1
+        )}${node.nodeValue.slice(index)}`;
       }
-      focusAt(component.remove(start - 1, start - 1, start > 1));
-      return;
+      if (node instanceof HTMLImageElement) {
+        node.parentElement?.remove();
+      }
+      return focusAt(component.remove(start - 1, start - 1, start > 1));
     }
-    focusAt(component.remove(start, start + 1));
-    return;
+    return focusAt(component.remove(start, start + 1));
   }
+
   if (selection.isCollapsed && isEnter) {
     let component = getComponentById(selection.range[0].id);
-    focusAt(component.split(selection.range[0].offset));
-    return;
+    return focusAt(component.split(selection.range[0].offset));
   }
+
   let start = selection.range[0];
   let end = selection.range[1];
-
   // 根据开始和结束的 id 获取所有选中的组件 id
   let idList = article.getIdList(start.id, end.id)[2];
   if (idList.length === 0) return;
@@ -83,7 +80,7 @@ const deleteSelection = (key?: string) => {
     }
     focusAt({
       id: lastComponent.id,
-      offset: 0,
+      offset: 0
     });
     return;
   }
@@ -95,7 +92,7 @@ const deleteSelection = (key?: string) => {
   }
   focusAt({
     id: firstComponent.id,
-    offset: start.offset,
+    offset: start.offset
   });
   return;
 };

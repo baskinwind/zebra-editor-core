@@ -35,16 +35,13 @@ const input = (
     escape ||
     charOrInline instanceof Character
   ) {
-    let inline =
-      typeof charOrInline === "string"
-        ? new Character(charOrInline)
-        : charOrInline;
-    return focusAt(component.add(inline, offset));
+    return focusAt(component.add(charOrInline, offset));
   }
+
   let node = startPosition?.node;
   component.add(charOrInline, offset, true);
   if (typeof charOrInline === "string") {
-    if (charOrInline.length > 1) {
+    if (isComposition) {
       return;
     }
     node.nodeValue = `${node.nodeValue?.slice(
@@ -53,7 +50,7 @@ const input = (
     )}${charOrInline}${node.nodeValue?.slice(startPosition?.index)}`;
     return focusAt({
       id: component.id,
-      offset: offset + 1,
+      offset: offset + charOrInline.length
     });
   }
 
@@ -74,7 +71,7 @@ const input = (
     }
     return focusAt({
       id: component.id,
-      offset: offset + 1,
+      offset: offset + 1
     });
   }
 };

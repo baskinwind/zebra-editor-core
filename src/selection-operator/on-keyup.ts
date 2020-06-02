@@ -9,7 +9,6 @@ const onKeyUp = (event: KeyboardEvent) => {
   // 字符输入
   if (key.length === 1) {
     input(event.key);
-    return;
   }
 };
 

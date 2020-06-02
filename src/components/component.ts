@@ -33,7 +33,7 @@ abstract class Component {
   createEmpty() {
     return Reflect.construct(this.constructor, [
       this.decorate.getStyle(),
-      this.decorate.getData(),
+      this.decorate.getData()
     ]);
   }
 
@@ -61,7 +61,7 @@ abstract class Component {
   }
 
   add(
-    component: any,
+    component: string | Component | Component[],
     index: number,
     customerUpdate: boolean = false
   ): operatorType {
@@ -77,7 +77,7 @@ abstract class Component {
 
   split(
     index: number,
-    component?: Component,
+    component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
     return;

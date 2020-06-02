@@ -3,6 +3,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
+import updateComponent from "../selection-operator/update-component";
 
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;
@@ -17,6 +18,7 @@ class InlineImage extends Inline {
 
   setSrc(src: string) {
     this.src = src;
+    updateComponent(this);
   }
 
   render() {

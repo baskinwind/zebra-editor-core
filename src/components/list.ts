@@ -74,7 +74,7 @@ class List extends Collection<ListItem> {
     customerUpdate: boolean = false
   ): operatorType {
     component.removeSelf();
-    component = ListItem.exchangeOnly(component, []);
+    ListItem.exchangeOnly(component, []);
     return this.addChildren(component, undefined, customerUpdate);
   }
 

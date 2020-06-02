@@ -36,7 +36,7 @@ const contentBuilder = {
         table.style[key] = style[key];
       }
     }
-    componentList.forEach(item => table.appendChild(item));
+    componentList.forEach((item) => table.appendChild(item));
     return table;
   },
   buildTableRow(
@@ -53,12 +53,12 @@ const contentBuilder = {
         tr.style[key] = style[key];
       }
     }
-    componentList.forEach(item => tr.appendChild(item));
+    componentList.forEach((item) => tr.appendChild(item));
     return tr;
   },
   buildTableCell(
     id: string,
-    cellType: 'th' | 'td',
+    cellType: "th" | "td",
     componentList: HTMLElement[],
     style: mapData,
     data: mapData
@@ -71,7 +71,7 @@ const contentBuilder = {
         td.style[key] = style[key];
       }
     }
-    componentList.forEach(item => td.appendChild(item));
+    componentList.forEach((item) => td.appendChild(item));
     return td;
   },
   buildList(
@@ -153,7 +153,7 @@ const contentBuilder = {
     let image = document.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
-    image.style.maxWidth = '100%';
+    image.style.maxWidth = "100%";
     image.style.display = "block";
     image.addEventListener("load", () => {
       figure.classList.remove("zebra-draft-image-loading");
@@ -243,7 +243,7 @@ const contentBuilder = {
     }
     span.appendChild(child);
     return span;
-  },
+  }
 };
 
 export default contentBuilder;

@@ -13,10 +13,6 @@ class Character extends Inline {
     this.content = content;
   }
 
-  setContent(char: string) {
-    this.content = char;
-  }
-
   render() {
     return this.content;
   }
