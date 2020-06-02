@@ -15,21 +15,21 @@ let selectionStore: selectionType = {
   range: [
     {
       id: "",
-      offset: 0,
+      offset: 0
     },
     {
       id: "",
-      offset: 0,
-    },
-  ],
+      offset: 0
+    }
+  ]
 };
 
 let flushTimer: any = null;
 
 const flushSelection = () => {
   if (flushTimer) return;
+  getSelection();
   flushTimer = setTimeout(() => {
-    getSelection();
     flushTimer = null;
   }, 300);
 };
@@ -70,13 +70,13 @@ const getSelection = (isComposition: boolean = false) => {
         range: [
           {
             id: child?.id || "",
-            offset: section.anchorOffset,
+            offset: section.anchorOffset
           },
           {
             id: child?.id || "",
-            offset: section.anchorOffset,
-          },
-        ],
+            offset: section.anchorOffset
+          }
+        ]
       };
     }
     return selectionStore;
@@ -157,13 +157,13 @@ const getSelection = (isComposition: boolean = false) => {
     range: [
       {
         id: startParent.id,
-        offset: startOffset,
+        offset: startOffset
       },
       {
         id: endParent.id,
-        offset: endOffset,
-      },
-    ],
+        offset: endOffset
+      }
+    ]
   };
   return selectionStore;
 };

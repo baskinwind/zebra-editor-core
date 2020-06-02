@@ -216,23 +216,14 @@ const contentBuilder = {
   ): HTMLElement {
     const span = document.createElement("span");
     span.id = id;
-    span.classList.add("zebra-draft-inline-image", "zebra-draft-image-loading");
+    span.classList.add("zebra-draft-inline-image");
     span.dataset.type = ComponentType.inlineImage;
     span.dataset.structure = StructureType.partialContent;
     let child;
     let image = document.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
-    image.style.verticalAlign = "bottom";
-    image.style.width = "1em";
-    image.addEventListener("load", () => {
-      image.style.width = "";
-      span.classList.remove("zebra-draft-image-loading");
-    });
-    image.addEventListener("error", () => {
-      image.style.width = "";
-      span.classList.remove("zebra-draft-image-loading");
-    });
+    image.style.minWidth = "1em";
     if (data.link) {
       const link = document.createElement("a");
       link.href = data.link;

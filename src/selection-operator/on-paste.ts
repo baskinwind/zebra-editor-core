@@ -13,16 +13,20 @@ const onPaste = (event: ClipboardEvent) => {
   let selection = getSelection();
   let nowComponent = getComponentById(selection.range[0].id);
   let index = selection.range[0].offset;
-  nowComponent.add(rowData[0], index);
+  let focus = nowComponent.add(rowData[0], index, rowData.length !== 1);
   if (rowData.length === 1) {
-    return;
+    return focusAt(focus);
   }
-  nowComponent.add(rowData[rowData.length - 1], index + rowData[0].length);
+  nowComponent.add(
+    rowData[rowData.length - 1],
+    index + rowData[0].length,
+    true
+  );
   let list = [];
   for (let i = 1; i < rowData.length - 1; i++) {
     list.push(new Paragraph(rowData[i]));
   }
-  let focus = nowComponent.split(index + rowData[0].length, list);
+  focus = nowComponent.split(index + rowData[0].length, list);
   let endId = focus![0].id;
   return focusAt({
     id: endId,

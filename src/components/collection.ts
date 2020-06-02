@@ -29,7 +29,7 @@ abstract class Collection<T extends Component> extends Component {
       return [this, addIndex + components.length, addIndex + components.length];
     }
     if (this.structureType === StructureType.collection) {
-      updateComponent(components, customerUpdate);
+      updateComponent(components.reverse(), customerUpdate);
       return;
     }
   }

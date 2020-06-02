@@ -31,7 +31,7 @@ class Paragraph extends Collection<Inline> {
   constructor(text?: string, style?: storeData, data?: storeData) {
     super(style, data);
     if (text) {
-      this.addText(text);
+      this.addText(text, 0, true);
     }
   }
 
@@ -104,6 +104,7 @@ class Paragraph extends Collection<Inline> {
     index: number,
     customerUpdate: boolean = false
   ) {
+    debugger;
     if (typeof component === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];

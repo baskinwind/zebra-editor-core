@@ -5,6 +5,7 @@ import onKeyUp from "../selection-operator/on-keyup";
 import onPaste from "../selection-operator/on-paste";
 import onComposttion from "../selection-operator/on-composition";
 import { flushSelection } from "../selection-operator/get-selection";
+import onKeyDown from "../selection-operator/on-keydown";
 
 const createDraft = (root: HTMLElement, article: Article) => {
   let editorWrap = document.createElement("div");
@@ -25,7 +26,7 @@ const createDraft = (root: HTMLElement, article: Article) => {
     onClick(event);
   });
   editorWrap.addEventListener("keydown", (event) => {
-    escapeKey(event);
+    onKeyDown(event);
   });
   editorWrap.addEventListener("keyup", (event) => {
     if (!compositionEnd) {

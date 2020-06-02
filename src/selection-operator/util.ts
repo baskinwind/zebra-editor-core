@@ -69,7 +69,7 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-      node: Node | Element | HTMLElement;
+      node: Node | Element;
       index: number;
     }
   | undefined => {
@@ -81,7 +81,7 @@ export const getCursorPosition = (
   if (dom.dataset.type === ComponentType.image) {
     return {
       node,
-      index: cursor.offset === 0 ? 0 : 1,
+      index: cursor.offset === 0 ? 0 : 1
     };
   }
   for (let i = 0; i < dom.children.length; i++) {
@@ -103,12 +103,12 @@ export const getCursorPosition = (
     let last = dom.children[dom.children.length - 1];
     return {
       node: last.childNodes[0],
-      index: getElememtSize(last),
+      index: getElememtSize(last)
     };
   }
   if (!node?.childNodes[0]) return;
   return {
     node: node?.childNodes[0],
-    index,
+    index
   };
 };

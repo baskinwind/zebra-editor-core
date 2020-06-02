@@ -24,30 +24,41 @@ const focusAt = (
       endPosition = temp;
     }
   }
+  focusNode(startPosition, endPosition);
+};
+
+type focusNodeType = {
+  node: Element | Node;
+  index: number;
+};
+
+const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
   let section = window.getSelection();
   section?.removeAllRanges();
   let range = new Range();
-  if (startPosition.node instanceof HTMLImageElement) {
-    if (startPosition.index === 0) {
-      range.setStartBefore(startPosition.node);
+  if (start.node instanceof HTMLImageElement) {
+    if (start.index === 0) {
+      range.setStartBefore(start.node);
     }
-    if (startPosition.index === 1) {
-      range.setStartAfter(startPosition.node);
+    if (start.index === 1) {
+      range.setStartAfter(start.node);
     }
   } else {
-    range.setStart(startPosition.node, startPosition.index);
+    range.setStart(start.node, start.index);
   }
-  if (endPosition.node instanceof HTMLImageElement) {
-    if (endPosition.index === 0) {
-      range.setEndBefore(endPosition.node);
+  if (end.node instanceof HTMLImageElement) {
+    if (end.index === 0) {
+      range.setEndBefore(end.node);
     }
-    if (endPosition.index === 1) {
-      range.setEndAfter(endPosition.node);
+    if (end.index === 1) {
+      range.setEndAfter(end.node);
     }
   } else {
-    range.setEnd(endPosition.node, endPosition.index);
+    range.setEnd(end.node, end.index);
   }
   section?.addRange(range);
 };
 
 export default focusAt;
+
+export { focusNode };

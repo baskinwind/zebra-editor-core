@@ -3,7 +3,7 @@ import Character from "../components/character";
 import InlineImage from "../components/inline-image";
 import getSelection from "./get-selection";
 import deleteSelection from "./delete-selection";
-import focusAt from "./focus-at";
+import focusAt, { focusNode } from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition } from "./util";
 
@@ -30,7 +30,8 @@ const input = (
       startPosition.index === startNode.nodeValue?.length);
 
   if (
-    startNode instanceof HTMLImageElement ||
+    (startNode instanceof HTMLImageElement &&
+      typeof charOrInline === "string") ||
     startNode instanceof HTMLBRElement ||
     escape ||
     charOrInline instanceof Character
@@ -48,18 +49,13 @@ const input = (
       0,
       startPosition?.index
     )}${charOrInline}${node.nodeValue?.slice(startPosition?.index)}`;
-    return focusAt({
-      id: component.id,
-      offset: offset + charOrInline.length
-    });
+    return focusNode({ node: node, index: startPosition?.index + 1 });
   }
 
   if (charOrInline instanceof InlineImage) {
+    let newInline = charOrInline.render();
     if (node instanceof HTMLImageElement) {
-      node.parentElement?.replaceWith(
-        node.parentElement,
-        charOrInline.render()
-      );
+      node.parentElement?.replaceWith(node.parentElement, newInline);
     } else {
       let nodeParent = node.parentElement;
       if (!nodeParent) return;
@@ -67,12 +63,9 @@ const input = (
       node.nodeValue = node.nodeValue?.slice(0, startPosition?.index) || "";
       nodeClone.childNodes[0].nodeValue =
         nodeClone.childNodes[0].nodeValue?.slice(startPosition?.index) || "";
-      nodeParent.replaceWith(nodeParent, charOrInline.render(), nodeClone);
+      nodeParent.replaceWith(nodeParent, newInline, nodeClone);
     }
-    return focusAt({
-      id: component.id,
-      offset: offset + 1
-    });
+    return focusNode({ node: newInline, index: 1 });
   }
 };
 
