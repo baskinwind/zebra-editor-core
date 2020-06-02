@@ -28,7 +28,7 @@ const deleteSelection = (key?: string) => {
       if (!startPosition) return;
       let node = startPosition.node;
       let index = startPosition.index;
-      if (node.nodeValue?.length) {
+      if (index && node.nodeValue?.length) {
         node.nodeValue = `${node.nodeValue.slice(
           0,
           index - 1

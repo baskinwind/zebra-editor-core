@@ -4,6 +4,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
+import { Collection } from "immutable";
 
 class Media extends Component {
   src: string;
@@ -32,7 +33,7 @@ class Media extends Component {
   }
 
   addIntoTail(
-    component: Paragraph,
+    component: Component,
     customerUpdate: boolean = false
   ): operatorType {
     return this.removeSelf(customerUpdate);

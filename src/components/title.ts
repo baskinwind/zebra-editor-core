@@ -2,11 +2,12 @@ import Paragraph from "./paragraph";
 import updateComponent from "../selection-operator/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import { operatorType, classType } from "./component";
+import ContentCollection from "./content-collection";
+import { classType, operatorType } from "./component";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-class Title extends Paragraph {
+class Title extends ContentCollection {
   titleType: titleType;
 
   static exchange(
@@ -30,15 +31,15 @@ class Title extends Paragraph {
     this.titleType = type;
   }
 
-  setListType(type: titleType = "h1") {
-    this.titleType = type;
-    updateComponent(this);
-  }
-
   exchangeToOther(builder: classType, args: any[]): operatorType {
     if (builder === this.constructor && args[0] === this.titleType) return;
     builder.exchange(this, args);
     return;
+  }
+
+  setListType(type: titleType = "h1") {
+    this.titleType = type;
+    updateComponent(this);
   }
 
   createEmpty() {
@@ -51,8 +52,7 @@ class Title extends Paragraph {
   }
 
   render() {
-    const builder = getContentBuilder();
-    return builder.buildParagraph(
+    return getContentBuilder().buildParagraph(
       this.id,
       this.getContent(),
       this.decorate.getStyle(),

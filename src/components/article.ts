@@ -6,11 +6,25 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
+import { operatorType } from "./component";
+import Table from "./table";
 
-class Article extends Collection<List | Paragraph | Media> {
+type articleChildType = List | Paragraph | Media | Table;
+
+class Article extends Collection<articleChildType> {
   type = ComponentType.article;
   structureType = StructureType.collection;
   actived = true;
+
+  whenChildHeadDelete(
+    component: articleChildType,
+    index: number
+  ): operatorType {
+    console.log(index);
+    component.removeSelf();
+    this.addChildren(component, index);
+    return;
+  }
 
   render() {
     console.log("test getContent couter");

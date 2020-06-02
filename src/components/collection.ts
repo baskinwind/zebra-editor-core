@@ -6,6 +6,10 @@ import updateComponent from "../selection-operator/update-component";
 abstract class Collection<T extends Component> extends Component {
   children: List<T> = List();
 
+  isEmpty() {
+    return this.children.size === 0;
+  }
+
   addChildren(
     component: T | T[],
     index?: number,
@@ -21,6 +25,7 @@ abstract class Collection<T extends Component> extends Component {
       component.parent = this;
       component.actived = true;
     });
+
     let addIndex = typeof index === "number" ? index : this.children.size;
     this.children = this.children.splice(addIndex, 0, ...components);
 
@@ -41,19 +46,21 @@ abstract class Collection<T extends Component> extends Component {
   ): operatorType {
     let removeIndex: number;
     if (removeNumber < 0) {
-      console.error(Error(`子组件移除数量错误：${removeNumber}`));
-      return;
+      throw Error(`移除数量必须为自然数，不能小于 0：${removeNumber}`);
     }
     if (removeNumber === 0) return;
+
     if (typeof indexOrComponent === "number") {
+      if (indexOrComponent < 0) {
+        throw Error(`移除起始位置必须为自然数，不能小于 0：${removeNumber}`);
+      }
       removeIndex = indexOrComponent;
     } else {
       let temp = this.children.findIndex(
         (component) => component.id === indexOrComponent.id
       );
       if (temp === -1) {
-        console.error(Error("移除失败：该组件不在父组件列表内。"));
-        return;
+        throw Error("移除失败：该组件不在父组件列表内。");
       }
       removeIndex = temp;
     }
@@ -85,8 +92,7 @@ abstract class Collection<T extends Component> extends Component {
   ): operatorType {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
-      console.error(Error("该组件不是此组件子组件！"));
-      return;
+      throw Error("传入组件不是此组件的子组件！");
     }
     component.actived = true;
     component.parent = this;

@@ -37,7 +37,15 @@ abstract class Component {
     ]);
   }
 
+  isEmpty() {
+    return true;
+  }
+
   exchangeToOther(builder: classType, args: any[]) {
+    return;
+  }
+
+  whenChildHeadDelete(component: Component, index: number): operatorType {
     return;
   }
 

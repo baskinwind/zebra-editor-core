@@ -33,6 +33,26 @@ class List extends Collection<ListItem> {
     );
   }
 
+  whenChildHeadDelete(component: ListItem, index: number): operatorType {
+    if (index !== 0) {
+      let prev = this.children.get(index - 1);
+      if (!prev) return;
+      let size = prev.children.size;
+      prev.addIntoTail(component);
+      return [prev, size, size];
+    }
+    if (!this.parent) return;
+    component.removeSelf();
+    index = this.parent.findChildrenIndex(this);
+    this.parent.whenChildHeadDelete(component, index);
+    // if (!this.parent) return;
+    // let index = this.parent.findChildrenIndex(this);
+    // component.removeSelf();
+    // Paragraph.exchangeOnly(component);
+    // component.addIntoParent(this.parent, index);
+    // return [component, 0, 0];
+  }
+
   addChildren(
     component: ListItem | ListItem[],
     index?: number,
@@ -143,32 +163,6 @@ class ListItem extends Paragraph {
       newParagraph.addIntoParent(grandParent, parentIndex);
     }
     return [newParagraph, 0, 0];
-  }
-
-  removeChildren(
-    indexOrComponent: Inline | number,
-    removeNumber: number = 1,
-    customerUpdate: boolean = false
-  ): operatorType {
-    if (
-      typeof indexOrComponent === "number" &&
-      indexOrComponent < 0 &&
-      removeNumber === 1
-    ) {
-      let parent = this.parent;
-      if (!parent) return;
-      let prev = parent.getPrev(this);
-      if (!prev) {
-        let grandParent = parent.parent;
-        if (!grandParent) return;
-        let parentIndex = grandParent.findChildrenIndex(parent);
-        this.removeSelf();
-        Paragraph.exchangeOnly(this);
-        this.addIntoParent(grandParent, parentIndex);
-        return [this, 0, 0];
-      }
-    }
-    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
   render() {

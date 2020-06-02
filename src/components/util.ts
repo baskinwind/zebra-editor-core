@@ -26,3 +26,10 @@ export const getComponentById = <T extends Component = Component>(
   }
   return store[id];
 };
+
+export const createError = (message: string, info?: any) => {
+  let error = new Error(message);
+  // @ts-ignore
+  error.draftInfo = info;
+  return error;
+};

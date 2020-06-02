@@ -5,6 +5,7 @@ import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
 import { operatorType, classType } from "./component";
+import { createError } from "./util";
 
 class Table extends Collection<TableRow> {
   type: ComponentType = ComponentType.table;
@@ -155,8 +156,7 @@ class TableCell extends Collection<TableItem> {
 
 class TableItem extends Paragraph {
   exchangeToOther(builder: classType, args: any[]): operatorType {
-    console.error("表格内段落不允许切换！！");
-    return;
+    throw createError("表格内段落不允许切换类型！！", this);
   }
 
   remove(start: number, end: number, customerUpdate: boolean = false) {
