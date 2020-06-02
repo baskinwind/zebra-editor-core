@@ -11,24 +11,12 @@ abstract class Collection<T extends Component> extends Component {
   }
 
   addChildren(
-    component: T | T[],
+    components: T[],
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    let components: T[];
-    if (!Array.isArray(component)) {
-      components = [component];
-    } else {
-      components = component;
-    }
-    components.forEach((component) => {
-      component.parent = this;
-      component.actived = true;
-    });
-
     let addIndex = typeof index === "number" ? index : this.children.size;
     this.children = this.children.splice(addIndex, 0, ...components);
-
     if (this.structureType === StructureType.content) {
       updateComponent(this, customerUpdate);
       return [this, addIndex + components.length, addIndex + components.length];
@@ -49,7 +37,6 @@ abstract class Collection<T extends Component> extends Component {
       throw Error(`移除数量必须为自然数，不能小于 0：${removeNumber}`);
     }
     if (removeNumber === 0) return;
-
     if (typeof indexOrComponent === "number") {
       if (indexOrComponent < 0) {
         throw Error(`移除起始位置必须为自然数，不能小于 0：${removeNumber}`);
@@ -85,112 +72,17 @@ abstract class Collection<T extends Component> extends Component {
     }
   }
 
-  replaceChild(
-    component: T,
-    oldComponent: T,
-    customerUpdate: boolean = false
-  ): operatorType {
-    let index = this.findChildrenIndex(oldComponent);
-    if (index === -1) {
-      throw Error("传入组件不是此组件的子组件！");
-    }
-    component.actived = true;
-    component.parent = this;
-    oldComponent.actived = false;
-    oldComponent.parent = undefined;
-    this.children = this.children.splice(index, 1, component);
-    updateComponent([oldComponent, component], customerUpdate);
-    return [component, 0, 0];
-  }
-
-  split(
+  splitChild(
     index: number,
-    component?: Component | Component[],
     customerUpdate: boolean = false
-  ): operatorType {
+  ): [Collection<T>, Collection<T>] | undefined {
     if (!this.parent) return;
     let tail = this.children.slice(index).toArray();
     this.removeChildren(index, this.children.size - index, customerUpdate);
-    let componentIndex = this.parent.findChildrenIndex(this);
     let newCollection = this.createEmpty();
-    if (!component || tail.length !== 0) {
-      newCollection.addChildren(tail, 0, true);
-      this.parent.addChildren(
-        newCollection,
-        componentIndex + 1,
-        customerUpdate
-      );
-    }
-    if (component) {
-      this.parent.addChildren(component, componentIndex + 1, customerUpdate);
-    }
-    return newCollection.structureType === StructureType.collection
-      ? undefined
-      : [newCollection, 0, 0];
-  }
-
-  findChildrenIndex(idOrComponent: string | T): number {
-    let id =
-      typeof idOrComponent === "string" ? idOrComponent : idOrComponent.id;
-    return this.children.findIndex((item) => item.id === id);
-  }
-
-  getPrev(idOrComponent: string | T) {
-    let index = this.findChildrenIndex(idOrComponent);
-    if (index <= 0) return;
-    return this.children.get(index - 1);
-  }
-
-  getNext(idOrComponent: string | T) {
-    let index = this.findChildrenIndex(idOrComponent);
-    if (index === -1 || index === this.children.size - 1) return;
-    return this.children.get(index + 1);
-  }
-
-  getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
-    if (this.children.size === 0) return [false, false, []];
-    if (!startId) {
-      startId = this.children.get(0)?.id as string;
-    }
-    if (!endId) {
-      endId = startId;
-    }
-    let res: string[] = [];
-    let startFlag = false;
-    let endFlag = false;
-
-    this.children.forEach((component) => {
-      if (endFlag) return;
-      if (
-        component instanceof Collection &&
-        component.structureType === StructureType.collection
-      ) {
-        let temp = component.getIdList(startFlag ? "" : startId, endId);
-        startFlag = startFlag || temp[0];
-        endFlag = endFlag || temp[1];
-        res.push(...temp[2]);
-        return;
-      }
-      if (component.id === startId) {
-        res.push(component.id);
-        startFlag = true;
-        if (component.id === endId) {
-          endFlag = true;
-        }
-        return;
-      }
-      if (component.id === endId) {
-        res.push(component.id);
-        endFlag = true;
-        return;
-      }
-      if (startFlag && !endFlag) {
-        res.push(component.id);
-      }
-    });
-    // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
-    return [startFlag, endFlag, res];
-  }
+    newCollection.addChildren(tail, 0, true);
+    return [this, newCollection];
+  };
 }
 
 export default Collection;

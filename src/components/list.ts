@@ -1,4 +1,4 @@
-import { operatorType, classType } from "./component";
+import Component, { operatorType, classType } from "./component";
 import Inline from "./inline";
 import Collection from "./collection";
 import Paragraph from "./paragraph";
@@ -7,10 +7,12 @@ import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
 import updateComponent from "../selection-operator/update-component";
+import StructureCollection from "./structure-collection";
+import ContentCollection from "./content-collection";
 
 type listType = "ol" | "ul";
 
-class List extends Collection<ListItem> {
+class List extends StructureCollection<ListItem> {
   type = ComponentType.list;
   structureType = StructureType.collection;
   listType: listType;
@@ -20,17 +22,17 @@ class List extends Collection<ListItem> {
     this.listType = type;
   }
 
-  setListType(type: listType = "ul") {
-    this.listType = type;
-    updateComponent(this);
-  }
-
   createEmpty() {
     return new List(
       this.listType,
       this.decorate.getStyle(),
       this.decorate.getData()
     );
+  }
+
+  setListType(type: listType = "ul") {
+    this.listType = type;
+    updateComponent(this);
   }
 
   whenChildHeadDelete(component: ListItem, index: number): operatorType {
@@ -44,49 +46,17 @@ class List extends Collection<ListItem> {
     if (!this.parent) return;
     component.removeSelf();
     index = this.parent.findChildrenIndex(this);
-    this.parent.whenChildHeadDelete(component, index);
-    // if (!this.parent) return;
-    // let index = this.parent.findChildrenIndex(this);
-    // component.removeSelf();
-    // Paragraph.exchangeOnly(component);
-    // component.addIntoParent(this.parent, index);
-    // return [component, 0, 0];
+    Paragraph.exchangeOnly(component);
+    this.parent.addChildren([component], index);
+    return [component, 0, 0];
   }
 
-  addChildren(
+  add(
     component: ListItem | ListItem[],
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    if (
-      index !== undefined &&
-      index > 1 &&
-      !Array.isArray(component) &&
-      this.children.size > 1 &&
-      component.children.size === 0 &&
-      this.children.get(index - 1)?.children.size === 0
-    ) {
-      if (!this.parent) return;
-      let parentIndex = this.parent.findChildrenIndex(this);
-      if (!parentIndex) return;
-      this.removeChildren(index - 1, 1, customerUpdate);
-      this.split(index - 1, undefined, customerUpdate);
-      Paragraph.exchangeOnly(component);
-      return component.addIntoParent(this.parent, parentIndex + 1);
-    }
-    return super.addChildren(component, index, customerUpdate);
-  }
-
-  removeChildren(
-    indexOrComponent: ListItem | number,
-    removeNumber: number = 1,
-    customerUpdate: boolean = false
-  ): operatorType {
-    super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
-    if (this.children.size === 0) {
-      this.removeSelf();
-    }
-    return;
+    return this.addChildren(component, index, customerUpdate);
   }
 
   addIntoTail(
@@ -111,7 +81,7 @@ class List extends Collection<ListItem> {
   }
 }
 
-class ListItem extends Paragraph {
+class ListItem extends ContentCollection {
   static exchange(
     component: Paragraph,
     args: any[],
@@ -163,6 +133,22 @@ class ListItem extends Paragraph {
       newParagraph.addIntoParent(grandParent, parentIndex);
     }
     return [newParagraph, 0, 0];
+  }
+
+  split(
+    index: number,
+    component?: Component | Component[],
+    customerUpdate: boolean = false
+  ): operatorType {
+    let parent = this.parent;
+    if (!parent) return;
+    let itemIndex = parent.findChildrenIndex(this);
+    if (this.children.size === 0 && itemIndex !== 0) {
+      this.removeSelf();
+      if (!component) component = new Paragraph();
+      return parent.split(itemIndex, component, customerUpdate);
+    }
+    return super.split(index, component, customerUpdate);
   }
 
   render() {

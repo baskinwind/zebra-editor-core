@@ -5,13 +5,14 @@ import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 import { getId, saveComponent } from "./util";
 import { storeData } from "../decorate/index";
+import StructureCollection from "./structure-collection";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = typeof Component;
 
 abstract class Component {
   id: string = getId();
-  parent?: Collection<Component | Collection<Component>>;
+  parent?: StructureCollection<Component>;
   actived: boolean = false;
   decorate: Decorate;
   abstract type: ComponentType;
@@ -50,7 +51,7 @@ abstract class Component {
   }
 
   addIntoParent(
-    collection: Collection<Component | Collection<Component>>,
+    collection: StructureCollection<Component>,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {

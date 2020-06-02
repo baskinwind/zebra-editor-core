@@ -6,8 +6,9 @@ import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
 import { operatorType, classType } from "./component";
 import { createError } from "./util";
+import StructureCollection from "./structure-collection";
 
-class Table extends Collection<TableRow> {
+class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
   structureType: StructureType = StructureType.collection;
   row: number;
@@ -63,7 +64,7 @@ class Table extends Collection<TableRow> {
     if (needHead === undefined) return;
     if (needHead === this.needHead) return;
     if (needHead) {
-      this.addChildren(new TableRow(this.col, "th"), 0);
+      this.addChildren([new TableRow(this.col, "th")], 0);
     } else {
       this.removeChildren(0, 1);
     }
@@ -80,7 +81,7 @@ class Table extends Collection<TableRow> {
   }
 }
 
-class TableRow extends Collection<TableCell> {
+class TableRow extends StructureCollection<TableCell> {
   type: ComponentType = ComponentType.tableRow;
   structureType: StructureType = StructureType.collection;
   size: number;
@@ -128,7 +129,7 @@ class TableRow extends Collection<TableCell> {
   }
 }
 
-class TableCell extends Collection<TableItem> {
+class TableCell extends StructureCollection<TableItem> {
   type: ComponentType = ComponentType.tableCell;
   structureType: StructureType = StructureType.collection;
   cellType: "th" | "td";
@@ -140,7 +141,16 @@ class TableCell extends Collection<TableItem> {
   ) {
     super(style, data);
     this.cellType = cellType;
-    super.addChildren(new TableItem(), 0, true);
+    super.addChildren([new TableItem()], 0, true);
+  }
+
+  whenChildHeadDelete(
+    component: TableItem,
+    index: number
+  ): operatorType {
+    let prev = this.getPrev(component);
+    if (!prev) return;
+    return prev.addIntoTail(component);
   }
 
   render() {

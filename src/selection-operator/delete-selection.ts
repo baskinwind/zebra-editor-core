@@ -4,6 +4,7 @@ import getSelection from "./get-selection";
 import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition } from "./util";
+import ContentCollection from "../components/content-collection";
 
 const deleteSelection = (key?: string) => {
   let selection = getSelection();
@@ -12,7 +13,7 @@ const deleteSelection = (key?: string) => {
   let article = getComponentById<Article>("article");
   if (selection.selectStructure && isEnter) {
     return focusAt(
-      article.addChildren(new Paragraph(), selection.range[0].offset)
+      article.add(new Paragraph(), selection.range[0].offset)
     );
   }
   if (selection.selectStructure) return;
@@ -23,7 +24,7 @@ const deleteSelection = (key?: string) => {
     let component = getComponentById(selection.range[0].id);
     let start = selection.range[0].offset;
     // 优化段落内删除逻辑，不需要整段更新
-    if (component instanceof Paragraph) {
+    if (component instanceof ContentCollection) {
       let startPosition = getCursorPosition(selection.range[0]);
       if (!startPosition) return;
       let node = startPosition.node;

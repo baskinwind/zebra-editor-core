@@ -8,10 +8,12 @@ import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
 import { operatorType } from "./component";
 import Table from "./table";
+import StructureCollection from "./structure-collection";
+import ContentCollection from "./content-collection";
 
-type articleChildType = List | Paragraph | Media | Table;
+type articleChildType = List | ContentCollection | Media | Table;
 
-class Article extends Collection<articleChildType> {
+class Article extends StructureCollection<articleChildType> {
   type = ComponentType.article;
   structureType = StructureType.collection;
   actived = true;
@@ -20,10 +22,24 @@ class Article extends Collection<articleChildType> {
     component: articleChildType,
     index: number
   ): operatorType {
-    console.log(index);
-    component.removeSelf();
-    this.addChildren(component, index);
+    let prev = this.getPrev(component);
+    if (!prev) return;
+    if (component instanceof ContentCollection) {
+      return prev.addIntoTail(component);
+    }
     return;
+  }
+
+  add(
+    component: articleChildType | articleChildType[],
+    index?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (!Array.isArray(component)) {
+      component = [component];
+    }
+    this.addChildren(component, index, customerUpdate);
+    return [component[0], 0, 0];
   }
 
   render() {

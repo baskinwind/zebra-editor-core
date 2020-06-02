@@ -92,22 +92,18 @@ abstract class ContentCollection extends Collection<Inline> {
     customerUpdate: boolean = false
   ): operatorType {
     if (!this.parent) return;
-    let tail = this.children.slice(index).toArray();
-    this.removeChildren(index, this.children.size - index, customerUpdate);
     let componentIndex = this.parent.findChildrenIndex(this);
-    let newCollection = this.createEmpty();
-    if (!component || tail.length !== 0) {
-      newCollection.addChildren(tail, 0, true);
-      this.parent.addChildren(
-        newCollection,
-        componentIndex + 1,
-        customerUpdate
-      );
-    }
+    let splitComponent = this.splitChild(index, customerUpdate);
+    if (!splitComponent) return;
+    this.parent.addChildren(
+      splitComponent[1],
+      componentIndex + 1,
+      customerUpdate
+    );
     if (component) {
       this.parent.addChildren(component, componentIndex + 1, customerUpdate);
     }
-    return [newCollection, 0, 0];
+    return [splitComponent[1], 0, 0];
   }
 
   add(

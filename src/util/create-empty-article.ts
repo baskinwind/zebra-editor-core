@@ -3,7 +3,7 @@ import Paragraph from "../components/paragraph";
 
 const createEmptyArticle = () => {
   let article = new Article();
-  article.addChildren(new Paragraph());
+  article.add(new Paragraph());
   return article;
 };
 
