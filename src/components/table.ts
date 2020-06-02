@@ -58,6 +58,7 @@ class Table extends StructureCollection<TableRow> {
   setTableCol(col?: number) {
     if (!col || col === this.col) return;
     this.children.forEach((item) => item.setSize(col));
+    this.col = col;
   }
 
   setTableHead(needHead?: boolean) {

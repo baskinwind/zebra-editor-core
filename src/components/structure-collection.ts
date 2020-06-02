@@ -43,17 +43,24 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     component?: T | T[],
     customerUpdate: boolean = false
   ): operatorType {
-    if (!this.parent) return;
-    let componentIndex = this.parent.findChildrenIndex(this);
+    let parent = this.parent;
+    if (!parent) return;
+    let componentIndex = parent.findChildrenIndex(this);
     let splitComponent = this.splitChild(index, customerUpdate);
     if (!splitComponent) return;
-    this.parent.addChildren(
-      splitComponent[1],
-      componentIndex + 1,
-      customerUpdate
-    );
+    if (splitComponent[0].children.size === 0) {
+      splitComponent[0].removeSelf();
+      componentIndex -= 1;
+    }
+    if (splitComponent[1].children.size !== 0) {
+      parent.addChildren(
+        splitComponent[1],
+        componentIndex + 1,
+        customerUpdate
+      );
+    }
     if (component) {
-      this.parent.addChildren(component, componentIndex + 1, customerUpdate);
+      parent.addChildren(component, componentIndex + 1, customerUpdate);
       if (Array.isArray(component)) {
         return [component[1], 0, 0];
       }
