@@ -25,7 +25,7 @@ body {
   button,
   input,
   select {
-    margin: 2px 0;
+    margin: 2px;
     height: 2em;
   }
   .key {
@@ -38,6 +38,11 @@ body {
     border-radius: 4px;
     margin: 10px;
     padding: 10px;
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
     p {
       margin: 0;
     }

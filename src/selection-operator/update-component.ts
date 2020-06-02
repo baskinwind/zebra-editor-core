@@ -20,7 +20,6 @@ const updateComponent = (
   if (customerUpdate) return;
   if (!canUpdate) return;
   console.log("update!!!!");
-  debugger
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));
   } else {

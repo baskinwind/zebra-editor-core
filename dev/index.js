@@ -48,10 +48,12 @@ ol.addChildren(new ListItem("order list part 4"));
 ol.addChildren(new ListItem("order list part 5"));
 ol.addIntoParent(article);
 
-let table = new Table(3, 4);
+let table = new Table(3, 3);
 table.addIntoParent(article);
 
 article.addChildren(new Paragraph());
+
+window.tttt = table;
 
 mount("root", article);
 

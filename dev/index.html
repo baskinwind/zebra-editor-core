@@ -68,6 +68,26 @@
         <button @click="customerBlockStyle">确定</button>
       </div>
       <div>
+        <p>表格相关：</p>
+        <div>
+          <button @click="addTable">添加表格（默认 3*3 带表头）</button>
+        </div>
+        <p>修改表格大小</p>
+        <div>
+          <span class="key">行数：</span>
+          <input type="number" v-model="tableRow">
+        </div>
+        <div>
+          <span class="key">列数：</span>
+          <input type="number" v-model="tableCol">
+        </div>
+        <div>
+          <span class="key">表头：</span>
+          <input type="checkbox" v-model="tableHead">
+        </div>
+        <button @click="modifyTable">修改</button>
+      </div>
+      <div>
         <p>
           <span>段落内添加表情图片：</span>
           <button @click="insertInlineImage">添加</button></p>

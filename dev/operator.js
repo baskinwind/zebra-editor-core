@@ -14,6 +14,8 @@ import Media from "../src/components/media";
 import InlineImage from "../src/components/inline-image";
 import { ListItem } from "../src/components/list";
 import getHtml from "../src/util/get-html";
+import Table from "../src/components/table";
+import setTableSize from "../src/selection-operator/set-table-size";
 
 new Vue({
   el: "#operator",
@@ -26,6 +28,9 @@ new Vue({
       blockStyleValue: "2em",
       inlineImage: "",
       image: "",
+      tableRow: 3,
+      tableCol: 3,
+      tableHead: true
     };
   },
   methods: {
@@ -35,6 +40,17 @@ new Vue({
     logHtml() {
       console.log(getHtml(article));
     },
+
+    modifyType(tag) {
+      if (tag === "normal") {
+        exchangeParagraph(Paragraph, tag);
+      } else if (tag === "ul" || tag === "ol") {
+        exchangeParagraph(ListItem, tag);
+      } else {
+        exchangeParagraph(Title, tag);
+      }
+    },
+
     bold() {
       modifySelectionDecorate({ fontWeight: "bold" });
     },
@@ -65,6 +81,17 @@ new Vue({
       }
     },
 
+    addTable() {
+      insertBlock(new Table(3, 3));
+    },
+    modifyTable() {
+      setTableSize({
+        row: this.tableRow,
+        col: this.tableCol,
+        head: this.tableHead
+      });
+    },
+
     insertInlineImage() {
       let index = Math.floor(Math.random() * 56 + 1);
       input(
@@ -88,16 +115,6 @@ new Vue({
     },
     customerImage() {
       insertBlock(new Media(ComponentType.image, this.image));
-    },
-
-    modifyType(tag) {
-      if (tag === "normal") {
-        exchangeParagraph(Paragraph, tag);
-      } else if (tag === "ul" || tag === "ol") {
-        exchangeParagraph(ListItem, tag);
-      } else {
-        exchangeParagraph(Title, tag);
-      }
-    },
-  },
+    }
+  }
 });

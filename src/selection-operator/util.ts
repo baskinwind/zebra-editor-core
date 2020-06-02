@@ -6,6 +6,8 @@ export interface cursorType {
   offset: number;
 }
 
+export const getTable = () => {};
+
 export const getParent = (
   element: HTMLElement | Node | null | undefined
 ): HTMLElement => {
