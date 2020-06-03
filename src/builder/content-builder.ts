@@ -202,7 +202,8 @@ const contentBuilder = {
   buildCharacterList(
     id: string,
     charList: string[],
-    style: mapData
+    style: mapData,
+    data: mapData
   ): HTMLElement {
     const span = document.createElement("span");
     span.id = id;

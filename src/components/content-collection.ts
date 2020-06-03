@@ -182,20 +182,19 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, start, end];
   }
 
-  getContent() {
+  getRawArr() {
     const builder = getContentBuilder();
     let content: any[] = [];
     let acc: Character[] = [];
     let prevDecorate: Decorate;
+
     let createCharacterList = () => {
       if (!acc.length) return;
-      content.push(
-        builder.buildCharacterList(
-          `${this.id}__${content.length}`,
-          acc.map((character) => character.render()),
-          prevDecorate.getStyle()
-        )
-      );
+      content.push([
+        acc.map((character) => character.render()),
+        prevDecorate.getStyle(),
+        prevDecorate.getData()
+      ]);
       acc = [];
     };
 
@@ -211,10 +210,25 @@ abstract class ContentCollection extends Collection<Inline> {
         return;
       }
       createCharacterList();
-      content.push(value.render());
+      content.push(value);
     });
     createCharacterList();
     return content;
+  }
+
+  getContent() {
+    const builder = getContentBuilder();
+    return this.getRawArr().map((item, index) => {
+      if (item.render) {
+        return item.render();
+      }
+      return builder.buildCharacterList(
+        `${this.id}__${index}`,
+        item[0],
+        item[1],
+        item[2]
+      );
+    });
   }
 }
 

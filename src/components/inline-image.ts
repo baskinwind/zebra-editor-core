@@ -21,6 +21,15 @@ class InlineImage extends Inline {
     updateComponent(this);
   }
 
+  getRaw() {
+    return {
+      type: ComponentType.inlineImage,
+      src: this.src,
+      data: this.decorate.getData(),
+      style: this.decorate.getData()
+    };
+  }
+
   render() {
     return getContentBuilder().buildInlineImage(
       this.id,

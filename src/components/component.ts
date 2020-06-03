@@ -126,6 +126,8 @@ abstract class Component {
     return;
   }
 
+  getRaw(): any {}
+
   abstract render(): any;
 }
 

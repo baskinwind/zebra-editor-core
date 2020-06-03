@@ -13,6 +13,10 @@ class Character extends Inline {
     this.content = content;
   }
 
+  getRaw() {
+    return this.content;
+  }
+
   render() {
     return this.content;
   }

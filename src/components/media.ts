@@ -67,6 +67,15 @@ class Media extends Component {
     return this.replaceSelf(new Paragraph(), customerUpdate);
   }
 
+  getRaw() {
+    return {
+      type: this.type,
+      src: this.src,
+      style: this.decorate.getStyle(),
+      data: this.decorate.getData()
+    };
+  }
+
   render() {
     let builder = getContentBuilder();
     let map = {
