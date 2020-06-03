@@ -154,6 +154,20 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
     return [startFlag, endFlag, res];
   }
+
+  getRaw(): any {
+    let raw: any = {
+      type: this.type,
+      children: this.children.toArray().map(item => item.getRaw()),
+    };
+    if (!this.decorate.styleIsEmpty()) {
+      raw.style = this.decorate.getStyle();
+    }
+    if (!this.decorate.dataIsEmpty()) {
+      raw.data = this.decorate.getData();
+    }
+    return raw;
+  }
 }
 
 export default StructureCollection;

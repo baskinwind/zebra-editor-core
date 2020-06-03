@@ -28,6 +28,13 @@ class Title extends ContentCollection {
     updateComponent(newComponet, customerUpdate);
   }
 
+  static create(raw: any): Title {
+    let title = new Title(raw.titleType, '', raw.style, raw.data);
+    let children = super.createChildren(raw);
+    title.addChildren(children, 0, true);
+    return title;
+  }
+
   constructor(
     type: titleType,
     text?: string,
@@ -56,6 +63,12 @@ class Title extends ContentCollection {
       this.decorate.getStyle(),
       this.decorate.getData()
     );
+  }
+
+  getRaw(): any {
+    let raw = super.getRaw();
+    raw.titleType = this.titleType;
+    return raw;
   }
 
   render() {

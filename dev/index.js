@@ -104,6 +104,8 @@ let table = new Table(3, 3, [
 ]);
 table.addInto(article);
 
+window.article = article;
+
 mount("root", article);
 
 export default article;

@@ -41,6 +41,9 @@ class Decorate {
   clearStyle() {
     this.style = this.style.clear();
   }
+  styleIsEmpty(): boolean {
+    return this.style.size === 0;
+  }
 
   getData() {
     return this.data.toObject();
@@ -59,6 +62,9 @@ class Decorate {
   }
   clearData() {
     this.data = this.data.clear();
+  }
+  dataIsEmpty(): boolean {
+    return this.data.size === 0;
   }
 
   isSame(decorate?: Decorate): boolean {

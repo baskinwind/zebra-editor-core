@@ -7,6 +7,8 @@ import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 import { createError } from "./util";
 import { getContentBuilder } from "../builder";
+import ComponentType from "../const/component-type";
+import createByRaw from "../util/create-by-raw";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
@@ -26,6 +28,20 @@ abstract class ContentCollection extends Collection<Inline> {
   ) {
     this.exchangeOnly(component, args);
     updateComponent(component, customerUpdate);
+  }
+
+  static createChildren(raw: any) {
+    let children: any[] = [];
+    raw.children.forEach((item: any) => {
+      if (item.type === ComponentType.characterList) {
+        for (let char of item.content) {
+          children.push(new Character(char, item.style, item.data));
+        }
+        return;
+      }
+      children.push(createByRaw(item));
+    });
+    return children;
   }
 
   constructor(text?: string, style?: storeData, data?: storeData) {
@@ -182,8 +198,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, start, end];
   }
 
-  getRawArr() {
-    const builder = getContentBuilder();
+  getRawData() {
     let content: any[] = [];
     let acc: Character[] = [];
     let prevDecorate: Decorate;
@@ -192,8 +207,8 @@ abstract class ContentCollection extends Collection<Inline> {
       if (!acc.length) return;
       content.push([
         acc.map((character) => character.render()),
-        prevDecorate.getStyle(),
-        prevDecorate.getData()
+        prevDecorate.styleIsEmpty() ? undefined : prevDecorate.getStyle(),
+        prevDecorate.dataIsEmpty() ? undefined : prevDecorate.getData()
       ]);
       acc = [];
     };
@@ -216,17 +231,47 @@ abstract class ContentCollection extends Collection<Inline> {
     return content;
   }
 
+  getRaw(): any {
+    let children = this.getRawData().map((item) => {
+      if (item.getRaw) {
+        return item.getRaw();
+      }
+      let raw: any = {
+        type: ComponentType.characterList,
+        content: item[0].join(''),
+      };
+      if (item[1]) {
+        raw.style = item[1];
+      }
+      if (item[2]) {
+        raw.data = item[2];
+      }
+      return raw;
+    });
+    let raw: any = {
+      type: this.type,
+      children: children,
+    };
+    if (!this.decorate.styleIsEmpty()) {
+      raw.style = this.decorate.getStyle();
+    }
+    if (!this.decorate.dataIsEmpty()) {
+      raw.data = this.decorate.getData();
+    }
+    return raw;
+  }
+
   getContent() {
     const builder = getContentBuilder();
-    return this.getRawArr().map((item, index) => {
+    return this.getRawData().map((item, index) => {
       if (item.render) {
         return item.render();
       }
       return builder.buildCharacterList(
         `${this.id}__${index}`,
         item[0],
-        item[1],
-        item[2]
+        item[1] || {},
+        item[2] || {}
       );
     });
   }

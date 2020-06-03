@@ -11,6 +11,10 @@ class InlineImage extends Inline {
   content: string = "$$$INLINEIMAGE$$$";
   src: string;
 
+  static create(raw: any): InlineImage {
+    return new InlineImage(raw.src, raw.style, raw.data);
+  };
+
   constructor(src: string, style?: storeData, data?: storeData) {
     super(style, data);
     this.src = src;
@@ -22,12 +26,16 @@ class InlineImage extends Inline {
   }
 
   getRaw() {
-    return {
-      type: ComponentType.inlineImage,
-      src: this.src,
-      data: this.decorate.getData(),
-      style: this.decorate.getData()
+    let raw: any = {
+      type: this.type, src: this.src,
     };
+    if (!this.decorate.styleIsEmpty()) {
+      raw.style = this.decorate.getStyle();
+    }
+    if (!this.decorate.dataIsEmpty()) {
+      raw.data = this.decorate.getData();
+    }
+    return raw;
   }
 
   render() {

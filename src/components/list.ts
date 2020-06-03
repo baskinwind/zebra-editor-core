@@ -8,6 +8,7 @@ import updateComponent from "../selection-operator/update-component";
 import StructureCollection from "./structure-collection";
 import Paragraph from "./paragraph";
 import { createError } from "./util";
+import createByRaw from "../util/create-by-raw";
 
 type listType = "ol" | "ul";
 
@@ -15,6 +16,11 @@ class List extends StructureCollection<ListItem> {
   type = ComponentType.list;
   structureType = StructureType.collection;
   listType: listType;
+
+  static create(raw: any): List {
+    let children = raw.children.map((item: any) => createByRaw(item));
+    return new List(raw.listType, children, raw.style, raw.data);
+  }
 
   constructor(
     type: listType = "ul",
@@ -30,7 +36,7 @@ class List extends StructureCollection<ListItem> {
       }
       return item;
     });
-    this.addChildren(list);
+    this.addChildren(list, 0, true);
   }
 
   createEmpty() {
@@ -93,6 +99,12 @@ class List extends StructureCollection<ListItem> {
     return;
   }
 
+  getRaw() {
+    let raw = super.getRaw();
+    raw.listType = this.listType;
+    return raw;
+  }
+
   render() {
     let children = this.children
       .map((component: ListItem) => component.render())
@@ -127,6 +139,13 @@ class ListItem extends ContentCollection {
       newList.addChildren([component], undefined, true);
       newList.addInto(parent, index, customerUpdate);
     }
+  }
+
+  static create(raw: any): ListItem {
+    let listItem = new ListItem('', raw.style, raw.data);
+    let children = super.createChildren(raw);
+    listItem.addChildren(children, 0, true);
+    return listItem;
   }
 
   createEmpty() {
@@ -187,6 +206,7 @@ class ListItem extends ContentCollection {
     }
     return super.split(index, component, customerUpdate);
   }
+
 
   render() {
     const builder = getContentBuilder();

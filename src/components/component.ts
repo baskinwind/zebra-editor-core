@@ -17,7 +17,7 @@ abstract class Component {
   abstract type: ComponentType;
   abstract structureType: StructureType;
 
-  static exchangeOnly(component: Component, args?: any[]) {
+  static exchangeOnly(component: Component, args?: any[]): Component {
     Reflect.setPrototypeOf(component, this.prototype);
     return component;
   }
@@ -26,7 +26,14 @@ abstract class Component {
     component: Component,
     args?: any[],
     customerUpdate: boolean = false
-  ) {}
+  ) { }
+
+  static create(raw: any): Component {
+    return Reflect.construct(this.constructor, [
+      raw.style,
+      raw.data
+    ]);
+  };
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
@@ -126,7 +133,7 @@ abstract class Component {
     return;
   }
 
-  getRaw(): any {}
+  getRaw(): any { }
 
   abstract render(): any;
 }

@@ -10,6 +10,10 @@ class Media extends Component {
   type: ComponentType.image | ComponentType.audio | ComponentType.video;
   structureType = StructureType.content;
 
+  static create(raw: any): Media {
+    return new Media(raw.type, raw.src, raw.style, raw.data);
+  };
+
   constructor(
     type: ComponentType.image | ComponentType.audio | ComponentType.video,
     src: string,
@@ -67,7 +71,7 @@ class Media extends Component {
     return this.replaceSelf(new Paragraph(), customerUpdate);
   }
 
-  getRaw() {
+  getRaw(): any {
     return {
       type: this.type,
       src: this.src,

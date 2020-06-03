@@ -8,6 +8,8 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
 import { operatorType } from "./component";
+import { storeData } from "../decorate";
+import createByRaw from "../util/create-by-raw";
 
 type articleChildType = List | ContentCollection | Media | Table;
 
@@ -15,6 +17,13 @@ class Article extends StructureCollection<articleChildType> {
   type = ComponentType.article;
   structureType = StructureType.collection;
   actived = true;
+
+  static create(raw: any): Article {
+    let children = raw.children.map((item: any) => createByRaw(item));
+    let article = new Article(raw.style, raw.data);
+    article.addChildren(children, 0, true);
+    return article;
+  }
 
   childHeadDelete(component: articleChildType, index: number): operatorType {
     let prev = this.getPrev(component);

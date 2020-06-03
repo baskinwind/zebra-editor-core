@@ -1,13 +1,11 @@
-import Collection from "./collection";
-import Paragraph from "./paragraph";
+import StructureCollection from "./structure-collection";
+import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
 import { operatorType, classType } from "./component";
 import { createError } from "./util";
-import StructureCollection from "./structure-collection";
-import ContentCollection from "./content-collection";
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
@@ -15,6 +13,15 @@ class Table extends StructureCollection<TableRow> {
   row: number;
   col: number;
   needHead: boolean;
+
+  static create(raw: any): Table {
+    let children = raw.children.map((item: any) => {
+      return item.children.map((item: any) => {
+        return TableItem.create(item);
+      });
+    });
+    return new Table(raw.row, raw.col, children, raw.needHead, raw.style, raw.data);
+  }
 
   constructor(
     row: number,
@@ -72,6 +79,14 @@ class Table extends StructureCollection<TableRow> {
       this.removeChildren(0, 1);
     }
     this.needHead = needHead;
+  }
+
+  getRaw() {
+    let raw = super.getRaw();
+    raw.needHead = this.needHead;
+    raw.row = this.row;
+    raw.col = this.col;
+    return raw;
   }
 
   render() {
@@ -165,6 +180,12 @@ class TableCell extends StructureCollection<TableItem> {
     return prev.addIntoTail(component);
   }
 
+  getRaw() {
+    let raw = super.getRaw();
+    raw.cellType = this.cellType;
+    return raw;
+  }
+
   render() {
     return getContentBuilder().buildTableCell(
       this.id,
@@ -178,6 +199,13 @@ class TableCell extends StructureCollection<TableItem> {
 
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
+
+  static create(raw: any): TableItem {
+    let tableItem = new TableItem('', raw.style, raw.data);
+    let children = super.createChildren(raw);
+    tableItem.addChildren(children, 0, true);
+    return tableItem;
+  }
 
   exchangeToOther(builder: classType, args: any[]): operatorType {
     throw createError("表格内段落不允许切换类型！！", this);
