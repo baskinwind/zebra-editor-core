@@ -16,14 +16,27 @@ class List extends StructureCollection<ListItem> {
   structureType = StructureType.collection;
   listType: listType;
 
-  constructor(type: listType = "ul", style?: storeData, data?: storeData) {
+  constructor(
+    type: listType = "ul",
+    children: (string | ListItem)[] = [],
+    style?: storeData,
+    data?: storeData
+  ) {
     super(style, data);
     this.listType = type;
+    let list = children.map((item) => {
+      if (typeof item === "string") {
+        item = new ListItem(item);
+      }
+      return item;
+    });
+    this.addChildren(list);
   }
 
   createEmpty() {
     return new List(
       this.listType,
+      [],
       this.decorate.getStyle(),
       this.decorate.getData()
     );

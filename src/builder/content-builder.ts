@@ -5,6 +5,14 @@ export interface mapData {
   [key: string]: any;
 }
 
+const addStyle = (dom: HTMLElement, style?: mapData) => {
+  if (style) {
+    for (let key in style) {
+      dom.style[key] = style[key];
+    }
+  }
+};
+
 const contentBuilder = {
   buildArticle(
     id: string,
@@ -17,6 +25,7 @@ const contentBuilder = {
     article.classList.add("zebra-draft-article");
     article.dataset.type = ComponentType.article;
     article.dataset.structure = StructureType.collection;
+    addStyle(article, style);
     componentList.forEach((component) => {
       article.appendChild(component);
     });
@@ -31,6 +40,7 @@ const contentBuilder = {
     const table = document.createElement("table");
     table.id = id;
     table.dataset.structure = StructureType.collection;
+    addStyle(table, style);
     if (style) {
       for (let key in style) {
         table.style[key] = style[key];
@@ -48,6 +58,7 @@ const contentBuilder = {
     const tr = document.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.collection;
+    addStyle(tr, style);
     if (style) {
       for (let key in style) {
         tr.style[key] = style[key];
@@ -66,6 +77,7 @@ const contentBuilder = {
     const td = document.createElement(cellType);
     td.id = id;
     td.dataset.structure = StructureType.collection;
+    addStyle(td, style);
     if (style) {
       for (let key in style) {
         td.style[key] = style[key];
@@ -86,6 +98,7 @@ const contentBuilder = {
     list.classList.add("zebra-draft-list");
     list.dataset.type = ComponentType.article;
     list.dataset.structure = StructureType.collection;
+    addStyle(list, style);
     componentList.forEach((component) => {
       list.appendChild(component);
     });
@@ -103,17 +116,13 @@ const contentBuilder = {
     parapraph.classList.add(`zebra-draft-${tag}`);
     parapraph.dataset.type = ComponentType.paragraph;
     parapraph.dataset.structure = StructureType.content;
+    addStyle(parapraph, style);
     if (inlineList.length) {
       inlineList.forEach((component) => {
         parapraph.appendChild(component);
       });
     } else {
       parapraph.appendChild(document.createElement("br"));
-    }
-    if (style) {
-      for (let key in style) {
-        parapraph.style[key] = style[key];
-      }
     }
     return parapraph;
   },
@@ -129,17 +138,13 @@ const contentBuilder = {
     title.classList.add(`zebra-draft-title-${type}`);
     title.dataset.type = type;
     title.dataset.structure = StructureType.content;
+    addStyle(title, style);
     if (inlineList.length) {
       inlineList.forEach((component) => {
         title.appendChild(component);
       });
     } else {
       title.appendChild(document.createElement("br"));
-    }
-    if (style) {
-      for (let key in style) {
-        title.style[key] = style[key];
-      }
     }
     return title;
   },
@@ -149,6 +154,7 @@ const contentBuilder = {
     figure.classList.add("zebra-draft-image", "zebra-draft-image-loading");
     figure.dataset.type = ComponentType.image;
     figure.dataset.structure = StructureType.content;
+    addStyle(figure, style);
     let child;
     let image = document.createElement("img");
     image.src = src;
@@ -175,6 +181,7 @@ const contentBuilder = {
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.audio;
     figure.dataset.structure = StructureType.content;
+    addStyle(figure, style);
     let audio = document.createElement("audio");
     audio.src = src;
     figure.appendChild(audio);
@@ -186,6 +193,7 @@ const contentBuilder = {
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.video;
     figure.dataset.structure = StructureType.content;
+    addStyle(figure, style);
     let video = document.createElement("video");
     video.src = src;
     figure.appendChild(video);
@@ -200,12 +208,8 @@ const contentBuilder = {
     span.id = id;
     span.dataset.type = ComponentType.characterList;
     span.dataset.structure = StructureType.partialContent;
+    addStyle(span, style);
     span.innerText = charList.join("");
-    if (style) {
-      for (let key in style) {
-        span.style[key] = style[key];
-      }
-    }
     return span;
   },
   buildInlineImage(
@@ -219,6 +223,7 @@ const contentBuilder = {
     span.classList.add("zebra-draft-inline-image");
     span.dataset.type = ComponentType.inlineImage;
     span.dataset.structure = StructureType.partialContent;
+    addStyle(span, style);
     let child;
     let image = document.createElement("img");
     image.src = src;

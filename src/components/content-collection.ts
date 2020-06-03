@@ -84,12 +84,13 @@ abstract class ContentCollection extends Collection<Inline> {
     return newCollection;
   }
 
-  addText(text: string, index: number = 0, customerUpdate: boolean = false) {
+  addText(text: string, index?: number, customerUpdate: boolean = false) {
     let componentList: Character[] = [];
     for (let char of text) {
       componentList.push(new Character(char));
     }
     this.addChildren(componentList, index, customerUpdate);
+    index = index ? index : this.children.size;
     return [this, index + text.length, index + text.length];
   }
 

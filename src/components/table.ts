@@ -19,6 +19,7 @@ class Table extends StructureCollection<TableRow> {
   constructor(
     row: number,
     col: number,
+    children: ((string | TableItem)[] | string | TableItem)[][] = [],
     needHead: boolean = true,
     style?: storeData,
     data?: storeData
@@ -31,12 +32,12 @@ class Table extends StructureCollection<TableRow> {
     this.decorate.setStyle("width", "100%");
     this.decorate.setStyle("borderCollapse", "collapse");
     let list = [];
-    if (needHead) {
-      list.push(new TableRow(col, "th"));
-    }
-    for (let i = 0; i < row; i++) {
-      let item = new TableRow(col);
-      list.push(item);
+    for (let i = 0; i < row + (needHead ? 1 : 0); i++) {
+      if (needHead && i === 0) {
+        list.push(new TableRow(col, children[i], "th"));
+      } else {
+        list.push(new TableRow(col, children[i]));
+      }
     }
     this.addChildren(list, 0, true);
   }
@@ -66,7 +67,7 @@ class Table extends StructureCollection<TableRow> {
     if (needHead === undefined) return;
     if (needHead === this.needHead) return;
     if (needHead) {
-      this.addChildren([new TableRow(this.col, "th")], 0);
+      this.addChildren([new TableRow(this.col, [], "th")], 0);
     } else {
       this.removeChildren(0, 1);
     }
@@ -91,6 +92,7 @@ class TableRow extends StructureCollection<TableCell> {
 
   constructor(
     size: number,
+    children: ((string | TableItem)[] | string | TableItem)[] = [],
     cellType: "th" | "td" = "td",
     style?: storeData,
     data?: storeData
@@ -99,8 +101,8 @@ class TableRow extends StructureCollection<TableCell> {
     this.size = size;
     this.cellType = cellType;
     let list = [];
-    for (let j = 0; j < size; j++) {
-      let item = new TableCell(this.cellType);
+    for (let i = 0; i < size; i++) {
+      let item = new TableCell(children[i], this.cellType);
       list.push(item);
     }
     super.addChildren(list, 0, true);
@@ -137,13 +139,24 @@ class TableCell extends StructureCollection<TableItem> {
   cellType: "th" | "td";
 
   constructor(
+    children: (string | TableItem)[] | string | TableItem = [],
     cellType: "th" | "td" = "td",
     style?: storeData,
     data?: storeData
   ) {
     super(style, data);
     this.cellType = cellType;
-    super.addChildren([new TableItem()], 0, true);
+    if (!Array.isArray(children)) children = [children];
+    this.addChildren(
+      children.map((item) => {
+        if (typeof item === "string") {
+          item = new TableItem(item);
+        }
+        return item;
+      }),
+      0,
+      true
+    );
   }
 
   childHeadDelete(component: TableItem, index: number): operatorType {
