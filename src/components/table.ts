@@ -7,6 +7,7 @@ import { getContentBuilder } from "../builder";
 import { operatorType, classType } from "./component";
 import { createError } from "./util";
 import StructureCollection from "./structure-collection";
+import ContentCollection from "./content-collection";
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
@@ -145,10 +146,7 @@ class TableCell extends StructureCollection<TableItem> {
     super.addChildren([new TableItem()], 0, true);
   }
 
-  whenChildHeadDelete(
-    component: TableItem,
-    index: number
-  ): operatorType {
+  childHeadDelete(component: TableItem, index: number): operatorType {
     let prev = this.getPrev(component);
     if (!prev) return;
     return prev.addIntoTail(component);
@@ -165,16 +163,43 @@ class TableCell extends StructureCollection<TableItem> {
   }
 }
 
-class TableItem extends Paragraph {
+class TableItem extends ContentCollection {
+  type = ComponentType.tableItem;
+
   exchangeToOther(builder: classType, args: any[]): operatorType {
     throw createError("表格内段落不允许切换类型！！", this);
   }
 
-  remove(start: number, end: number, customerUpdate: boolean = false) {
-    if (start < 0) {
+  createEmpty() {
+    return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
+  }
+
+  split(
+    index: number,
+    component?: TableItem | TableItem[],
+    customerUpdate: boolean = false
+  ): operatorType {
+    // 不允许别的类型添加
+    let flag: boolean = false;
+    if (component) {
+      if (!Array.isArray(component)) component = [component];
+      component = component.filter((item) => item instanceof TableItem);
+      flag = component.length === 0;
+    }
+    if (flag) {
       return;
     }
-    return super.remove(start, end, customerUpdate);
+    return super.split(index, component, customerUpdate);
+  }
+
+  render() {
+    const builder = getContentBuilder();
+    return builder.buildParagraph(
+      this.id,
+      this.getContent(),
+      this.decorate.getStyle(),
+      { ...this.decorate.getData(), tag: "p" }
+    );
   }
 }
 

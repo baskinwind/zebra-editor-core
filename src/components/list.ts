@@ -1,14 +1,13 @@
-import Component, { operatorType, classType } from "./component";
-import Inline from "./inline";
-import Collection from "./collection";
-import Paragraph from "./paragraph";
+import { operatorType, classType } from "./component";
+import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
 import updateComponent from "../selection-operator/update-component";
 import StructureCollection from "./structure-collection";
-import ContentCollection from "./content-collection";
+import Paragraph from "./paragraph";
+import { createError } from "./util";
 
 type listType = "ol" | "ul";
 
@@ -35,7 +34,16 @@ class List extends StructureCollection<ListItem> {
     updateComponent(this);
   }
 
-  whenChildHeadDelete(component: ListItem, index: number): operatorType {
+  addChildren(
+    component: ListItem[],
+    index?: number,
+    customerUpdate: boolean = false
+  ) {
+    component = component.filter((item) => item instanceof ContentCollection);
+    super.addChildren(component, index, customerUpdate);
+  }
+
+  childHeadDelete(component: ListItem, index: number): operatorType {
     if (index !== 0) {
       let prev = this.children.get(index - 1);
       if (!prev) return;
@@ -43,11 +51,12 @@ class List extends StructureCollection<ListItem> {
       prev.addIntoTail(component);
       return [prev, size, size];
     }
-    if (!this.parent) return;
+    let parent = this.parent;
+    if (!parent) return;
+    index = parent.findChildrenIndex(this);
     component.removeSelf();
-    index = this.parent.findChildrenIndex(this);
     Paragraph.exchangeOnly(component);
-    this.parent.addChildren([component], index);
+    parent.addChildren([component], index);
     return [component, 0, 0];
   }
 
@@ -56,16 +65,19 @@ class List extends StructureCollection<ListItem> {
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    return this.addChildren(component, index, customerUpdate);
+    if (!Array.isArray(component)) component = [component];
+    this.addChildren(component, index, customerUpdate);
+    return;
   }
 
   addIntoTail(
-    component: Paragraph,
+    component: ContentCollection,
     customerUpdate: boolean = false
   ): operatorType {
     component.removeSelf();
     ListItem.exchangeOnly(component, []);
-    return this.addChildren(component, undefined, customerUpdate);
+    this.addChildren([component], undefined, customerUpdate);
+    return;
   }
 
   render() {
@@ -82,25 +94,26 @@ class List extends StructureCollection<ListItem> {
 }
 
 class ListItem extends ContentCollection {
+  type = ComponentType.listItem;
+
   static exchange(
     component: Paragraph,
     args: any[],
     customerUpdate: boolean = false
   ) {
-    component = super.exchangeOnly(component, args) as ListItem;
-    if (!component.parent) return component;
+    component = this.exchangeOnly(component, args) as ListItem;
+    if (!component.parent) throw createError("该组件没有父组件", component);
     let prev = component.parent.getPrev(component);
     let index = component.parent.findChildrenIndex(component);
-    if (prev instanceof List) {
+    if (prev instanceof List && prev.listType === args[0]) {
       prev.addIntoTail(component, customerUpdate);
     } else {
       let parent = component.parent;
       component.removeSelf();
       let newList = new List(args[0]);
-      newList.addChildren(component, undefined, customerUpdate);
-      newList.addIntoParent(parent, index, customerUpdate);
+      newList.addChildren([component], undefined, true);
+      newList.addInto(parent, index, customerUpdate);
     }
-    return component;
   }
 
   createEmpty() {
@@ -126,27 +139,38 @@ class ListItem extends ContentCollection {
     let index = parent.findChildrenIndex(this);
     let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
-    let newParagraph = builder.exchange(this, args, true);
+    let newCollection = builder.exchangeOnly(this, args);
     if (parent.actived) {
-      parent.split(index, newParagraph, customerUpdate);
+      parent.split(index, newCollection, customerUpdate);
     } else {
-      newParagraph.addIntoParent(grandParent, parentIndex);
+      newCollection.addInto(grandParent, parentIndex);
     }
-    return [newParagraph, 0, 0];
+    return [newCollection, 0, 0];
   }
 
   split(
     index: number,
-    component?: Component | Component[],
+    component?: ListItem | ListItem[],
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
     if (!parent) return;
     let itemIndex = parent.findChildrenIndex(this);
+    // 连续两个空行则切断列表
     if (this.children.size === 0 && itemIndex !== 0) {
       this.removeSelf();
       if (!component) component = new Paragraph();
       return parent.split(itemIndex, component, customerUpdate);
+    }
+    // 不允许别的类型添加
+    let flag: boolean = false;
+    if (component) {
+      if (!Array.isArray(component)) component = [component];
+      component = component.filter((item) => item instanceof ListItem);
+      flag = component.length === 0;
+    }
+    if (flag) {
+      return;
     }
     return super.split(index, component, customerUpdate);
   }

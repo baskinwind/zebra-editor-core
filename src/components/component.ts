@@ -1,4 +1,3 @@
-import Collection from "./collection";
 import Decorate from "../decorate";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
@@ -18,13 +17,16 @@ abstract class Component {
   abstract type: ComponentType;
   abstract structureType: StructureType;
 
+  static exchangeOnly(component: Component, args?: any[]) {
+    Reflect.setPrototypeOf(component, this.prototype);
+    return component;
+  }
+
   static exchange(
     component: Component,
     args?: any[],
     customerUpdate: boolean = false
-  ) {
-    return component;
-  }
+  ) {}
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
@@ -46,27 +48,30 @@ abstract class Component {
     return;
   }
 
-  whenChildHeadDelete(component: Component, index: number): operatorType {
+  childHeadDelete(component: Component, index: number): operatorType {
     return;
   }
 
-  addIntoParent(
+  addInto(
     collection: StructureCollection<Component>,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    return collection.addChildren(this, index, customerUpdate);
+    collection.addChildren([this], index, customerUpdate);
+    return [this, 0, 0];
   }
 
   removeSelf(customerUpdate: boolean = false): operatorType {
-    return this.parent?.removeChildren(this, undefined, customerUpdate);
+    this.parent?.removeChildren(this, 1, customerUpdate);
+    return;
   }
 
   replaceSelf(
     component: Component,
     customerUpdate: boolean = false
   ): operatorType {
-    return this.parent?.replaceChild(component, this, customerUpdate);
+    this.parent?.replaceChild(component, this, customerUpdate);
+    return [component, 0, 0];
   }
 
   add(

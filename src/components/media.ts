@@ -4,7 +4,6 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
-import { Collection } from "immutable";
 
 class Media extends Component {
   src: string;
@@ -27,16 +26,18 @@ class Media extends Component {
   }
 
   removeSelf(customerUpdate: boolean = false): operatorType {
-    let newParagraph = new Paragraph();
-    this.replaceSelf(newParagraph, customerUpdate);
-    return [newParagraph, 0, 0];
+    let paragraph = new Paragraph();
+    this.replaceSelf(paragraph);
+    return [paragraph, 0, 0];
   }
 
   addIntoTail(
     component: Component,
     customerUpdate: boolean = false
   ): operatorType {
-    return this.removeSelf(customerUpdate);
+    let paragraph = new Paragraph();
+    this.replaceSelf(paragraph);
+    return [paragraph, 0, 0];
   }
 
   split(
@@ -50,10 +51,10 @@ class Media extends Component {
     }
     let componentIndex = this.parent.findChildrenIndex(this);
     if (index === 0) {
-      this.parent.addChildren(component, componentIndex);
+      this.parent.addChildren([component], componentIndex, customerUpdate);
     }
     if (index === 1) {
-      this.parent.addChildren(component, componentIndex + 1);
+      this.parent.addChildren([component], componentIndex + 1, customerUpdate);
     }
     return [component, index, index];
   }
@@ -71,7 +72,7 @@ class Media extends Component {
     let map = {
       [ComponentType.image]: builder.buildeImage,
       [ComponentType.audio]: builder.buildeImage,
-      [ComponentType.video]: builder.buildeImage,
+      [ComponentType.video]: builder.buildeImage
     };
     return map[this.type](
       this.id,

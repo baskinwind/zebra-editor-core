@@ -1,8 +1,10 @@
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../builder";
 import ContentCollection from "./content-collection";
+import { getContentBuilder } from "../builder";
 
 class Paragraph extends ContentCollection {
+  type = ComponentType.paragraph;
+
   createEmpty() {
     return new Paragraph("", this.decorate.getStyle(), this.decorate.getData());
   }

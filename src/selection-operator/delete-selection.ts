@@ -5,16 +5,23 @@ import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition } from "./util";
 import ContentCollection from "../components/content-collection";
+import Table from "../components/table";
 
 const deleteSelection = (key?: string) => {
   let selection = getSelection();
   let isEnter = key === "Enter";
   let isBackspace = key === "Backspace";
   let article = getComponentById<Article>("article");
-  if (selection.selectStructure && isEnter) {
-    return focusAt(
-      article.add(new Paragraph(), selection.range[0].offset)
-    );
+  if (selection.selectStructure) {
+    if (isEnter) {
+      return focusAt(article.add(new Paragraph(), selection.range[0].offset));
+    }
+    if (isBackspace) {
+      let component = getComponentById(selection.range[0].id);
+      if (component instanceof Table) {
+        return focusAt(component.replaceSelf(new Paragraph()));
+      }
+    }
   }
   if (selection.selectStructure) return;
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回

@@ -6,11 +6,14 @@ enum ComponentType {
   character = "CHARACTER",
   characterList = "CHARACTERLIST",
   paragraph = "PARAGRAPH",
+  title = "TITLE",
   list = "LIST",
+  listItem = "LISTITEM",
   table = "TABLE",
-  tableCell = "TABLECELL",
   tableRow = "TABLEROW",
-  article = "ARTICLE",
+  tableCell = "TABLECELL",
+  tableItem = "TABLECELLITEM",
+  article = "ARTICLE"
 }
 
 export default ComponentType;

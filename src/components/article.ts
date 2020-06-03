@@ -1,15 +1,13 @@
-import Collection from "./collection";
+import StructureCollection from "./structure-collection";
+import ContentCollection from "./content-collection";
 import List from "./list";
 import Media from "./media";
-import Paragraph from "./paragraph";
+import Table from "./table";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
 import { operatorType } from "./component";
-import Table from "./table";
-import StructureCollection from "./structure-collection";
-import ContentCollection from "./content-collection";
 
 type articleChildType = List | ContentCollection | Media | Table;
 
@@ -18,10 +16,7 @@ class Article extends StructureCollection<articleChildType> {
   structureType = StructureType.collection;
   actived = true;
 
-  whenChildHeadDelete(
-    component: articleChildType,
-    index: number
-  ): operatorType {
+  childHeadDelete(component: articleChildType, index: number): operatorType {
     let prev = this.getPrev(component);
     if (!prev) return;
     if (component instanceof ContentCollection) {

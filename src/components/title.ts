@@ -1,24 +1,31 @@
-import Paragraph from "./paragraph";
+import ContentCollection from "./content-collection";
 import updateComponent from "../selection-operator/update-component";
+import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import ContentCollection from "./content-collection";
 import { classType, operatorType } from "./component";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 class Title extends ContentCollection {
+  type = ComponentType.title;
   titleType: titleType;
 
+  static exchangeOnly(component: ContentCollection, args?: any[]) {
+    Reflect.setPrototypeOf(component, this.prototype);
+    let title = component as Title;
+    title.titleType = args ? args[0] : "h1";
+    return component;
+  }
+
   static exchange(
-    component: Paragraph,
+    component: ContentCollection,
     args: any[],
     customerUpdate: boolean = false
   ) {
-    let newComponet = super.exchange(component, args, true) as Title;
+    let newComponet = this.exchangeOnly(component, args) as Title;
     newComponet.titleType = args[0] as titleType | "h1";
     updateComponent(newComponet, customerUpdate);
-    return newComponet;
   }
 
   constructor(

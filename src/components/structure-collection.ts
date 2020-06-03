@@ -1,30 +1,40 @@
 import Collection from "./collection";
 import Component, { operatorType } from "./component";
 import updateComponent from "../selection-operator/update-component";
+import StructureType from "../const/structure-type";
 import { createError } from "./util";
-import Paragraph from "./paragraph";
 
 abstract class StructureCollection<T extends Component> extends Collection<T> {
-  addChildren(
-    component: T | T[],
-    index?: number,
-    customerUpdate: boolean = false
-  ) {
-    if (!Array.isArray(component)) {
-      component = [component];
-    }
+  structureType = StructureType.collection;
+
+  addChildren(component: T[], index?: number, customerUpdate: boolean = false) {
     component.forEach((item) => {
       item.parent = this;
       item.actived = true;
     });
-    return super.addChildren(component, index, customerUpdate);
+    super.addChildren(component, index);
+    updateComponent(component.reverse(), customerUpdate);
   }
 
-  replaceChild(
-    component: T,
-    oldComponent: T,
+  removeChildren(
+    indexOrComponent: T | number,
+    removeNumber: number = 1,
     customerUpdate: boolean = false
-  ): operatorType {
+  ) {
+    if (removeNumber === this.children.size) {
+      this.removeSelf();
+      return [...this.children];
+    }
+    let removed = super.removeChildren(indexOrComponent, removeNumber);
+    removed.forEach((component) => {
+      component.actived = false;
+      component.parent = undefined;
+    });
+    updateComponent(removed, customerUpdate);
+    return removed;
+  }
+
+  replaceChild(component: T, oldComponent: T, customerUpdate: boolean = false) {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
       throw Error("需要替换的组件不是此组件的子组件！");
@@ -35,7 +45,27 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     oldComponent.parent = undefined;
     this.children = this.children.splice(index, 1, component);
     updateComponent([oldComponent, component], customerUpdate);
-    return [component, 0, 0];
+  }
+
+  splitChild(
+    index: number,
+    customerUpdate: boolean = false
+  ): StructureCollection<T> | undefined {
+    let parent = this.parent;
+    if (!parent) throw createError("该组件无父组件，不能分割", this);
+    if (index >= this.children.size) {
+      return;
+    }
+    let tail = this.children.slice(index).toArray();
+    let thisIndex = parent.findChildrenIndex(this);
+    this.removeChildren(index, this.children.size - index, customerUpdate);
+    let newCollection = this.createEmpty();
+    newCollection.addChildren(tail, 0, true);
+    if (!this.actived) {
+      thisIndex -= 1;
+    }
+    parent.addChildren([newCollection], thisIndex + 1);
+    return newCollection;
   }
 
   split(
@@ -46,25 +76,19 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     let parent = this.parent;
     if (!parent) return;
     let componentIndex = parent.findChildrenIndex(this);
-    let splitComponent = this.splitChild(index, customerUpdate);
-    if (!splitComponent) return;
-    if (splitComponent[0].children.size === 0) {
-      splitComponent[0].removeSelf();
+    if (index !== 0) {
+      this.splitChild(index, customerUpdate);
+    } else {
       componentIndex -= 1;
     }
-    if (splitComponent[1].children.size !== 0) {
-      parent.addChildren(
-        splitComponent[1],
-        componentIndex + 1,
-        customerUpdate
-      );
+    if (this.children.size === 0) {
+      this.removeSelf();
+      componentIndex -= 1;
     }
     if (component) {
+      if (!Array.isArray(component)) component = [component];
       parent.addChildren(component, componentIndex + 1, customerUpdate);
-      if (Array.isArray(component)) {
-        return [component[1], 0, 0];
-      }
-      return [component, 0, 0];
+      return [component[0], 0, 0];
     }
     return;
   }
@@ -73,17 +97,19 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     let id =
       typeof idOrComponent === "string" ? idOrComponent : idOrComponent.id;
     let index = this.children.findIndex((item) => item.id === id);
-    if (index < 0) throw createError('该组件不在子组件列表中');
+    if (index < 0) throw createError("该组件不在子组件列表中");
     return index;
   }
 
-  getPrev(idOrComponent: string | T) {
+  getPrev(idOrComponent: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrComponent);
+    if (index === 0) return;
     return this.children.get(index - 1);
   }
 
-  getNext(idOrComponent: string | T) {
+  getNext(idOrComponent: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrComponent);
+    if (index === this.children.size) return;
     return this.children.get(index + 1);
   }
 
