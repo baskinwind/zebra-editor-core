@@ -12,7 +12,7 @@ const input = (
   isComposition: boolean = false,
   event?: KeyboardEvent
 ) => {
-  deleteSelection();
+  deleteSelection(event);
   let selection = getSelection();
   if (selection.selectStructure) return;
   // 修正混合输入时，光标位置获取错误的问题
@@ -34,8 +34,7 @@ const input = (
   }
 
   if (
-    (startNode instanceof HTMLImageElement &&
-      typeof charOrInline === "string") ||
+    startNode instanceof HTMLImageElement ||
     startNode instanceof HTMLBRElement ||
     charOrInline instanceof Character
   ) {
@@ -43,19 +42,11 @@ const input = (
     return focusAt(component.add(charOrInline, offset));
   }
 
-  component.add(charOrInline, offset, true);
+  let focus = component.add(charOrInline, offset, !event?.defaultPrevented);
+  if (event?.defaultPrevented) {
+    focusAt(focus);
+  }
   let node = startPosition?.node;
-  // if (typeof charOrInline === "string") {
-  //   if (isComposition) {
-  //     return;
-  //   }
-  //   node.nodeValue = `${node.nodeValue?.slice(
-  //     0,
-  //     startPosition?.index
-  //   )}${charOrInline}${node.nodeValue?.slice(startPosition?.index)}`;
-  //   return focusNode({ node: node, index: startPosition?.index + 1 });
-  // }
-
   if (charOrInline instanceof InlineImage) {
     let newInline = charOrInline.render();
     if (node instanceof HTMLImageElement) {

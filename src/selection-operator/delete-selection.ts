@@ -6,8 +6,9 @@ import { getComponentById } from "../components/util";
 import { getCursorPosition } from "./util";
 import ContentCollection from "../components/content-collection";
 import Table from "../components/table";
+import updateComponent from "./update-component";
 
-const deleteSelection = (event?: KeyboardEvent) => {
+const deleteSelection = (event?: KeyboardEvent, dom?: any) => {
   let selection = getSelection();
   let isEnter = event?.key === "Enter";
   let isBackspace = event?.key === "Backspace";
@@ -36,7 +37,7 @@ const deleteSelection = (event?: KeyboardEvent) => {
     let start = selection.range[0].offset;
     // 优化段落内删除逻辑，不需要整段更新
     if (component instanceof ContentCollection) {
-      if (start === 0) {
+      if (start <= 1) {
         event?.preventDefault();
         return focusAt(component.remove(start - 1, start - 1, start > 1));
       } else {
@@ -47,8 +48,8 @@ const deleteSelection = (event?: KeyboardEvent) => {
     return focusAt(component.remove(start, start + 1));
   }
 
-  event?.preventDefault();
   if (selection.isCollapsed && isEnter) {
+    event?.preventDefault();
     let component = getComponentById(selection.range[0].id);
     return focusAt(component.split(selection.range[0].offset));
   }
@@ -63,16 +64,18 @@ const deleteSelection = (event?: KeyboardEvent) => {
   if (idList.length === 1) {
     let id = idList[0];
     let component = getComponentById(id);
-    let focus = component.remove(start.offset, end.offset - 1);
+    component.remove(start.offset, end.offset - 1, true);
     // 为 Enter 的处理
     if (isEnter) {
-      focus = component.split(start.offset) || focus;
+      event?.preventDefault();
+      updateComponent(component);
+      return focusAt(component.split(start.offset));
     }
-    focusAt(focus);
     return;
   }
 
   // 选中多行
+  event?.preventDefault();
   let firstComponent = getComponentById(idList[0]);
   let lastComponent = getComponentById(idList[idList.length - 1]);
   if (!firstComponent.parent || !lastComponent.parent) return;
@@ -90,7 +93,6 @@ const deleteSelection = (event?: KeyboardEvent) => {
     });
     return;
   }
-
   // 其他情况
   firstComponent.addIntoTail(lastComponent);
   for (let i = 1; i < idList.length - 1; i++) {
@@ -100,6 +102,18 @@ const deleteSelection = (event?: KeyboardEvent) => {
     id: firstComponent.id,
     offset: start.offset
   });
+
+  let e1 = event as KeyboardEvent;
+
+  let e2 = document.createEvent('KeyboardEvent');
+  e2.initEvent('keydown', true, true);
+  // @ts-ignore
+  e2.key = e1.key;
+  // let e2 = new KeyboardEvent('keydown', {
+  //   key: 'z'
+  // });
+  document.getElementById(firstComponent.id)?.dispatchEvent(e2);
+
   return;
 };
 

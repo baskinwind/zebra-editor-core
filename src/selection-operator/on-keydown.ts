@@ -1,12 +1,19 @@
 import escapeKey from "./escape-key";
+import input from "./input";
 import deleteSelection from "./delete-selection";
 
-const onKeyDown = (event: KeyboardEvent) => {
+const onKeyUp = (event: KeyboardEvent, dom: any) => {
+  // 混合输入
+  // if (event.isComposing || event.keyCode === 229) {
+  //   return;
+  // }
   if (escapeKey(event)) return;
-  let key = event.key.toLowerCase();
-  if (key === "enter" || key === "backspace") {
-    deleteSelection(event.key);
+  deleteSelection(event, dom);
+  let key = event.key;
+  // 字符输入
+  if (key.length === 1) {
+    input(key, false, event);
   }
 };
 
-export default onKeyDown;
+export default onKeyUp;

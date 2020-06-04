@@ -156,7 +156,7 @@ abstract class ContentCollection extends Collection<Inline> {
     component: ContentCollection,
     customerUpdate: boolean = false
   ): operatorType {
-    component.removeSelf();
+    component.removeSelf(customerUpdate);
     let size = this.children.size;
     this.children = this.children.push(...component.children);
     updateComponent(this, customerUpdate);

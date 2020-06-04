@@ -1,7 +1,5 @@
 import Article from "../components/article";
 import onClick from "../selection-operator/on-click";
-import escapeKey from "../selection-operator/escape-key";
-import onKeyUp from "../selection-operator/on-keyup";
 import onPaste from "../selection-operator/on-paste";
 import onComposttion from "../selection-operator/on-composition";
 import { flushSelection } from "../selection-operator/get-selection";
@@ -9,10 +7,6 @@ import onKeyDown from "../selection-operator/on-keydown";
 
 const createDraft = (root: HTMLElement, article: Article) => {
   let editorWrap = document.createElement("div");
-  // 是否正在混合输入
-  let isComposition = false;
-  // 混合输入是否结束，包括输入结束的选中输入
-  let compositionEnd = true;
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("zebra-draft-root");
   editorWrap.style.whiteSpace = "pre-wrap";
@@ -20,34 +14,21 @@ const createDraft = (root: HTMLElement, article: Article) => {
   editorWrap.addEventListener("blur", (event) => {
     try {
       flushSelection();
-    } catch {}
+    } catch { }
   });
   editorWrap.addEventListener("click", (event) => {
     onClick(event);
   });
   editorWrap.addEventListener("keydown", (event) => {
-    console.log("keydown", event.isComposing);
-    // onKeyDown(event);
-    onKeyUp(event);
-  });
-  editorWrap.addEventListener("keyup", (event) => {
-    console.log("keyup", event.isComposing);
-    if (!compositionEnd) {
-      if (!isComposition) {
-        compositionEnd = true;
-      }
-      return;
-    }
+    console.log("keydown", event);
+    onKeyDown(event, editorWrap);
   });
   editorWrap.addEventListener("compositionstart", (event) => {
     console.log("compositionstart");
-    isComposition = true;
-    compositionEnd = false;
   });
   editorWrap.addEventListener("compositionend", (event) => {
-    console.log("compositionstart");
+    console.log("compositionend");
     onComposttion(event as any);
-    isComposition = false;
   });
   editorWrap.addEventListener("paste", (event) => {
     event.preventDefault();
