@@ -2,13 +2,14 @@ import "../src/default.scss";
 import "./operator";
 
 import mount from "../src/util/mount";
+import createByRaw from "../src/util/create-by-raw";
 import Article from "../src/components/article";
 import Title from "../src/components/title";
 import Media from "../src/components/media";
 import ComponentType from "../src/const/component-type";
 import Paragraph from "../src/components/paragraph";
 import InlineImage from "../src/components/inline-image";
-import List, { ListItem } from "../src/components/list";
+import List from "../src/components/list";
 import Table from "../src/components/table";
 
 let pledge = [
@@ -52,9 +53,6 @@ let ol = new List("ol", [
   "群鸦的盛宴",
   "魔龙的狂舞"
 ]);
-ol.modifyDecorate({
-  listStyle: "upper-roman"
-});
 ol.addInto(article);
 
 let ul = new List("ul", [
@@ -105,6 +103,16 @@ let table = new Table(3, 3, [
 table.addInto(article);
 
 window.article = article;
+
+window.clearArticle = () => {
+  let dom = document.getElementById("root");
+  dom.innerHTML = "";
+};
+
+window.showRaw = (raw) => {
+  let article = createByRaw(raw);
+  mount("root", article);
+};
 
 mount("root", article);
 

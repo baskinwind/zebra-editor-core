@@ -4,8 +4,10 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
-import { operatorType, classType } from "./component";
+import Component, { operatorType, classType, rawType } from "./component";
 import { createError } from "./util";
+
+type tableCellChildType = string | TableItem | undefined;
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
@@ -14,19 +16,28 @@ class Table extends StructureCollection<TableRow> {
   col: number;
   needHead: boolean;
 
-  static create(raw: any): Table {
-    let children = raw.children.map((item: any) => {
-      return item.children.map((item: any) => {
-        return TableItem.create(item);
-      });
-    });
-    return new Table(raw.row, raw.col, children, raw.needHead, raw.style, raw.data);
+  static create(raw: rawType): Table {
+    let children = raw.children
+      ? raw.children.map((item: rawType) =>
+          item.children
+            ? item.children.map((item: any) => TableItem.create(item))
+            : []
+        )
+      : [];
+    return new Table(
+      raw.row || 3,
+      raw.col || 3,
+      children,
+      raw.needHead,
+      raw.style,
+      raw.data
+    );
   }
 
   constructor(
     row: number,
     col: number,
-    children: ((string | TableItem)[] | string | TableItem)[][] = [],
+    children: (tableCellChildType[] | tableCellChildType)[][] = [],
     needHead: boolean = true,
     style?: storeData,
     data?: storeData
@@ -81,6 +92,14 @@ class Table extends StructureCollection<TableRow> {
     this.needHead = needHead;
   }
 
+  addIntoTail(
+    component: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
+    this.removeSelf(customerUpdate);
+    return [component, 0, 0];
+  }
+
   getRaw() {
     let raw = super.getRaw();
     raw.needHead = this.needHead;
@@ -107,7 +126,7 @@ class TableRow extends StructureCollection<TableCell> {
 
   constructor(
     size: number,
-    children: ((string | TableItem)[] | string | TableItem)[] = [],
+    children: (tableCellChildType[] | tableCellChildType)[] = [],
     cellType: "th" | "td" = "td",
     style?: storeData,
     data?: storeData
@@ -128,7 +147,7 @@ class TableRow extends StructureCollection<TableCell> {
     if (size > this.size) {
       let list = [];
       for (let i = this.size; i < size; i++) {
-        let item = new TableCell(this.cellType);
+        let item = new TableCell("", this.cellType);
         list.push(item);
       }
       this.addChildren(list);
@@ -136,6 +155,12 @@ class TableRow extends StructureCollection<TableCell> {
       this.removeChildren(size, this.size - size);
     }
     this.size = size;
+  }
+
+  getRaw() {
+    let raw = super.getRaw();
+    raw.cellType = this.cellType;
+    return raw;
   }
 
   render() {
@@ -154,7 +179,7 @@ class TableCell extends StructureCollection<TableItem> {
   cellType: "th" | "td";
 
   constructor(
-    children: (string | TableItem)[] | string | TableItem = [],
+    children: tableCellChildType[] | tableCellChildType = "",
     cellType: "th" | "td" = "td",
     style?: storeData,
     data?: storeData
@@ -164,8 +189,11 @@ class TableCell extends StructureCollection<TableItem> {
     if (!Array.isArray(children)) children = [children];
     this.addChildren(
       children.map((item) => {
+        if (!item) {
+          return new TableItem();
+        }
         if (typeof item === "string") {
-          item = new TableItem(item);
+          return new TableItem(item);
         }
         return item;
       }),
@@ -178,12 +206,6 @@ class TableCell extends StructureCollection<TableItem> {
     let prev = this.getPrev(component);
     if (!prev) return;
     return prev.addIntoTail(component);
-  }
-
-  getRaw() {
-    let raw = super.getRaw();
-    raw.cellType = this.cellType;
-    return raw;
   }
 
   render() {
@@ -200,9 +222,9 @@ class TableCell extends StructureCollection<TableItem> {
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
 
-  static create(raw: any): TableItem {
-    let tableItem = new TableItem('', raw.style, raw.data);
-    let children = super.createChildren(raw);
+  static create(raw: rawType): TableItem {
+    let tableItem = new TableItem("", raw.style, raw.data);
+    let children = super.getChildren(raw);
     tableItem.addChildren(children, 0, true);
     return tableItem;
   }
@@ -221,13 +243,21 @@ class TableItem extends ContentCollection {
     customerUpdate: boolean = false
   ): operatorType {
     // 不允许别的类型添加
-    let flag: boolean = false;
-    if (component) {
-      if (!Array.isArray(component)) component = [component];
-      component = component.filter((item) => item instanceof TableItem);
-      flag = component.length === 0;
+    let hasComponent: boolean = component !== undefined;
+    if (Array.isArray(component)) {
+      if (component.length === 0) hasComponent = false;
+      component = component.filter((item) => {
+        if (!(item instanceof ContentCollection)) return;
+        TableItem.exchangeOnly(item);
+        return true;
+      });
+      component = component.length === 0 ? undefined : component;
+    } else if (component && component instanceof ContentCollection) {
+      component = [TableItem.exchangeOnly(component)];
+    } else {
+      component = undefined;
     }
-    if (flag) {
+    if (hasComponent && component === undefined) {
       return;
     }
     return super.split(index, component, customerUpdate);

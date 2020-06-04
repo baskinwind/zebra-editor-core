@@ -40,6 +40,9 @@ new Vue({
     logHtml() {
       console.log(getHtml(article));
     },
+    logRawData() {
+      console.log(JSON.stringify(article.getRaw()));
+    },
 
     modifyType(tag) {
       if (tag === "normal") {

@@ -1,14 +1,13 @@
-import { operatorType, classType } from "./component";
 import ContentCollection from "./content-collection";
+import Paragraph from "./paragraph";
 import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
+import StructureCollection from "./structure-collection";
+import updateComponent from "../selection-operator/update-component";
+import { operatorType, classType, rawType } from "./component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import updateComponent from "../selection-operator/update-component";
-import StructureCollection from "./structure-collection";
-import Paragraph from "./paragraph";
 import { createError } from "./util";
-import createByRaw from "../util/create-by-raw";
 
 type listType = "ol" | "ul";
 
@@ -17,8 +16,10 @@ class List extends StructureCollection<ListItem> {
   structureType = StructureType.collection;
   listType: listType;
 
-  static create(raw: any): List {
-    let children = raw.children.map((item: any) => createByRaw(item));
+  static create(raw: rawType): List {
+    let children = raw.children
+      ? raw.children.map((item: rawType) => ListItem.create(item))
+      : [];
     return new List(raw.listType, children, raw.style, raw.data);
   }
 
@@ -39,6 +40,12 @@ class List extends StructureCollection<ListItem> {
     this.addChildren(list, 0, true);
   }
 
+  setListType(type: listType = "ul") {
+    if (type === this.listType) return;
+    this.listType = type;
+    updateComponent(this);
+  }
+
   createEmpty() {
     return new List(
       this.listType,
@@ -48,11 +55,7 @@ class List extends StructureCollection<ListItem> {
     );
   }
 
-  setListType(type: listType = "ul") {
-    this.listType = type;
-    updateComponent(this);
-  }
-
+  // 列表不允许添加非段落内容
   addChildren(
     component: ListItem[],
     index?: number,
@@ -99,7 +102,7 @@ class List extends StructureCollection<ListItem> {
     return;
   }
 
-  getRaw() {
+  getRaw(): rawType {
     let raw = super.getRaw();
     raw.listType = this.listType;
     return raw;
@@ -142,8 +145,8 @@ class ListItem extends ContentCollection {
   }
 
   static create(raw: any): ListItem {
-    let listItem = new ListItem('', raw.style, raw.data);
-    let children = super.createChildren(raw);
+    let listItem = new ListItem("", raw.style, raw.data);
+    let children = super.getChildren(raw);
     listItem.addChildren(children, 0, true);
     return listItem;
   }
@@ -157,16 +160,13 @@ class ListItem extends ContentCollection {
     args: any[],
     customerUpdate: boolean = false
   ): operatorType {
+    let parent = this.parent as List;
+    if (!parent) return;
     if (builder === ListItem) {
-      if (!this.parent) return;
-      let parent = this.parent as List;
-      if (args[0] === parent.listType) return;
       parent.setListType(args[0]);
       return;
     }
-    let parent = this.parent;
     let grandParent = parent?.parent;
-    if (!parent) return;
     if (!grandParent) return;
     let index = parent.findChildrenIndex(this);
     let parentIndex = grandParent.findChildrenIndex(parent);
@@ -189,7 +189,7 @@ class ListItem extends ContentCollection {
     if (!parent) return;
     let itemIndex = parent.findChildrenIndex(this);
     // 连续两个空行则切断列表
-    if (this.children.size === 0 && itemIndex !== 0) {
+    if (this.isEmpty() && itemIndex !== 0) {
       this.removeSelf();
       if (!component) component = new Paragraph();
       return parent.split(itemIndex, component, customerUpdate);
@@ -198,7 +198,11 @@ class ListItem extends ContentCollection {
     let flag: boolean = false;
     if (component) {
       if (!Array.isArray(component)) component = [component];
-      component = component.filter((item) => item instanceof ListItem);
+      component = component.filter((item) => {
+        if (!(item instanceof ContentCollection)) return;
+        ListItem.exchangeOnly(item);
+        return true;
+      });
       flag = component.length === 0;
     }
     if (flag) {
@@ -206,7 +210,6 @@ class ListItem extends ContentCollection {
     }
     return super.split(index, component, customerUpdate);
   }
-
 
   render() {
     const builder = getContentBuilder();
@@ -219,6 +222,6 @@ class ListItem extends ContentCollection {
   }
 }
 
-export { ListItem };
-
 export default List;
+
+export { ListItem };

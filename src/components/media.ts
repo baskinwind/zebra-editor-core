@@ -1,21 +1,26 @@
-import Component, { operatorType } from "./component";
+import Component, { operatorType, rawType } from "./component";
 import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
+type mediaType =
+  | ComponentType.image
+  | ComponentType.audio
+  | ComponentType.video;
+
 class Media extends Component {
   src: string;
-  type: ComponentType.image | ComponentType.audio | ComponentType.video;
+  type: mediaType;
   structureType = StructureType.content;
 
-  static create(raw: any): Media {
-    return new Media(raw.type, raw.src, raw.style, raw.data);
-  };
+  static create(raw: rawType): Media {
+    return new Media(raw.type as mediaType, raw.src || "", raw.style, raw.data);
+  }
 
   constructor(
-    type: ComponentType.image | ComponentType.audio | ComponentType.video,
+    type: mediaType,
     src: string,
     style?: storeData,
     data?: storeData
@@ -39,9 +44,8 @@ class Media extends Component {
     component: Component,
     customerUpdate: boolean = false
   ): operatorType {
-    let paragraph = new Paragraph();
-    this.replaceSelf(paragraph);
-    return [paragraph, 0, 0];
+    super.removeSelf(customerUpdate);
+    return [component, 0, 0];
   }
 
   split(
@@ -71,21 +75,26 @@ class Media extends Component {
     return this.replaceSelf(new Paragraph(), customerUpdate);
   }
 
-  getRaw(): any {
-    return {
+  getRaw(): rawType {
+    let raw: rawType = {
       type: this.type,
-      src: this.src,
-      style: this.decorate.getStyle(),
-      data: this.decorate.getData()
+      src: this.src
     };
+    if (this.decorate.styleIsEmpty()) {
+      raw.style = this.decorate.getStyle();
+    }
+    if (this.decorate.dataIsEmpty()) {
+      raw.data = this.decorate.getData();
+    }
+    return raw;
   }
 
   render() {
     let builder = getContentBuilder();
     let map = {
       [ComponentType.image]: builder.buildeImage,
-      [ComponentType.audio]: builder.buildeImage,
-      [ComponentType.video]: builder.buildeImage
+      [ComponentType.audio]: builder.buildeAudio,
+      [ComponentType.video]: builder.buildeVideo
     };
     return map[this.type](
       this.id,

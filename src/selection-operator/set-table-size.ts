@@ -13,7 +13,11 @@ const getTable = (component: Component | undefined): Table => {
   return getTable(component.parent);
 };
 
-const setTableSize = (option: { row?: number; col?: number; head?: boolean }) => {
+const setTableSize = (option: {
+  row?: number;
+  col?: number;
+  head?: boolean;
+}) => {
   let selection = getSelection();
   if (!selection.isCollapsed) return;
   let id = selection.range[0].id;

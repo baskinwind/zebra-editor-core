@@ -1,13 +1,14 @@
 import ComponentType from "../const/component-type";
 import ContentCollection from "./content-collection";
 import { getContentBuilder } from "../builder";
+import { rawType } from "./component";
 
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
-  static create(raw: any): Paragraph {
-    let paragraph = new Paragraph('', raw.style, raw.data);
-    let children = super.createChildren(raw);
+  static create(raw: rawType): Paragraph {
+    let paragraph = new Paragraph("", raw.style, raw.data);
+    let children = super.getChildren(raw);
     paragraph.addChildren(children, 0, true);
     return paragraph;
   }

@@ -2,12 +2,32 @@ import Decorate from "../decorate";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
-import { getId, saveComponent } from "./util";
+import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
 import StructureCollection from "./structure-collection";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = typeof Component;
+export interface rawType {
+  type: ComponentType;
+  children?: rawType[];
+  style?: storeData;
+  data?: storeData;
+  // for CharacterList
+  content?: string;
+  // for Media or InlineImage
+  src?: string;
+  // fro Title
+  titleType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  // for List
+  listType?: "ul" | "ol";
+  // for Table
+  row?: number;
+  col?: number;
+  needHead?: boolean;
+  // for TableRaw
+  cellType?: "th" | "td";
+}
 
 abstract class Component {
   id: string = getId();
@@ -18,22 +38,20 @@ abstract class Component {
   abstract structureType: StructureType;
 
   static exchangeOnly(component: Component, args?: any[]): Component {
-    Reflect.setPrototypeOf(component, this.prototype);
-    return component;
+    throw createError("请为组件添加 exchangeOnly 静态方法", this);
   }
 
   static exchange(
     component: Component,
     args?: any[],
     customerUpdate: boolean = false
-  ) { }
+  ) {
+    throw createError("请为组件添加 exchange 静态方法", this);
+  }
 
   static create(raw: any): Component {
-    return Reflect.construct(this.constructor, [
-      raw.style,
-      raw.data
-    ]);
-  };
+    throw createError("请为组件添加 create 静态方法", this);
+  }
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
@@ -48,7 +66,7 @@ abstract class Component {
   }
 
   isEmpty() {
-    return true;
+    return false;
   }
 
   exchangeToOther(builder: classType, args: any[]) {
@@ -133,7 +151,7 @@ abstract class Component {
     return;
   }
 
-  getRaw(): any { }
+  abstract getRaw(): rawType;
 
   abstract render(): any;
 }

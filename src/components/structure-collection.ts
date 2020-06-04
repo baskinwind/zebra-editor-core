@@ -1,5 +1,5 @@
 import Collection from "./collection";
-import Component, { operatorType } from "./component";
+import Component, { operatorType, rawType } from "./component";
 import updateComponent from "../selection-operator/update-component";
 import StructureType from "../const/structure-type";
 import { createError } from "./util";
@@ -70,7 +70,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
 
   split(
     index: number,
-    component?: T | T[],
+    component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
@@ -81,7 +81,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     } else {
       componentIndex -= 1;
     }
-    if (this.children.size === 0) {
+    if (this.isEmpty()) {
       this.removeSelf();
       componentIndex -= 1;
     }
@@ -114,7 +114,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   }
 
   getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
-    if (this.children.size === 0) return [false, false, []];
+    if (this.isEmpty()) return [false, false, []];
     if (!startId) {
       startId = this.children.get(0)?.id as string;
     }
@@ -155,10 +155,10 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     return [startFlag, endFlag, res];
   }
 
-  getRaw(): any {
-    let raw: any = {
+  getRaw(): rawType {
+    let raw: rawType = {
       type: this.type,
-      children: this.children.toArray().map(item => item.getRaw()),
+      children: this.children.toArray().map((item) => item.getRaw())
     };
     if (!this.decorate.styleIsEmpty()) {
       raw.style = this.decorate.getStyle();

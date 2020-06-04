@@ -3,7 +3,7 @@ import updateComponent from "../selection-operator/update-component";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import { classType, operatorType } from "./component";
+import { classType, operatorType, rawType } from "./component";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -24,13 +24,12 @@ class Title extends ContentCollection {
     customerUpdate: boolean = false
   ) {
     let newComponet = this.exchangeOnly(component, args) as Title;
-    newComponet.titleType = args[0] as titleType | "h1";
     updateComponent(newComponet, customerUpdate);
   }
 
-  static create(raw: any): Title {
-    let title = new Title(raw.titleType, '', raw.style, raw.data);
-    let children = super.createChildren(raw);
+  static create(raw: rawType): Title {
+    let title = new Title(raw.titleType || "h1", "", raw.style, raw.data);
+    let children = super.getChildren(raw);
     title.addChildren(children, 0, true);
     return title;
   }
@@ -65,7 +64,7 @@ class Title extends ContentCollection {
     );
   }
 
-  getRaw(): any {
+  getRaw(): rawType {
     let raw = super.getRaw();
     raw.titleType = this.titleType;
     return raw;

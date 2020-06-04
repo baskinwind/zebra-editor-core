@@ -1,14 +1,14 @@
 import Decorate, { storeData } from "../decorate";
-import Component, { operatorType, classType } from "./component";
+import Component, { operatorType, classType, rawType } from "./component";
 import Collection from "./collection";
 import Inline from "./inline";
 import Character from "./character";
 import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
+import InlineImage from "./inline-image";
 import { createError } from "./util";
 import { getContentBuilder } from "../builder";
 import ComponentType from "../const/component-type";
-import createByRaw from "../util/create-by-raw";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
@@ -30,16 +30,21 @@ abstract class ContentCollection extends Collection<Inline> {
     updateComponent(component, customerUpdate);
   }
 
-  static createChildren(raw: any) {
-    let children: any[] = [];
-    raw.children.forEach((item: any) => {
+  static getChildren(raw: rawType): Inline[] {
+    if (!raw.children) return [];
+    let children: Inline[] = [];
+    raw.children.forEach((item: rawType) => {
       if (item.type === ComponentType.characterList) {
+        if (!item.content) return;
         for (let char of item.content) {
           children.push(new Character(char, item.style, item.data));
         }
         return;
       }
-      children.push(createByRaw(item));
+      if (item.type === ComponentType.inlineImage) {
+        children.push(InlineImage.create(item));
+        return;
+      }
     });
     return children;
   }
@@ -96,7 +101,7 @@ abstract class ContentCollection extends Collection<Inline> {
     if (!isTail) {
       newCollection.addChildren(tail, 0, true);
     }
-    this.parent.addChildren([newCollection], thisIndex + 1);
+    this.parent.addChildren([newCollection], thisIndex + 1, customerUpdate);
     return newCollection;
   }
 
@@ -231,14 +236,14 @@ abstract class ContentCollection extends Collection<Inline> {
     return content;
   }
 
-  getRaw(): any {
+  getRaw(): rawType {
     let children = this.getRawData().map((item) => {
       if (item.getRaw) {
         return item.getRaw();
       }
-      let raw: any = {
+      let raw: rawType = {
         type: ComponentType.characterList,
-        content: item[0].join(''),
+        content: item[0].join("")
       };
       if (item[1]) {
         raw.style = item[1];
@@ -248,9 +253,9 @@ abstract class ContentCollection extends Collection<Inline> {
       }
       return raw;
     });
-    let raw: any = {
+    let raw: rawType = {
       type: this.type,
-      children: children,
+      children: children
     };
     if (!this.decorate.styleIsEmpty()) {
       raw.style = this.decorate.getStyle();

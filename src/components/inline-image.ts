@@ -1,9 +1,10 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import updateComponent from "../selection-operator/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
-import updateComponent from "../selection-operator/update-component";
+import { rawType } from "./component";
 
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;
@@ -11,9 +12,9 @@ class InlineImage extends Inline {
   content: string = "$$$INLINEIMAGE$$$";
   src: string;
 
-  static create(raw: any): InlineImage {
-    return new InlineImage(raw.src, raw.style, raw.data);
-  };
+  static create(raw: rawType): InlineImage {
+    return new InlineImage(raw.src || "", raw.style, raw.data);
+  }
 
   constructor(src: string, style?: storeData, data?: storeData) {
     super(style, data);
@@ -27,7 +28,8 @@ class InlineImage extends Inline {
 
   getRaw() {
     let raw: any = {
-      type: this.type, src: this.src,
+      type: this.type,
+      src: this.src
     };
     if (!this.decorate.styleIsEmpty()) {
       raw.style = this.decorate.getStyle();

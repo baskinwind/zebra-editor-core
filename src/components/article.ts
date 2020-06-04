@@ -7,9 +7,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
-import { operatorType } from "./component";
-import { storeData } from "../decorate";
-import createByRaw from "../util/create-by-raw";
+import { operatorType, rawType } from "./component";
 
 type articleChildType = List | ContentCollection | Media | Table;
 
@@ -18,10 +16,8 @@ class Article extends StructureCollection<articleChildType> {
   structureType = StructureType.collection;
   actived = true;
 
-  static create(raw: any): Article {
-    let children = raw.children.map((item: any) => createByRaw(item));
+  static create(raw: rawType): Article {
     let article = new Article(raw.style, raw.data);
-    article.addChildren(children, 0, true);
     return article;
   }
 
