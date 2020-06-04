@@ -10,6 +10,9 @@ const onClick = (event: MouseEvent) => {
     range.selectNode(target);
     section?.addRange(range);
   }
+  if (target instanceof HTMLLinkElement) {
+    event.preventDefault();
+  }
 };
 
 export default onClick;

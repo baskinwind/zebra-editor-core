@@ -7,12 +7,15 @@ import { getCursorPosition } from "./util";
 import ContentCollection from "../components/content-collection";
 import Table from "../components/table";
 
-const deleteSelection = (key?: string) => {
+const deleteSelection = (event?: KeyboardEvent) => {
   let selection = getSelection();
-  let isEnter = key === "Enter";
-  let isBackspace = key === "Backspace";
+  let isEnter = event?.key === "Enter";
+  let isBackspace = event?.key === "Backspace";
+
+  // 处理，选中 article 直接子节点时
   let article = getComponentById<Article>("article");
   if (selection.selectStructure) {
+    event?.preventDefault();
     if (isEnter) {
       return focusAt(article.add(new Paragraph(), selection.range[0].offset));
     }
@@ -22,8 +25,9 @@ const deleteSelection = (key?: string) => {
         return focusAt(component.replaceSelf(new Paragraph()));
       }
     }
+    return;
   }
-  if (selection.selectStructure) return;
+
   // 选取为光标，且输入不为 Enter 或 Backspace 直接返回
   if (selection.isCollapsed && !(isEnter || isBackspace)) return;
   // 删除光标前一个位置
@@ -32,24 +36,18 @@ const deleteSelection = (key?: string) => {
     let start = selection.range[0].offset;
     // 优化段落内删除逻辑，不需要整段更新
     if (component instanceof ContentCollection) {
-      let startPosition = getCursorPosition(selection.range[0]);
-      if (!startPosition) return;
-      let node = startPosition.node;
-      let index = startPosition.index;
-      if (index && node.nodeValue?.length) {
-        node.nodeValue = `${node.nodeValue.slice(
-          0,
-          index - 1
-        )}${node.nodeValue.slice(index)}`;
+      if (start === 0) {
+        event?.preventDefault();
+        return focusAt(component.remove(start - 1, start - 1, start > 1));
+      } else {
+        return component.remove(start - 1, start - 1, start > 1);
       }
-      if (node instanceof HTMLImageElement) {
-        node.parentElement?.remove();
-      }
-      return focusAt(component.remove(start - 1, start - 1, start > 1));
     }
+    event?.preventDefault();
     return focusAt(component.remove(start, start + 1));
   }
 
+  event?.preventDefault();
   if (selection.isCollapsed && isEnter) {
     let component = getComponentById(selection.range[0].id);
     return focusAt(component.split(selection.range[0].offset));

@@ -9,7 +9,8 @@ import { getCursorPosition } from "./util";
 
 const input = (
   charOrInline: string | Inline,
-  isComposition: boolean = false
+  isComposition: boolean = false,
+  event?: KeyboardEvent
 ) => {
   deleteSelection();
   let selection = getSelection();
@@ -24,33 +25,36 @@ const input = (
   let startPosition = getCursorPosition(selection.range[0]);
   if (!startPosition) return;
   let startNode = startPosition.node;
-  let escape =
+  if (
     charOrInline === " " &&
     (startPosition.index === 0 ||
-      startPosition.index === startNode.nodeValue?.length);
+      startPosition.index === startNode.nodeValue?.length)
+  ) {
+    charOrInline = new Character(charOrInline);
+  }
 
   if (
     (startNode instanceof HTMLImageElement &&
       typeof charOrInline === "string") ||
     startNode instanceof HTMLBRElement ||
-    escape ||
     charOrInline instanceof Character
   ) {
+    event?.preventDefault();
     return focusAt(component.add(charOrInline, offset));
   }
 
-  let node = startPosition?.node;
   component.add(charOrInline, offset, true);
-  if (typeof charOrInline === "string") {
-    if (isComposition) {
-      return;
-    }
-    node.nodeValue = `${node.nodeValue?.slice(
-      0,
-      startPosition?.index
-    )}${charOrInline}${node.nodeValue?.slice(startPosition?.index)}`;
-    return focusNode({ node: node, index: startPosition?.index + 1 });
-  }
+  let node = startPosition?.node;
+  // if (typeof charOrInline === "string") {
+  //   if (isComposition) {
+  //     return;
+  //   }
+  //   node.nodeValue = `${node.nodeValue?.slice(
+  //     0,
+  //     startPosition?.index
+  //   )}${charOrInline}${node.nodeValue?.slice(startPosition?.index)}`;
+  //   return focusNode({ node: node, index: startPosition?.index + 1 });
+  // }
 
   if (charOrInline instanceof InlineImage) {
     let newInline = charOrInline.render();

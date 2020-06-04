@@ -17,21 +17,12 @@ class Table extends StructureCollection<TableRow> {
   needHead: boolean;
 
   static create(raw: rawType): Table {
+    let table = new Table(0, 0, [], false, raw.style, raw.data);
     let children = raw.children
-      ? raw.children.map((item: rawType) =>
-          item.children
-            ? item.children.map((item: any) => TableItem.create(item))
-            : []
-        )
+      ? raw.children.map((item) => TableRow.create(item))
       : [];
-    return new Table(
-      raw.row || 3,
-      raw.col || 3,
-      children,
-      raw.needHead,
-      raw.style,
-      raw.data
-    );
+    table.addChildren(children, 0, true);
+    return table;
   }
 
   constructor(
@@ -124,6 +115,15 @@ class TableRow extends StructureCollection<TableCell> {
   size: number;
   cellType: "th" | "td";
 
+  static create(raw: rawType): TableRow {
+    let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
+    let children = raw.children
+      ? raw.children.map((item) => TableCell.create(item))
+      : [];
+    tableRow.addChildren(children, 0, true);
+    return tableRow;
+  }
+
   constructor(
     size: number,
     children: (tableCellChildType[] | tableCellChildType)[] = [],
@@ -177,6 +177,18 @@ class TableCell extends StructureCollection<TableItem> {
   type: ComponentType = ComponentType.tableCell;
   structureType: StructureType = StructureType.collection;
   cellType: "th" | "td";
+
+  static create(raw: rawType): TableCell {
+    let tableCell = new TableCell("", raw.cellType, raw.style, raw.data);
+    let children = raw.children
+      ? raw.children.map((item) => TableItem.create(item))
+      : [];
+    tableCell.addChildren(children, 0, true);
+    if (children.length) {
+      tableCell.removeChildren(tableCell.children.size - 1, 1, true);
+    }
+    return tableCell;
+  }
 
   constructor(
     children: tableCellChildType[] | tableCellChildType = "",

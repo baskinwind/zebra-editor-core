@@ -26,22 +26,26 @@ const createDraft = (root: HTMLElement, article: Article) => {
     onClick(event);
   });
   editorWrap.addEventListener("keydown", (event) => {
-    onKeyDown(event);
+    console.log("keydown", event.isComposing);
+    // onKeyDown(event);
+    onKeyUp(event);
   });
   editorWrap.addEventListener("keyup", (event) => {
+    console.log("keyup", event.isComposing);
     if (!compositionEnd) {
       if (!isComposition) {
         compositionEnd = true;
       }
       return;
     }
-    onKeyUp(event);
   });
   editorWrap.addEventListener("compositionstart", (event) => {
+    console.log("compositionstart");
     isComposition = true;
     compositionEnd = false;
   });
   editorWrap.addEventListener("compositionend", (event) => {
+    console.log("compositionstart");
     onComposttion(event as any);
     isComposition = false;
   });
