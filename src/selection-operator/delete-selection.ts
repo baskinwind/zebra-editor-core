@@ -6,6 +6,8 @@ import ContentCollection from "../components/content-collection";
 import Table from "../components/table";
 import { getComponentById } from "../components/util";
 import { delayUpdate } from "./update-component";
+import Code from "../components/code";
+import input from "./input";
 
 const deleteSelection = (
   event?: KeyboardEvent,
@@ -56,6 +58,9 @@ const deleteSelection = (
   if (selection.isCollapsed && isEnter) {
     event?.preventDefault();
     let component = getComponentById(selection.range[0].id);
+    if (component instanceof Code) {
+      return input('\n');
+    }
     return focusAt(component.split(selection.range[0].offset));
   }
 

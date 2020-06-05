@@ -15,6 +15,18 @@
     }
   }
 
+  .zebra-draft-title-code {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Consolas, monospace;
+    line-height: 1.3em;
+    background: #f8f8f8;
+    code {
+      font-family: inherit;
+    }
+  }
+
   .zebra-draft-image {
     margin: 0;
     &.zebra-draft-image-loading {

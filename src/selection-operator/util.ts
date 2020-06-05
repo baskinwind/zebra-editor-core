@@ -73,9 +73,9 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-      node: Node | Element;
-      index: number;
-    }
+    node: Node | Element;
+    index: number;
+  }
   | undefined => {
   let dom = document.getElementById(cursor.id);
   let node = dom as Element;

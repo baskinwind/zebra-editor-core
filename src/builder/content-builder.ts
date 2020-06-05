@@ -148,6 +148,25 @@ const contentBuilder = {
     }
     return title;
   },
+  buildCode(
+    id: string,
+    content: string,
+    style: any,
+    data: any
+  ): HTMLElement {
+    const pre = document.createElement('pre');
+    pre.id = id;
+    pre.classList.add(`zebra-draft-title-code`);
+    pre.dataset.type = ComponentType.code;
+    pre.dataset.structure = StructureType.content;
+    addStyle(pre, style);
+    const code = document.createElement('code');
+    code.append(content);
+    code.dataset.type = ComponentType.characterList;
+    code.dataset.structure = StructureType.partialContent;
+    pre.appendChild(code);
+    return pre;
+  },
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
     const figure = document.createElement("figure");
     figure.id = id;

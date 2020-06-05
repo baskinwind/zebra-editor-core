@@ -32,6 +32,7 @@ const input = (
   let startNode = startPosition.node;
   // 样式边缘的空格，逃脱该样式，优化体验
   if (
+    charOrInline == "\n" ||
     charOrInline === " " &&
     (startPosition.index === 0 ||
       startPosition.index === startNode.nodeValue?.length)
@@ -48,7 +49,9 @@ const input = (
     event?.defaultPrevented
   ) {
     event?.preventDefault();
-    return focusAt(component.add(charOrInline, offset));
+    let focus = component.add(charOrInline, offset);
+    console.log(focus);
+    return focusAt(focus);
   }
 
   // 普通的文字输入，不需要强制更新，默认行为不会破坏文档结构
