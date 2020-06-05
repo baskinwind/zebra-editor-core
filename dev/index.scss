@@ -15,6 +15,7 @@ body {
 .flex {
   display: flex;
   height: 100%;
+  margin: 10px;
 }
 
 .operator {
@@ -36,7 +37,10 @@ body {
   > div {
     border: 1px solid #a5a5a5;
     border-radius: 4px;
-    margin: 10px;
+    margin: 0 10px 10px 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
     padding: 10px;
     > div {
       display: flex;

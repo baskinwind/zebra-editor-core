@@ -108,7 +108,7 @@ new Vue({
     },
 
     insertImage() {
-      let index = Math.random() > 0.5 ? 1 : 3;
+      let index = Math.floor(Math.random() * 3 + 1);
       insertBlock(
         new Media(
           ComponentType.image,
