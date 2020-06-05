@@ -21,10 +21,6 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
-    if (removeNumber === this.children.size) {
-      this.removeSelf();
-      return [...this.children];
-    }
     let removed = super.removeChildren(indexOrComponent, removeNumber);
     removed.forEach((component) => {
       component.actived = false;
@@ -115,9 +111,6 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
 
   getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
     if (this.isEmpty()) return [false, false, []];
-    if (!startId) {
-      startId = this.children.get(0)?.id as string;
-    }
     if (!endId) {
       endId = startId;
     }
@@ -134,7 +127,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
         res.push(...temp[2]);
         return;
       }
-      if (component.id === startId) {
+      if (component.id === startId || startId === "") {
         res.push(component.id);
         startFlag = true;
         if (component.id === endId) {

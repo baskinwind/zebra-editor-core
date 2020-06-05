@@ -21,13 +21,14 @@ class Article extends StructureCollection<articleChildType> {
     return article;
   }
 
-  childHeadDelete(component: articleChildType, index: number): operatorType {
+  childHeadDelete(
+    component: articleChildType,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     let prev = this.getPrev(component);
     if (!prev) return;
-    if (component instanceof ContentCollection) {
-      return prev.addIntoTail(component);
-    }
-    return;
+    return component.send(prev, customerUpdate);
   }
 
   add(

@@ -152,29 +152,18 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, index + component.length, index + component.length];
   }
 
-  addIntoTail(
-    component: ContentCollection,
-    customerUpdate: boolean = false
-  ): operatorType {
-    component.removeSelf(customerUpdate);
-    let size = this.children.size;
-    this.children = this.children.push(...component.children);
-    updateComponent(this, customerUpdate);
-    return [this, size, size];
-  }
-
   remove(
     start: number,
     end: number,
     customerUpdate: boolean = false
   ): operatorType {
     if (!this.parent) return;
-    if (start === -1 && end === -1) {
+    if (start < 0 && end < 0) {
       let index = this.parent.findChildrenIndex(this);
-      return this.parent.childHeadDelete(this, index);
+      return this.parent.childHeadDelete(this, index, customerUpdate);
     }
-    end = end < 0 && start >= 0 ? this.children.size + end : end;
-    if (start > end) {
+    end = end < 0 ? this.children.size + end : end;
+    if (start > end + 1) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
     this.removeChildren(start, end - start + 1, customerUpdate);
@@ -201,6 +190,25 @@ abstract class ContentCollection extends Collection<Inline> {
     }
     updateComponent(this, customerUpdate);
     return [this, start, end];
+  }
+
+  send(component: Component, customerUpdate: boolean = false): operatorType {
+    return component.receive(this, customerUpdate);
+  }
+
+  receive(
+    component?: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
+    let size = this.children.size;
+    if (!component) return [this, size, size];
+    component.removeSelf(customerUpdate);
+    if (component instanceof ContentCollection) {
+      this.children = this.children.push(...component.children);
+      updateComponent(this, customerUpdate);
+      return [this, size, size];
+    }
+    return;
   }
 
   getRawData() {

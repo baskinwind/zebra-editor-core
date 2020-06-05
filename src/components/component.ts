@@ -73,7 +73,11 @@ abstract class Component {
     return;
   }
 
-  childHeadDelete(component: Component, index: number): operatorType {
+  childHeadDelete(
+    component: Component,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     return;
   }
 
@@ -102,13 +106,6 @@ abstract class Component {
   add(
     component: string | Component | Component[],
     index: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    return;
-  }
-
-  addIntoTail(
-    component: Component,
     customerUpdate: boolean = false
   ): operatorType {
     return;
@@ -148,6 +145,17 @@ abstract class Component {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
     updateComponent(this, customerUpdate);
+    return;
+  }
+
+  send(component: Component, customerUpdate: boolean = false): operatorType {
+    return;
+  }
+
+  receive(
+    component?: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
     return;
   }
 

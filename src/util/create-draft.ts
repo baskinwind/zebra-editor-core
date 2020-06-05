@@ -1,9 +1,9 @@
 import Article from "../components/article";
-import onClick from "../selection-operator/on-click";
-import onPaste from "../selection-operator/on-paste";
-import onComposttion from "../selection-operator/on-composition";
+import onClick from "./on-click";
+import onPaste from "./on-paste";
+import onComposttion from "./on-composition";
 import { flushSelection } from "../selection-operator/get-selection";
-import onKeyDown from "../selection-operator/on-keydown";
+import onKeyDown from "./on-keydown";
 
 const createDraft = (root: HTMLElement, article: Article) => {
   let editorWrap = document.createElement("div");
@@ -14,20 +14,18 @@ const createDraft = (root: HTMLElement, article: Article) => {
   editorWrap.addEventListener("blur", (event) => {
     try {
       flushSelection();
-    } catch { }
+    } catch {}
   });
   editorWrap.addEventListener("click", (event) => {
     onClick(event);
   });
   editorWrap.addEventListener("keydown", (event) => {
-    console.log("keydown", event);
-    onKeyDown(event, editorWrap);
+    onKeyDown(event);
   });
   editorWrap.addEventListener("compositionstart", (event) => {
     console.log("compositionstart");
   });
   editorWrap.addEventListener("compositionend", (event) => {
-    console.log("compositionend");
     onComposttion(event as any);
   });
   editorWrap.addEventListener("paste", (event) => {

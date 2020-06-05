@@ -40,10 +40,11 @@ class Media extends Component {
     return [paragraph, 0, 0];
   }
 
-  addIntoTail(
-    component: Component,
+  receive(
+    component?: Component,
     customerUpdate: boolean = false
   ): operatorType {
+    if (!component) return;
     super.removeSelf(customerUpdate);
     return [component, 0, 0];
   }

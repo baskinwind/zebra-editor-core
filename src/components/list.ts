@@ -65,18 +65,39 @@ class List extends StructureCollection<ListItem> {
     super.addChildren(component, index, customerUpdate);
   }
 
-  childHeadDelete(component: ListItem, index: number): operatorType {
+  removeChildren(
+    indexOrComponent: ListItem | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ) {
+    if (removeNumber === this.children.size) {
+      this.removeSelf(customerUpdate);
+      return [...this.children];
+    }
+    let removed = super.removeChildren(
+      indexOrComponent,
+      removeNumber,
+      customerUpdate
+    );
+    return removed;
+  }
+
+  childHeadDelete(
+    component: ListItem,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     if (index !== 0) {
       let prev = this.children.get(index - 1);
       if (!prev) return;
       let size = prev.children.size;
-      prev.addIntoTail(component);
+      component.send(prev, customerUpdate);
       return [prev, size, size];
     }
     let parent = this.parent;
     if (!parent) return;
     index = parent.findChildrenIndex(this);
-    component.removeSelf();
+    component.removeSelf(customerUpdate);
     Paragraph.exchangeOnly(component);
     parent.addChildren([component], index);
     return [component, 0, 0];
@@ -92,10 +113,11 @@ class List extends StructureCollection<ListItem> {
     return;
   }
 
-  addIntoTail(
-    component: ContentCollection,
+  receive(
+    component?: ContentCollection,
     customerUpdate: boolean = false
   ): operatorType {
+    if (!component) return;
     component.removeSelf();
     ListItem.exchangeOnly(component, []);
     this.addChildren([component], undefined, customerUpdate);
@@ -134,7 +156,7 @@ class ListItem extends ContentCollection {
     let prev = component.parent.getPrev(component);
     let index = component.parent.findChildrenIndex(component);
     if (prev instanceof List && prev.listType === args[0]) {
-      prev.addIntoTail(component, customerUpdate);
+      component.send(prev, customerUpdate);
     } else {
       let parent = component.parent;
       component.removeSelf();

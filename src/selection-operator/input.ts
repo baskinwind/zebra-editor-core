@@ -6,6 +6,7 @@ import deleteSelection from "./delete-selection";
 import focusAt, { focusNode } from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition } from "./util";
+import { needUpdate } from "./update-component";
 
 const input = (
   charOrInline: string | Inline,
@@ -36,7 +37,8 @@ const input = (
   if (
     startNode instanceof HTMLImageElement ||
     startNode instanceof HTMLBRElement ||
-    charOrInline instanceof Character
+    charOrInline instanceof Character ||
+    needUpdate()
   ) {
     event?.preventDefault();
     return focusAt(component.add(charOrInline, offset));

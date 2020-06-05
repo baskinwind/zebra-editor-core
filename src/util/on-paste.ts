@@ -1,7 +1,7 @@
-import deleteSelection from "./delete-selection";
-import getSelection from "./get-selection";
+import deleteSelection from "../selection-operator/delete-selection";
+import getSelection from "../selection-operator/get-selection";
 import Paragraph from "../components/paragraph";
-import focusAt from "./focus-at";
+import focusAt from "../selection-operator/focus-at";
 import { getComponentById } from "../components/util";
 
 const onPaste = (event: ClipboardEvent) => {

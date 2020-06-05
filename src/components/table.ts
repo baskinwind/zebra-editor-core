@@ -83,10 +83,11 @@ class Table extends StructureCollection<TableRow> {
     this.needHead = needHead;
   }
 
-  addIntoTail(
-    component: Component,
+  receive(
+    component?: Component,
     customerUpdate: boolean = false
   ): operatorType {
+    if (!component) return;
     this.removeSelf(customerUpdate);
     return [component, 0, 0];
   }
@@ -214,10 +215,32 @@ class TableCell extends StructureCollection<TableItem> {
     );
   }
 
-  childHeadDelete(component: TableItem, index: number): operatorType {
+  removeChildren(
+    indexOrComponent: TableItem | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ) {
+    if (this.children.size === 1 && removeNumber === 1) {
+      let component = this.children.get(0) as TableItem;
+      component?.remove(0, -1, customerUpdate);
+      return [component];
+    }
+    let removed = super.removeChildren(
+      indexOrComponent,
+      removeNumber,
+      customerUpdate
+    );
+    return removed;
+  }
+
+  childHeadDelete(
+    component: TableItem,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     let prev = this.getPrev(component);
     if (!prev) return;
-    return prev.addIntoTail(component);
+    return component.send(component, customerUpdate);
   }
 
   render() {
@@ -273,6 +296,15 @@ class TableItem extends ContentCollection {
       return;
     }
     return super.split(index, component, customerUpdate);
+  }
+
+  send(component: Component, customerUpdate: boolean = false): operatorType {
+    try {
+      this.parent?.findChildrenIndex(component);
+      return super.send(component, customerUpdate);
+    } catch {
+      return component.receive(undefined, customerUpdate);
+    }
   }
 
   render() {
