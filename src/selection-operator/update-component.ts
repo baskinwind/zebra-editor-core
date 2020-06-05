@@ -1,7 +1,8 @@
 import Component from "../components/component";
+import { getComponentById } from "../components/util";
 
 let canUpdate = false;
-let delayUpdateQueue: Component[] = [];
+let delayUpdateQueue: Set<string> = new Set();
 
 const startUpdate = () => {
   canUpdate = true;
@@ -11,12 +12,14 @@ const stopUpdate = () => {
   canUpdate = false;
 };
 
-const delayUpdate = (component: Component[]) => {
-  delayUpdateQueue.push(...component);
+// 添加延迟更新的组件 id，通常发生在混合输入后
+const delayUpdate = (idList: string[]) => {
+  idList.forEach((id) => delayUpdateQueue.add(id));
 };
 
+// 混合输入后需要根据该方法判断是否有延迟更新的组件
 const needUpdate = () => {
-  return delayUpdateQueue.length !== 0;
+  return delayUpdateQueue.size !== 0;
 };
 
 // 更新组件
@@ -26,10 +29,12 @@ const updateComponent = (
 ) => {
   if (customerUpdate) return;
   if (!canUpdate) return;
-  console.log("update!!!!");
-  if (delayUpdateQueue.length) {
-    delayUpdateQueue.forEach((item) => update(item));
-    delayUpdateQueue.length = 0;
+  console.log("update");
+  if (delayUpdateQueue.size) {
+    console.log("delay update");
+    console.log(delayUpdateQueue);
+    delayUpdateQueue.forEach((id) => update(getComponentById(id)));
+    delayUpdateQueue.clear();
   }
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));
@@ -39,23 +44,29 @@ const updateComponent = (
 };
 
 const update = (component: Component) => {
-  console.log(component.id);
   let dom = document.getElementById(component.id);
   if (dom) {
+    // 有对应元素时，替换或是删除
+    console.log(component.id);
     if (component.actived) {
       dom.replaceWith(component.render());
     } else {
       dom.remove();
     }
   } else {
-    if (!component.actived) return;
+    // 没有对应元素
+    // 组件失效，或是组件没有父节点时，不更新
+    if (!component.actived || !component.parent) return;
     let parentComponent = component.parent;
-    if (!parentComponent) return;
     let parentDom = document.getElementById(parentComponent.id);
+
+    // 未找到父组件对应的元素时，更新父组件
     if (!parentDom) {
       update(parentComponent);
       return;
     }
+
+    // 将该组件插入到合适的位置
     let index = parentComponent.children.findIndex(
       (child) => child === component
     );

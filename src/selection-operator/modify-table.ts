@@ -13,7 +13,8 @@ const getTable = (component: Component | undefined): Table => {
   return getTable(component.parent);
 };
 
-const setTableSize = (option: {
+// 修改表格内容
+const modifyTable = (option: {
   row?: number;
   col?: number;
   head?: boolean;
@@ -40,4 +41,4 @@ const setTableSize = (option: {
   }
 };
 
-export default setTableSize;
+export default modifyTable;

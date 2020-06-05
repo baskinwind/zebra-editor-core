@@ -89,7 +89,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     return;
   }
 
-  findChildrenIndex(idOrComponent: string | T): number {
+  findChildrenIndex(idOrComponent: string | Component): number {
     let id =
       typeof idOrComponent === "string" ? idOrComponent : idOrComponent.id;
     let index = this.children.findIndex((item) => item.id === id);

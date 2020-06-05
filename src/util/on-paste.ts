@@ -4,6 +4,7 @@ import Paragraph from "../components/paragraph";
 import focusAt from "../selection-operator/focus-at";
 import { getComponentById } from "../components/util";
 
+// 复制内容
 const onPaste = (event: ClipboardEvent) => {
   let copyInData = event.clipboardData?.getData("text/plain");
   if (!copyInData) return;

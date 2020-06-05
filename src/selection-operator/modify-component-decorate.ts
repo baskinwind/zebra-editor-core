@@ -4,6 +4,7 @@ import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 import { storeData } from "../decorate";
 
+// 修改选中组件的样式
 const modifyComponentDecorate = (style?: storeData, data?: storeData) => {
   let selection = getSelection();
   let start = selection.range[0];

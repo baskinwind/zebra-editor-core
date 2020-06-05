@@ -3,7 +3,7 @@ import getSelection from "./get-selection";
 import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 
-// 修改选区内内容的表现行为
+// 修改选区中整块内容的呈现
 const exchangeParagraph = (newClass: any, ...args: any[]) => {
   let selection = getSelection();
   let start = selection.range[0];
@@ -11,8 +11,7 @@ const exchangeParagraph = (newClass: any, ...args: any[]) => {
   let article = getComponentById<Article>("article");
   let idList = article.getIdList(start.id, end.id)[2];
   idList.forEach((id) => {
-    let component = getComponentById(id);
-    component.exchangeToOther(newClass, args);
+    getComponentById(id).exchangeToOther(newClass, args);
   });
   focusAt();
 };

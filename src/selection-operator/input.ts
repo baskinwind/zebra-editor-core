@@ -13,8 +13,12 @@ const input = (
   isComposition: boolean = false,
   event?: KeyboardEvent
 ) => {
-  deleteSelection(event);
+  // 输入前，删除选取内容
+  if (event) {
+    deleteSelection(event);
+  }
   let selection = getSelection();
+  // 选中结构时，放弃输入
   if (selection.selectStructure) return;
   // 修正混合输入时，光标位置获取错误的问题
   if (isComposition && typeof charOrInline === "string") {
@@ -26,6 +30,7 @@ const input = (
   let startPosition = getCursorPosition(selection.range[0]);
   if (!startPosition) return;
   let startNode = startPosition.node;
+  // 样式边缘的空格，逃脱该样式，优化体验
   if (
     charOrInline === " " &&
     (startPosition.index === 0 ||
@@ -34,20 +39,21 @@ const input = (
     charOrInline = new Character(charOrInline);
   }
 
+  // 强制更新
   if (
     startNode instanceof HTMLImageElement ||
     startNode instanceof HTMLBRElement ||
     charOrInline instanceof Character ||
-    needUpdate()
+    needUpdate() ||
+    event?.defaultPrevented
   ) {
     event?.preventDefault();
     return focusAt(component.add(charOrInline, offset));
   }
 
-  let focus = component.add(charOrInline, offset, !event?.defaultPrevented);
-  if (event?.defaultPrevented) {
-    focusAt(focus);
-  }
+  // 普通的文字输入，不需要强制更新，默认行为不会破坏文档结构
+  component.add(charOrInline, offset, true);
+  // 插入图片时，不强制更新，但要生成符合要求的文档，并手动更正光标位置
   let node = startPosition?.node;
   if (charOrInline instanceof InlineImage) {
     let newInline = charOrInline.render();

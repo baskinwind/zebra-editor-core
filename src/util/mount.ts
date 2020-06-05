@@ -1,7 +1,8 @@
 import Article from "../components/article";
-import createEmptyArticle from "./create-empty-article";
 import createDraft from "./create-draft";
+import createEmptyArticle from "./create-empty-article";
 
+// 将组件挂载到某个节点上
 const mount = (idOrDom: string | HTMLElement, article?: Article) => {
   if (!article) article = createEmptyArticle();
   let root;

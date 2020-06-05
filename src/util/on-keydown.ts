@@ -2,8 +2,8 @@ import escapeKey from "../selection-operator/escape-key";
 import input from "../selection-operator/input";
 import deleteSelection from "../selection-operator/delete-selection";
 
-const onKeyUp = (event: KeyboardEvent) => {
-  // 混合输入
+const onKeyDown = (event: KeyboardEvent) => {
+  // 控制混合输入
   if (event.isComposing || event.keyCode === 229) {
     deleteSelection(event, true);
     return;
@@ -17,4 +17,4 @@ const onKeyUp = (event: KeyboardEvent) => {
   }
 };
 
-export default onKeyUp;
+export default onKeyDown;

@@ -6,8 +6,7 @@ export interface cursorType {
   offset: number;
 }
 
-export const getTable = () => {};
-
+// 获取到结构性的节点，段落，列表，表格内容节点等
 export const getParent = (
   element: HTMLElement | Node | null | undefined
 ): HTMLElement => {
@@ -27,6 +26,7 @@ export const getParent = (
   return getParent(element.parentElement);
 };
 
+// 获取到包含该内容的节点，段落内的字符片断，段落内的图片等
 export const getContainer = (
   element: Element | Node | null | undefined
 ): HTMLElement => {
@@ -50,6 +50,7 @@ export const getContainer = (
   return getContainer(element.parentElement);
 };
 
+// 获取元素的长度，修正图片长度为 0 的错误
 export const getElememtSize = (element?: Element): number => {
   if (element === undefined) return 0;
   if (element instanceof HTMLImageElement) return 1;
@@ -67,6 +68,7 @@ export const getElememtSize = (element?: Element): number => {
   return 0;
 };
 
+// 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
 export const getCursorPosition = (
   cursor: cursorType
 ):

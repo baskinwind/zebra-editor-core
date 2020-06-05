@@ -15,7 +15,7 @@ import InlineImage from "../src/components/inline-image";
 import { ListItem } from "../src/components/list";
 import getHtml from "../src/util/get-html";
 import Table from "../src/components/table";
-import setTableSize from "../src/selection-operator/set-table-size";
+import modifyTable from "../src/selection-operator/modify-table";
 
 new Vue({
   el: "#operator",
@@ -88,7 +88,7 @@ new Vue({
       insertBlock(new Table(3, 3));
     },
     modifyTable() {
-      setTableSize({
+      modifyTable({
         row: this.tableRow,
         col: this.tableCol,
         head: this.tableHead

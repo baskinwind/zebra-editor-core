@@ -111,10 +111,13 @@ class Table extends StructureCollection<TableRow> {
 }
 
 class TableRow extends StructureCollection<TableCell> {
+  parent?: Table;
   type: ComponentType = ComponentType.tableRow;
   structureType: StructureType = StructureType.collection;
   size: number;
   cellType: "th" | "td";
+  emptyCell: number = 0;
+  inCountEmptyCell: boolean = false;
 
   static create(raw: rawType): TableRow {
     let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
@@ -158,6 +161,35 @@ class TableRow extends StructureCollection<TableCell> {
     this.size = size;
   }
 
+  removeChildren(
+    indexOrComponent: TableCell | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ): TableCell[] {
+    throw createError("单元格不允许被删除！");
+  }
+
+  addEmptyCell(customerUpdate: boolean = false) {
+    if (!this.inCountEmptyCell) {
+      Promise.resolve().then(() => {
+        this.inCountEmptyCell = false;
+        this.emptyCell = 0;
+      });
+    }
+    this.inCountEmptyCell = true;
+    this.emptyCell += 1;
+    if (this.emptyCell === this.children.size) {
+      let parent = this.parent;
+      if (!parent) return;
+      this.removeSelf(customerUpdate);
+      if (this.cellType === "th") {
+        parent.needHead = false;
+      } else {
+        parent.row -= 1;
+      }
+    }
+  }
+
   getRaw() {
     let raw = super.getRaw();
     raw.cellType = this.cellType;
@@ -175,6 +207,7 @@ class TableRow extends StructureCollection<TableCell> {
 }
 
 class TableCell extends StructureCollection<TableItem> {
+  parent?: TableRow;
   type: ComponentType = ComponentType.tableCell;
   structureType: StructureType = StructureType.collection;
   cellType: "th" | "td";
@@ -212,6 +245,12 @@ class TableCell extends StructureCollection<TableItem> {
       }),
       0,
       true
+    );
+  }
+
+  isEmpty() {
+    return (
+      this.children.size === 1 && this.children.get(0)?.children.size === 0
     );
   }
 
@@ -255,7 +294,9 @@ class TableCell extends StructureCollection<TableItem> {
 }
 
 class TableItem extends ContentCollection {
+  parent?: TableCell;
   type = ComponentType.tableItem;
+  emptyCellList: TableCell[] = [];
 
   static create(raw: rawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
@@ -270,6 +311,16 @@ class TableItem extends ContentCollection {
 
   createEmpty() {
     return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
+  }
+
+  removeSelf(customerUpdate: boolean = false): operatorType {
+    let res = super.removeSelf(customerUpdate);
+    let parent = this.parent;
+    if (!parent) return res;
+    if (parent.isEmpty()) {
+      parent.parent?.addEmptyCell(customerUpdate);
+    }
+    return res;
   }
 
   split(
@@ -288,7 +339,7 @@ class TableItem extends ContentCollection {
       });
       component = component.length === 0 ? undefined : component;
     } else if (component && component instanceof ContentCollection) {
-      component = [TableItem.exchangeOnly(component)];
+      component = [TableItem.exchangeOnly(component) as TableItem];
     } else {
       component = undefined;
     }
