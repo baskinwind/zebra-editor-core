@@ -1,5 +1,5 @@
-import Collection from "./collection";
 import Component, { operatorType, rawType } from "./component";
+import Collection from "./collection";
 import updateComponent from "../selection-operator/update-component";
 import StructureType from "../const/structure-type";
 import { createError } from "./util";
@@ -10,7 +10,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   addChildren(component: T[], index?: number, customerUpdate: boolean = false) {
     component.forEach((item) => {
       item.parent = this;
-      item.actived = true;
+      item.active = true;
     });
     super.addChildren(component, index);
     updateComponent(component.reverse(), customerUpdate);
@@ -23,7 +23,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   ) {
     let removed = super.removeChildren(indexOrComponent, removeNumber);
     removed.forEach((component) => {
-      component.actived = false;
+      component.active = false;
       component.parent = undefined;
     });
     updateComponent(removed, customerUpdate);
@@ -35,9 +35,9 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     if (index === -1) {
       throw Error("需要替换的组件不是此组件的子组件！");
     }
-    component.actived = true;
+    component.active = true;
     component.parent = this;
-    oldComponent.actived = false;
+    oldComponent.active = false;
     oldComponent.parent = undefined;
     this.children = this.children.splice(index, 1, component);
     updateComponent([oldComponent, component], customerUpdate);
@@ -57,7 +57,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     this.removeChildren(index, this.children.size - index, customerUpdate);
     let newCollection = this.createEmpty();
     newCollection.addChildren(tail, 0, true);
-    if (!this.actived) {
+    if (!this.active) {
       thisIndex -= 1;
     }
     parent.addChildren([newCollection], thisIndex + 1);

@@ -36,7 +36,7 @@ abstract class Component {
   id: string = getId();
   parent?: StructureCollection<Component>;
   // 否是有效的
-  actived: boolean = false;
+  active: boolean = false;
   // 修饰：样式，数据等
   decorate: Decorate;
   // 类型，用于保存和恢复数据
@@ -69,11 +69,8 @@ abstract class Component {
   }
 
   // 创建一个空的当前组件
-  createEmpty() {
-    return Reflect.construct(this.constructor, [
-      this.decorate.getStyle(),
-      this.decorate.getData()
-    ]);
+  createEmpty(): any {
+    throw createError("请为组件添加 createEmpty 方法", this);
   }
 
   // 判断该组件是否为空，为空并不代表无效

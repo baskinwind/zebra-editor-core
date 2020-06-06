@@ -1,9 +1,10 @@
 import Article from "../components/article";
 import onClick from "./on-click";
 import onPaste from "./on-paste";
-import onComposttion from "./on-composition";
+import onComposttionEnd from "./on-composition-end";
 import onKeyDown from "./on-keydown";
 import { flushSelection } from "../selection-operator/get-selection";
+import onComposttionStart from "./on-composition-start";
 
 // 将组件挂载到某个节点上
 const createDraft = (root: HTMLElement, article: Article) => {
@@ -12,7 +13,7 @@ const createDraft = (root: HTMLElement, article: Article) => {
   editorWrap.classList.add("zebra-draft-root");
   editorWrap.style.whiteSpace = "pre-wrap";
   editorWrap.appendChild(article.render());
-  article.actived = true;
+  article.active = true;
   editorWrap.addEventListener("blur", (event) => {
     try {
       flushSelection();
@@ -34,9 +35,16 @@ const createDraft = (root: HTMLElement, article: Article) => {
       console.error(e);
     }
   });
+  editorWrap.addEventListener("compositionstart", (event) => {
+    try {
+      onComposttionStart(event as any);
+    } catch (e) {
+      console.error(e);
+    }
+  });
   editorWrap.addEventListener("compositionend", (event) => {
     try {
-      onComposttion(event as any);
+      onComposttionEnd(event as any);
     } catch (e) {
       console.error(e);
     }

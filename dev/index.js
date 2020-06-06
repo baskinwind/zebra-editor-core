@@ -6,7 +6,6 @@ import createByRaw from "../src/util/create-by-raw";
 import Article from "../src/components/article";
 import Title from "../src/components/title";
 import Media from "../src/components/media";
-import ComponentType from "../src/const/component-type";
 import Paragraph from "../src/components/paragraph";
 import InlineImage from "../src/components/inline-image";
 import List from "../src/components/list";

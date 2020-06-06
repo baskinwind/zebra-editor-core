@@ -1,19 +1,22 @@
 import { generate } from "shortid";
 import Component from "./component";
-import Article from "./article";
-const store: { [key: string]: any } = {};
+// import Article from "./article";
+const store: { [key: string]: any; } = {};
 
 export const getId = () => {
   return generate();
 };
 
 export const saveComponent = <T extends Component = Component>(
-  component: T
+  component: T,
+  key?: string
 ) => {
-  store[component.id] = component;
-  if (component instanceof Article) {
-    store.article = component;
+  if (key) {
+    store[key] = component;
+    return;
   }
+
+  store[component.id] = component;
 };
 
 export const getComponentById = <T extends Component = Component>(

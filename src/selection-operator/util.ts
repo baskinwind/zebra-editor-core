@@ -1,5 +1,8 @@
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import { getComponentById, createError } from "../components/util";
+import Component from "../components/component";
+import ContentCollection from "../components/content-collection";
 
 export interface cursorType {
   id: string;
@@ -115,4 +118,16 @@ export const getCursorPosition = (
     node: node?.childNodes[0],
     index
   };
+};
+
+// 获取所有选中的叶节点，不包括结构性的组件
+export const getSelectedIdList = (startId: string, endId: string) => {
+  let component: Component = getComponentById(startId);
+  let parent = component.parent;
+  if (!parent) throw createError('该节点已失效', component);
+  while (parent.type !== ComponentType.article) {
+    if (!parent.parent) throw createError('该节点已失效', parent);
+    parent = parent.parent;
+  }
+  return parent.getIdList(startId, endId)[2];
 };

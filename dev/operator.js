@@ -1,21 +1,23 @@
 import "./index.scss";
-
 import article from "./index";
+
+import InlineImage from "../src/components/inline-image";
+import Media from "../src/components/media";
+import Title from "../src/components/title";
+import Paragraph from "../src/components/paragraph";
+import { ListItem } from "../src/components/list";
+import Table from "../src/components/table";
 import updateComponent from "../src/selection-operator/update-component";
-import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
-import input from "../src/selection-operator/input";
+
 import ComponentType from "../src/const/component-type";
+
+import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
+import insertInline from "../src/selection-operator/insert-inline";
 import insertBlock from "../src/selection-operator/insert-block";
 import exchangeParagraph from "../src/selection-operator/exchange-paragraph";
-import Paragraph from "../src/components/paragraph";
 import modifyComponentDecorate from "../src/selection-operator/modify-component-decorate";
-import Title from "../src/components/title";
-import Media from "../src/components/media";
-import InlineImage from "../src/components/inline-image";
-import { ListItem } from "../src/components/list";
-import getHtml from "../src/util/get-html";
-import Table from "../src/components/table";
 import modifyTable from "../src/selection-operator/modify-table";
+import getHtml from "../src/util/get-html";
 
 new Vue({
   el: "#operator",
@@ -97,21 +99,21 @@ new Vue({
 
     insertInlineImage() {
       let index = Math.floor(Math.random() * 56 + 1);
-      input(
+      insertInline(
         new InlineImage(
           `http://cdn.acohome.cn/${index}.png?imageMogr2/auto-orient/thumbnail/x20`
         )
       );
     },
     customerInlineImage() {
-      input(new InlineImage(this.inlineImage));
+      insertInline(new InlineImage(this.inlineImage));
     },
 
     insertImage() {
       let index = Math.floor(Math.random() * 3 + 1);
       insertBlock(
         new Media(
-          ComponentType.image,
+          'image',
           `https://blogcdn.acohome.cn/demo-draft-${index}.jpg`
         )
       );

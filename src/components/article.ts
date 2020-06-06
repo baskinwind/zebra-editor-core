@@ -8,12 +8,19 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { startUpdate } from "../selection-operator/update-component";
 import { operatorType, rawType } from "./component";
+import { storeData } from "../decorate";
+import { saveComponent } from "./util";
 
 type articleChildType = List | ContentCollection | Media | Table;
 
 class Article extends StructureCollection<articleChildType> {
   type = ComponentType.article;
   structureType = StructureType.structure;
+
+  constructor(style: storeData = {}, data: storeData = {}) {
+    super(style, data);
+    saveComponent(this, 'article');
+  }
 
   static create(raw: rawType): Article {
     let article = new Article(raw.style, raw.data);

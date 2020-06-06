@@ -199,7 +199,7 @@ class ListItem extends ContentCollection {
     let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
     let newCollection = builder.exchangeOnly(this, args);
-    if (parent.actived) {
+    if (parent.active) {
       parent.split(index, newCollection, customerUpdate);
     } else {
       newCollection.addInto(grandParent, parentIndex);

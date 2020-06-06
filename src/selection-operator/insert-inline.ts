@@ -3,17 +3,17 @@ import getSelection from "./get-selection";
 import deleteSelection from "./delete-selection";
 import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
+import Inline from "../components/inline";
+import input from "../util/input";
 
 // 在光标处插入一个内容块
-const insertBlock = (component: Component | Component[]) => {
+const insertInline = (component: string | Inline) => {
   let selection = getSelection();
   if (!selection.isCollapsed) {
     deleteSelection(selection.range[0], selection.range[1]);
     selection = getSelection();
   }
-  let nowComponent = getComponentById(selection.range[0].id);
-  let start = selection.range[0].offset;
-  return focusAt(nowComponent.split(start, component));
+  input(component, selection.range[0]);
 };
 
-export default insertBlock;
+export default insertInline;

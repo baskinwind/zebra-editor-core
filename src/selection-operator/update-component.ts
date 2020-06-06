@@ -48,7 +48,7 @@ const update = (component: Component) => {
   if (dom) {
     // 有对应元素时，替换或是删除
     console.log(component.id);
-    if (component.actived) {
+    if (component.active) {
       dom.replaceWith(component.render());
     } else {
       dom.remove();
@@ -56,7 +56,7 @@ const update = (component: Component) => {
   } else {
     // 没有对应元素
     // 组件失效，或是组件没有父节点时，不更新
-    if (!component.actived || !component.parent) return;
+    if (!component.active || !component.parent) return;
     let parentComponent = component.parent;
     let parentDom = document.getElementById(parentComponent.id);
 

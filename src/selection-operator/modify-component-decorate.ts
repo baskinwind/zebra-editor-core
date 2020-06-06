@@ -1,16 +1,15 @@
-import Article from "../components/article";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 import { storeData } from "../decorate";
+import { getSelectedIdList } from "./util";
 
 // 修改选中组件的样式
 const modifyComponentDecorate = (style?: storeData, data?: storeData) => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
-  let article = getComponentById<Article>("article");
-  let idList = article.getIdList(start.id, end.id)[2];
+  let idList = getSelectedIdList(start.id, end.id);
   idList.forEach((id) => {
     let customerUpdate = !data && style?.clear !== "style";
     let component = getComponentById(id);

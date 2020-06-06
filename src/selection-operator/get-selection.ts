@@ -1,7 +1,8 @@
-import Article from "../components/article";
+import StructureCollection from "../components/structure-collection";
 import ComponentType from "../const/component-type";
-import { getElememtSize, getContainer, cursorType, getParent } from "./util";
+import StructureType from "../const/structure-type";
 import { getComponentById } from "../components/util";
+import { getElememtSize, getContainer, cursorType, getParent } from "./util";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -60,12 +61,12 @@ const getSelection = () => {
   let anchorNode = section?.anchorNode;
   if (
     anchorNode instanceof HTMLElement &&
-    anchorNode.dataset.type === ComponentType.article
+    anchorNode.dataset.structure === StructureType.structure
   ) {
     // 选中了 Article 组件的直接子节点：返回该直接子节点
     if (section.anchorOffset > 0) {
-      let article = getComponentById<Article>("article");
-      let child = article.children.get(section.anchorOffset - 1);
+      let component = getComponentById<StructureCollection<any>>(anchorNode.id);
+      let child = component.children.get(section.anchorOffset - 1);
       return {
         isCollapsed: true,
         selectStructure: true,

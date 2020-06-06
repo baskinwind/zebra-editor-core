@@ -1,6 +1,6 @@
-import deleteSelection from "../selection-operator/delete-selection";
-import getSelection from "../selection-operator/get-selection";
 import Paragraph from "../components/paragraph";
+import getSelection from "../selection-operator/get-selection";
+import deleteSelection from "../selection-operator/delete-selection";
 import focusAt from "../selection-operator/focus-at";
 import { getComponentById } from "../components/util";
 
@@ -10,8 +10,12 @@ const onPaste = (event: ClipboardEvent) => {
   if (!copyInData) return;
   let rowData = copyInData.split("\n").filter((item) => item);
   if (rowData.length === 0) return;
-  deleteSelection();
+
   let selection = getSelection();
+  if (!selection.isCollapsed) {
+    deleteSelection(selection.range[0], selection.range[1]);
+    selection = getSelection();
+  }
   let nowComponent = getComponentById(selection.range[0].id);
   let index = selection.range[0].offset;
   let focus = nowComponent.add(rowData[0], index, rowData.length !== 1);
