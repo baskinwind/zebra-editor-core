@@ -12,6 +12,7 @@ const createDraft = (root: HTMLElement, article: Article) => {
   editorWrap.classList.add("zebra-draft-root");
   editorWrap.style.whiteSpace = "pre-wrap";
   editorWrap.appendChild(article.render());
+  article.actived = true;
   editorWrap.addEventListener("blur", (event) => {
     try {
       flushSelection();

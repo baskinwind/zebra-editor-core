@@ -1,7 +1,5 @@
 enum ComponentType {
-  image = "IMAGE",
-  audio = "AUDIO",
-  video = "VIDEO",
+  media = "MEDIA",
   inlineImage = "INLINEIMAGE",
   character = "CHARACTER",
   characterList = "CHARACTERLIST",

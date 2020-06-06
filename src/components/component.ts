@@ -1,10 +1,10 @@
 import Decorate from "../decorate";
+import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
-import StructureCollection from "./structure-collection";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = typeof Component;
@@ -17,6 +17,8 @@ export interface rawType {
   content?: string;
   // for Media or InlineImage
   src?: string;
+  // for Media
+  mediaType?: string;
   // fro Title
   titleType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   // for List
@@ -27,20 +29,27 @@ export interface rawType {
   needHead?: boolean;
   // for TableRaw
   cellType?: "th" | "td";
+  size?: number;
 }
 
 abstract class Component {
   id: string = getId();
   parent?: StructureCollection<Component>;
+  // 否是有效的
   actived: boolean = false;
+  // 修饰：样式，数据等
   decorate: Decorate;
+  // 类型，用于保存和恢复数据
   abstract type: ComponentType;
+  // 结构上的作用
   abstract structureType: StructureType;
 
+  // 定义如何将别的组件转换为当前组件，并不会出发更新
   static exchangeOnly(component: Component, args?: any[]): Component {
     throw createError("请为组件添加 exchangeOnly 静态方法", this);
   }
 
+  // 将别的组件转换为当前组件，并更新组件在文档中的状态
   static exchange(
     component: Component,
     args?: any[],
@@ -49,6 +58,7 @@ abstract class Component {
     throw createError("请为组件添加 exchange 静态方法", this);
   }
 
+  // 更加 raw 保存的内容恢复组件
   static create(raw: any): Component {
     throw createError("请为组件添加 create 静态方法", this);
   }
@@ -58,6 +68,7 @@ abstract class Component {
     saveComponent(this);
   }
 
+  // 创建一个空的当前组件
   createEmpty() {
     return Reflect.construct(this.constructor, [
       this.decorate.getStyle(),
@@ -65,14 +76,17 @@ abstract class Component {
     ]);
   }
 
+  // 判断该组件是否为空，为空并不代表无效
   isEmpty() {
     return false;
   }
 
+  // 将当前组件转换为 builder 类型的组件
   exchangeToOther(builder: classType, args: any[]) {
     return;
   }
 
+  // 定义当组件的子组件的首位发生删除时的行为
   childHeadDelete(
     component: Component,
     index: number,
@@ -81,6 +95,7 @@ abstract class Component {
     return;
   }
 
+  // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
     collection: StructureCollection<Component>,
     index?: number,
@@ -90,11 +105,13 @@ abstract class Component {
     return [this, 0, 0];
   }
 
+  // 从其父组件内移除
   removeSelf(customerUpdate: boolean = false): operatorType {
     this.parent?.removeChildren(this, 1, customerUpdate);
     return;
   }
 
+  // 替换为另一个组件
   replaceSelf(
     component: Component,
     customerUpdate: boolean = false
@@ -103,6 +120,7 @@ abstract class Component {
     return [component, 0, 0];
   }
 
+  // 添加子组件
   add(
     component: string | Component | Component[],
     index: number,
@@ -111,6 +129,7 @@ abstract class Component {
     return;
   }
 
+  // 在 index 处切分
   split(
     index: number,
     component?: Component | Component[],
@@ -119,6 +138,7 @@ abstract class Component {
     return;
   }
 
+  // 移除子组件
   remove(
     start?: number,
     end?: number,
@@ -127,6 +147,7 @@ abstract class Component {
     return;
   }
 
+  // 修改子组件的表现形式，仅在 ContentCollection 组件内有用
   modifyContentDecorate(
     start: number,
     end: number,
@@ -137,6 +158,7 @@ abstract class Component {
     return;
   }
 
+  // 修改组件的表现形式
   modifyDecorate(
     style?: storeData,
     data?: storeData,
@@ -148,10 +170,12 @@ abstract class Component {
     return;
   }
 
+  // 将自己发送到另一组件
   send(component: Component, customerUpdate: boolean = false): operatorType {
     return;
   }
 
+  // 接收另一组件
   receive(
     component?: Component,
     customerUpdate: boolean = false
@@ -159,8 +183,10 @@ abstract class Component {
     return;
   }
 
+  // 获取用于存储的内容
   abstract getRaw(): rawType;
 
+  // 渲染该组件
   abstract render(): any;
 }
 

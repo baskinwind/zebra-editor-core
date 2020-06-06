@@ -24,7 +24,7 @@ const contentBuilder = {
     article.id = id;
     article.classList.add("zebra-draft-article");
     article.dataset.type = ComponentType.article;
-    article.dataset.structure = StructureType.collection;
+    article.dataset.structure = StructureType.structure;
     addStyle(article, style);
     componentList.forEach((component) => {
       article.appendChild(component);
@@ -39,7 +39,7 @@ const contentBuilder = {
   ) {
     const table = document.createElement("table");
     table.id = id;
-    table.dataset.structure = StructureType.collection;
+    table.dataset.structure = StructureType.structure;
     addStyle(table, style);
     if (style) {
       for (let key in style) {
@@ -57,7 +57,7 @@ const contentBuilder = {
   ) {
     const tr = document.createElement("tr");
     tr.id = id;
-    tr.dataset.structure = StructureType.collection;
+    tr.dataset.structure = StructureType.structure;
     addStyle(tr, style);
     if (style) {
       for (let key in style) {
@@ -76,7 +76,7 @@ const contentBuilder = {
   ) {
     const td = document.createElement(cellType);
     td.id = id;
-    td.dataset.structure = StructureType.collection;
+    td.dataset.structure = StructureType.structure;
     addStyle(td, style);
     if (style) {
       for (let key in style) {
@@ -97,7 +97,7 @@ const contentBuilder = {
     list.id = id;
     list.classList.add("zebra-draft-list");
     list.dataset.type = ComponentType.article;
-    list.dataset.structure = StructureType.collection;
+    list.dataset.structure = StructureType.structure;
     addStyle(list, style);
     componentList.forEach((component) => {
       list.appendChild(component);
@@ -126,28 +126,6 @@ const contentBuilder = {
     }
     return parapraph;
   },
-  buildTitle(
-    id: string,
-    inlineList: HTMLElement[],
-    style: any,
-    data: any
-  ): HTMLElement {
-    let type = data.tag.toLocaleLowerCase() || "h1";
-    const title = document.createElement(type);
-    title.id = id;
-    title.classList.add(`zebra-draft-title-${type}`);
-    title.dataset.type = type;
-    title.dataset.structure = StructureType.content;
-    addStyle(title, style);
-    if (inlineList.length) {
-      inlineList.forEach((component) => {
-        title.appendChild(component);
-      });
-    } else {
-      title.appendChild(document.createElement("br"));
-    }
-    return title;
-  },
   buildCode(
     id: string,
     content: string,
@@ -171,7 +149,7 @@ const contentBuilder = {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image", "zebra-draft-image-loading");
-    figure.dataset.type = ComponentType.image;
+    figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     addStyle(figure, style);
     let child;
@@ -198,7 +176,7 @@ const contentBuilder = {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.audio;
+    figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     addStyle(figure, style);
     let audio = document.createElement("audio");
@@ -210,7 +188,7 @@ const contentBuilder = {
     const figure = document.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.video;
+    figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     addStyle(figure, style);
     let video = document.createElement("video");
@@ -220,7 +198,7 @@ const contentBuilder = {
   },
   buildCharacterList(
     id: string,
-    charList: string[],
+    charList: string,
     style: mapData,
     data: mapData
   ): HTMLElement {
@@ -229,7 +207,7 @@ const contentBuilder = {
     span.dataset.type = ComponentType.characterList;
     span.dataset.structure = StructureType.partialContent;
     addStyle(span, style);
-    span.innerText = charList.join("");
+    span.innerText = charList;
     return span;
   },
   buildInlineImage(

@@ -13,8 +13,7 @@ type articleChildType = List | ContentCollection | Media | Table;
 
 class Article extends StructureCollection<articleChildType> {
   type = ComponentType.article;
-  structureType = StructureType.collection;
-  actived = true;
+  structureType = StructureType.structure;
 
   static create(raw: rawType): Article {
     let article = new Article(raw.style, raw.data);
@@ -44,7 +43,7 @@ class Article extends StructureCollection<articleChildType> {
   }
 
   render() {
-    console.log("test getContent couter");
+    console.log("article create");
     startUpdate();
     let children = this.children
       .map((component) => component.render())

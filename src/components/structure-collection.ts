@@ -5,7 +5,7 @@ import StructureType from "../const/structure-type";
 import { createError } from "./util";
 
 abstract class StructureCollection<T extends Component> extends Collection<T> {
-  structureType = StructureType.collection;
+  structureType = StructureType.structure;
 
   addChildren(component: T[], index?: number, customerUpdate: boolean = false) {
     component.forEach((item) => {

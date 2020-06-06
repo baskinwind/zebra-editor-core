@@ -1,5 +1,5 @@
-import ComponentType from "../const/component-type";
 import ContentCollection from "./content-collection";
+import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { rawType } from "./component";
 

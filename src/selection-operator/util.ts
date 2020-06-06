@@ -19,7 +19,7 @@ export const getParent = (
     if (element.dataset.structure === StructureType.content) {
       return element;
     }
-    if (element.dataset.structure === StructureType.collection) {
+    if (element.dataset.structure === StructureType.structure) {
       return getContainer(element.children[0]);
     }
   }
@@ -43,7 +43,7 @@ export const getContainer = (
     ) {
       return element;
     }
-    if (element.dataset.structure === StructureType.collection) {
+    if (element.dataset.structure === StructureType.structure) {
       return getContainer(element.children[0]);
     }
   }
@@ -82,7 +82,7 @@ export const getCursorPosition = (
   let now = 0;
   let index = 0;
   if (!dom) return;
-  if (dom.dataset.type === ComponentType.image) {
+  if (dom.dataset.type === ComponentType.media) {
     return {
       node,
       index: cursor.offset === 0 ? 0 : 1

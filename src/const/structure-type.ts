@@ -1,5 +1,5 @@
 enum StructureType {
-  collection = "STRUCTURE",
+  structure = "STRUCTURE",
   content = "CONTENT",
   partialContent = "PARTIALCONTENT",
   none = "NONE",

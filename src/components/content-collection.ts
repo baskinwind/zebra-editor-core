@@ -3,19 +3,19 @@ import Component, { operatorType, classType, rawType } from "./component";
 import Collection from "./collection";
 import Inline from "./inline";
 import Character from "./character";
+import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 import InlineImage from "./inline-image";
 import { createError } from "./util";
 import { getContentBuilder } from "../builder";
-import ComponentType from "../const/component-type";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
   static exchangeOnly(component: ContentCollection, args?: any[]) {
     if (!(component instanceof ContentCollection)) {
-      throw createError("不支持不同类型的组件相互装换", component);
+      throw createError("不支持不同类型的组件相互转换", component);
     }
     Reflect.setPrototypeOf(component, this.prototype);
     return component;
@@ -178,9 +178,7 @@ abstract class ContentCollection extends Collection<Inline> {
     customerUpdate: boolean = false
   ) {
     end = end < 0 ? this.children.size + end : end;
-    if (start > end) {
-      throw createError(`start：${start}、end：${end}不合法。`, this);
-    }
+    if (start > end) return;
     if (!style && !data) return;
     for (let i = start; i <= end; i++) {
       let decorate = this.children.get(i)?.decorate;
@@ -219,7 +217,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let createCharacterList = () => {
       if (!acc.length) return;
       content.push([
-        acc.map((character) => character.render()),
+        acc.map((character) => character.render()).join(""),
         prevDecorate.styleIsEmpty() ? undefined : prevDecorate.getStyle(),
         prevDecorate.dataIsEmpty() ? undefined : prevDecorate.getData()
       ]);
@@ -251,7 +249,7 @@ abstract class ContentCollection extends Collection<Inline> {
       }
       let raw: rawType = {
         type: ComponentType.characterList,
-        content: item[0].join("")
+        content: item[0]
       };
       if (item[1]) {
         raw.style = item[1];

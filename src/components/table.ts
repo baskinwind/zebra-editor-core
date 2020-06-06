@@ -1,17 +1,19 @@
+import Component, { operatorType, classType, rawType } from "./component";
 import StructureCollection from "./structure-collection";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
-import Component, { operatorType, classType, rawType } from "./component";
 import { createError } from "./util";
+import Inline from "./inline";
+import { remove } from "immutable";
 
 type tableCellChildType = string | TableItem | undefined;
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
-  structureType: StructureType = StructureType.collection;
+  structureType: StructureType = StructureType.structure;
   row: number;
   col: number;
   needHead: boolean;
@@ -22,6 +24,9 @@ class Table extends StructureCollection<TableRow> {
       ? raw.children.map((item) => TableRow.create(item))
       : [];
     table.addChildren(children, 0, true);
+    table.row = raw.row || 0;
+    table.col = raw.col || 0;
+    table.needHead = raw.needHead || false;
     return table;
   }
 
@@ -37,7 +42,6 @@ class Table extends StructureCollection<TableRow> {
     this.row = row;
     this.col = col;
     this.needHead = needHead;
-    this.decorate.setData("tag", "table");
     this.decorate.setStyle("width", "100%");
     this.decorate.setStyle("borderCollapse", "collapse");
     let list = [];
@@ -113,14 +117,15 @@ class Table extends StructureCollection<TableRow> {
 class TableRow extends StructureCollection<TableCell> {
   parent?: Table;
   type: ComponentType = ComponentType.tableRow;
-  structureType: StructureType = StructureType.collection;
-  size: number;
-  cellType: "th" | "td";
+  structureType: StructureType = StructureType.structure;
   emptyCell: number = 0;
   inCountEmptyCell: boolean = false;
+  size: number;
+  cellType: "th" | "td";
 
   static create(raw: rawType): TableRow {
     let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
+    tableRow.size = raw.size || 0;
     let children = raw.children
       ? raw.children.map((item) => TableCell.create(item))
       : [];
@@ -169,7 +174,7 @@ class TableRow extends StructureCollection<TableCell> {
     throw createError("单元格不允许被删除！");
   }
 
-  addEmptyCell(customerUpdate: boolean = false) {
+  countEmptyCell(customerUpdate: boolean = false) {
     if (!this.inCountEmptyCell) {
       Promise.resolve().then(() => {
         this.inCountEmptyCell = false;
@@ -209,7 +214,7 @@ class TableRow extends StructureCollection<TableCell> {
 class TableCell extends StructureCollection<TableItem> {
   parent?: TableRow;
   type: ComponentType = ComponentType.tableCell;
-  structureType: StructureType = StructureType.collection;
+  structureType: StructureType = StructureType.structure;
   cellType: "th" | "td";
 
   static create(raw: rawType): TableCell {
@@ -264,12 +269,11 @@ class TableCell extends StructureCollection<TableItem> {
       component?.remove(0, -1, customerUpdate);
       return [component];
     }
-    let removed = super.removeChildren(
+    return super.removeChildren(
       indexOrComponent,
       removeNumber,
       customerUpdate
     );
-    return removed;
   }
 
   childHeadDelete(
@@ -313,12 +317,27 @@ class TableItem extends ContentCollection {
     return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
+  removeChildren(
+    component: Inline | number,
+    index?: number,
+    customerUpdate: boolean = false
+  ) {
+    let removed = super.removeChildren(component, index, customerUpdate);
+    let parent = this.parent;
+    if (!parent) return removed;
+    if (parent.isEmpty()) {
+      parent.parent?.countEmptyCell(customerUpdate);
+    }
+    return removed;
+  }
+
+  // 监控：当表格内容一行全被删除时，把一整行移除
   removeSelf(customerUpdate: boolean = false): operatorType {
     let res = super.removeSelf(customerUpdate);
     let parent = this.parent;
     if (!parent) return res;
     if (parent.isEmpty()) {
-      parent.parent?.addEmptyCell(customerUpdate);
+      parent.parent?.countEmptyCell(customerUpdate);
     }
     return res;
   }

@@ -4,7 +4,7 @@ import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
 import StructureCollection from "./structure-collection";
 import updateComponent from "../selection-operator/update-component";
-import { operatorType, classType, rawType } from "./component";
+import Component, { operatorType, classType, rawType } from "./component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
 import { createError } from "./util";
@@ -13,7 +13,7 @@ type listType = "ol" | "ul";
 
 class List extends StructureCollection<ListItem> {
   type = ComponentType.list;
-  structureType = StructureType.collection;
+  structureType = StructureType.structure;
   listType: listType;
 
   static create(raw: rawType): List {
@@ -55,12 +55,12 @@ class List extends StructureCollection<ListItem> {
     );
   }
 
-  // 列表不允许添加非段落内容
   addChildren(
     component: ListItem[],
     index?: number,
     customerUpdate: boolean = false
   ) {
+    // 列表不允许添加非段落内容
     component = component.filter((item) => item instanceof ContentCollection);
     super.addChildren(component, index, customerUpdate);
   }
@@ -70,16 +70,16 @@ class List extends StructureCollection<ListItem> {
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
+    // 若子元素需要全部，将自己也删除
     if (removeNumber === this.children.size) {
       this.removeSelf(customerUpdate);
       return [...this.children];
     }
-    let removed = super.removeChildren(
+    return super.removeChildren(
       indexOrComponent,
       removeNumber,
       customerUpdate
     );
-    return removed;
   }
 
   childHeadDelete(
@@ -87,6 +87,7 @@ class List extends StructureCollection<ListItem> {
     index: number,
     customerUpdate: boolean = false
   ): operatorType {
+    // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.children.get(index - 1);
       if (!prev) return;
@@ -94,6 +95,7 @@ class List extends StructureCollection<ListItem> {
       component.send(prev, customerUpdate);
       return [prev, size, size];
     }
+    // 第一项时，直接将该列表项转换为段落
     let parent = this.parent;
     if (!parent) return;
     index = parent.findChildrenIndex(this);
@@ -119,8 +121,8 @@ class List extends StructureCollection<ListItem> {
   ): operatorType {
     if (!component) return;
     component.removeSelf();
-    ListItem.exchangeOnly(component, []);
-    this.addChildren([component], undefined, customerUpdate);
+    component = ListItem.exchangeOnly(component, []);
+    this.addChildren([component as ListItem], undefined, customerUpdate);
     return;
   }
 
@@ -144,6 +146,7 @@ class List extends StructureCollection<ListItem> {
 }
 
 class ListItem extends ContentCollection {
+  parent?: List;
   type = ComponentType.listItem;
 
   static exchange(
@@ -151,17 +154,19 @@ class ListItem extends ContentCollection {
     args: any[],
     customerUpdate: boolean = false
   ) {
-    component = this.exchangeOnly(component, args) as ListItem;
+    component = this.exchangeOnly(component, args);
     if (!component.parent) throw createError("该组件没有父组件", component);
     let prev = component.parent.getPrev(component);
     let index = component.parent.findChildrenIndex(component);
     if (prev instanceof List && prev.listType === args[0]) {
+      // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
       component.send(prev, customerUpdate);
     } else {
+      // 直接加入到父组件中
       let parent = component.parent;
       component.removeSelf();
       let newList = new List(args[0]);
-      newList.addChildren([component], undefined, true);
+      newList.addChildren([component as ListItem], undefined, true);
       newList.addInto(parent, index, customerUpdate);
     }
   }
@@ -204,7 +209,7 @@ class ListItem extends ContentCollection {
 
   split(
     index: number,
-    component?: ListItem | ListItem[],
+    component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;

@@ -30,13 +30,7 @@ const ComponentMap = {
   [ComponentType.paragraph](raw: rawType) {
     return Paragraph.create(raw);
   },
-  [ComponentType.image](raw: rawType) {
-    return Media.create(raw);
-  },
-  [ComponentType.video](raw: rawType) {
-    return Media.create(raw);
-  },
-  [ComponentType.audio](raw: rawType) {
+  [ComponentType.media](raw: rawType) {
     return Media.create(raw);
   }
 };

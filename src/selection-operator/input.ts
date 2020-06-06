@@ -14,9 +14,7 @@ const input = (
   event?: KeyboardEvent
 ) => {
   // 输入前，删除选取内容
-  if (event) {
-    deleteSelection(event);
-  }
+  deleteSelection();
   let selection = getSelection();
   // 选中结构时，放弃输入
   if (selection.selectStructure) return;

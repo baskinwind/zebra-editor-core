@@ -1,7 +1,5 @@
 import { List } from "immutable";
-import Component, { operatorType } from "./component";
-import StructureType from "../const/structure-type";
-import updateComponent from "../selection-operator/update-component";
+import Component from "./component";
 
 abstract class Collection<T extends Component> extends Component {
   children: List<T> = List();
@@ -10,6 +8,7 @@ abstract class Collection<T extends Component> extends Component {
     return this.children.size === 0;
   }
 
+  // 内部使用，添加子元素
   addChildren(
     components: T[],
     index?: number,
@@ -19,6 +18,7 @@ abstract class Collection<T extends Component> extends Component {
     this.children = this.children.splice(addIndex, 0, ...components);
   }
 
+  // 内部使用，移除子元素
   removeChildren(
     indexOrComponent: T | number,
     removeNumber: number = 1,

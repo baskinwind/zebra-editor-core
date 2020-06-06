@@ -5,28 +5,26 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 
-type mediaType =
-  | ComponentType.image
-  | ComponentType.audio
-  | ComponentType.video;
+type mediaType = "image" | "audio" | "video";
 
 class Media extends Component {
+  type: ComponentType = ComponentType.media;
   src: string;
-  type: mediaType;
+  mediaType: mediaType;
   structureType = StructureType.content;
 
   static create(raw: rawType): Media {
-    return new Media(raw.type as mediaType, raw.src || "", raw.style, raw.data);
+    return new Media(raw.mediaType as mediaType, raw.src || "", raw.style, raw.data);
   }
 
   constructor(
-    type: mediaType,
+    mediaType: mediaType,
     src: string,
     style?: storeData,
     data?: storeData
   ) {
     super(style, data);
-    this.type = type;
+    this.mediaType = mediaType;
     this.src = src;
   }
 
@@ -79,6 +77,7 @@ class Media extends Component {
   getRaw(): rawType {
     let raw: rawType = {
       type: this.type,
+      mediaType: this.mediaType,
       src: this.src
     };
     if (this.decorate.styleIsEmpty()) {
@@ -93,11 +92,11 @@ class Media extends Component {
   render() {
     let builder = getContentBuilder();
     let map = {
-      [ComponentType.image]: builder.buildeImage,
-      [ComponentType.audio]: builder.buildeAudio,
-      [ComponentType.video]: builder.buildeVideo
+      image: builder.buildeImage,
+      audio: builder.buildeAudio,
+      video: builder.buildeVideo
     };
-    return map[this.type](
+    return map[this.mediaType](
       this.id,
       this.src,
       this.decorate.getStyle(),
