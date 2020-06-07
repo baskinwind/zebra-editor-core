@@ -46,7 +46,7 @@ class Code extends Component {
 
   split(
     index: number,
-    component?: any,
+    component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
     if (component) {
