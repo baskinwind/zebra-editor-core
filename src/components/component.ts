@@ -5,6 +5,7 @@ import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
+import directionType from "../const/direction-type";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = typeof Component;
@@ -177,6 +178,11 @@ abstract class Component {
     component?: Component,
     customerUpdate: boolean = false
   ): operatorType {
+    return;
+  }
+
+  // 处理方向键，一般不用实现
+  handleArrow(index: number, direction: directionType): operatorType {
     return;
   }
 

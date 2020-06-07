@@ -7,7 +7,6 @@ import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
 import { createError } from "./util";
 import Inline from "./inline";
-import { remove } from "immutable";
 
 type tableCellChildType = string | TableItem | undefined;
 
@@ -266,7 +265,7 @@ class TableCell extends StructureCollection<TableItem> {
   ) {
     if (this.children.size === 1 && removeNumber === 1) {
       let component = this.children.get(0) as TableItem;
-      component?.remove(0, -1, customerUpdate);
+      component?.remove(0, undefined, customerUpdate);
       return [component];
     }
     return super.removeChildren(

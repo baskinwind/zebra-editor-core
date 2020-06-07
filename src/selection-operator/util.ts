@@ -61,12 +61,10 @@ export const getElememtSize = (element?: Element): number => {
   if (element instanceof HTMLVideoElement) return 1;
   if (element instanceof HTMLElement) {
     let type = element.dataset.type;
-    if (type === ComponentType.characterList) {
-      return element.innerText.length;
-    }
     if (type === ComponentType.inlineImage) {
       return 1;
     }
+    return element.innerText.length;
   }
   return 0;
 };
@@ -92,7 +90,7 @@ export const getCursorPosition = (
     };
   }
   for (let i = 0; i < dom.children.length; i++) {
-    const element = dom.children[i];
+    let element = dom.children[i];
     let elementSize = getElememtSize(element);
     if (elementSize === 0) {
       continue;
@@ -100,6 +98,9 @@ export const getCursorPosition = (
     if (now + elementSize < cursor.offset) {
       now += elementSize;
     } else {
+      while (element.children.length && !(element.children[0] instanceof HTMLImageElement)) {
+        element = element.children[0];
+      }
       node = element;
       index = cursor.offset - now;
       now = 0;

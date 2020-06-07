@@ -132,9 +132,10 @@ abstract class ContentCollection extends Collection<Inline> {
 
   add(
     component: Inline[] | Inline | string,
-    index: number,
+    index?: number,
     customerUpdate: boolean = false
   ): operatorType {
+    index = index ? index : this.children.size;
     if (typeof component === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];
@@ -154,19 +155,20 @@ abstract class ContentCollection extends Collection<Inline> {
 
   remove(
     start: number,
-    end: number,
+    end?: number,
     customerUpdate: boolean = false
   ): operatorType {
     if (!this.parent) return;
-    if (start < 0 && end < 0) {
+    if (end === undefined) end = this.children.size;
+    if (start < 0 && end === 0) {
       let index = this.parent.findChildrenIndex(this);
       return this.parent.childHeadDelete(this, index, customerUpdate);
     }
     end = end < 0 ? this.children.size + end : end;
-    if (start > end + 1) {
+    if (start > end) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
-    this.removeChildren(start, end - start + 1, customerUpdate);
+    this.removeChildren(start, end - start, customerUpdate);
     return [this, start, start];
   }
 

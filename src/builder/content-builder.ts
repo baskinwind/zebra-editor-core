@@ -207,7 +207,14 @@ const contentBuilder = {
     span.dataset.type = ComponentType.characterList;
     span.dataset.structure = StructureType.partialContent;
     addStyle(span, style);
-    span.innerText = charList;
+    if (data.link) {
+      let link = document.createElement('a');
+      link.href = data.link;
+      link.innerText = charList;
+      span.appendChild(link);
+    } else {
+      span.innerText = charList;
+    }
     return span;
   },
   buildInlineImage(

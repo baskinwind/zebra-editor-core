@@ -1,12 +1,11 @@
 import ComponentType from "./component-type";
-import Character from "../components/character";
-import Paragraph from "../components/paragraph";
-import List from "../components/list";
-import InlineImage from "../components/inline-image";
-import Media from "../components/media";
-import Title from "../components/title";
-import Table from "../components/table";
 import Article from "../components/article";
+import Table from "../components/table";
+import List from "../components/list";
+import Paragraph from "../components/paragraph";
+import Title from "../components/title";
+import Media from "../components/media";
+import Code from "../components/code";
 import { rawType } from "../components/component";
 
 const ComponentMap = {
@@ -32,6 +31,9 @@ const ComponentMap = {
   },
   [ComponentType.media](raw: rawType) {
     return Media.create(raw);
+  },
+  [ComponentType.code](raw: rawType) {
+    return Code.create(raw);
   }
 };
 

@@ -1,9 +1,6 @@
-import Component from "../components/component";
-import getSelection from "./get-selection";
-import deleteSelection from "./delete-selection";
-import focusAt from "./focus-at";
-import { getComponentById } from "../components/util";
 import Inline from "../components/inline";
+import getSelection from "./get-selection";
+import deleteSelection from "../util/delete-selection";
 import input from "../util/input";
 
 // 在光标处插入一个内容块

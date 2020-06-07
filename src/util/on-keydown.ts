@@ -6,6 +6,7 @@ import backspace from "../selection-operator/backspace";
 import Paragraph from "../components/paragraph";
 import focusAt from "../selection-operator/focus-at";
 import { getComponentById } from "../components/util";
+import directionType from "../const/direction-type";
 
 const onKeyDown = (event: KeyboardEvent) => {
   console.log('onKeyDown');
@@ -17,7 +18,9 @@ const onKeyDown = (event: KeyboardEvent) => {
   let lowerKey = key.toLowerCase();
   let isEnter = lowerKey === "enter";
   let isBackspace = lowerKey === "backspace";
-  if (!(isEnter || isBackspace || key.length === 1)) {
+  let isArrow = /^Arrow/.test(key);
+  let isTab = lowerKey === 'tab';
+  if (!(isEnter || isBackspace || key.length === 1 || isArrow || isTab)) {
     return;
   }
 
@@ -39,6 +42,18 @@ const onKeyDown = (event: KeyboardEvent) => {
     return;
   }
 
+  if (isArrow) {
+    let component = getComponentById(selection.range[0].id);
+    let map = {
+      ArrowUp: directionType.up,
+      ArrowDown: directionType.down,
+      ArrowLeft: directionType.left,
+      ArrowRight: directionType.right
+    };
+    component.handleArrow(selection.range[0].offset, map[key]);
+    return;
+  }
+
   // 换行
   if (isEnter) {
     enter(selection.range[0], selection.range[1], event);
@@ -49,6 +64,16 @@ const onKeyDown = (event: KeyboardEvent) => {
     backspace(selection.range[0], selection.range[1], event);
     return;
   }
+
+  if (isTab) {
+    if (!selection.isCollapsed) {
+      backspace(selection.range[0], selection.range[1], event);
+      selection = getSelection();
+    }
+    event.preventDefault();
+    input('    ', selection.range[0], event);
+  }
+
   // 字符输入
   if (key.length === 1) {
     if (!selection.isCollapsed) {

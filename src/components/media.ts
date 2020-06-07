@@ -74,6 +74,16 @@ class Media extends Component {
     return this.replaceSelf(new Paragraph(), customerUpdate);
   }
 
+  modifyContentDecorate(
+    start: number,
+    end: number,
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
+    return this.modifyDecorate(style, data, customerUpdate);
+  }
+
   getRaw(): rawType {
     let raw: rawType = {
       type: this.type,

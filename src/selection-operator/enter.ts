@@ -9,12 +9,11 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
     let component = getComponentById(start.id);
     return focusAt(component.split(start.offset));
   }
-
   let idList = getSelectedIdList(start.id, end.id);
   if (idList.length === 0) return;
   if (idList.length === 1) {
     let component = getComponentById(idList[0]);
-    component.remove(start.offset, end.offset - 1);
+    component.remove(start.offset, end.offset);
     return focusAt(component.split(start.offset));
   }
 
@@ -22,8 +21,8 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
   event?.preventDefault();
   let firstComponent = getComponentById(idList[0]);
   let lastComponent = getComponentById(idList[idList.length - 1]);
-  firstComponent.remove(start.offset, -1);
-  lastComponent.remove(0, end.offset - 1);
+  firstComponent.remove(start.offset);
+  lastComponent.remove(0, end.offset);
 
   for (let i = 1; i < idList.length - 1; i++) {
     getComponentById(idList[i]).removeSelf();

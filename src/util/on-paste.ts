@@ -1,6 +1,6 @@
 import Paragraph from "../components/paragraph";
 import getSelection from "../selection-operator/get-selection";
-import deleteSelection from "../selection-operator/delete-selection";
+import deleteSelection from "./delete-selection";
 import focusAt from "../selection-operator/focus-at";
 import { getComponentById } from "../components/util";
 

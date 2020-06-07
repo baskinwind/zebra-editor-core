@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Draft Demo</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  </head>
-  <script id="operator-template" type="text/x-template">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Draft Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
         <button @click="showArticle">强制更新</button>
@@ -48,6 +49,12 @@
           <input type="text" v-model="inlineStyleValue">
         </div>
         <button @click="customerInlineStyle">确定</button>
+        <p>添加连接：</p>
+        <div>
+          <span class="key">地址：</span>
+          <input type="text" v-model="link">
+          <button @click="addLink">确定</button>
+        </div>
       </div>
       <div>
         <p>修改段落样式：</p>
@@ -94,6 +101,7 @@
           <button @click="insertInlineImage">添加</button></p>
         <p>使用网络图片：</p>
         <div>
+          <span class="key">地址：</span>
           <input type="text" v-model="inlineImage">
           <button @click="customerInlineImage">确定</button>
         </div>
@@ -105,6 +113,7 @@
         </p>
         <p>使用网络图片：</p>
         <div>
+          <span class="key">地址：</span>
           <input type="text" v-model="image">
           <button @click="customerImage">确定</button>
         </div>
@@ -112,10 +121,11 @@
     </div>
   </script>
 
-  <body>
-    <div class="flex">
-      <div id="operator"></div>
-      <div class="draft-wrap" id="root"></div>
-    </div>
-  </body>
+<body>
+  <div class="flex">
+    <div id="operator"></div>
+    <div class="draft-wrap" id="root"></div>
+  </div>
+</body>
+
 </html>

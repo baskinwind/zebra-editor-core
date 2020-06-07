@@ -1,14 +1,12 @@
 import "./index.scss";
-import article from "./index";
+import article from "./article";
 
 import InlineImage from "../src/components/inline-image";
 import Media from "../src/components/media";
 import Title from "../src/components/title";
 import Paragraph from "../src/components/paragraph";
-import { ListItem } from "../src/components/list";
 import Table from "../src/components/table";
-import updateComponent from "../src/selection-operator/update-component";
-
+import { ListItem } from "../src/components/list";
 import ComponentType from "../src/const/component-type";
 
 import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
@@ -17,6 +15,7 @@ import insertBlock from "../src/selection-operator/insert-block";
 import exchangeParagraph from "../src/selection-operator/exchange-paragraph";
 import modifyComponentDecorate from "../src/selection-operator/modify-component-decorate";
 import modifyTable from "../src/selection-operator/modify-table";
+import updateComponent from "../src/selection-operator/update-component";
 import getHtml from "../src/util/get-html";
 
 new Vue({
@@ -24,18 +23,23 @@ new Vue({
   template: "#operator-template",
   data() {
     return {
-      inlineStyle: "fontSize",
+      inlineStyle: "font-size",
       inlineStyleValue: "20px",
-      blockStyle: "lineHeight",
+      blockStyle: "line-height",
       blockStyleValue: "2em",
-      inlineImage: "",
-      image: "",
+      inlineImage: "./emjoy-1.png",
+      image: "./draft-img-1.jpg",
+      link: "http://acohome.com",
       tableRow: 3,
       tableCol: 3,
       tableHead: true
     };
   },
   methods: {
+    toHump(text) {
+      return text.replace(/\_(\w)/g, (all, letter) => letter.toUpperCase());
+    },
+
     showArticle() {
       updateComponent(article);
     },
@@ -73,7 +77,13 @@ new Vue({
     },
     customerInlineStyle() {
       if (this.inlineStyle && this.inlineStyleValue) {
-        modifySelectionDecorate({ [this.inlineStyle]: this.inlineStyleValue });
+        let key = this.toHump(this.inlineStyle);
+        modifySelectionDecorate({ [key]: this.inlineStyleValue });
+      }
+    },
+    addLink() {
+      if (this.link) {
+        modifySelectionDecorate({}, { link: this.link });
       }
     },
 
@@ -82,7 +92,8 @@ new Vue({
     },
     customerBlockStyle() {
       if (this.blockStyle && this.blockStyleValue) {
-        modifyComponentDecorate({ [this.blockStyle]: this.blockStyleValue });
+        let key = this.toHump(this.blockStyle);
+        modifyComponentDecorate({ [key]: this.blockStyleValue });
       }
     },
 
@@ -98,12 +109,8 @@ new Vue({
     },
 
     insertInlineImage() {
-      let index = Math.floor(Math.random() * 56 + 1);
-      insertInline(
-        new InlineImage(
-          `http://cdn.acohome.cn/${index}.png?imageMogr2/auto-orient/thumbnail/x20`
-        )
-      );
+      let index = Math.floor(Math.random() * 3 + 1);
+      insertInline(new InlineImage(`./emjoy-${index}.png`));
     },
     customerInlineImage() {
       insertInline(new InlineImage(this.inlineImage));
@@ -114,7 +121,7 @@ new Vue({
       insertBlock(
         new Media(
           'image',
-          `https://blogcdn.acohome.cn/demo-draft-${index}.jpg`
+          `./draft-img-${index}.jpg`
         )
       );
     },

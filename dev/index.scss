@@ -20,6 +20,7 @@ body {
 .operator {
   height: 100%;
   overflow: auto;
+  min-width: 350px;
   flex: 0 0 30%;
   font-size: 14px;
   button,
@@ -47,7 +48,7 @@ body {
       align-items: center;
     }
     p {
-      margin: 0;
+      margin: 10px 0 0 0;
     }
   }
 }

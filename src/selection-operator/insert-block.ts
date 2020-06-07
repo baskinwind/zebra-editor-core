@@ -1,6 +1,6 @@
 import Component from "../components/component";
 import getSelection from "./get-selection";
-import deleteSelection from "./delete-selection";
+import deleteSelection from "../util/delete-selection";
 import focusAt from "./focus-at";
 import { getComponentById } from "../components/util";
 

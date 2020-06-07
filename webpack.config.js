@@ -21,6 +21,7 @@ module.exports = {
   },
   devServer: {
     clientLogLevel: "silent",
+    contentBase: path.join(__dirname, 'static'),
     hot: true,
     compress: true,
   },
