@@ -40,6 +40,17 @@ article.add(
   new Media('image', "./draft-img-1.jpg")
 );
 
+article.add(new Title("h3", "代码块"));
+let code = new Code(`function greeter(user) {
+    return \`Hello, \${user}. welcome to zebra-draft.\`;
+}
+
+let user = "Night's Watch";
+
+document.body.innerHTML = greeter(user);
+`);
+code.addInto(article);
+
 article.add(new Title("h3", "列表"));
 let ol = new List("ol", [
   "权力的游戏",
@@ -84,16 +95,6 @@ let table = new Table(3, 3, [
   ["3-1", "3-2", "3-3"]
 ]);
 table.addInto(article);
-
-let code = new Code(`function greeter(user) {
-    return \`Hello, \${user}. welcome to zebra-draft.\`;
-}
-
-let user = "acccco";
-
-document.body.innerHTML = greeter(user);
-`);
-code.addInto(article);
 
 article.add(new Paragraph());
 

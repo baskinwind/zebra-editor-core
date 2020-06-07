@@ -13,6 +13,9 @@ const onKeyDown = (event: KeyboardEvent) => {
   if (event.isComposing || event.keyCode === 229) {
     return;
   }
+  if (event.shiftKey || event.ctrlKey) {
+    return;
+  }
 
   let key = event.key;
   let lowerKey = key.toLowerCase();
