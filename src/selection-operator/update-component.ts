@@ -66,6 +66,7 @@ const update = (component: Component) => {
       return;
     }
 
+    console.log(component.id);
     // 将该组件插入到合适的位置
     let index = parentComponent.children.findIndex(
       (child) => child === component

@@ -9,11 +9,11 @@ import { getComponentById } from "../components/util";
 import directionType from "../const/direction-type";
 
 const onKeyDown = (event: KeyboardEvent) => {
-  console.log('onKeyDown');
   // 混合输入直接跳出
   if (event.isComposing || event.keyCode === 229) {
     return;
   }
+
   let key = event.key;
   let lowerKey = key.toLowerCase();
   let isEnter = lowerKey === "enter";

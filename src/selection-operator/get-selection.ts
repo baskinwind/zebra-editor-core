@@ -64,8 +64,9 @@ const getSelection = () => {
     anchorNode.dataset.structure === StructureType.structure
   ) {
     // 选中了 Article 组件的直接子节点：返回该直接子节点
-    if (section.anchorOffset > 0) {
-      let component = getComponentById<StructureCollection<any>>(anchorNode.id);
+    // Chrome 会出现该情况
+    let component = getComponentById<StructureCollection<any>>(anchorNode.id);
+    if (component.type === ComponentType.article) {
       let child = component.children.get(section.anchorOffset - 1);
       return {
         isCollapsed: true,

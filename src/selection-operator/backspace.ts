@@ -41,6 +41,7 @@ const backspace = (start: cursorType, end?: cursorType, event?: KeyboardEvent | 
 
   let firstComponent = getComponentById(idList[0]);
   let lastComponent = getComponentById(idList[idList.length - 1]);
+  // 为了避免 send 时，组件不更新，此处需要开启更新
   firstComponent.remove(start.offset, undefined, isComposing);
   lastComponent.remove(0, end.offset, isComposing);
 

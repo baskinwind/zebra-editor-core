@@ -95,4 +95,6 @@ document.body.innerHTML = greeter(user);
 `);
 code.addInto(article);
 
+article.add(new Paragraph());
+
 export default article;

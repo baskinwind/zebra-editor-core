@@ -182,6 +182,7 @@ class TableRow extends StructureCollection<TableCell> {
     }
     this.inCountEmptyCell = true;
     this.emptyCell += 1;
+    console.log(this.emptyCell, this.children.size);
     if (this.emptyCell === this.children.size) {
       let parent = this.parent;
       if (!parent) return;
@@ -265,7 +266,7 @@ class TableCell extends StructureCollection<TableItem> {
   ) {
     if (this.children.size === 1 && removeNumber === 1) {
       let component = this.children.get(0) as TableItem;
-      component?.remove(0, undefined, customerUpdate);
+      component?.removeChildren(0, component.children.size, customerUpdate);
       return [component];
     }
     return super.removeChildren(
@@ -316,12 +317,13 @@ class TableItem extends ContentCollection {
     return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  removeChildren(
-    component: Inline | number,
-    index?: number,
+  remove(
+    start: number,
+    end?: number,
     customerUpdate: boolean = false
   ) {
-    let removed = super.removeChildren(component, index, customerUpdate);
+    console.log('removeChildren');
+    let removed = super.remove(start, end, customerUpdate);
     let parent = this.parent;
     if (!parent) return removed;
     if (parent.isEmpty()) {
@@ -332,6 +334,7 @@ class TableItem extends ContentCollection {
 
   // 监控：当表格内容一行全被删除时，把一整行移除
   removeSelf(customerUpdate: boolean = false): operatorType {
+    console.log('removeSelf');
     let res = super.removeSelf(customerUpdate);
     let parent = this.parent;
     if (!parent) return res;

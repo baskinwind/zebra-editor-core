@@ -82,6 +82,14 @@ class Code extends Component {
     return [this, start, start];
   }
 
+  receive(
+    component?: Component,
+    customerUpdate: boolean = false
+  ): operatorType {
+    component?.removeSelf();
+    return [this, this.content.length, this.content.length];
+  }
+
   // 在 Code 中 Enter 被用作换行，导致不能创建新行，光标会被困在 Code 区域内
   // 当在 Code 的第一行，按下向上时，若该 Code 为 Article 的第一个子元素，则在 Code 上生成新行
   // 向下操作为向上的反向

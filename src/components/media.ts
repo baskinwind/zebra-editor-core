@@ -43,6 +43,10 @@ class Media extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     if (!component) return;
+    if (component.isEmpty()) {
+      component.removeSelf();
+      return [this, 1, 1];
+    }
     super.removeSelf(customerUpdate);
     return [component, 0, 0];
   }
