@@ -94,7 +94,8 @@ const findFocusNode = (dom: Node, index: number): [boolean, Node, number] => {
   if (index > charLength) {
     return [false, dom.childNodes[0], charLength];
   }
-  return [true, dom.childNodes[0], index];
+  // 兼容 p 标签内的 br 标签
+  return [true, dom.childNodes.length ? dom.childNodes[0] : dom, index];
 };
 
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
@@ -102,9 +103,9 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-      node: Node;
-      index: number;
-    }
+    node: Node;
+    index: number;
+  }
   | undefined => {
   let dom = document.getElementById(cursor.id);
   if (!dom) return;

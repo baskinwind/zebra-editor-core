@@ -27,6 +27,25 @@ class Code extends Component {
     return code;
   }
 
+  static exchange(
+    component: Component,
+    args: any[],
+    customerUpdate: boolean = false
+  ): operatorType {
+    let parent = component.parent;
+    if (!parent) throw createError("该组件没有父组件", component);
+    let prev = parent.getPrev(component);
+    if (prev instanceof Code) {
+      return prev.receive(component, customerUpdate);
+    } else {
+      let newItem = this.exchangeOnly(component, args);
+      let index = parent.findChildrenIndex(component);
+      component.removeSelf();
+      newItem.addInto(parent, index, customerUpdate);
+      return [newItem, -1, -1];
+    }
+  }
+
   constructor(
     content: string = "",
     style: storeData = {},
@@ -36,6 +55,7 @@ class Code extends Component {
     if (content[content.length - 1] !== "\n") {
       content += "\n";
     }
+    this.decorate.setStyle('whiteSpace', 'pre-wrap');
     this.content = content;
   }
 
@@ -43,16 +63,16 @@ class Code extends Component {
     return new Code("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  exchangeToOther(builder: classType, args: any[]): Component {
-    if (builder === Code) return this;
+  exchangeToOther(builder: classType, args: any[]): operatorType {
+    if (builder === Code) return [this, -1, -1];
     let parent = this.parent;
-    if (!parent) return this;
+    if (!parent) throw createError("该组件没有父组件", this);
     let list = this.content.split("\n");
     let index = parent.findChildrenIndex(this);
     let paragraphList = list.map((string) => builder.exchangeOnly(string));
     parent.addChildren(paragraphList, index);
     this.removeSelf();
-    return paragraphList[0];
+    return [paragraphList[0], 0, 0];
   }
 
   split(
@@ -68,12 +88,13 @@ class Code extends Component {
 
   add(
     string: string,
-    index: number,
+    index?: number,
     customerUpdate: boolean = false
   ): operatorType {
     if (typeof string !== "string") {
       throw createError("代码块内仅能输入文字");
     }
+    index = index === undefined ? this.content.length : index;
     this.content =
       this.content.slice(0, index) + string + this.content.slice(index);
     updateComponent(this, customerUpdate);
@@ -87,6 +108,9 @@ class Code extends Component {
   ): operatorType {
     if (end === undefined) end = this.content.length;
     if (start < 0 && end === 0) {
+      if (this.content.length <= 1) {
+        return this.replaceSelf(new Paragraph());
+      }
       return;
     }
     this.content = this.content.slice(0, start) + this.content.slice(end);
@@ -99,7 +123,13 @@ class Code extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     component?.removeSelf();
-    return [this, this.content.length, this.content.length];
+    let size = this.content.length;
+    if (component instanceof ContentCollection) {
+      this.add(component.children.map(item => item.content).join('') + '\n');
+    } else if (component instanceof Code) {
+      this.add(component.content);
+    }
+    return [this, size, size];
   }
 
   // 在 Code 中 Enter 被用作换行，导致不能创建新行，光标会被困在 Code 区域内

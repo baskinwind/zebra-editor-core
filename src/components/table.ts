@@ -313,7 +313,7 @@ class TableItem extends ContentCollection {
     throw createError("不允许切换成表格内段落");
   }
 
-  exchangeToOther(builder: classType, args: any[]): Component {
+  exchangeToOther(builder: classType, args: any[]): operatorType {
     throw createError("表格内段落不允许切换类型！！", this);
   }
 
@@ -321,7 +321,7 @@ class TableItem extends ContentCollection {
     return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  remove(start: number, end?: number, customerUpdate: boolean = false) {
+  remove(start: number, end?: number, customerUpdate: boolean = false): operatorType {
     console.log("removeChildren");
     let removed = super.remove(start, end, customerUpdate);
     let parent = this.parent;

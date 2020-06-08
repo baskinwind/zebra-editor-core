@@ -55,12 +55,12 @@ abstract class Component {
     component: Component,
     args?: any[],
     customerUpdate: boolean = false
-  ) {
+  ): operatorType {
     let newComponent = this.exchangeOnly(component, args);
     if (newComponent !== component) {
       component.replaceSelf(newComponent, customerUpdate);
     }
-    return newComponent;
+    return [newComponent, -1, -1];
   }
 
   // 更加 raw 保存的内容恢复组件
@@ -84,7 +84,7 @@ abstract class Component {
   }
 
   // 将当前组件转换为 builder 类型的组件
-  exchangeToOther(builder: classType, args: any[]): Component {
+  exchangeToOther(builder: classType, args: any[]): operatorType {
     throw createError("请为组件添加 exchangeToOther 方法", this);
   }
 

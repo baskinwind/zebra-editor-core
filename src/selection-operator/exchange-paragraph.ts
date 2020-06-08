@@ -17,23 +17,32 @@ const exchangeParagraph = (newClass: classType, ...args: any[]) => {
       newClass,
       args
     );
-    focusAt([newComponent, start.offset, end.offset]);
+    if (!newComponent) {
+      focusAt();
+    } else {
+      focusAt([newComponent[0], start.offset, end.offset]);
+    }
     return;
   }
   let newList = idList.map((id) =>
     getComponentById(id).exchangeToOther(newClass, args)
   );
-
-  focusAt(
-    {
-      id: newList[0].id,
-      offset: start.offset
-    },
-    {
-      id: newList[newList.length - 1].id,
-      offset: end.offset
-    }
-  );
+  let first = newList[0];
+  let last = newList[newList.length - 1];
+  if (!first || !last) {
+    focusAt();
+  } else {
+    focusAt(
+      {
+        id: first[0].id,
+        offset: first[1] === -1 ? start.offset : first[1]
+      },
+      {
+        id: last[0].id,
+        offset: last[1] === -1 ? end.offset : last[1] + end.offset
+      }
+    );
+  }
 };
 
 export default exchangeParagraph;

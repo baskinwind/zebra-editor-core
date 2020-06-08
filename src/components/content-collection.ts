@@ -39,7 +39,7 @@ abstract class ContentCollection extends Collection<Inline> {
     }
   }
 
-  exchangeToOther(builder: classType, args: any[]): Component {
+  exchangeToOther(builder: classType, args: any[]): operatorType {
     return builder.exchange(this, args);
   }
 

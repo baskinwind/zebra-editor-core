@@ -117,9 +117,9 @@ class List extends StructureCollection<ListItem> {
   ): operatorType {
     if (!component) return;
     component.removeSelf();
-    component = ListItem.exchangeOnly(component, []);
-    this.addChildren([component as ListItem], undefined, customerUpdate);
-    return;
+    let newList = ListItem.exchangeOnly(component, []);
+    this.addChildren([newList], undefined, customerUpdate);
+    return [newList, -1, -1];
   }
 
   getRaw(): rawType {
@@ -163,22 +163,22 @@ class ListItem extends ContentCollection {
     component: ContentCollection,
     args: any[],
     customerUpdate: boolean = false
-  ) {
+  ): operatorType {
     let parent = component.parent;
     if (!parent) throw createError("该组件没有父组件", component);
-    let newItem = this.exchangeOnly(component, args);
     let prev = parent.getPrev(component);
     let index = parent.findChildrenIndex(component);
     if (prev instanceof List && prev.listType === args[0]) {
       // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
-      newItem.send(prev, customerUpdate);
+      return component.send(prev, customerUpdate);
     } else {
-      component.removeSelf();
+      let newItem = this.exchangeOnly(component, args);
       let newList = new List(args[0]);
       newList.addChildren([newItem], undefined, true);
       newList.addInto(parent, index, customerUpdate);
+      component.removeSelf();
+      return [newItem, -1, -1];
     }
-    return newItem;
   }
 
   static create(raw: any): ListItem {
@@ -196,15 +196,15 @@ class ListItem extends ContentCollection {
     builder: classType,
     args: any[],
     customerUpdate: boolean = false
-  ): Component {
+  ): operatorType {
     let parent = this.parent;
-    if (!parent) return this;
+    if (!parent) throw createError("该组件没有父组件", this);
     if (builder === ListItem) {
       parent.setListType(args[0]);
-      return this;
+      return [this, -1, -1];
     }
     let grandParent = parent?.parent;
-    if (!grandParent) return this;
+    if (!grandParent) throw createError("该组件没有父组件", this);
     let index = parent.findChildrenIndex(this);
     let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
@@ -214,7 +214,7 @@ class ListItem extends ContentCollection {
     } else {
       newListItem.addInto(grandParent, parentIndex);
     }
-    return newListItem;
+    return [newListItem, -1, -1];
   }
 
   split(
