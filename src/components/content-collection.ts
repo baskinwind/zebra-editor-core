@@ -71,18 +71,19 @@ abstract class ContentCollection extends Collection<Inline> {
     index: number,
     customerUpdate: boolean = false
   ): ContentCollection {
-    if (!this.parent) throw createError("该组件无父组件，不能分割", this);
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效，不能分割", this);
     let isTail = index === this.children.size;
     let tail = isTail ? [] : this.children.slice(index).toArray();
     if (!isTail) {
       this.removeChildren(index, this.children.size - index, customerUpdate);
     }
-    let thisIndex = this.parent.findChildrenIndex(this);
+    let thisIndex = parent.findChildrenIndex(this);
     let newCollection = this.createEmpty();
     if (!isTail) {
       newCollection.addChildren(tail, 0, true);
     }
-    this.parent.addChildren([newCollection], thisIndex + 1, customerUpdate);
+    parent.addChildren([newCollection], thisIndex + 1, customerUpdate);
     return newCollection;
   }
 
@@ -101,12 +102,13 @@ abstract class ContentCollection extends Collection<Inline> {
     component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
-    if (!this.parent) return;
-    let componentIndex = this.parent.findChildrenIndex(this);
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效", this);
+    let componentIndex = parent.findChildrenIndex(this);
     let splitComponent = this.splitChild(index, customerUpdate);
     if (component) {
       if (!Array.isArray(component)) component = [component];
-      this.parent.addChildren(component, componentIndex + 1, customerUpdate);
+      parent.addChildren(component, componentIndex + 1, customerUpdate);
     }
     return [splitComponent, 0, 0];
   }
@@ -139,11 +141,12 @@ abstract class ContentCollection extends Collection<Inline> {
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    if (!this.parent) return;
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效", this);
     if (end === undefined) end = this.children.size;
     if (start < 0 && end === 0) {
-      let index = this.parent.findChildrenIndex(this);
-      return this.parent.childHeadDelete(this, index, customerUpdate);
+      let index = parent.findChildrenIndex(this);
+      return parent.childHeadDelete(this, index, customerUpdate);
     }
     end = end < 0 ? this.children.size + end : end;
     if (start > end) {

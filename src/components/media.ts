@@ -4,6 +4,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
+import { createError } from "./util";
 
 type mediaType = "image" | "audio" | "video";
 
@@ -56,16 +57,17 @@ class Media extends Component {
     component?: Component,
     customerUpdate: boolean = false
   ): operatorType {
-    if (!this.parent) return;
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效", this);
     if (!component) {
       component = new Paragraph();
     }
-    let componentIndex = this.parent.findChildrenIndex(this);
+    let componentIndex = parent.findChildrenIndex(this);
     if (index === 0) {
-      this.parent.addChildren([component], componentIndex, customerUpdate);
+      parent.addChildren([component], componentIndex, customerUpdate);
     }
     if (index === 1) {
-      this.parent.addChildren([component], componentIndex + 1, customerUpdate);
+      parent.addChildren([component], componentIndex + 1, customerUpdate);
     }
     return [component, index, index];
   }

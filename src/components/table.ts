@@ -185,7 +185,7 @@ class TableRow extends StructureCollection<TableCell> {
     console.log(this.emptyCell, this.children.size);
     if (this.emptyCell === this.children.size) {
       let parent = this.parent;
-      if (!parent) return;
+      if (!parent) throw createError("该节点已失效", this);
       this.removeSelf(customerUpdate);
       if (this.cellType === "th") {
         parent.needHead = false;
@@ -322,10 +322,9 @@ class TableItem extends ContentCollection {
   }
 
   remove(start: number, end?: number, customerUpdate: boolean = false): operatorType {
-    console.log("removeChildren");
     let removed = super.remove(start, end, customerUpdate);
     let parent = this.parent;
-    if (!parent) return removed;
+    if (!parent) throw createError("该节点已失效", this);
     if (parent.isEmpty()) {
       parent.parent?.countEmptyCell(customerUpdate);
     }
@@ -337,7 +336,7 @@ class TableItem extends ContentCollection {
     console.log("removeSelf");
     let res = super.removeSelf(customerUpdate);
     let parent = this.parent;
-    if (!parent) return res;
+    if (!parent) throw createError("该节点已失效", this);
     if (parent.isEmpty()) {
       parent.parent?.countEmptyCell(customerUpdate);
     }

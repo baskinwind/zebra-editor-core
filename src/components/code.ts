@@ -33,7 +33,7 @@ class Code extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     let parent = component.parent;
-    if (!parent) throw createError("该组件没有父组件", component);
+    if (!parent) throw createError("该节点已失效", component);
     let prev = parent.getPrev(component);
     if (prev instanceof Code) {
       return prev.receive(component, customerUpdate);
@@ -66,7 +66,7 @@ class Code extends Component {
   exchangeToOther(builder: classType, args: any[]): operatorType {
     if (builder === Code) return [this, -1, -1];
     let parent = this.parent;
-    if (!parent) throw createError("该组件没有父组件", this);
+    if (!parent) throw createError("该节点已失效", this);
     let list = this.content.split("\n");
     let index = parent.findChildrenIndex(this);
     let paragraphList = list.map((string) => builder.exchangeOnly(string));
@@ -139,26 +139,28 @@ class Code extends Component {
     let contentList = this.content.split("\n");
     if (direction === directionType.up && index <= contentList[0].length) {
       let parent = this.parent;
-      if (!parent) return;
+      if (!parent) throw createError("该节点已失效", this);
       let index = parent.findChildrenIndex(this);
       if (index !== 0) {
         return [parent.children.get(index - 1) as Component, 0, 0];
       }
       let paragraph = new Paragraph();
       this.parent?.add(paragraph, 0);
+      return [paragraph, 0, 0];
     }
     if (
       direction === directionType.down &&
       index > this.content.length - contentList[contentList.length - 2].length
     ) {
       let parent = this.parent;
-      if (!parent) return;
+      if (!parent) throw createError("该节点已失效", this);
       let index = parent.findChildrenIndex(this);
       if (index !== parent.children.size - 1) {
         return [parent.children.get(index + 1) as Component, 0, 0];
       }
       let paragraph = new Paragraph();
       this.parent?.add(paragraph, parent.children.size);
+      return [paragraph, 0, 0];
     }
     return;
   }

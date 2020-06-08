@@ -93,7 +93,7 @@ class List extends StructureCollection<ListItem> {
     }
     // 第一项时，直接将该列表项转换为段落
     let parent = this.parent;
-    if (!parent) return;
+    if (!parent) throw createError("该节点已失效", this);
     index = parent.findChildrenIndex(this);
     component.removeSelf(customerUpdate);
     Paragraph.exchangeOnly(component);
@@ -165,7 +165,7 @@ class ListItem extends ContentCollection {
     customerUpdate: boolean = false
   ): operatorType {
     let parent = component.parent;
-    if (!parent) throw createError("该组件没有父组件", component);
+    if (!parent) throw createError("该节点已失效", component);
     let prev = parent.getPrev(component);
     let index = parent.findChildrenIndex(component);
     if (prev instanceof List && prev.listType === args[0]) {
@@ -198,13 +198,13 @@ class ListItem extends ContentCollection {
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
-    if (!parent) throw createError("该组件没有父组件", this);
+    if (!parent) throw createError("该节点已失效", this);
     if (builder === ListItem) {
       parent.setListType(args[0]);
       return [this, -1, -1];
     }
     let grandParent = parent?.parent;
-    if (!grandParent) throw createError("该组件没有父组件", this);
+    if (!grandParent) throw createError("该节点已失效", this);
     let index = parent.findChildrenIndex(this);
     let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
@@ -223,7 +223,7 @@ class ListItem extends ContentCollection {
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
-    if (!parent) return;
+    if (!parent) throw createError("该节点已失效", this);
     let itemIndex = parent.findChildrenIndex(this);
     // 连续两个空行则切断列表
     if (this.isEmpty() && itemIndex !== 0) {

@@ -48,7 +48,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     customerUpdate: boolean = false
   ): StructureCollection<T> | undefined {
     let parent = this.parent;
-    if (!parent) throw createError("该组件无父组件，不能分割", this);
+    if (!parent) throw createError("该节点已失效", this);
     if (index >= this.children.size) {
       return;
     }
@@ -70,7 +70,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
-    if (!parent) return;
+    if (!parent) throw createError("该节点已失效", this);
     let componentIndex = parent.findChildrenIndex(this);
     if (index !== 0) {
       this.splitChild(index, customerUpdate);
