@@ -5,6 +5,7 @@ import InlineImage from "../src/components/inline-image";
 import Media from "../src/components/media";
 import Title from "../src/components/title";
 import Paragraph from "../src/components/paragraph";
+import Code from "../src/components/code";
 import Table from "../src/components/table";
 import { ListItem } from "../src/components/list";
 import ComponentType from "../src/const/component-type";
@@ -53,6 +54,8 @@ new Vue({
     modifyType(tag) {
       if (tag === "normal") {
         exchangeParagraph(Paragraph, tag);
+      } else if (tag === "code") {
+        exchangeParagraph(Code);
       } else if (tag === "ul" || tag === "ol") {
         exchangeParagraph(ListItem, tag);
       } else {
@@ -73,7 +76,7 @@ new Vue({
       modifySelectionDecorate({ color: "red" });
     },
     clearStyle() {
-      modifySelectionDecorate({ clear: "style" });
+      modifySelectionDecorate({ remove: "all" });
     },
     customerInlineStyle() {
       if (this.inlineStyle && this.inlineStyleValue) {
@@ -85,6 +88,9 @@ new Vue({
       if (this.link) {
         modifySelectionDecorate({}, { link: this.link });
       }
+    },
+    unLink() {
+      modifySelectionDecorate({}, { remove: "link" });
     },
 
     modifyStyle(name, value) {
@@ -118,12 +124,7 @@ new Vue({
 
     insertImage() {
       let index = Math.floor(Math.random() * 3 + 1);
-      insertBlock(
-        new Media(
-          'image',
-          `./draft-img-${index}.jpg`
-        )
-      );
+      insertBlock(new Media("image", `./draft-img-${index}.jpg`));
     },
     customerImage() {
       insertBlock(new Media(ComponentType.image, this.image));

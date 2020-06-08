@@ -1,35 +1,36 @@
+import Component from "../components/component";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getComponentById, createError } from "../components/util";
-import Component from "../components/component";
-import ContentCollection from "../components/content-collection";
 
 export interface cursorType {
   id: string;
   offset: number;
 }
 
-// 获取到结构性的节点，段落，列表，表格内容节点等
+// 获取光标所在的组件
 export const getParent = (
   element: HTMLElement | Node | null | undefined
 ): HTMLElement => {
-  if (element === null || element === undefined) throw Error("获取父节点失败");
+  if (element === null || element === undefined)
+    throw Error("获取光标所在节点失败");
   // 文本节点处理
   if (element.nodeType === 3) {
     return getParent(element.parentElement);
   }
   if (element instanceof HTMLElement) {
-    if (element.dataset.structure === StructureType.content) {
+    if (
+      element.dataset.structure === StructureType.structure ||
+      element.dataset.structure === StructureType.content ||
+      element.dataset.structure === StructureType.plainText
+    ) {
       return element;
-    }
-    if (element.dataset.structure === StructureType.structure) {
-      return getContainer(element.children[0]);
     }
   }
   return getParent(element.parentElement);
 };
 
-// 获取到包含该内容的节点，段落内的字符片断，段落内的图片等
+// 获取光标所在的文本节点
 export const getContainer = (
   element: Element | Node | null | undefined
 ): HTMLElement => {
@@ -40,14 +41,11 @@ export const getContainer = (
     return getContainer(element.parentElement);
   }
   if (element instanceof HTMLElement) {
-    if (
-      element.dataset.structure === StructureType.content ||
-      element.dataset.structure === StructureType.partialContent
-    ) {
-      return element;
+    if (element instanceof HTMLImageElement) {
+      return getContainer(element.parentElement);
     }
-    if (element.dataset.structure === StructureType.structure) {
-      return getContainer(element.children[0]);
+    if (element.dataset.structure) {
+      return element;
     }
   }
   return getContainer(element.parentElement);
@@ -69,55 +67,57 @@ export const getElememtSize = (element?: Element): number => {
   return 0;
 };
 
+const findFocusNode = (dom: Node, index: number): [boolean, Node, number] => {
+  if (
+    dom instanceof HTMLImageElement ||
+    dom instanceof HTMLAudioElement ||
+    dom instanceof HTMLVideoElement
+  ) {
+    if (index < 1) {
+      return [true, dom, index];
+    }
+    return [false, dom, 1];
+  }
+  if (dom instanceof Element && dom.children.length !== 0) {
+    let consume = 0;
+    for (let i = 0; i < dom.children.length; i++) {
+      const element = dom.children[i];
+      let res = findFocusNode(element, index - consume);
+      if (res[0]) {
+        return res;
+      }
+      consume += res[2];
+    }
+    return [false, dom, consume];
+  }
+  let charLength = dom.textContent?.length || 0;
+  if (index > charLength) {
+    return [false, dom.childNodes[0], charLength];
+  }
+  return [true, dom.childNodes[0], index];
+};
+
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
 export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-    node: Node | Element;
-    index: number;
-  }
+      node: Node;
+      index: number;
+    }
   | undefined => {
   let dom = document.getElementById(cursor.id);
-  let node = dom as Element;
-  let now = 0;
-  let index = 0;
   if (!dom) return;
   if (dom.dataset.type === ComponentType.media) {
     return {
-      node,
+      node: dom,
       index: cursor.offset === 0 ? 0 : 1
     };
   }
-  for (let i = 0; i < dom.children.length; i++) {
-    let element = dom.children[i];
-    let elementSize = getElememtSize(element);
-    if (elementSize === 0) {
-      continue;
-    }
-    if (now + elementSize < cursor.offset) {
-      now += elementSize;
-    } else {
-      while (element.children.length && !(element.children[0] instanceof HTMLImageElement)) {
-        element = element.children[0];
-      }
-      node = element;
-      index = cursor.offset - now;
-      now = 0;
-      break;
-    }
-  }
-  if (now !== 0) {
-    let last = dom.children[dom.children.length - 1];
-    return {
-      node: last.childNodes[0],
-      index: getElememtSize(last)
-    };
-  }
-  if (!node?.childNodes[0]) return;
+  let focusInfo = findFocusNode(dom, cursor.offset);
   return {
-    node: node?.childNodes[0],
-    index
+    node: focusInfo[1],
+    index: focusInfo[2]
   };
 };
 
@@ -125,9 +125,9 @@ export const getCursorPosition = (
 export const getSelectedIdList = (startId: string, endId: string) => {
   let component: Component = getComponentById(startId);
   let parent = component.parent;
-  if (!parent) throw createError('该节点已失效', component);
+  if (!parent) throw createError("该节点已失效", component);
   while (parent.type !== ComponentType.article) {
-    if (!parent.parent) throw createError('该节点已失效', parent);
+    if (!parent.parent) throw createError("该节点已失效", parent);
     parent = parent.parent;
   }
   return parent.getIdList(startId, endId)[2];

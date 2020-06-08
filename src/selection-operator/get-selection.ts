@@ -129,20 +129,14 @@ const getSelection = () => {
   let endContainer: HTMLElement = getContainer(endNode);
   let endParent: HTMLElement = getParent(endNode);
 
-  if (
-    startParent !== startContainer &&
-    startParent.dataset.type === ComponentType.paragraph
-  ) {
+  if (startParent !== startContainer) {
     for (let i = 0; i < startParent.children.length; i++) {
       const element = startParent.children[i];
       if (element === startContainer) break;
       startOffset += getElememtSize(element);
     }
   }
-  if (
-    endParent !== endContainer &&
-    endParent.dataset.type === ComponentType.paragraph
-  ) {
+  if (endParent !== endContainer) {
     for (let i = 0; i < endParent.children.length; i++) {
       const element = endParent.children[i];
       if (element === endContainer) break;

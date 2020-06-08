@@ -1,6 +1,5 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import StructureType from "../const/structure-type";
 import updateComponent from "../selection-operator/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
@@ -8,8 +7,7 @@ import { rawType } from "./component";
 
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;
-  structureType = StructureType.none;
-  content: string = "$$$INLINEIMAGE$$$";
+  content = "$$$INLINEIMAGE$$$";
   src: string;
 
   static create(raw: rawType): InlineImage {

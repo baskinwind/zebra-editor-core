@@ -1,7 +1,7 @@
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
-import { rawType } from "./component";
+import Component, { rawType } from "./component";
 
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
@@ -11,6 +11,20 @@ class Paragraph extends ContentCollection {
     let children = super.getChildren(raw);
     paragraph.addChildren(children, 0, true);
     return paragraph;
+  }
+
+  static exchangeOnly(
+    component: Component | string,
+    args: any[] = []
+  ): Paragraph {
+    if (component instanceof Paragraph) return component;
+    let newParagraph = new Paragraph();
+    if (typeof component === "string") {
+      newParagraph.addText(component, 0);
+    } else if (component instanceof ContentCollection) {
+      newParagraph.addChildren(component.children.toArray(), 0);
+    }
+    return newParagraph;
   }
 
   createEmpty() {

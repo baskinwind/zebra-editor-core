@@ -3,7 +3,7 @@ import updateComponent from "../selection-operator/update-component";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import { classType, operatorType, rawType } from "./component";
+import Component, { rawType } from "./component";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -11,27 +11,23 @@ class Title extends ContentCollection {
   type = ComponentType.title;
   titleType: titleType;
 
-  static exchangeOnly(component: ContentCollection, args?: any[]) {
-    Reflect.setPrototypeOf(component, this.prototype);
-    let title = component as Title;
-    title.titleType = args ? args[0] : "h1";
-    return component;
-  }
-
-  static exchange(
-    component: ContentCollection,
-    args: any[],
-    customerUpdate: boolean = false
-  ) {
-    let newComponet = this.exchangeOnly(component, args) as Title;
-    updateComponent(newComponet, customerUpdate);
-  }
-
   static create(raw: rawType): Title {
     let title = new Title(raw.titleType || "h1", "", raw.style, raw.data);
     let children = super.getChildren(raw);
     title.addChildren(children, 0, true);
     return title;
+  }
+
+  static exchangeOnly(component: Component | string, args: any[] = []): Title {
+    if (component instanceof Title && component.titleType === args[0])
+      return component;
+    let newTitle = new Title(args[0] || "h1");
+    if (typeof component === "string") {
+      newTitle.addText(component, 0);
+    } else if (component instanceof ContentCollection) {
+      newTitle.addChildren(component.children.toArray(), 0);
+    }
+    return newTitle;
   }
 
   constructor(
@@ -42,12 +38,6 @@ class Title extends ContentCollection {
   ) {
     super(text, style, data);
     this.titleType = type;
-  }
-
-  exchangeToOther(builder: classType, args: any[]): operatorType {
-    if (builder === this.constructor && args[0] === this.titleType) return;
-    builder.exchange(this, args);
-    return;
   }
 
   setListType(type: titleType = "h1") {

@@ -126,19 +126,14 @@ const contentBuilder = {
     }
     return parapraph;
   },
-  buildCode(
-    id: string,
-    content: string,
-    style: any,
-    data: any
-  ): HTMLElement {
-    const pre = document.createElement('pre');
+  buildCode(id: string, content: string, style: any, data: any): HTMLElement {
+    const pre = document.createElement("pre");
     pre.id = id;
     pre.classList.add(`zebra-draft-title-code`);
     pre.dataset.type = ComponentType.code;
-    pre.dataset.structure = StructureType.content;
+    pre.dataset.structure = StructureType.plainText;
     addStyle(pre, style);
-    const code = document.createElement('code');
+    const code = document.createElement("code");
     code.append(content);
     code.dataset.type = ComponentType.characterList;
     code.dataset.structure = StructureType.partialContent;
@@ -208,7 +203,7 @@ const contentBuilder = {
     span.dataset.structure = StructureType.partialContent;
     addStyle(span, style);
     if (data.link) {
-      let link = document.createElement('a');
+      let link = document.createElement("a");
       link.href = data.link;
       link.innerText = charList;
       span.appendChild(link);

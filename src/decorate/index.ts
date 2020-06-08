@@ -19,9 +19,12 @@ class Decorate {
     return this.style.toObject();
   }
   setStyle(name: string, value: string) {
-    if (name === "clear" && value === "style") {
-      this.clearStyle();
-      return;
+    if (name === "remove") {
+      if (value === "all") {
+        this.clearStyle();
+        return;
+      }
+      this.removeStyle(value);
     }
     if (this.style.get(name) === value) {
       this.style = this.style.delete(name);
@@ -49,6 +52,13 @@ class Decorate {
     return this.data.toObject();
   }
   setData(name: string, value: string) {
+    if (name === "remove") {
+      if (value === "all") {
+        this.clearData();
+        return;
+      }
+      this.removeData(value);
+    }
     this.data = this.data.set(name, value);
   }
   mergeData(data?: storeData) {

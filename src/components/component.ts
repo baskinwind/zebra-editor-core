@@ -46,7 +46,7 @@ abstract class Component {
   abstract structureType: StructureType;
 
   // 定义如何将别的组件转换为当前组件，并不会出发更新
-  static exchangeOnly(component: Component, args?: any[]): Component {
+  static exchangeOnly(component: Component | string, args?: any[]): Component {
     throw createError("请为组件添加 exchangeOnly 静态方法", this);
   }
 
@@ -56,7 +56,11 @@ abstract class Component {
     args?: any[],
     customerUpdate: boolean = false
   ) {
-    throw createError("请为组件添加 exchange 静态方法", this);
+    let newComponent = this.exchangeOnly(component, args);
+    if (newComponent !== component) {
+      component.replaceSelf(newComponent, customerUpdate);
+    }
+    return newComponent;
   }
 
   // 更加 raw 保存的内容恢复组件
@@ -80,8 +84,8 @@ abstract class Component {
   }
 
   // 将当前组件转换为 builder 类型的组件
-  exchangeToOther(builder: classType, args: any[]) {
-    return;
+  exchangeToOther(builder: classType, args: any[]): Component {
+    throw createError("请为组件添加 exchangeToOther 方法", this);
   }
 
   // 定义当组件的子组件的首位发生删除时的行为

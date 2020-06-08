@@ -13,7 +13,8 @@ const onKeyDown = (event: KeyboardEvent) => {
   if (event.isComposing || event.keyCode === 229) {
     return;
   }
-  if (event.shiftKey || event.ctrlKey) {
+  
+  if (event.shiftKey || event.ctrlKey || event.metaKey) {
     return;
   }
 

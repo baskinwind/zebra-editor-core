@@ -13,23 +13,6 @@ import { getContentBuilder } from "../builder";
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
-  static exchangeOnly(component: ContentCollection, args?: any[]) {
-    if (!(component instanceof ContentCollection)) {
-      throw createError("不支持不同类型的组件相互转换", component);
-    }
-    Reflect.setPrototypeOf(component, this.prototype);
-    return component;
-  }
-
-  static exchange(
-    component: ContentCollection,
-    args?: any[],
-    customerUpdate: boolean = false
-  ) {
-    this.exchangeOnly(component, args);
-    updateComponent(component, customerUpdate);
-  }
-
   static getChildren(raw: rawType): Inline[] {
     if (!raw.children) return [];
     let children: Inline[] = [];
@@ -56,10 +39,8 @@ abstract class ContentCollection extends Collection<Inline> {
     }
   }
 
-  exchangeToOther(builder: classType, args: any[]): operatorType {
-    if (builder === this.constructor) return;
-    builder.exchange(this, args);
-    return;
+  exchangeToOther(builder: classType, args: any[]): Component {
+    return builder.exchange(this, args);
   }
 
   addChildren(

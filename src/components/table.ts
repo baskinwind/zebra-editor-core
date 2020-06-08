@@ -269,11 +269,7 @@ class TableCell extends StructureCollection<TableItem> {
       component?.removeChildren(0, component.children.size, customerUpdate);
       return [component];
     }
-    return super.removeChildren(
-      indexOrComponent,
-      removeNumber,
-      customerUpdate
-    );
+    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
   childHeadDelete(
@@ -309,7 +305,15 @@ class TableItem extends ContentCollection {
     return tableItem;
   }
 
-  exchangeToOther(builder: classType, args: any[]): operatorType {
+  static exchange(
+    component: Component,
+    args: any[] = [],
+    customerUpdate: boolean = false
+  ): TableItem {
+    throw createError("不允许切换成表格内段落");
+  }
+
+  exchangeToOther(builder: classType, args: any[]): Component {
     throw createError("表格内段落不允许切换类型！！", this);
   }
 
@@ -317,12 +321,8 @@ class TableItem extends ContentCollection {
     return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  remove(
-    start: number,
-    end?: number,
-    customerUpdate: boolean = false
-  ) {
-    console.log('removeChildren');
+  remove(start: number, end?: number, customerUpdate: boolean = false) {
+    console.log("removeChildren");
     let removed = super.remove(start, end, customerUpdate);
     let parent = this.parent;
     if (!parent) return removed;
@@ -334,7 +334,7 @@ class TableItem extends ContentCollection {
 
   // 监控：当表格内容一行全被删除时，把一整行移除
   removeSelf(customerUpdate: boolean = false): operatorType {
-    console.log('removeSelf');
+    console.log("removeSelf");
     let res = super.removeSelf(customerUpdate);
     let parent = this.parent;
     if (!parent) return res;
