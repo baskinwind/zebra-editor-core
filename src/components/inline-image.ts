@@ -1,6 +1,6 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 import { rawType } from "./component";

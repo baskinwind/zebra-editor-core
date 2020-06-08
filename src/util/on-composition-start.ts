@@ -1,5 +1,5 @@
 import getSelection from "../selection-operator/get-selection";
-import backspace from "../selection-operator/backspace";
+import backspace from "../rich-util/backspace";
 
 const onComposttionStart = (event: CompositionEvent) => {
   let selection = getSelection();

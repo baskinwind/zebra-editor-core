@@ -1,10 +1,10 @@
 import Table from "../components/table";
-import input from "./input";
+import input from "../rich-util/input";
 import getSelection from "../selection-operator/get-selection";
-import enter from "../selection-operator/enter";
-import backspace from "../selection-operator/backspace";
+import enter from "../rich-util/enter";
+import backspace from "../rich-util/backspace";
 import Paragraph from "../components/paragraph";
-import focusAt from "../selection-operator/focus-at";
+import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 import directionType from "../const/direction-type";
 
@@ -13,7 +13,7 @@ const onKeyDown = (event: KeyboardEvent) => {
   if (event.isComposing || event.keyCode === 229) {
     return;
   }
-  
+
   if (event.shiftKey || event.ctrlKey || event.metaKey) {
     return;
   }

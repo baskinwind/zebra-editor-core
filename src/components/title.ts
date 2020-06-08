@@ -1,5 +1,5 @@
 import ContentCollection from "./content-collection";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";

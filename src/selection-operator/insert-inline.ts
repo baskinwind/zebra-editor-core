@@ -1,7 +1,7 @@
 import Inline from "../components/inline";
 import getSelection from "./get-selection";
-import deleteSelection from "../util/delete-selection";
-import input from "../util/input";
+import deleteSelection from "../rich-util/delete-selection";
+import input from "../rich-util/input";
 
 // 在光标处插入一个内容块
 const insertInline = (component: string | Inline) => {

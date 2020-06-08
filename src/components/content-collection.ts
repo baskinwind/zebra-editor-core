@@ -5,7 +5,7 @@ import Inline from "./inline";
 import Character from "./character";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import InlineImage from "./inline-image";
 import { createError } from "./util";
 import { getContentBuilder } from "../builder";

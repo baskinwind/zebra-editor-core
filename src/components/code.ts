@@ -4,7 +4,7 @@ import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import directionType from "../const/direction-type";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { createError } from "./util";
 import { storeData } from "../decorate";

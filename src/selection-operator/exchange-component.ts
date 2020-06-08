@@ -1,11 +1,11 @@
 import getSelection from "./get-selection";
-import focusAt from "./focus-at";
+import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 import { getSelectedIdList } from "./util";
 import { classType } from "../components/component";
 
 // 修改选区中整块内容的呈现
-const exchangeParagraph = (newClass: classType, ...args: any[]) => {
+const exchangeComponent = (newClass: classType, ...args: any[]) => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
@@ -45,4 +45,4 @@ const exchangeParagraph = (newClass: classType, ...args: any[]) => {
   }
 };
 
-export default exchangeParagraph;
+export default exchangeComponent;

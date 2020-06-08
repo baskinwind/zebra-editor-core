@@ -3,7 +3,7 @@ import Paragraph from "./paragraph";
 import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
 import StructureCollection from "./structure-collection";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import Component, { operatorType, classType, rawType } from "./component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";

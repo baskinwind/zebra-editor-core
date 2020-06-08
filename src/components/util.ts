@@ -1,6 +1,5 @@
 import { generate } from "shortid";
 import Component from "./component";
-// import Article from "./article";
 const store: { [key: string]: any; } = {};
 
 export const getId = () => {

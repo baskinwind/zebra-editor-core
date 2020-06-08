@@ -1,10 +1,10 @@
 import Inline from "../components/inline";
 import Character from "../components/character";
 import InlineImage from "../components/inline-image";
-import focusAt, { focusNode } from "../selection-operator/focus-at";
+import focusAt, { focusNode } from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition, cursorType } from "../selection-operator/util";
-import { needUpdate } from "../selection-operator/update-component";
+import { needUpdate } from "../util/update-component";
 
 const input = (
   charOrInline: string | Inline,

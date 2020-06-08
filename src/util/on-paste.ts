@@ -1,8 +1,8 @@
 import Paragraph from "../components/paragraph";
 import getSelection from "../selection-operator/get-selection";
-import deleteSelection from "./delete-selection";
+import deleteSelection from "../rich-util/delete-selection";
 import StructureType from "../const/structure-type";
-import focusAt from "../selection-operator/focus-at";
+import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 
 // 复制内容

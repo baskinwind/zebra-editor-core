@@ -1,5 +1,5 @@
 import getSelection from "./get-selection";
-import focusAt from "./focus-at";
+import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 import { storeData } from "../decorate";
 import { getSelectedIdList } from "./util";

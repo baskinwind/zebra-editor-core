@@ -1,6 +1,6 @@
 import Component, { operatorType, rawType } from "./component";
 import Collection from "./collection";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import StructureType from "../const/structure-type";
 import { createError } from "./util";
 

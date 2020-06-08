@@ -2,7 +2,7 @@ import Decorate from "../decorate";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import updateComponent from "../selection-operator/update-component";
+import updateComponent from "../util/update-component";
 import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
 import directionType from "../const/direction-type";

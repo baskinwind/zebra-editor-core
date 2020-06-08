@@ -13,10 +13,10 @@ import ComponentType from "../src/const/component-type";
 import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
 import insertInline from "../src/selection-operator/insert-inline";
 import insertBlock from "../src/selection-operator/insert-block";
-import exchangeParagraph from "../src/selection-operator/exchange-paragraph";
+import exchangeComponent from "../src/selection-operator/exchange-component";
 import modifyComponentDecorate from "../src/selection-operator/modify-component-decorate";
 import modifyTable from "../src/selection-operator/modify-table";
-import updateComponent from "../src/selection-operator/update-component";
+import updateComponent from "../src/util/update-component";
 import getHtml from "../src/util/get-html";
 
 new Vue({
@@ -53,13 +53,13 @@ new Vue({
 
     modifyType(tag) {
       if (tag === "normal") {
-        exchangeParagraph(Paragraph, tag);
+        exchangeComponent(Paragraph, tag);
       } else if (tag === "code") {
-        exchangeParagraph(Code);
+        exchangeComponent(Code);
       } else if (tag === "ul" || tag === "ol") {
-        exchangeParagraph(ListItem, tag);
+        exchangeComponent(ListItem, tag);
       } else {
-        exchangeParagraph(Title, tag);
+        exchangeComponent(Title, tag);
       }
     },
 

@@ -1,5 +1,5 @@
 import { getBeforeSelection } from "../selection-operator/get-selection";
-import input from "./input";
+import input from "../rich-util/input";
 
 const onComposttionEnd = (event: CompositionEvent) => {
   let selection = getBeforeSelection();

@@ -1,7 +1,7 @@
 import Component from "../components/component";
 import getSelection from "./get-selection";
-import deleteSelection from "../util/delete-selection";
-import focusAt from "./focus-at";
+import deleteSelection from "../rich-util/delete-selection";
+import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 
 // 在光标处插入一个内容块

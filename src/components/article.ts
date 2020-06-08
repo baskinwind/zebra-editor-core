@@ -6,7 +6,7 @@ import Table from "./table";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
-import { startUpdate } from "../selection-operator/update-component";
+import { startUpdate } from "../util/update-component";
 import { operatorType, rawType } from "./component";
 import { storeData } from "../decorate";
 import { saveComponent } from "./util";

@@ -1,9 +1,8 @@
-import ContentCollection from "../components/content-collection";
-import focusAt from "./focus-at";
-import { cursorType, getSelectedIdList } from "./util";
-import { getComponentById } from "../components/util";
-import { delayUpdate } from "./update-component";
 import StructureType from "../const/structure-type";
+import focusAt from "./focus-at";
+import { cursorType, getSelectedIdList } from "../selection-operator/util";
+import { getComponentById } from "../components/util";
+import { delayUpdate } from "../util/update-component";
 
 // 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
 const backspace = (start: cursorType, end?: cursorType, event?: KeyboardEvent | CompositionEvent) => {
