@@ -24,18 +24,17 @@ const needUpdate = () => {
 
 // 更新组件
 const updateComponent = (
-  component: Component | Component[],
+  component?: Component | Component[],
   customerUpdate: boolean = false
 ) => {
-  if (customerUpdate) return;
-  if (!canUpdate) return;
-  console.log("update");
   if (delayUpdateQueue.size) {
     console.log("delay update");
     console.log(delayUpdateQueue);
     delayUpdateQueue.forEach((id) => update(getComponentById(id)));
     delayUpdateQueue.clear();
   }
+  if (!canUpdate || customerUpdate || !component) return;
+  console.log("update");
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));
   } else {

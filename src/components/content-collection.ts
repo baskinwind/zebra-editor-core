@@ -1,6 +1,7 @@
 import Decorate, { storeData } from "../decorate";
 import Component, { operatorType, classType, rawType } from "./component";
 import Collection from "./collection";
+import StructureCollection from "./structure-collection";
 import Inline from "./inline";
 import Character from "./character";
 import ComponentType from "../const/component-type";
@@ -11,6 +12,7 @@ import { createError } from "./util";
 import { getContentBuilder } from "../builder";
 
 abstract class ContentCollection extends Collection<Inline> {
+  parent?: StructureCollection<Component>;
   structureType = StructureType.content;
 
   static getChildren(raw: rawType): Inline[] {
@@ -53,8 +55,12 @@ abstract class ContentCollection extends Collection<Inline> {
         throw createError("该组件仅能添加 Inline 类型的组件", item);
       }
     });
+    component.forEach((item) => {
+      item.parent = this;
+    });
     super.addChildren(component, index);
     updateComponent(this, customerUpdate);
+    this.record.defaultStore();
   }
 
   removeChildren(
@@ -167,10 +173,7 @@ abstract class ContentCollection extends Collection<Inline> {
     if (start > end) return;
     if (!style && !data) return;
     for (let i = start; i <= end; i++) {
-      let decorate = this.children.get(i)?.decorate;
-      if (decorate === undefined) break;
-      decorate.mergeData(data);
-      decorate.mergeStyle(style);
+      this.children.get(i)?.modifyDecorate(style, data);
     }
     updateComponent(this, customerUpdate);
     return [this, start, end];
@@ -193,6 +196,21 @@ abstract class ContentCollection extends Collection<Inline> {
       return [this, size, size];
     }
     return;
+  }
+
+  snapshoot() {
+    return {
+      active: this.active,
+      children: this.children,
+      style: this.decorate.style,
+      data: this.decorate.data
+    };
+  }
+
+  restore(state?: any) {
+    this.children = state.children;
+    this.decorate.style = state.style;
+    this.decorate.data = state.data;
   }
 
   getRawData() {

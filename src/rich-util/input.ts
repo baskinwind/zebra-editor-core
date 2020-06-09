@@ -5,6 +5,7 @@ import focusAt, { focusNode } from "./focus-at";
 import { getComponentById } from "../components/util";
 import { getCursorPosition, cursorType } from "../selection-operator/util";
 import { needUpdate } from "../util/update-component";
+import { createRecord } from "../record/util";
 
 const input = (
   charOrInline: string | Inline,
@@ -12,6 +13,7 @@ const input = (
   event?: KeyboardEvent
 ) => {
   try {
+    createRecord(start, start);
     let component = getComponentById(start.id);
     let offset = start.offset;
     let startPosition = getCursorPosition(start);

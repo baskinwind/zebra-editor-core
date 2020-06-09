@@ -1,5 +1,8 @@
 import { List } from "immutable";
 import Component from "./component";
+import { storeData } from "../decorate";
+import updateComponent from "../util/update-component";
+import { createError } from "./util";
 
 abstract class Collection<T extends Component> extends Component {
   children: List<T> = List();
@@ -49,6 +52,33 @@ abstract class Collection<T extends Component> extends Component {
       .toArray();
     this.children = this.children.splice(removeIndex, removeNumber);
     return removedComponent;
+  }
+
+  splitChild(
+    index: number,
+    customerUpdate: boolean = false
+  ): Collection<T> | undefined {
+    throw createError("组件未实现 splitChild 方法", this);
+  }
+
+  replaceChild(component: T, oldComponent: T, customerUpdate: boolean = false) {
+    throw createError("组件未实现 replaceChild 方法", this);
+  }
+
+  findChildrenIndex(idOrComponent: string | Component): number {
+    throw createError("组件未实现 findChildrenIndex 方法", this);
+  }
+
+  getPrev(idOrComponent: string | T): T | undefined {
+    throw createError("组件未实现 getPrev 方法", this);
+  }
+
+  getNext(idOrComponent: string | T): T | undefined {
+    throw createError("组件未实现 getNext 方法", this);
+  }
+
+  getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
+    throw createError("组件未实现 getIdList 方法", this);
   }
 }
 

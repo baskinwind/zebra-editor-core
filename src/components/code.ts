@@ -1,15 +1,17 @@
 import Component, { rawType, operatorType, classType } from "./component";
 import ContentCollection from "./content-collection";
+import StructureCollection from "./structure-collection";
 import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import directionType from "../const/direction-type";
+import DirectionType from "../const/direction-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { createError } from "./util";
 import { storeData } from "../decorate";
 
 class Code extends Component {
+  parent?: StructureCollection<Component>;
   type = ComponentType.code;
   structureType: StructureType = StructureType.plainText;
   content: string;
@@ -55,7 +57,7 @@ class Code extends Component {
     if (content[content.length - 1] !== "\n") {
       content += "\n";
     }
-    this.decorate.setStyle('overflow', 'auto');
+    this.decorate.setStyle("overflow", "auto");
     this.content = content;
   }
 
@@ -125,7 +127,7 @@ class Code extends Component {
     component?.removeSelf();
     let size = this.content.length;
     if (component instanceof ContentCollection) {
-      this.add(component.children.map(item => item.content).join('') + '\n');
+      this.add(component.children.map((item) => item.content).join("") + "\n");
     } else if (component instanceof Code) {
       this.add(component.content);
     }
@@ -135,9 +137,9 @@ class Code extends Component {
   // 在 Code 中 Enter 被用作换行，导致不能创建新行，光标会被困在 Code 区域内
   // 当在 Code 的第一行，按下向上时，若该 Code 为 Article 的第一个子元素，则在 Code 上生成新行
   // 向下操作为向上的反向
-  handleArrow(index: number, direction: directionType): operatorType {
+  handleArrow(index: number, direction: DirectionType): operatorType {
     let contentList = this.content.split("\n");
-    if (direction === directionType.up && index <= contentList[0].length) {
+    if (direction === DirectionType.up && index <= contentList[0].length) {
       let parent = this.parent;
       if (!parent) throw createError("该节点已失效", this);
       let index = parent.findChildrenIndex(this);
@@ -149,7 +151,7 @@ class Code extends Component {
       return [paragraph, 0, 0];
     }
     if (
-      direction === directionType.down &&
+      direction === DirectionType.down &&
       index > this.content.length - contentList[contentList.length - 2].length
     ) {
       let parent = this.parent;

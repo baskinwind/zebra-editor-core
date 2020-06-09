@@ -13,22 +13,19 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
 
   if (idList.length === 0) return;
   if (idList.length === 1) {
-    let newComponent = getComponentById(idList[0]).exchangeToOther(
-      newClass,
-      args
-    );
-    if (!newComponent) {
+    let focus = getComponentById(idList[0]).exchangeToOther(newClass, args);
+    if (!focus) {
       focusAt();
     } else {
-      focusAt([newComponent[0], start.offset, end.offset]);
+      focusAt([focus[0], start.offset, end.offset]);
     }
     return;
   }
-  let newList = idList.map((id) =>
+  let focusList = idList.map((id) =>
     getComponentById(id).exchangeToOther(newClass, args)
   );
-  let first = newList[0];
-  let last = newList[newList.length - 1];
+  let first = focusList[0];
+  let last = focusList[focusList.length - 1];
   if (!first || !last) {
     focusAt();
   } else {

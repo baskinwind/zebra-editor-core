@@ -19,6 +19,8 @@ import modifyTable from "../src/selection-operator/modify-table";
 import updateComponent from "../src/util/update-component";
 import getHtml from "../src/util/get-html";
 
+import { undo, redo } from "../src/record/util";
+
 new Vue({
   el: "#operator",
   template: "#operator-template",
@@ -39,6 +41,13 @@ new Vue({
   methods: {
     toHump(text) {
       return text.replace(/\_(\w)/g, (all, letter) => letter.toUpperCase());
+    },
+
+    undo() {
+      undo();
+    },
+    redo() {
+      redo();
     },
 
     showArticle() {

@@ -3,7 +3,7 @@ export interface mapData {
 }
 
 const formatStyle = (styleName: string) => {
-  return styleName.replace(/([A-Z])/, '-$1').toLocaleLowerCase();
+  return styleName.replace(/([A-Z])/, "-$1").toLocaleLowerCase();
 };
 
 const getStyle = (style: mapData) => {
@@ -18,10 +18,9 @@ const htmlBuilder = {
     data: mapData
   ): string {
     let className = "zebra-draft-article";
-    return `<article class="${className}" style="${getStyle(style)}">${componentList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</article>`;
+    return `<article class="${className}" style="${getStyle(
+      style
+    )}">${componentList.reduce((acc, item) => acc + item, "")}</article>`;
   },
   buildTable(
     id: string,
@@ -30,10 +29,9 @@ const htmlBuilder = {
     data: mapData
   ) {
     let className = "zebra-draft-table";
-    return `<table class="${className}" style="${getStyle(style)}">${componentList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</table>`;
+    return `<table class="${className}" style="${getStyle(
+      style
+    )}">${componentList.reduce((acc, item) => acc + item, "")}</table>`;
   },
   buildTableRow(
     id: string,
@@ -42,23 +40,21 @@ const htmlBuilder = {
     data: mapData
   ) {
     let className = "zebra-draft-tr";
-    return `<tr class="${className}" style="${getStyle(style)}">${componentList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</tr>`;
+    return `<tr class="${className}" style="${getStyle(
+      style
+    )}">${componentList.reduce((acc, item) => acc + item, "")}</tr>`;
   },
   buildTableCell(
     id: string,
-    cellType: 'th' | 'td',
+    cellType: "th" | "td",
     componentList: HTMLElement[],
     style: mapData,
     data: mapData
   ) {
     let className = `zebra-draft-${cellType}`;
-    return `<${cellType} class="${className}" style="${getStyle(style)}">${componentList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</${cellType}>`;
+    return `<${cellType} class="${className}" style="${getStyle(
+      style
+    )}">${componentList.reduce((acc, item) => acc + item, "")}</${cellType}>`;
   },
   buildList(
     id: string,
@@ -67,10 +63,9 @@ const htmlBuilder = {
     data: mapData
   ): string {
     let className = "zebra-draft-list";
-    return `<ul class="${className}" style="${getStyle(style)}">${componentList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</ul>`;
+    return `<ul class="${className}" style="${getStyle(
+      style
+    )}">${componentList.reduce((acc, item) => acc + item, "")}</ul>`;
   },
   buildParagraph(
     id: string,
@@ -80,23 +75,15 @@ const htmlBuilder = {
   ): string {
     let tag = data.tag || "p";
     let className = `zebra-draft-${tag}`;
-    return `<${tag} class="${className}" style="${getStyle(style)}">${inlineList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</${tag}>`;
+    return `<${tag} class="${className}" style="${getStyle(
+      style
+    )}">${inlineList.reduce((acc, item) => acc + item, "")}</${tag}>`;
   },
-  buildTitle(
-    id: string,
-    inlineList: string[],
-    style: mapData,
-    data: mapData
-  ): string {
-    let tag = data.tag || "p";
-    let className = `zebra-draft-${tag}`;
-    return `<${tag} class="${className}" style="${getStyle(style)}">${inlineList.reduce(
-      (acc, item) => acc + item,
-      ""
-    )}</${tag}>`;
+  buildCode(id: string, content: string, style: any, data: any): string {
+    let className = `zebra-draft-code`;
+    return `<pre class="${className}" style="${getStyle(
+      style
+    )}"><code>${content}</code></pre>`;
   },
   buildeImage(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<img src="${src}" alt="${data.alt}" />`;
@@ -104,25 +91,31 @@ const htmlBuilder = {
       image = `<a href="${data.link}">${image}</a>`;
     }
     let className = `zebra-draft-image`;
-    return `<figure class="${className}" style="${getStyle(style)}">${image}</figure>`;
+    return `<figure class="${className}" style="${getStyle(
+      style
+    )}">${image}</figure>`;
   },
   buildeAudio(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<audio src="${src}" alt="${data.alt}" />`;
     let className = `zebra-draft-image`;
-    return `<figure class="${className}" style="${getStyle(style)}">${image}</figure>`;
+    return `<figure class="${className}" style="${getStyle(
+      style
+    )}">${image}</figure>`;
   },
   buildeVideo(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<video src="${src}" alt="${data.alt}" />`;
     let className = `zebra-draft-image`;
-    return `<figure class="${className}" style="${getStyle(style)}">${image}</figure>`;
+    return `<figure class="${className}" style="${getStyle(
+      style
+    )}">${image}</figure>`;
   },
   buildCharacterList(
     id: string,
-    charList: string[],
+    charList: string,
     style: mapData,
     data: mapData
   ): string {
-    return `<span style="${getStyle(style)}">${charList.join("")}</span>`;
+    return `<span style="${getStyle(style)}">${charList}</span>`;
   },
   buildInlineImage(
     id: string,
@@ -135,8 +128,10 @@ const htmlBuilder = {
       image = `<a href="${data.link}">${image}</a>`;
     }
     let className = `zebra-draft-inline-image`;
-    return `<span class="${className}" style="${getStyle(style)}">${image}</span>`;
-  },
+    return `<span class="${className}" style="${getStyle(
+      style
+    )}">${image}</span>`;
+  }
 };
 
 export default htmlBuilder;

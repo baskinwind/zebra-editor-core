@@ -6,7 +6,7 @@ import backspace from "../rich-util/backspace";
 import Paragraph from "../components/paragraph";
 import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
-import directionType from "../const/direction-type";
+import DirectionType from "../const/direction-type";
 
 const onKeyDown = (event: KeyboardEvent) => {
   // 混合输入直接跳出
@@ -49,10 +49,10 @@ const onKeyDown = (event: KeyboardEvent) => {
   if (isArrow) {
     let component = getComponentById(selection.range[0].id);
     let map = {
-      ArrowUp: directionType.up,
-      ArrowDown: directionType.down,
-      ArrowLeft: directionType.left,
-      ArrowRight: directionType.right
+      ArrowUp: DirectionType.up,
+      ArrowDown: DirectionType.down,
+      ArrowLeft: DirectionType.left,
+      ArrowRight: DirectionType.right
     };
     component.handleArrow(selection.range[0].offset, map[key]);
     return;

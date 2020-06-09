@@ -96,7 +96,7 @@ class List extends StructureCollection<ListItem> {
     if (!parent) throw createError("该节点已失效", this);
     index = parent.findChildrenIndex(this);
     component.removeSelf(customerUpdate);
-    let paragraph =  Paragraph.exchangeOnly(component);
+    let paragraph = Paragraph.exchangeOnly(component);
     parent.addChildren([paragraph], index);
     return [paragraph, 0, 0];
   }
@@ -164,6 +164,7 @@ class ListItem extends ContentCollection {
     args: any[],
     customerUpdate: boolean = false
   ): operatorType {
+    debugger
     let parent = component.parent;
     if (!parent) throw createError("该节点已失效", component);
     let prev = parent.getPrev(component);
@@ -174,7 +175,7 @@ class ListItem extends ContentCollection {
     } else {
       let newItem = this.exchangeOnly(component, args);
       let newList = new List(args[0]);
-      newList.addChildren([newItem], undefined, true);
+      newList.addChildren([newItem], 0, true);
       newList.addInto(parent, index, customerUpdate);
       component.removeSelf();
       return [newItem, -1, -1];

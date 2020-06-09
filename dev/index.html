@@ -9,6 +9,11 @@
   <script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
+        <button @click="undo">undo</button>
+        <button @click="redo">redo</button>
+      </div>
+
+      <div>
         <button @click="showArticle">强制更新</button>
         <button @click="logHtml">输出HTML</button>
         <button @click="logRawData">RawData</button>

@@ -1,11 +1,13 @@
 import Decorate from "../decorate";
+import Record from "../record";
+import Collection from "./collection";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import updateComponent from "../util/update-component";
+import DirectionType from "../const/direction-type";
 import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
-import directionType from "../const/direction-type";
+import updateComponent from "../util/update-component";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = typeof Component;
@@ -35,11 +37,12 @@ export interface rawType {
 
 abstract class Component {
   id: string = getId();
-  parent?: StructureCollection<Component>;
+  parent?: Collection<Component>;
   // 否是有效的
   active: boolean = false;
   // 修饰：样式，数据等
   decorate: Decorate;
+  record: Record;
   // 类型，用于保存和恢复数据
   abstract type: ComponentType;
   // 结构上的作用
@@ -70,6 +73,7 @@ abstract class Component {
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
+    this.record = new Record(this);
     saveComponent(this);
   }
 
@@ -169,6 +173,7 @@ abstract class Component {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
     updateComponent(this, customerUpdate);
+    this.record.defaultStore();
     return;
   }
 
@@ -186,8 +191,22 @@ abstract class Component {
   }
 
   // 处理方向键，一般不用实现
-  handleArrow(index: number, direction: directionType): operatorType {
+  handleArrow(index: number, direction: DirectionType): operatorType {
     return;
+  }
+
+  // 获得当前组件的快照，用于撤销和回退
+  snapshoot() {
+    return {
+      style: this.decorate.style,
+      data: this.decorate.data
+    };
+  }
+
+  // 回退组件状态
+  restore(state?: any) {
+    this.decorate.style = state.style;
+    this.decorate.data = state.data;
   }
 
   // 获取用于存储的内容
