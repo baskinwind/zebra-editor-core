@@ -63,7 +63,7 @@ const getSelection = () => {
     anchorNode instanceof HTMLElement &&
     anchorNode.dataset.structure === StructureType.structure
   ) {
-    // 选中了 Article 组件的直接子节点：返回该直接子节点
+    // 选中了结构组件的直接子节点：返回该直接子节点
     // Chrome 会出现该情况
     let component = getComponentById<StructureCollection<any>>(anchorNode.id);
     if (component.type === ComponentType.article) {

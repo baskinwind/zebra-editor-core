@@ -309,7 +309,7 @@ class TableItem extends ContentCollection {
     component: Component,
     args: any[] = [],
     customerUpdate: boolean = false
-  ): TableItem {
+  ): operatorType {
     throw createError("不允许切换成表格内段落");
   }
 
@@ -321,7 +321,11 @@ class TableItem extends ContentCollection {
     return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  remove(start: number, end?: number, customerUpdate: boolean = false): operatorType {
+  remove(
+    start: number,
+    end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     let removed = super.remove(start, end, customerUpdate);
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);

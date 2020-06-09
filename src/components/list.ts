@@ -96,9 +96,9 @@ class List extends StructureCollection<ListItem> {
     if (!parent) throw createError("该节点已失效", this);
     index = parent.findChildrenIndex(this);
     component.removeSelf(customerUpdate);
-    Paragraph.exchangeOnly(component);
-    parent.addChildren([component], index);
-    return [component, 0, 0];
+    let paragraph =  Paragraph.exchangeOnly(component);
+    parent.addChildren([paragraph], index);
+    return [paragraph, 0, 0];
   }
 
   add(

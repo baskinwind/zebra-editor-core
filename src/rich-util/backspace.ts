@@ -5,11 +5,15 @@ import { getComponentById } from "../components/util";
 import { delayUpdate } from "../util/update-component";
 
 // 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
-const backspace = (start: cursorType, end?: cursorType, event?: KeyboardEvent | CompositionEvent) => {
+const backspace = (
+  start: cursorType,
+  end?: cursorType,
+  event?: KeyboardEvent | CompositionEvent
+) => {
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     let component = getComponentById(start.id);
     // 优化段落内删除逻辑，不需要整段更新
-    if (component.structureType = StructureType.content) {
+    if (component.structureType === StructureType.content && event) {
       if (start.offset <= 1) {
         // 当删除发生在首位（或第一位）时，需要强制更新
         event?.preventDefault();

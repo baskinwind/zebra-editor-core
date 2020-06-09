@@ -2,15 +2,13 @@ import focusAt from "./focus-at";
 import { cursorType, getSelectedIdList } from "../selection-operator/util";
 import { getComponentById } from "../components/util";
 
-// 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
+// 删除 start - end 的内容
 const deleteSelection = (start: cursorType, end?: cursorType) => {
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     return;
   }
-
   let idList = getSelectedIdList(start.id, end.id);
-  // 选中多行，需要阻止默认行为
-  event?.preventDefault();
+  // 选中多行
   if (idList.length === 0) return;
   if (idList.length === 1) {
     let component = getComponentById(idList[0]);

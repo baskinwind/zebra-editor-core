@@ -32,6 +32,7 @@ const input = (
       startNode instanceof HTMLBRElement ||
       charOrInline instanceof Character ||
       needUpdate() ||
+      !event ||
       event?.defaultPrevented
     ) {
       event?.preventDefault();

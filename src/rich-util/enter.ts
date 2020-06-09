@@ -2,7 +2,7 @@ import focusAt from "./focus-at";
 import { cursorType, getSelectedIdList } from "../selection-operator/util";
 import { getComponentById } from "../components/util";
 
-// 换行：在 start - end 处换行
+// 在 start - end 处换行
 const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
   event?.preventDefault();
   if (!end || (start.id === end.id && start.offset === end.offset)) {
@@ -17,13 +17,11 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
     return focusAt(component.split(start.offset));
   }
 
-  // 选中多行，需要阻止默认行为
-  event?.preventDefault();
+  // 选中多行
   let firstComponent = getComponentById(idList[0]);
   let lastComponent = getComponentById(idList[idList.length - 1]);
   firstComponent.remove(start.offset);
   lastComponent.remove(0, end.offset);
-
   for (let i = 1; i < idList.length - 1; i++) {
     getComponentById(idList[i]).removeSelf();
   }

@@ -23,7 +23,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "dev": "webpack-dev-server --hot"
+    "dev": "webpack-dev-server --hot",
+    "build": "webpack"
   },
   "browserslist": [
     "last 1 chrome version",

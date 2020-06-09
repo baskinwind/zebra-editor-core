@@ -55,7 +55,7 @@ class Code extends Component {
     if (content[content.length - 1] !== "\n") {
       content += "\n";
     }
-    this.decorate.setStyle('whiteSpace', 'pre-wrap');
+    this.decorate.setStyle('overflow', 'auto');
     this.content = content;
   }
 
