@@ -17,6 +17,11 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
     end = { id: start[0].id, offset: start[2] };
     start = { id: start[0].id, offset: start[1] };
   }
+  if (!end) {
+    end = { id: start.id, offset: start.offset };
+  }
+  start.offset = start.offset === -1 ? 0 : start.offset;
+  end.offset = end.offset === -1 ? 0 : end.offset;
   let startPosition = getCursorPosition(start);
   if (!startPosition) return;
   let endPosition = startPosition;
