@@ -1,7 +1,7 @@
+import Component, { rawType } from "./component";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
-import Component, { rawType } from "./component";
 
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;

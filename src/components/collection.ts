@@ -1,7 +1,5 @@
 import { List } from "immutable";
 import Component from "./component";
-import { storeData } from "../decorate";
-import updateComponent from "../util/update-component";
 import { createError } from "./util";
 
 abstract class Collection<T extends Component> extends Component {
@@ -29,12 +27,12 @@ abstract class Collection<T extends Component> extends Component {
   ): T[] {
     let removeIndex: number;
     if (removeNumber < 0) {
-      throw Error(`移除数量必须为自然数，不能小于 0：${removeNumber}`);
+      throw createError(`移除数量不能小于 0：${removeNumber}`, this);
     }
     if (removeNumber === 0) return [];
     if (typeof indexOrComponent === "number") {
       if (indexOrComponent < 0) {
-        throw Error(`移除起始位置必须为自然数，不能小于 0：${removeNumber}`);
+        throw createError(`移除起始位置不能小于 0：${removeNumber}`, this);
       }
       removeIndex = indexOrComponent;
     } else {
@@ -42,7 +40,7 @@ abstract class Collection<T extends Component> extends Component {
         (component) => component.id === indexOrComponent.id
       );
       if (temp === -1) {
-        throw Error("移除失败：该组件不在父组件列表内。");
+        throw createError("移除组件不在列表内。");
       }
       removeIndex = temp;
     }
@@ -54,31 +52,37 @@ abstract class Collection<T extends Component> extends Component {
     return removedComponent;
   }
 
+  // 将组件从 index 分成两个同类型的组件
   splitChild(
     index: number,
     customerUpdate: boolean = false
   ): Collection<T> | undefined {
-    throw createError("组件未实现 splitChild 方法", this);
+    throw createError("组件缺少 splitChild 方法", this);
   }
 
+  // 替换子组件
   replaceChild(component: T, oldComponent: T, customerUpdate: boolean = false) {
-    throw createError("组件未实现 replaceChild 方法", this);
+    throw createError("组件缺少 replaceChild 方法", this);
   }
 
+  // 获得子组件的位置
   findChildrenIndex(idOrComponent: string | Component): number {
-    throw createError("组件未实现 findChildrenIndex 方法", this);
+    throw createError("组件缺少 findChildrenIndex 方法", this);
   }
 
+  // 获取前一个子组件
   getPrev(idOrComponent: string | T): T | undefined {
-    throw createError("组件未实现 getPrev 方法", this);
+    throw createError("组件缺少 getPrev 方法", this);
   }
 
+  // 获取下一个子组件
   getNext(idOrComponent: string | T): T | undefined {
-    throw createError("组件未实现 getNext 方法", this);
+    throw createError("组件缺少 getNext 方法", this);
   }
 
+  // 获取从 startId 到 endId 中所有的组件 id
   getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
-    throw createError("组件未实现 getIdList 方法", this);
+    throw createError("组件缺少 getIdList 方法", this);
   }
 }
 

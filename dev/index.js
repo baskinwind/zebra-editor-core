@@ -2,6 +2,7 @@ import "../src/default.scss";
 import "./operator";
 import article from "./article";
 import mount from "../src/util/mount";
+import createByRaw from "../src/util/create-by-raw";
 import { getComponentById } from "../src/components/util";
 
 mount("root", article);
@@ -19,7 +20,7 @@ window.clearArticle = () => {
   dom.innerHTML = "";
 };
 
-window.createByRaw = (raw) => {
+window.createByRawData = (raw) => {
   let article = createByRaw(raw);
   mount("root", article);
 };

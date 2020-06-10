@@ -1,12 +1,10 @@
 import { Map } from "immutable";
-import { getId } from "./util";
 
 export interface storeData {
   [key: string]: any;
 }
 
 class Decorate {
-  id: string = getId();
   style: Map<string, string>;
   data: Map<string, string>;
 

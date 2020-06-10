@@ -164,7 +164,6 @@ class ListItem extends ContentCollection {
     args: any[],
     customerUpdate: boolean = false
   ): operatorType {
-    debugger
     let parent = component.parent;
     if (!parent) throw createError("该节点已失效", component);
     let prev = parent.getPrev(component);
@@ -193,7 +192,7 @@ class ListItem extends ContentCollection {
     return new ListItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  exchangeToOther(
+  exchangeTo(
     builder: classType,
     args: any[],
     customerUpdate: boolean = false
@@ -232,7 +231,7 @@ class ListItem extends ContentCollection {
       if (!component) component = new Paragraph();
       return parent.split(itemIndex, component, customerUpdate);
     }
-    // 不允许别的类型添加
+    // 不允许非内容集合添加
     let flag: boolean = false;
     if (component) {
       if (!Array.isArray(component)) component = [component];

@@ -65,11 +65,14 @@ class Code extends Component {
     return new Code("", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  exchangeToOther(builder: classType, args: any[]): operatorType {
+  exchangeTo(builder: classType, args: any[]): operatorType {
     if (builder === Code) return [this, -1, -1];
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     let list = this.content.split("\n");
+    if (list[list.length - 1].length === 0) {
+      list.pop();
+    }
     let index = parent.findChildrenIndex(this);
     let paragraphList = list.map((string) => builder.exchangeOnly(string));
     parent.addChildren(paragraphList, index);

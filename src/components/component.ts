@@ -5,9 +5,9 @@ import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import DirectionType from "../const/direction-type";
+import updateComponent from "../util/update-component";
 import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
-import updateComponent from "../util/update-component";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = typeof Component;
@@ -42,6 +42,7 @@ abstract class Component {
   active: boolean = false;
   // 修饰：样式，数据等
   decorate: Decorate;
+  // 修改历史记录
   record: Record;
   // 类型，用于保存和恢复数据
   abstract type: ComponentType;
@@ -50,7 +51,7 @@ abstract class Component {
 
   // 定义如何将别的组件转换为当前组件，并不会出发更新
   static exchangeOnly(component: Component | string, args?: any[]): Component {
-    throw createError("请为组件添加 exchangeOnly 静态方法", this);
+    throw createError("组件缺少 exchangeOnly 静态方法", this);
   }
 
   // 将别的组件转换为当前组件，并更新组件在文档中的状态
@@ -59,14 +60,10 @@ abstract class Component {
     args?: any[],
     customerUpdate: boolean = false
   ): operatorType {
-    let newComponent = this.exchangeOnly(component, args);
-    if (newComponent !== component) {
-      component.replaceSelf(newComponent, customerUpdate);
-    }
-    return [newComponent, -1, -1];
+    throw createError("组件缺少 exchange 静态方法", this);
   }
 
-  // 更加 raw 保存的内容恢复组件
+  // 根据 raw 保存的内容恢复组件
   static create(raw: any): Component {
     throw createError("请为组件添加 create 静态方法", this);
   }
@@ -77,22 +74,23 @@ abstract class Component {
     saveComponent(this);
   }
 
-  // 创建一个空的当前组件
-  createEmpty(): any {
-    throw createError("请为组件添加 createEmpty 方法", this);
-  }
-
   // 判断该组件是否为空，为空并不代表无效
   isEmpty() {
     return false;
   }
 
+  // 创建一个空的当前组件
+  createEmpty(): Component {
+    throw createError("请为组件添加 createEmpty 方法", this);
+  }
+
   // 将当前组件转换为 builder 类型的组件
-  exchangeToOther(builder: classType, args: any[]): operatorType {
+  exchangeTo(builder: classType, args: any[]): operatorType {
     throw createError("请为组件添加 exchangeToOther 方法", this);
   }
 
   // 定义当组件的子组件的首位发生删除时的行为
+  // 默认不处理，而不是报错
   childHeadDelete(
     component: Component,
     index: number,

@@ -13,7 +13,7 @@ const modifyComponentDecorate = (style?: storeData, data?: storeData) => {
   createRecord(start, end);
   let idList = getSelectedIdList(start.id, end.id);
   idList.forEach((id) => {
-    let customerUpdate = !data && style?.remove;
+    let customerUpdate = !data && !style?.remove;
     let component = getComponentById(id);
     component.modifyDecorate(style, data, customerUpdate);
     if (customerUpdate && style) {

@@ -15,7 +15,12 @@ class Media extends Component {
   structureType = StructureType.content;
 
   static create(raw: rawType): Media {
-    return new Media(raw.mediaType as mediaType, raw.src || "", raw.style, raw.data);
+    return new Media(
+      raw.mediaType as mediaType,
+      raw.src || "",
+      raw.style,
+      raw.data
+    );
   }
 
   constructor(
@@ -35,7 +40,7 @@ class Media extends Component {
 
   removeSelf(customerUpdate: boolean = false): operatorType {
     let paragraph = new Paragraph();
-    this.replaceSelf(paragraph);
+    this.replaceSelf(paragraph, customerUpdate);
     return [paragraph, 0, 0];
   }
 
@@ -45,7 +50,7 @@ class Media extends Component {
   ): operatorType {
     if (!component) return;
     if (component.isEmpty()) {
-      component.removeSelf();
+      component.removeSelf(customerUpdate);
       return [this, 1, 1];
     }
     super.removeSelf(customerUpdate);
@@ -87,7 +92,8 @@ class Media extends Component {
     data?: storeData,
     customerUpdate: boolean = false
   ) {
-    return this.modifyDecorate(style, data, customerUpdate);
+    this.modifyDecorate(style, data, customerUpdate);
+    return [this, 0, 1];
   }
 
   getRaw(): rawType {

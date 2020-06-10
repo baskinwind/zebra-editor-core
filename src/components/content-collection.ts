@@ -41,7 +41,11 @@ abstract class ContentCollection extends Collection<Inline> {
     }
   }
 
-  exchangeToOther(builder: classType, args: any[]): operatorType {
+  createEmpty(): ContentCollection {
+    throw createError("组件缺少 createEmpty 方法", this);
+  }
+
+  exchangeTo(builder: classType, args: any[]): operatorType {
     return builder.exchange(this, args);
   }
 
@@ -52,7 +56,7 @@ abstract class ContentCollection extends Collection<Inline> {
   ) {
     component.forEach((item) => {
       if (!(item instanceof Inline)) {
-        throw createError("该组件仅能添加 Inline 类型的组件", item);
+        throw createError("组件仅能添加 Inline 类型的组件", item);
       }
     });
     component.forEach((item) => {
@@ -190,6 +194,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let size = this.children.size;
     if (!component) return [this, size, size];
     component.removeSelf(customerUpdate);
+    debugger
     if (component instanceof ContentCollection) {
       this.children = this.children.push(...component.children);
       updateComponent(this, customerUpdate);
@@ -200,7 +205,6 @@ abstract class ContentCollection extends Collection<Inline> {
 
   snapshoot() {
     return {
-      active: this.active,
       children: this.children,
       style: this.decorate.style,
       data: this.decorate.data

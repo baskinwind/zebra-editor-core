@@ -5,7 +5,12 @@ import StructureType from "../const/structure-type";
 import { createError } from "./util";
 
 abstract class StructureCollection<T extends Component> extends Collection<T> {
+  parent?: StructureCollection<Component>;
   structureType = StructureType.structure;
+
+  createEmpty(): StructureCollection<T> {
+    throw createError("组件缺少 createEmpty 方法", this);
+  }
 
   addChildren(component: T[], index?: number, customerUpdate: boolean = false) {
     component.forEach((item) => {
@@ -33,7 +38,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   replaceChild(component: T, oldComponent: T, customerUpdate: boolean = false) {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
-      throw Error("需要替换的组件不是此组件的子组件！");
+      throw createError("替换组件不在子组件列表内", component);
     }
     component.active = true;
     component.parent = this;
