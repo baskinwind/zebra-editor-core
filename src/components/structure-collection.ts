@@ -51,7 +51,10 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     oldComponent.active = false;
     oldComponent.parent = undefined;
     this.children = this.children.splice(index, 1, ...component);
-    updateComponent([oldComponent, ...component.reverse()], customerUpdate);
+    updateComponent(
+      [oldComponent, ...[...component].reverse()],
+      customerUpdate
+    );
   }
 
   splitChild(
@@ -60,12 +63,12 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   ): StructureCollection<T> | undefined {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
-    if (index >= this.children.size) {
+    if (index >= this.getSize()) {
       return;
     }
     let tail = this.children.slice(index).toArray();
     let thisIndex = parent.findChildrenIndex(this);
-    this.removeChildren(index, this.children.size - index, customerUpdate);
+    this.removeChildren(index, this.getSize() - index, customerUpdate);
     let newCollection = this.createEmpty();
     newCollection.addChildren(tail, 0, true);
     if (!this.active) {
@@ -116,7 +119,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
 
   getNext(idOrComponent: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrComponent);
-    if (index === this.children.size) return;
+    if (index === this.getSize()) return;
     return this.children.get(index + 1);
   }
 

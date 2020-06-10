@@ -38,6 +38,10 @@ class Media extends Component {
     this.src = src;
   }
 
+  getSize(): number {
+    return 1;
+  }
+
   removeSelf(customerUpdate: boolean = false): operatorType {
     let paragraph = new Paragraph();
     this.replaceSelf(paragraph, customerUpdate);

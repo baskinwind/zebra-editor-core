@@ -4,8 +4,12 @@ import { createError } from "./util";
 
 abstract class Collection<T extends Component> extends Component {
   children: List<T> = List();
-  isEmpty() {
+  isEmpty(): boolean {
     return this.children.size === 0;
+  }
+
+  getSize(): number {
+    return this.children.size;
   }
 
   // 内部使用，添加子元素
@@ -14,7 +18,7 @@ abstract class Collection<T extends Component> extends Component {
     index?: number,
     customerUpdate: boolean = false
   ) {
-    let addIndex = typeof index === "number" ? index : this.children.size;
+    let addIndex = typeof index === "number" ? index : this.getSize();
     this.children = this.children.splice(addIndex, 0, ...components);
   }
 

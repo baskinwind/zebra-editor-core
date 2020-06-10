@@ -22,7 +22,7 @@ const deleteSelection = (start: cursorType, end?: cursorType) => {
   lastComponent.remove(0, end.offset);
 
   // 其他情况，删除中间行，首尾行合并
-  lastComponent.send(firstComponent);
+  lastComponent.sendTo(firstComponent);
   for (let i = 1; i < idList.length - 1; i++) {
     getComponentById(idList[i]).removeSelf();
   }

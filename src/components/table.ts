@@ -181,8 +181,7 @@ class TableRow extends StructureCollection<TableCell> {
     }
     this.inCountEmptyCell = true;
     this.emptyCell += 1;
-    console.log(this.emptyCell, this.children.size);
-    if (this.emptyCell === this.children.size) {
+    if (this.emptyCell === this.getSize()) {
       let parent = this.parent;
       if (!parent) throw createError("该节点已失效", this);
       this.removeSelf(customerUpdate);
@@ -223,7 +222,7 @@ class TableCell extends StructureCollection<TableItem> {
       : [];
     tableCell.addChildren(children, 0, true);
     if (children.length) {
-      tableCell.removeChildren(tableCell.children.size - 1, 1, true);
+      tableCell.removeChildren(tableCell.getSize() - 1, 1, true);
     }
     return tableCell;
   }
@@ -253,9 +252,7 @@ class TableCell extends StructureCollection<TableItem> {
   }
 
   isEmpty() {
-    return (
-      this.children.size === 1 && this.children.get(0)?.children.size === 0
-    );
+    return this.getSize() === 1 && this.children.get(0)?.getSize() === 0;
   }
 
   removeChildren(
@@ -263,9 +260,9 @@ class TableCell extends StructureCollection<TableItem> {
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
-    if (this.children.size === 1 && removeNumber === 1) {
+    if (this.getSize() === 1 && removeNumber === 1) {
       let component = this.children.get(0) as TableItem;
-      component?.removeChildren(0, component.children.size, customerUpdate);
+      component?.removeChildren(0, component.getSize(), customerUpdate);
       return [component];
     }
     return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
@@ -387,7 +384,7 @@ class TableItem extends ContentCollection {
   send(component: Component, customerUpdate: boolean = false): operatorType {
     try {
       this.parent?.findChildrenIndex(component);
-      return super.send(component, customerUpdate);
+      return super.sendTo(component, customerUpdate);
     } catch (e) {
       console.error(e);
     }

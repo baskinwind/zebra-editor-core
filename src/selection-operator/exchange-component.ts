@@ -3,6 +3,7 @@ import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 import { getSelectedIdList } from "./util";
 import Component, { classType } from "../components/component";
+import Code from "../components/code";
 
 // 修改选区中整块内容的呈现
 const exchangeComponent = (newClass: classType, ...args: any[]) => {
@@ -10,37 +11,46 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
   let start = selection.range[0];
   let end = selection.range[1];
   let idList = getSelectedIdList(start.id, end.id);
-
-  if (idList.length === 0) return;
-  if (idList.length === 1) {
-    let newList = getComponentById(idList[0]).exchangeTo(newClass, args);
-    if (!focus) {
-      focusAt();
-    } else {
-      focusAt([newList[0], start.offset, end.offset]);
-    }
-    return;
-  }
+  let endToTailSize =
+    getComponentById(idList[idList.length - 1]).getSize() - end.offset;
   let exchangeList: Component[] = [];
+  let idMap: { [key: string]: any } = {};
   idList.forEach((id) => {
-    exchangeList.push(...getComponentById(id).exchangeTo(newClass, args));
+    getComponentById(id)
+      .exchangeTo(newClass, args)
+      .forEach((item) => {
+        if (!idMap[item.id]) {
+          idMap[item.id] = 1;
+          exchangeList.push(item);
+        }
+      });
   });
-  let first = exchangeList[0];
-  let last = exchangeList[exchangeList.length - 1];
-  if (!first || !last) {
-    focusAt();
-  } else {
-    focusAt(
-      {
-        id: first.id,
-        offset: start.offset
-      },
-      {
-        id: last.id,
-        offset: end.offset
-      }
-    );
+  let nowStart = { id: "", offset: start.offset };
+  let nowEnd = { id: "", offset: endToTailSize };
+  let index = 0;
+  while (index < exchangeList.length) {
+    let component = exchangeList[index];
+    let size = component.getSize();
+    if (!nowStart.id && nowStart.offset >= 0 && nowStart.offset <= size) {
+      nowStart.id = component.id;
+      break;
+    }
+    nowStart.offset -= size;
+    index += 1;
   }
+  let tailIndex = exchangeList.length - 1;
+  while (tailIndex >= 0) {
+    let component = exchangeList[tailIndex];
+    let size = component.getSize();
+    if (!nowEnd.id && nowEnd.offset >= 0 && nowEnd.offset <= size) {
+      nowEnd.id = component.id;
+      nowEnd.offset = size - nowEnd.offset;
+      break;
+    }
+    nowEnd.offset -= size;
+    tailIndex -= 1;
+  }
+  focusAt(nowStart, nowEnd);
 };
 
 export default exchangeComponent;

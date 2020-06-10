@@ -23,6 +23,7 @@ class List extends StructureCollection<ListItem> {
       : [];
     return new List(raw.listType, children, raw.style, raw.data);
   }
+
   static exchangeOnly(component: Component, args: any[] = []): ListItem[] {
     return ListItem.exchangeOnly(component, args);
   }
@@ -41,9 +42,10 @@ class List extends StructureCollection<ListItem> {
       // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
       prev.add(newItem, undefined, customerUpdate);
     } else {
+      // 否则新生成一个 List
       let newList = new List(args[0]);
-      newList.addChildren(newItem, 0, true);
-      newList.addInto(parent, index, customerUpdate);
+      newList.add(newItem, 0, true);
+      parent.add(newList, index, customerUpdate);
     }
     component.removeSelf();
     return newItem;
@@ -97,7 +99,7 @@ class List extends StructureCollection<ListItem> {
     customerUpdate: boolean = false
   ) {
     // 若子元素需要全部，将自己也删除
-    if (removeNumber === this.children.size) {
+    if (removeNumber === this.getSize()) {
       this.removeSelf(customerUpdate);
       return [...this.children];
     }
@@ -113,8 +115,8 @@ class List extends StructureCollection<ListItem> {
     if (index !== 0) {
       let prev = this.children.get(index - 1);
       if (!prev) return;
-      let size = prev.children.size;
-      component.send(prev, customerUpdate);
+      let size = prev.getSize();
+      component.sendTo(prev, customerUpdate);
       return [prev, size, size];
     }
     // 第一项时，直接将该列表项转换为段落
@@ -171,6 +173,13 @@ class ListItem extends ContentCollection {
   parent?: List;
   type = ComponentType.listItem;
 
+  static create(raw: any): ListItem {
+    let listItem = new ListItem("", raw.style, raw.data);
+    let children = super.getChildren(raw);
+    listItem.addChildren(children, 0, true);
+    return listItem;
+  }
+
   static exchangeOnly(component: Component, args: any[] = []): ListItem[] {
     let list: ListItem[] = [];
     if (component instanceof ContentCollection) {
@@ -187,13 +196,6 @@ class ListItem extends ContentCollection {
       });
     }
     return list;
-  }
-
-  static create(raw: any): ListItem {
-    let listItem = new ListItem("", raw.style, raw.data);
-    let children = super.getChildren(raw);
-    listItem.addChildren(children, 0, true);
-    return listItem;
   }
 
   createEmpty() {
@@ -217,10 +219,11 @@ class ListItem extends ContentCollection {
     let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
     let newListItem = builder.exchangeOnly(this, args);
+    // 当列表仅有一项时，removeSelf 导致 parent 也会被删除
     if (parent.active) {
       parent.split(index, newListItem, customerUpdate);
     } else {
-      grandParent.add(newListItem, parentIndex);
+      grandParent.addChildren(newListItem, parentIndex);
     }
     return newListItem;
   }
@@ -243,12 +246,12 @@ class ListItem extends ContentCollection {
     let flag: boolean = false;
     if (component) {
       if (!Array.isArray(component)) component = [component];
-      component = component.filter((item) => {
-        if (!(item instanceof ContentCollection)) return;
-        ListItem.exchangeOnly(item);
-        return true;
-      });
-      flag = component.length === 0;
+      let list: ListItem[] = [];
+      component
+        .filter((item) => item instanceof ContentCollection)
+        .forEach((item) => list.push(...ListItem.exchangeOnly(item)));
+      flag = list.length === 0;
+      component = list;
     }
     if (flag) {
       return;
@@ -268,5 +271,3 @@ class ListItem extends ContentCollection {
 }
 
 export default List;
-
-export { ListItem };

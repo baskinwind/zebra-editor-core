@@ -33,7 +33,7 @@ class Article extends StructureCollection<articleChildType> {
   ): operatorType {
     let prev = this.getPrev(component);
     if (!prev) return;
-    return component.send(prev, customerUpdate);
+    return component.sendTo(prev, customerUpdate);
   }
 
   add(

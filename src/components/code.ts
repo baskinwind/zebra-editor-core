@@ -19,6 +19,10 @@ class Code extends PlainText {
     return [code];
   }
 
+  createEmpty() {
+    return new Code("\n", this.decorate.getStyle(), this.decorate.getData());
+  }
+
   getRaw(): rawType {
     let raw: rawType = {
       type: this.type,

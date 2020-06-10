@@ -50,6 +50,11 @@ abstract class PlainText extends Component {
     this.content = content;
   }
 
+  //  忽略最后一个换行符
+  getSize() {
+    return this.content.length - 1;
+  }
+
   exchangeTo(builder: classType, args: any[]): Component[] {
     return builder.exchange(this, args);
   }
@@ -89,6 +94,9 @@ abstract class PlainText extends Component {
     if (start < 0 && end === 0) {
       if (this.content.length <= 1) {
         return this.replaceSelf(new Paragraph());
+      } else {
+        // TODO: 该操作待验证
+        this.exchangeTo(Paragraph, []);
       }
       return;
     }
@@ -134,11 +142,11 @@ abstract class PlainText extends Component {
       let parent = this.parent;
       if (!parent) throw createError("该节点已失效", this);
       let index = parent.findChildrenIndex(this);
-      if (index !== parent.children.size - 1) {
+      if (index !== parent.getSize() - 1) {
         return [parent.children.get(index + 1) as Component, 0, 0];
       }
       let paragraph = new Paragraph();
-      this.parent?.add(paragraph, parent.children.size);
+      this.parent?.add(paragraph, parent.getSize());
       return [paragraph, 0, 0];
     }
     return;

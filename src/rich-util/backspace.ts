@@ -13,7 +13,11 @@ const backspace = (
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     let component = getComponentById(start.id);
     // 优化段落内删除逻辑，不需要整段更新
-    if (component.structureType === StructureType.content && event) {
+    if (
+      event &&
+      (component.structureType === StructureType.content ||
+        component.structureType === StructureType.plainText)
+    ) {
       if (start.offset <= 1) {
         // 当删除发生在首位（或第一位）时，需要强制更新
         event?.preventDefault();
@@ -21,7 +25,7 @@ const backspace = (
       }
       return component.remove(start.offset - 1, start.offset, true);
     }
-    // 非文字的删除需要强制更新
+    // 非文字组件删除需要强制更新
     event?.preventDefault();
     return focusAt(component.remove(start.offset, start.offset + 1));
   }
@@ -49,7 +53,7 @@ const backspace = (
   lastComponent.remove(0, end.offset, isComposing);
 
   // 其他情况，删除中间行，首尾行合并
-  lastComponent.send(firstComponent, isComposing);
+  lastComponent.sendTo(firstComponent, isComposing);
   for (let i = 1; i < idList.length - 1; i++) {
     getComponentById(idList[i]).removeSelf(isComposing);
   }

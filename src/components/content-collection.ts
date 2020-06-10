@@ -68,14 +68,11 @@ abstract class ContentCollection extends Collection<Inline> {
     index?: number,
     customerUpdate: boolean = false
   ) {
-    component.forEach((item) => {
-      if (!(item instanceof Inline)) {
-        throw createError("组件仅能添加 Inline 类型的组件", item);
-      }
-    });
-    component.forEach((item) => {
-      item.parent = this;
-    });
+    component
+      .filter((item) => item instanceof Inline)
+      .forEach((item) => {
+        item.parent = this;
+      });
     super.addChildren(component, index);
     updateComponent(this, customerUpdate);
     this.record.defaultStore();
@@ -97,10 +94,10 @@ abstract class ContentCollection extends Collection<Inline> {
   ): ContentCollection {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效，不能分割", this);
-    let isTail = index === this.children.size;
+    let isTail = index === this.getSize();
     let tail = isTail ? [] : this.children.slice(index).toArray();
     if (!isTail) {
-      this.removeChildren(index, this.children.size - index, customerUpdate);
+      this.removeChildren(index, this.getSize() - index, customerUpdate);
     }
     let thisIndex = parent.findChildrenIndex(this);
     let newCollection = this.createEmpty();
@@ -117,7 +114,7 @@ abstract class ContentCollection extends Collection<Inline> {
       componentList.push(new Character(char));
     }
     this.addChildren(componentList, index, customerUpdate);
-    index = index ? index : this.children.size;
+    index = index ? index : this.getSize();
     return [this, index + text.length, index + text.length];
   }
 
@@ -142,7 +139,7 @@ abstract class ContentCollection extends Collection<Inline> {
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    index = index ? index : this.children.size;
+    index = index ? index : this.getSize();
     if (typeof component === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];
@@ -167,12 +164,12 @@ abstract class ContentCollection extends Collection<Inline> {
   ): operatorType {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
-    if (end === undefined) end = this.children.size;
+    if (end === undefined) end = this.getSize();
     if (start < 0 && end === 0) {
       let index = parent.findChildrenIndex(this);
       return parent.childHeadDelete(this, index, customerUpdate);
     }
-    end = end < 0 ? this.children.size + end : end;
+    end = end < 0 ? this.getSize() + end : end;
     if (start > end) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
@@ -187,7 +184,7 @@ abstract class ContentCollection extends Collection<Inline> {
     data?: storeData,
     customerUpdate: boolean = false
   ) {
-    end = end < 0 ? this.children.size + end : end;
+    end = end < 0 ? this.getSize() + end : end;
     if (start > end) return;
     if (!style && !data) return;
     for (let i = start; i <= end; i++) {
@@ -197,7 +194,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, start, end];
   }
 
-  send(component: Component, customerUpdate: boolean = false): operatorType {
+  sendTo(component: Component, customerUpdate: boolean = false): operatorType {
     return component.receive(this, customerUpdate);
   }
 
@@ -205,10 +202,9 @@ abstract class ContentCollection extends Collection<Inline> {
     component?: Component,
     customerUpdate: boolean = false
   ): operatorType {
-    let size = this.children.size;
+    let size = this.getSize();
     if (!component) return [this, size, size];
     component.removeSelf(customerUpdate);
-    debugger;
     if (component instanceof ContentCollection) {
       this.children = this.children.push(...component.children);
       updateComponent(this, customerUpdate);

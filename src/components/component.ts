@@ -7,9 +7,10 @@ import DirectionType from "../const/direction-type";
 import updateComponent from "../util/update-component";
 import { getId, saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
+import StructureCollection from "./structure-collection";
 
 export type operatorType = [Component, number, number] | undefined;
-export type classType = typeof Component;
+export type classType = { exchange: Function };
 export interface rawType {
   type: ComponentType;
   children?: rawType[];
@@ -74,8 +75,12 @@ abstract class Component {
   }
 
   // 判断该组件是否为空，为空并不代表无效
-  isEmpty() {
+  isEmpty(): boolean {
     return false;
+  }
+
+  getSize(): number {
+    return 0;
   }
 
   // 创建一个空的当前组件
@@ -100,7 +105,7 @@ abstract class Component {
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
-    collection: Collection<Component>,
+    collection: StructureCollection<Component>,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
@@ -176,7 +181,7 @@ abstract class Component {
   }
 
   // 将自己发送到另一组件
-  send(component: Component, customerUpdate: boolean = false): operatorType {
+  sendTo(component: Component, customerUpdate: boolean = false): operatorType {
     return;
   }
 
