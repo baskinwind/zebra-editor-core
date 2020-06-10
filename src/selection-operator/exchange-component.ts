@@ -2,7 +2,7 @@ import getSelection from "./get-selection";
 import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 import { getSelectedIdList } from "./util";
-import { classType } from "../components/component";
+import Component, { classType } from "../components/component";
 
 // 修改选区中整块内容的呈现
 const exchangeComponent = (newClass: classType, ...args: any[]) => {
@@ -13,30 +13,31 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
 
   if (idList.length === 0) return;
   if (idList.length === 1) {
-    let focus = getComponentById(idList[0]).exchangeTo(newClass, args);
+    let newList = getComponentById(idList[0]).exchangeTo(newClass, args);
     if (!focus) {
       focusAt();
     } else {
-      focusAt([focus[0], start.offset, end.offset]);
+      focusAt([newList[0], start.offset, end.offset]);
     }
     return;
   }
-  let focusList = idList.map((id) =>
-    getComponentById(id).exchangeTo(newClass, args)
-  );
-  let first = focusList[0];
-  let last = focusList[focusList.length - 1];
+  let exchangeList: Component[] = [];
+  idList.forEach((id) => {
+    exchangeList.push(...getComponentById(id).exchangeTo(newClass, args));
+  });
+  let first = exchangeList[0];
+  let last = exchangeList[exchangeList.length - 1];
   if (!first || !last) {
     focusAt();
   } else {
     focusAt(
       {
-        id: first[0].id,
-        offset: first[1] === -1 ? start.offset : first[1]
+        id: first.id,
+        offset: start.offset
       },
       {
-        id: last[0].id,
-        offset: last[1] === -1 ? end.offset : last[1] + end.offset
+        id: last.id,
+        offset: end.offset
       }
     );
   }

@@ -34,6 +34,20 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
+  static exchangeOnly(component: Component, args?: any[]): ContentCollection[] {
+    throw createError("组件未实现 exchangeOnly 静态方法", this);
+  }
+
+  static exchange(
+    component: ContentCollection,
+    args: any[],
+    customerUpdate: boolean = false
+  ): ContentCollection[] {
+    let newContent = this.exchangeOnly(component, args);
+    component.replaceSelf(newContent, customerUpdate);
+    return newContent;
+  }
+
   constructor(text?: string, style?: storeData, data?: storeData) {
     super(style, data);
     if (text) {
@@ -45,7 +59,7 @@ abstract class ContentCollection extends Collection<Inline> {
     throw createError("组件缺少 createEmpty 方法", this);
   }
 
-  exchangeTo(builder: classType, args: any[]): operatorType {
+  exchangeTo(builder: classType, args: any[]): Component[] {
     return builder.exchange(this, args);
   }
 
@@ -194,7 +208,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let size = this.children.size;
     if (!component) return [this, size, size];
     component.removeSelf(customerUpdate);
-    debugger
+    debugger;
     if (component instanceof ContentCollection) {
       this.children = this.children.push(...component.children);
       updateComponent(this, customerUpdate);

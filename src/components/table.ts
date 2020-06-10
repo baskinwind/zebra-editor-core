@@ -303,29 +303,23 @@ class TableItem extends ContentCollection {
     return tableItem;
   }
 
-  static exchangeOnly(
-    component: Component | string,
-    args: any[] = []
-  ): TableItem {
-    if (component instanceof TableItem) return component;
+  static exchangeOnly(component: Component, args: any[] = []): TableItem[] {
     let newItem = new TableItem();
-    if (typeof component === "string") {
-      newItem.addText(component, 0);
-    } else if (component instanceof ContentCollection) {
+    if (component instanceof ContentCollection) {
       newItem.addChildren(component.children.toArray(), 0);
     }
-    return newItem;
+    return [newItem];
   }
 
   static exchange(
     component: Component,
     args: any[] = [],
     customerUpdate: boolean = false
-  ): operatorType {
+  ): TableItem[] {
     throw createError("不允许切换成表格内段落");
   }
 
-  exchangeTo(builder: classType, args: any[]): operatorType {
+  exchangeTo(builder: classType, args: any[]): Component[] {
     throw createError("表格内段落不允许切换类型！！", this);
   }
 
@@ -368,14 +362,18 @@ class TableItem extends ContentCollection {
     let hasComponent: boolean = component !== undefined;
     if (Array.isArray(component)) {
       if (component.length === 0) hasComponent = false;
-      component = component
+      let newList: TableItem[] = [];
+      component
         .filter((item) => {
           return item instanceof ContentCollection;
         })
-        .map((item) => TableItem.exchangeOnly(item));
+        .forEach((item) => {
+          newList.push(...TableItem.exchangeOnly(item));
+        });
+      component = newList;
       component = component.length === 0 ? undefined : component;
     } else if (component && component instanceof ContentCollection) {
-      component = [TableItem.exchangeOnly(component)];
+      component = TableItem.exchangeOnly(component);
     } else {
       component = undefined;
     }

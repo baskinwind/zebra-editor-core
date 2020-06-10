@@ -3,7 +3,7 @@ import updateComponent from "../util/update-component";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import Component, { rawType } from "./component";
+import Component, { rawType, operatorType } from "./component";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -18,16 +18,12 @@ class Title extends ContentCollection {
     return title;
   }
 
-  static exchangeOnly(component: Component | string, args: any[] = []): Title {
-    if (component instanceof Title && component.titleType === args[0])
-      return component;
+  static exchangeOnly(component: Component, args: any[] = []): Title[] {
     let newTitle = new Title(args[0] || "h1");
-    if (typeof component === "string") {
-      newTitle.addText(component, 0);
-    } else if (component instanceof ContentCollection) {
+    if (component instanceof ContentCollection) {
       newTitle.addChildren(component.children.toArray(), 0);
     }
-    return newTitle;
+    return [newTitle];
   }
 
   constructor(

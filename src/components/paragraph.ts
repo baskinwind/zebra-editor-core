@@ -1,7 +1,8 @@
-import Component, { rawType } from "./component";
+import Component, { rawType, operatorType } from "./component";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
+import PlainText from "./plain-text";
 
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
@@ -13,18 +14,22 @@ class Paragraph extends ContentCollection {
     return paragraph;
   }
 
-  static exchangeOnly(
-    component: Component | string,
-    args: any[] = []
-  ): Paragraph {
-    if (component instanceof Paragraph) return component;
-    let newParagraph = new Paragraph();
-    if (typeof component === "string") {
-      newParagraph.addText(component, 0);
-    } else if (component instanceof ContentCollection) {
+  static exchangeOnly(component: Component, args: any[] = []): Paragraph[] {
+    let list: Paragraph[] = [];
+    if (component instanceof ContentCollection) {
+      let newParagraph = new Paragraph();
       newParagraph.addChildren(component.children.toArray(), 0);
+      list.push(newParagraph);
+    } else if (component instanceof PlainText) {
+      let stringList = component.content.split("\n");
+      if (stringList[stringList.length - 1].length === 0) {
+        stringList.pop();
+      }
+      stringList.forEach((item) => {
+        list.push(new Paragraph(item));
+      });
     }
-    return newParagraph;
+    return list;
   }
 
   createEmpty() {

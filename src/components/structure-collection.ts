@@ -18,7 +18,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
       item.active = true;
     });
     super.addChildren(component, index);
-    updateComponent(component.reverse(), customerUpdate);
+    updateComponent([...component].reverse(), customerUpdate);
   }
 
   removeChildren(
@@ -35,17 +35,23 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     return removed;
   }
 
-  replaceChild(component: T, oldComponent: T, customerUpdate: boolean = false) {
+  replaceChild(
+    component: T[],
+    oldComponent: T,
+    customerUpdate: boolean = false
+  ) {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
       throw createError("替换组件不在子组件列表内", component);
     }
-    component.active = true;
-    component.parent = this;
+    component.forEach((item) => {
+      item.parent = this;
+      item.active = true;
+    });
     oldComponent.active = false;
     oldComponent.parent = undefined;
-    this.children = this.children.splice(index, 1, component);
-    updateComponent([oldComponent, component], customerUpdate);
+    this.children = this.children.splice(index, 1, ...component);
+    updateComponent([oldComponent, ...component.reverse()], customerUpdate);
   }
 
   splitChild(

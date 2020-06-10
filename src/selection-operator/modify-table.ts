@@ -2,7 +2,6 @@ import getSelection from "./get-selection";
 import { getComponentById } from "../components/util";
 import Component from "../components/component";
 import Table, { TableItem } from "../components/table";
-import { createRecord } from "../record/util";
 
 const getTable = (component: Component | undefined): Table => {
   if (!component) {

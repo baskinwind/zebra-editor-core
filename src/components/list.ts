@@ -1,4 +1,5 @@
 import ContentCollection from "./content-collection";
+import PlainText from "./plain-text";
 import Paragraph from "./paragraph";
 import StructureType from "../const/structure-type";
 import ComponentType from "../const/component-type";
@@ -21,6 +22,31 @@ class List extends StructureCollection<ListItem> {
       ? raw.children.map((item: rawType) => ListItem.create(item))
       : [];
     return new List(raw.listType, children, raw.style, raw.data);
+  }
+  static exchangeOnly(component: Component, args: any[] = []): ListItem[] {
+    return ListItem.exchangeOnly(component, args);
+  }
+
+  static exchange(
+    component: Component,
+    args: any[] = [],
+    customerUpdate: boolean = false
+  ): ListItem[] {
+    let newItem = ListItem.exchangeOnly(component);
+    let parent = component.parent;
+    if (!parent) throw createError("该节点已失效", component);
+    let prev = parent.getPrev(component);
+    let index = parent.findChildrenIndex(component);
+    if (prev instanceof List && prev.listType === args[0]) {
+      // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
+      prev.add(newItem, undefined, customerUpdate);
+    } else {
+      let newList = new List(args[0]);
+      newList.addChildren(newItem, 0, true);
+      newList.addInto(parent, index, customerUpdate);
+    }
+    component.removeSelf();
+    return newItem;
   }
 
   constructor(
@@ -97,8 +123,8 @@ class List extends StructureCollection<ListItem> {
     index = parent.findChildrenIndex(this);
     component.removeSelf(customerUpdate);
     let paragraph = Paragraph.exchangeOnly(component);
-    parent.addChildren([paragraph], index);
-    return [paragraph, 0, 0];
+    parent.addChildren(paragraph, index);
+    return [paragraph[0], 0, 0];
   }
 
   add(
@@ -118,8 +144,8 @@ class List extends StructureCollection<ListItem> {
     if (!component) return;
     component.removeSelf();
     let newList = ListItem.exchangeOnly(component, []);
-    this.addChildren([newList], undefined, customerUpdate);
-    return [newList, -1, -1];
+    this.addChildren(newList, undefined, customerUpdate);
+    return [newList[0], -1, -1];
   }
 
   getRaw(): rawType {
@@ -145,40 +171,22 @@ class ListItem extends ContentCollection {
   parent?: List;
   type = ComponentType.listItem;
 
-  static exchangeOnly(
-    component: Component | string,
-    args: any[] = []
-  ): ListItem {
-    if (component instanceof ListItem) return component;
-    let newItem = new ListItem();
-    if (typeof component === "string") {
-      newItem.addText(component, 0);
-    } else if (component instanceof ContentCollection) {
+  static exchangeOnly(component: Component, args: any[] = []): ListItem[] {
+    let list: ListItem[] = [];
+    if (component instanceof ContentCollection) {
+      let newItem = new ListItem();
       newItem.addChildren(component.children.toArray(), 0);
+      list.push(newItem);
+    } else if (component instanceof PlainText) {
+      let stringList = component.content.split("\n");
+      if (stringList[stringList.length - 1].length === 0) {
+        stringList.pop();
+      }
+      stringList.forEach((item) => {
+        list.push(new ListItem(item));
+      });
     }
-    return newItem;
-  }
-
-  static exchange(
-    component: ContentCollection,
-    args: any[],
-    customerUpdate: boolean = false
-  ): operatorType {
-    let parent = component.parent;
-    if (!parent) throw createError("该节点已失效", component);
-    let prev = parent.getPrev(component);
-    let index = parent.findChildrenIndex(component);
-    if (prev instanceof List && prev.listType === args[0]) {
-      // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
-      return component.send(prev, customerUpdate);
-    } else {
-      let newItem = this.exchangeOnly(component, args);
-      let newList = new List(args[0]);
-      newList.addChildren([newItem], 0, true);
-      newList.addInto(parent, index, customerUpdate);
-      component.removeSelf();
-      return [newItem, -1, -1];
-    }
+    return list;
   }
 
   static create(raw: any): ListItem {
@@ -196,12 +204,12 @@ class ListItem extends ContentCollection {
     builder: classType,
     args: any[],
     customerUpdate: boolean = false
-  ): operatorType {
+  ): Component[] {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
-    if (builder === ListItem) {
+    if (builder === List) {
       parent.setListType(args[0]);
-      return [this, -1, -1];
+      return [this];
     }
     let grandParent = parent?.parent;
     if (!grandParent) throw createError("该节点已失效", this);
@@ -212,9 +220,9 @@ class ListItem extends ContentCollection {
     if (parent.active) {
       parent.split(index, newListItem, customerUpdate);
     } else {
-      newListItem.addInto(grandParent, parentIndex);
+      grandParent.add(newListItem, parentIndex);
     }
-    return [newListItem, -1, -1];
+    return newListItem;
   }
 
   split(

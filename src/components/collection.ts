@@ -4,7 +4,6 @@ import { createError } from "./util";
 
 abstract class Collection<T extends Component> extends Component {
   children: List<T> = List();
-
   isEmpty() {
     return this.children.size === 0;
   }
@@ -61,7 +60,11 @@ abstract class Collection<T extends Component> extends Component {
   }
 
   // 替换子组件
-  replaceChild(component: T, oldComponent: T, customerUpdate: boolean = false) {
+  replaceChild(
+    component: T[],
+    oldComponent: T,
+    customerUpdate: boolean = false
+  ) {
     throw createError("组件缺少 replaceChild 方法", this);
   }
 

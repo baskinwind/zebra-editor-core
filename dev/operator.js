@@ -7,7 +7,7 @@ import Title from "../src/components/title";
 import Paragraph from "../src/components/paragraph";
 import Code from "../src/components/code";
 import Table from "../src/components/table";
-import { ListItem } from "../src/components/list";
+import List from "../src/components/list";
 import ComponentType from "../src/const/component-type";
 
 import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
@@ -66,7 +66,7 @@ new Vue({
       } else if (tag === "code") {
         exchangeComponent(Code);
       } else if (tag === "ul" || tag === "ol") {
-        exchangeComponent(ListItem, tag);
+        exchangeComponent(List, tag);
       } else {
         exchangeComponent(Title, tag);
       }

@@ -1,7 +1,6 @@
 import Decorate from "../decorate";
 import Record from "../record";
 import Collection from "./collection";
-import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import DirectionType from "../const/direction-type";
@@ -49,9 +48,9 @@ abstract class Component {
   // 结构上的作用
   abstract structureType: StructureType;
 
-  // 定义如何将别的组件转换为当前组件，并不会出发更新
-  static exchangeOnly(component: Component | string, args?: any[]): Component {
-    throw createError("组件缺少 exchangeOnly 静态方法", this);
+  // 定义如何将别的组件转换为当前组件，不会触发更新
+  static exchangeOnly(component: Component, args?: any[]): Component[] {
+    throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
   // 将别的组件转换为当前组件，并更新组件在文档中的状态
@@ -59,13 +58,13 @@ abstract class Component {
     component: Component,
     args?: any[],
     customerUpdate: boolean = false
-  ): operatorType {
-    throw createError("组件缺少 exchange 静态方法", this);
+  ): Component[] {
+    throw createError("组件未实现 exchange 静态方法", this);
   }
 
   // 根据 raw 保存的内容恢复组件
   static create(raw: any): Component {
-    throw createError("请为组件添加 create 静态方法", this);
+    throw createError("组件未实现 create 静态方法", this);
   }
 
   constructor(style: storeData = {}, data: storeData = {}) {
@@ -81,12 +80,12 @@ abstract class Component {
 
   // 创建一个空的当前组件
   createEmpty(): Component {
-    throw createError("请为组件添加 createEmpty 方法", this);
+    throw createError("组件未实现 createEmpty 方法", this);
   }
 
   // 将当前组件转换为 builder 类型的组件
-  exchangeTo(builder: classType, args: any[]): operatorType {
-    throw createError("请为组件添加 exchangeToOther 方法", this);
+  exchangeTo(builder: classType, args: any[]): Component[] {
+    throw createError("组件未实现 exchangeTo 方法", this);
   }
 
   // 定义当组件的子组件的首位发生删除时的行为
@@ -101,7 +100,7 @@ abstract class Component {
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
-    collection: StructureCollection<Component>,
+    collection: Collection<Component>,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
@@ -117,11 +116,12 @@ abstract class Component {
 
   // 替换为另一个组件
   replaceSelf(
-    component: Component,
+    component: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
+    if (!Array.isArray(component)) component = [component];
     this.parent?.replaceChild(component, this, customerUpdate);
-    return [component, 0, 0];
+    return [component[0], 0, 0];
   }
 
   // 添加子组件
