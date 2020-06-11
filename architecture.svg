@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="-657 171 1990 1190" width="1990" height="1190">
+<svg xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-657 171 1990 1190" width="1990" height="1190">
   <defs>
     <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="Arrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-6 -3 7 6" markerWidth="7" markerHeight="6" color="#7f8080">
       <g>
@@ -18,8 +18,12 @@
       </font-face-src>
     </font-face>
   </defs>
-  <g id="Canvas_1" stroke-dasharray="none" fill="none" fill-opacity="1" stroke="none" stroke-opacity="1">
+  <metadata> Produced by OmniGraffle 7.16 
+    <dc:date>2020-06-11 09:14:58 +0000</dc:date>
+  </metadata>
+  <g id="Canvas_1" stroke="none" stroke-opacity="1" fill-opacity="1" fill="none" stroke-dasharray="none">
     <title>Canvas 1</title>
+    <rect fill="white" x="-657" y="171" width="1990" height="1190"/>
     <g id="Canvas_1: Layer 1">
       <title>Layer 1</title>
       <g id="Line_170">
@@ -50,10 +54,10 @@
         <line x1="182.28955" y1="960.7182" x2="-262" y2="1037.7327" marker-start="url(#Arrow_Marker)" stroke="#7f8080" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
       </g>
       <g id="Line_121">
-        <line x1="671.2769" y1="832.6318" x2="707.2257" y2="865" marker-start="url(#Arrow_Marker)" stroke="#7f8080" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <line x1="656.0694" y1="810.8563" x2="713.4114" y2="865" marker-start="url(#Arrow_Marker)" stroke="#7f8080" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
       </g>
       <g id="Line_116">
-        <line x1="491.7208" y1="831.6967" x2="446.9269" y2="865" marker-start="url(#Arrow_Marker)" stroke="#7f8080" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <line x1="511.14227" y1="810.0048" x2="441.64286" y2="865" marker-start="url(#Arrow_Marker)" stroke="#7f8080" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
       </g>
       <g id="Line_106">
         <line x1="763.0641" y1="567.76114" x2="887.725" y2="694" marker-start="url(#Arrow_Marker)" stroke="#7f8080" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
@@ -204,11 +208,10 @@
         </g>
         <g id="Graphic_103">
           <title>Operations</title>
-          <rect x="501.25" y="750" width="176.5" height="74" stroke="#b9c0c1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <rect x="501.25" y="750" width="176.5" height="52" stroke="#b9c0c1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
           <text transform="translate(507.25 756)" fill="black">
             <tspan font-family="Source Code Pro" font-size="14" font-weight="400" fill="black" x="0" y="14">addChildren</tspan>
             <tspan font-family="Source Code Pro" font-size="14" font-weight="400" fill="black" x="0" y="36">removeChildren</tspan>
-            <tspan font-family="Source Code Pro" font-size="14" font-weight="400" fill="black" x="0" y="58">childHeadDelete</tspan>
           </text>
         </g>
       </g>
