@@ -1,5 +1,6 @@
 import Decorate from "../decorate";
 import Record from "../record";
+import Block from "./block";
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
@@ -58,7 +59,9 @@ abstract class Component {
   ) {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
-    updateComponent(this, customerUpdate);
+    if (this instanceof Block) {
+      updateComponent(this, customerUpdate);
+    }
     this.record.defaultStore();
     return;
   }

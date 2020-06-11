@@ -200,7 +200,7 @@ class ListItem extends ContentCollection {
     builder: classType,
     args: any[],
     customerUpdate: boolean = false
-  ): Component[] {
+  ): Block[] {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     if (builder === List) {

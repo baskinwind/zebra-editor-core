@@ -49,7 +49,7 @@ abstract class Block extends Component {
   }
 
   // 将当前组件转换为 builder 类型的组件
-  exchangeTo(builder: classType, args: any[]): Component[] {
+  exchangeTo(builder: classType, args: any[]): Block[] {
     throw createError("组件未实现 exchangeTo 方法", this);
   }
 

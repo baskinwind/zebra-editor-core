@@ -58,7 +58,7 @@ abstract class ContentCollection extends Collection<Inline> {
     throw createError("组件缺少 createEmpty 方法", this);
   }
 
-  exchangeTo(builder: classType, args: any[]): Component[] {
+  exchangeTo(builder: classType, args: any[]): Block[] {
     return builder.exchange(this, args);
   }
 

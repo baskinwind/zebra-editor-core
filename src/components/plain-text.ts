@@ -54,7 +54,7 @@ abstract class PlainText extends Block {
     return this.content.length - 1;
   }
 
-  exchangeTo(builder: classType, args: any[]): Component[] {
+  exchangeTo(builder: classType, args: any[]): Block[] {
     return builder.exchange(this, args);
   }
 

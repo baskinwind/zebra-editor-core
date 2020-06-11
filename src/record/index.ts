@@ -1,5 +1,5 @@
 import Component from "../components/component";
-import StructureType from "../const/structure-type";
+import Block from "../components/block";
 import updateComponent, { delayUpdate } from "../util/update-component";
 import { recordState } from "./util";
 
@@ -28,10 +28,10 @@ class Record {
     if (this.index === 0) return;
     this.index -= 1;
     this.component.restore(this.list[this.index]);
-    if (this.component.structureType === StructureType.unit) {
-      delayUpdate([this.component.parent!.id]);
-    } else {
+    if (this.component instanceof Block) {
       updateComponent(this.component);
+    } else {
+      delayUpdate([this.component.parent!.id]);
     }
   }
 
@@ -39,10 +39,10 @@ class Record {
     if (this.index === this.list.length) return;
     this.index += 1;
     this.component.restore(this.list[this.index]);
-    if (this.component.structureType === StructureType.unit) {
-      delayUpdate([this.component.parent!.id]);
-    } else {
+    if (this.component instanceof Block) {
       updateComponent(this.component);
+    } else {
+      delayUpdate([this.component.parent!.id]);
     }
   }
 }

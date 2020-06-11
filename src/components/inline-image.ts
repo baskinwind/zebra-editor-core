@@ -19,11 +19,6 @@ class InlineImage extends Inline {
     this.src = src;
   }
 
-  setSrc(src: string) {
-    this.src = src;
-    updateComponent(this);
-  }
-
   getRaw() {
     let raw = super.getRaw();
     raw.src = this.src;

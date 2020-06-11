@@ -317,7 +317,7 @@ class TableItem extends ContentCollection {
     throw createError("不允许切换成表格内段落");
   }
 
-  exchangeTo(builder: classType, args: any[]): Component[] {
+  exchangeTo(builder: classType, args: any[]): Block[] {
     throw createError("表格内段落不允许切换类型！！", this);
   }
 
