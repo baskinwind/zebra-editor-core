@@ -101,17 +101,9 @@ class Media extends Component {
   }
 
   getRaw(): rawType {
-    let raw: rawType = {
-      type: this.type,
-      mediaType: this.mediaType,
-      src: this.src
-    };
-    if (this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
-    }
-    if (this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
-    }
+    let raw = super.getRaw();
+    raw.src = this.src;
+    raw.mediaType = this.mediaType;
     return raw;
   }
 

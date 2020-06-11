@@ -23,20 +23,6 @@ class Code extends PlainText {
     return new Code("\n", this.decorate.getStyle(), this.decorate.getData());
   }
 
-  getRaw(): rawType {
-    let raw: rawType = {
-      type: this.type,
-      content: this.content
-    };
-    if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
-    }
-    if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
-    }
-    return raw;
-  }
-
   render() {
     const builder = getContentBuilder();
     return builder.buildCode(

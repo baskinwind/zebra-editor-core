@@ -1,4 +1,4 @@
-import Component, { operatorType, classType } from "./component";
+import Component, { operatorType, classType, rawType } from "./component";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
 import Paragraph from "./paragraph";
@@ -43,6 +43,7 @@ abstract class PlainText extends Component {
     data: storeData = {}
   ) {
     super(style, data);
+    // 纯文本最后必须有一个换行
     if (content[content.length - 1] !== "\n") {
       content += "\n";
     }
@@ -94,9 +95,6 @@ abstract class PlainText extends Component {
     if (start < 0 && end === 0) {
       if (this.content.length <= 1) {
         return this.replaceSelf(new Paragraph());
-      } else {
-        // TODO: 该操作待验证
-        this.exchangeTo(Paragraph, []);
       }
       return;
     }
@@ -150,6 +148,12 @@ abstract class PlainText extends Component {
       return [paragraph, 0, 0];
     }
     return;
+  }
+
+  getRaw(): rawType {
+    let raw = super.getRaw();
+    raw.content = this.content;
+    return raw;
   }
 }
 

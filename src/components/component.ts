@@ -10,7 +10,7 @@ import { storeData } from "../decorate/index";
 import StructureCollection from "./structure-collection";
 
 export type operatorType = [Component, number, number] | undefined;
-export type classType = { exchange: Function };
+export type classType = { exchangeOnly: Function; exchange: Function; };
 export interface rawType {
   type: ComponentType;
   children?: rawType[];
@@ -119,7 +119,7 @@ abstract class Component {
     return;
   }
 
-  // 替换为另一个组件
+  // 替换为传入组件
   replaceSelf(
     component: Component | Component[],
     customerUpdate: boolean = false
@@ -213,7 +213,18 @@ abstract class Component {
   }
 
   // 获取用于存储的内容
-  abstract getRaw(): rawType;
+  getRaw(): rawType {
+    let raw: rawType = {
+      type: this.type,
+    };
+    if (this.decorate.styleIsEmpty()) {
+      raw.style = this.decorate.getStyle();
+    }
+    if (this.decorate.dataIsEmpty()) {
+      raw.data = this.decorate.getData();
+    }
+    return raw;
+  };
 
   // 渲染该组件
   abstract render(): any;
