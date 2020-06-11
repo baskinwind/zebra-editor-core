@@ -1,18 +1,13 @@
+import { operatorType, rawType } from "./component";
+import Block from "./block";
 import StructureCollection from "./structure-collection";
-import ContentCollection from "./content-collection";
-import List from "./list";
-import Media from "./media";
-import Table from "./table";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
-import { operatorType, rawType } from "./component";
 import { storeData } from "../decorate";
 import { saveComponent } from "./util";
 
-type articleChildType = List | ContentCollection | Media | Table;
-
-class Article extends StructureCollection<articleChildType> {
+class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;
 
@@ -27,34 +22,30 @@ class Article extends StructureCollection<articleChildType> {
   }
 
   childHeadDelete(
-    component: articleChildType,
+    block: Block,
     index: number,
     customerUpdate: boolean = false
   ): operatorType {
-    let prev = this.getPrev(component);
+    let prev = this.getPrev(block);
     if (!prev) return;
-    return component.sendTo(prev, customerUpdate);
+    return block.sendTo(prev, customerUpdate);
   }
 
   add(
-    component: articleChildType | articleChildType[],
+    block: Block | Block[],
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    if (!Array.isArray(component)) {
-      component = [component];
+    if (!Array.isArray(block)) {
+      block = [block];
     }
-    this.addChildren(component, index, customerUpdate);
-    return [component[0], 0, 0];
+    this.addChildren(block, index, customerUpdate);
+    return [block[0], 0, 0];
   }
 
   render() {
     console.log("article create");
-    let children = this.children
-      .map((component) => {
-        return component.render();
-      })
-      .toArray();
+    let children = this.children.map((item) => item.render()).toArray();
     return getContentBuilder().buildArticle(
       this.id,
       children,

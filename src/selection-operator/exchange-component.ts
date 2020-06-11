@@ -1,9 +1,9 @@
+import Block from "../components/block";
 import getSelection from "./get-selection";
 import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
 import { getSelectedIdList } from "./util";
-import Component, { classType } from "../components/component";
-import Code from "../components/code";
+import { classType } from "../components/component";
 
 // 修改选区中整块内容的呈现
 const exchangeComponent = (newClass: classType, ...args: any[]) => {
@@ -13,7 +13,7 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
   let idList = getSelectedIdList(start.id, end.id);
   let endToTailSize =
     getComponentById(idList[idList.length - 1]).getSize() - end.offset;
-  let exchangeList: Component[] = [];
+  let exchangeList: Block[] = [];
   let idMap: { [key: string]: any } = {};
   idList.forEach((id) => {
     getComponentById(id)

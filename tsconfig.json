@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "target": "es5",
     "downlevelIteration": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -14,15 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "types": [
-      "shortid"
-    ],
+    "types": ["shortid"],
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": true,
     "sourceMap": true
   },
-  "include": [
-    "src",
-    "dev/index.js"
-  ]
+  "include": ["src", "dev/index.js"]
 }

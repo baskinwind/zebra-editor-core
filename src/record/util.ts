@@ -1,20 +1,20 @@
 import focusAt from "../rich-util/focus-at";
 import Component from "../components/component";
+import StructureCollection from "../components/structure-collection";
 import updateComponent from "../util/update-component";
-import Collection from "../components/collection";
+import getSelection from "../selection-operator/get-selection";
+import { cursorType } from "../selection-operator/util";
 
 interface recoreType {
-  selection: {
-    start: {
-      id: string;
-      offset: number;
-    };
-    end: {
-      id: string;
-      offset: number;
-    };
+  undoSelection: {
+    start: cursorType;
+    end: cursorType;
   };
   componentList: Component[];
+  redoSelection: {
+    start: cursorType;
+    end: cursorType;
+  };
 }
 
 let recoreQueue: recoreType[] = [];
@@ -27,22 +27,30 @@ const startRecord = () => {
 };
 
 const initRecord = (component: Component) => {
-  component.record.defaultStore();
-  if (component instanceof Collection) {
+  component.record.store();
+  if (component instanceof StructureCollection) {
     component.children.forEach((item) => initRecord(item));
   }
 };
 
-const createRecord = (start: any, end: any) => {
+const createRecord = (start: cursorType, end: cursorType) => {
   if (!canRecord) return;
   recoreQueue.splice(nowIndex + 1);
   nowComponentList = [];
   let newRecord = {
-    selection: { start, end },
-    componentList: nowComponentList
+    undoSelection: { start, end },
+    componentList: nowComponentList,
+    redoSelection: { start, end }
   };
   recoreQueue.push(newRecord);
-  nowIndex += 1;
+  nowIndex = recoreQueue.length - 1;
+  setTimeout(() => {
+    let selection = getSelection();
+    newRecord.redoSelection = {
+      start: selection.range[0],
+      end: selection.range[1]
+    };
+  });
 };
 
 const recordState = (component: Component) => {
@@ -62,7 +70,7 @@ const undo = () => {
   });
   updateComponent();
   nowIndex -= 1;
-  focusAt(nowRecord.selection.start, nowRecord.selection.end);
+  focusAt(nowRecord.undoSelection.start, nowRecord.undoSelection.end);
 };
 
 const redo = () => {
@@ -77,7 +85,7 @@ const redo = () => {
   });
   updateComponent();
   nowIndex += 1;
-  focusAt(nowRecord.selection.start, nowRecord.selection.end);
+  focusAt(nowRecord.redoSelection.start, nowRecord.redoSelection.end);
 };
 
 export { startRecord, initRecord, createRecord, recordState, undo, redo };

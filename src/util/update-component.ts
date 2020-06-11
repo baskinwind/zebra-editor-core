@@ -1,4 +1,4 @@
-import Component from "../components/component";
+import Block from "../components/block";
 import { getComponentById } from "../components/util";
 
 let canUpdate = false;
@@ -24,7 +24,7 @@ const needUpdate = () => {
 
 // 更新组件
 const updateComponent = (
-  component?: Component | Component[],
+  component?: Block | Block[],
   customerUpdate: boolean = false
 ) => {
   if (delayUpdateQueue.size) {
@@ -42,7 +42,7 @@ const updateComponent = (
   }
 };
 
-const update = (component: Component) => {
+const update = (component: Block) => {
   let dom = document.getElementById(component.id);
   if (dom) {
     // 有对应元素时，替换或是删除

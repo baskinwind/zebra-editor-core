@@ -1,11 +1,11 @@
-import Component, { operatorType, rawType } from "./component";
+import { operatorType, rawType } from "./component";
+import Block from "./block";
 import Collection from "./collection";
-import updateComponent from "../util/update-component";
 import StructureType from "../const/structure-type";
+import updateComponent from "../util/update-component";
 import { createError } from "./util";
 
-abstract class StructureCollection<T extends Component> extends Collection<T> {
-  parent?: StructureCollection<Component>;
+abstract class StructureCollection<T extends Block> extends Collection<T> {
   structureType = StructureType.structure;
 
   createEmpty(): StructureCollection<T> {
@@ -22,11 +22,11 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   }
 
   removeChildren(
-    indexOrComponent: T | number,
+    indexOrBlock: T | number,
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
-    let removed = super.removeChildren(indexOrComponent, removeNumber);
+    let removed = super.removeChildren(indexOrBlock, removeNumber);
     removed.forEach((component) => {
       component.active = false;
       component.parent = undefined;
@@ -35,26 +35,29 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     return removed;
   }
 
-  replaceChild(
-    component: T[],
-    oldComponent: T,
+  // 定义当组件的子组件的首位发生删除时的行为
+  // 默认不处理，而不是报错
+  childHeadDelete(
+    component: T,
+    index: number,
     customerUpdate: boolean = false
-  ) {
+  ): operatorType {
+    return;
+  }
+
+  replaceChild(block: T[], oldComponent: T, customerUpdate: boolean = false) {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
-      throw createError("替换组件不在子组件列表内", component);
+      throw createError("替换组件不在子组件列表内", block);
     }
-    component.forEach((item) => {
+    block.forEach((item) => {
       item.parent = this;
       item.active = true;
     });
     oldComponent.active = false;
     oldComponent.parent = undefined;
-    this.children = this.children.splice(index, 1, ...component);
-    updateComponent(
-      [oldComponent, ...[...component].reverse()],
-      customerUpdate
-    );
+    this.children = this.children.splice(index, 1, ...block);
+    updateComponent([oldComponent, ...[...block].reverse()], customerUpdate);
   }
 
   splitChild(
@@ -63,9 +66,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   ): StructureCollection<T> | undefined {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
-    if (index >= this.getSize()) {
-      return;
-    }
+    if (index >= this.getSize()) return;
     let tail = this.children.slice(index).toArray();
     let thisIndex = parent.findChildrenIndex(this);
     this.removeChildren(index, this.getSize() - index, customerUpdate);
@@ -80,7 +81,7 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
 
   split(
     index: number,
-    component?: Component | Component[],
+    block?: Block | Block[],
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
@@ -95,30 +96,29 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
       this.removeSelf();
       componentIndex -= 1;
     }
-    if (component) {
-      if (!Array.isArray(component)) component = [component];
-      parent.addChildren(component, componentIndex + 1, customerUpdate);
-      return [component[0], 0, 0];
+    if (block) {
+      if (!Array.isArray(block)) block = [block];
+      parent.addChildren(block, componentIndex + 1, customerUpdate);
+      return [block[0], 0, 0];
     }
     return;
   }
 
-  findChildrenIndex(idOrComponent: string | Component): number {
-    let id =
-      typeof idOrComponent === "string" ? idOrComponent : idOrComponent.id;
+  findChildrenIndex(idOrBlock: string | Block): number {
+    let id = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
     let index = this.children.findIndex((item) => item.id === id);
     if (index < 0) throw createError("该组件不在子组件列表中");
     return index;
   }
 
-  getPrev(idOrComponent: string | T): T | undefined {
-    let index = this.findChildrenIndex(idOrComponent);
+  getPrev(idOrBlock: string | T): T | undefined {
+    let index = this.findChildrenIndex(idOrBlock);
     if (index === 0) return;
     return this.children.get(index - 1);
   }
 
-  getNext(idOrComponent: string | T): T | undefined {
-    let index = this.findChildrenIndex(idOrComponent);
+  getNext(idOrBlock: string | T): T | undefined {
+    let index = this.findChildrenIndex(idOrBlock);
     if (index === this.getSize()) return;
     return this.children.get(index + 1);
   }
@@ -132,30 +132,30 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
     let startFlag = false;
     let endFlag = false;
 
-    this.children.forEach((component) => {
+    this.children.forEach((item) => {
       if (endFlag) return;
-      if (component instanceof StructureCollection) {
-        let temp = component.getIdList(startFlag ? "" : startId, endId);
+      if (item instanceof StructureCollection) {
+        let temp = item.getIdList(startFlag ? "" : startId, endId);
         startFlag = startFlag || temp[0];
         endFlag = endFlag || temp[1];
         res.push(...temp[2]);
         return;
       }
-      if (component.id === startId || startId === "") {
-        res.push(component.id);
+      if (item.id === startId || startId === "") {
+        res.push(item.id);
         startFlag = true;
-        if (component.id === endId) {
+        if (item.id === endId) {
           endFlag = true;
         }
         return;
       }
-      if (component.id === endId) {
-        res.push(component.id);
+      if (item.id === endId) {
+        res.push(item.id);
         endFlag = true;
         return;
       }
       if (startFlag && !endFlag) {
-        res.push(component.id);
+        res.push(item.id);
       }
     });
     // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
@@ -163,16 +163,8 @@ abstract class StructureCollection<T extends Component> extends Collection<T> {
   }
 
   getRaw(): rawType {
-    let raw: rawType = {
-      type: this.type,
-      children: this.children.toArray().map((item) => item.getRaw())
-    };
-    if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
-    }
-    if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
-    }
+    let raw = super.getRaw();
+    raw.children = this.children.toArray().map((item) => item.getRaw());
     return raw;
   }
 }

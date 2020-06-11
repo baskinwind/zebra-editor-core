@@ -1,4 +1,4 @@
-import Component, { rawType, operatorType, classType } from "./component";
+import Component, { rawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";

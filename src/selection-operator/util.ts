@@ -103,9 +103,9 @@ export const getCursorPosition = (
   cursor: cursorType
 ):
   | {
-    node: Node;
-    index: number;
-  }
+      node: Node;
+      index: number;
+    }
   | undefined => {
   let dom = document.getElementById(cursor.id);
   if (!dom) return;
@@ -124,7 +124,7 @@ export const getCursorPosition = (
 
 // 获取所有选中的叶节点，不包括结构性的组件
 export const getSelectedIdList = (startId: string, endId: string) => {
-  let component: Component = getComponentById(startId);
+  let component = getComponentById(startId);
   let parent = component.parent;
   if (!parent) throw createError("该节点已失效", component);
   while (parent.type !== ComponentType.article) {

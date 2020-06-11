@@ -1,18 +1,17 @@
 import Decorate, { storeData } from "../decorate";
-import Component, { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, rawType } from "./component";
+import Block from "./block";
 import Collection from "./collection";
-import StructureCollection from "./structure-collection";
 import Inline from "./inline";
+import InlineImage from "./inline-image";
 import Character from "./character";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import InlineImage from "./inline-image";
 import { createError } from "./util";
 import { getContentBuilder } from "../builder";
 
 abstract class ContentCollection extends Collection<Inline> {
-  parent?: StructureCollection<Component>;
   structureType = StructureType.content;
 
   static getChildren(raw: rawType): Inline[] {
@@ -34,17 +33,17 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
-  static exchangeOnly(component: Component, args?: any[]): ContentCollection[] {
+  static exchangeOnly(block: Block, args?: any[]): ContentCollection[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
   static exchange(
-    component: ContentCollection,
+    block: Block,
     args: any[],
     customerUpdate: boolean = false
   ): ContentCollection[] {
-    let newContent = this.exchangeOnly(component, args);
-    component.replaceSelf(newContent, customerUpdate);
+    let newContent = this.exchangeOnly(block, args);
+    block.replaceSelf(newContent, customerUpdate);
     return newContent;
   }
 
@@ -59,33 +58,42 @@ abstract class ContentCollection extends Collection<Inline> {
     throw createError("组件缺少 createEmpty 方法", this);
   }
 
-  exchangeTo(builder: classType, args: any[]): Component[] {
+  exchangeTo(builder: classType, args: any[]): Block[] {
     return builder.exchange(this, args);
   }
 
   addChildren(
-    component: Inline[],
+    inline: Inline[],
     index?: number,
     customerUpdate: boolean = false
   ) {
-    component
+    inline
       .filter((item) => item instanceof Inline)
       .forEach((item) => {
         item.parent = this;
       });
-    super.addChildren(component, index);
+    super.addChildren(inline, index);
     updateComponent(this, customerUpdate);
-    this.record.defaultStore();
   }
 
   removeChildren(
-    component: Inline | number,
+    inline: Inline | number,
     index?: number,
     customerUpdate: boolean = false
   ) {
-    let removed = super.removeChildren(component, index);
+    let removed = super.removeChildren(inline, index);
     updateComponent(this, customerUpdate);
     return removed;
+  }
+
+  addText(text: string, index?: number, customerUpdate: boolean = false) {
+    let charList: Character[] = [];
+    for (let char of text) {
+      charList.push(new Character(char));
+    }
+    this.addChildren(charList, index, customerUpdate);
+    index = index ? index : this.getSize();
+    return [this, index + text.length, index + text.length];
   }
 
   splitChild(
@@ -108,53 +116,43 @@ abstract class ContentCollection extends Collection<Inline> {
     return newCollection;
   }
 
-  addText(text: string, index?: number, customerUpdate: boolean = false) {
-    let componentList: Character[] = [];
-    for (let char of text) {
-      componentList.push(new Character(char));
-    }
-    this.addChildren(componentList, index, customerUpdate);
-    index = index ? index : this.getSize();
-    return [this, index + text.length, index + text.length];
-  }
-
   split(
     index: number,
-    component?: Component | Component[],
+    block?: Block | Block[],
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     let componentIndex = parent.findChildrenIndex(this);
-    let splitComponent = this.splitChild(index, customerUpdate);
-    if (component) {
-      if (!Array.isArray(component)) component = [component];
-      parent.addChildren(component, componentIndex + 1, customerUpdate);
+    let splitBlock = this.splitChild(index, customerUpdate);
+    if (block) {
+      if (!Array.isArray(block)) block = [block];
+      parent.addChildren(block, componentIndex + 1, customerUpdate);
     }
-    return [splitComponent, 0, 0];
+    return [splitBlock, 0, 0];
   }
 
   add(
-    component: Inline[] | Inline | string,
+    inline: Inline[] | Inline | string,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
     index = index ? index : this.getSize();
-    if (typeof component === "string") {
+    if (typeof inline === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];
-      for (let char of component) {
+      for (let char of inline) {
         list.push(
           new Character(char, decorate?.getStyle(), decorate?.getData())
         );
       }
-      component = list;
+      inline = list;
     }
-    if (!Array.isArray(component)) {
-      component = [component];
+    if (!Array.isArray(inline)) {
+      inline = [inline];
     }
-    this.addChildren(component, index, customerUpdate);
-    return [this, index + component.length, index + component.length];
+    this.addChildren(inline, index, customerUpdate);
+    return [this, index + inline.length, index + inline.length];
   }
 
   remove(
@@ -194,37 +192,20 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, start, end];
   }
 
-  sendTo(component: Component, customerUpdate: boolean = false): operatorType {
-    return component.receive(this, customerUpdate);
+  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
+    return block.receive(this, customerUpdate);
   }
 
-  receive(
-    component?: Component,
-    customerUpdate: boolean = false
-  ): operatorType {
+  receive(block?: Block, customerUpdate: boolean = false): operatorType {
     let size = this.getSize();
-    if (!component) return [this, size, size];
-    component.removeSelf(customerUpdate);
-    if (component instanceof ContentCollection) {
-      this.children = this.children.push(...component.children);
+    if (!block) return [this, size, size];
+    block.removeSelf(customerUpdate);
+    if (block instanceof ContentCollection) {
+      this.children = this.children.push(...block.children);
       updateComponent(this, customerUpdate);
       return [this, size, size];
     }
     return;
-  }
-
-  snapshoot() {
-    return {
-      children: this.children,
-      style: this.decorate.style,
-      data: this.decorate.data
-    };
-  }
-
-  restore(state?: any) {
-    this.children = state.children;
-    this.decorate.style = state.style;
-    this.decorate.data = state.data;
   }
 
   getRawData() {
