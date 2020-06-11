@@ -1,7 +1,7 @@
 import Record from ".";
 import Component from "../components/component";
 
-function recordComponent(constructor: typeof Component) {
+const recordComponent = (constructor: typeof Component) => {
   abstract class RecordComponent extends constructor {
     record: Record;
     constructor(...args: any[]) {
@@ -15,7 +15,7 @@ function recordComponent(constructor: typeof Component) {
     }
   };
   return RecordComponent;
-}
+};
 
 const recordMethod = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
   let oldFunc = descriptor.value;

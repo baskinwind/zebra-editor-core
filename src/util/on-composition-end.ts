@@ -7,7 +7,7 @@ const onComposttionEnd = (event: CompositionEvent) => {
   createRecord(selection.range[0], selection.range[1]);
   input(event.data, {
     id: selection.range[0].id,
-    offset: selection.range[0].offset
+    offset: selection.range[0].offset - event.data.length
   });
 };
 
