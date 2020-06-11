@@ -1,10 +1,11 @@
+import { rawType } from "./component";
+import Block from "./block";
+import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import updateComponent from "../util/update-component";
 import ComponentType from "../const/component-type";
+import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
-import Component, { rawType, operatorType } from "./component";
-import PlainText from "./plain-text";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -19,14 +20,14 @@ class Title extends ContentCollection {
     return title;
   }
 
-  static exchangeOnly(component: Component, args: any[] = []): Title[] {
+  static exchangeOnly(block: Block, args: any[] = []): Title[] {
     let list = [];
-    if (component instanceof ContentCollection) {
+    if (block instanceof ContentCollection) {
       let newTitle = new Title(args[0] || "h1");
-      newTitle.addChildren(component.children.toArray(), 0);
+      newTitle.addChildren(block.children.toArray(), 0);
       list.push(newTitle);
-    } else if (component instanceof PlainText) {
-      let stringList = component.content.split("\n");
+    } else if (block instanceof PlainText) {
+      let stringList = block.content.split("\n");
       if (stringList[stringList.length - 1].length === 0) {
         stringList.pop();
       }
@@ -47,7 +48,8 @@ class Title extends ContentCollection {
     this.titleType = type;
   }
 
-  setListType(type: titleType = "h1") {
+  setTitle(type: titleType = "h1") {
+    if (this.titleType === type) return;
     this.titleType = type;
     updateComponent(this);
   }

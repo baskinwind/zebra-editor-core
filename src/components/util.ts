@@ -1,12 +1,12 @@
 import { generate } from "shortid";
-import Component from "./component";
-const store: { [key: string]: any; } = {};
+import Block from "./block";
+const store: { [key: string]: any } = {};
 
 export const getId = () => {
   return generate();
 };
 
-export const saveComponent = <T extends Component = Component>(
+export const saveComponent = <T extends Block = Block>(
   component: T,
   key?: string
 ) => {
@@ -18,9 +18,7 @@ export const saveComponent = <T extends Component = Component>(
   store[component.id] = component;
 };
 
-export const getComponentById = <T extends Component = Component>(
-  id: string
-): T => {
+export const getComponentById = <T extends Block = Block>(id: string): T => {
   if (!id) {
     let article = store["article"];
     if (!article) throw Error("未生成文章，请先生成文章后调用。");

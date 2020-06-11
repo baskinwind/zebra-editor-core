@@ -1,17 +1,18 @@
-import Component, { operatorType, rawType } from "./component";
+import { operatorType, rawType } from "./component";
+import Block from "./block";
 import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 import { createError } from "./util";
+import { getContentBuilder } from "../builder";
 
 type mediaType = "image" | "audio" | "video";
 
-class Media extends Component {
-  type: ComponentType = ComponentType.media;
+class Media extends Block {
   src: string;
   mediaType: mediaType;
+  type = ComponentType.media;
   structureType = StructureType.content;
 
   static create(raw: rawType): Media {
@@ -48,37 +49,34 @@ class Media extends Component {
     return [paragraph, 0, 0];
   }
 
-  receive(
-    component?: Component,
-    customerUpdate: boolean = false
-  ): operatorType {
-    if (!component) return;
-    if (component.isEmpty()) {
-      component.removeSelf(customerUpdate);
+  receive(block?: Block, customerUpdate: boolean = false): operatorType {
+    if (!block) return;
+    if (block.isEmpty()) {
+      block.removeSelf(customerUpdate);
       return [this, 1, 1];
     }
     super.removeSelf(customerUpdate);
-    return [component, 0, 0];
+    return [block, 0, 0];
   }
 
   split(
     index: number,
-    component?: Component,
+    block?: Block,
     customerUpdate: boolean = false
   ): operatorType {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
-    if (!component) {
-      component = new Paragraph();
+    if (!block) {
+      block = new Paragraph();
     }
     let componentIndex = parent.findChildrenIndex(this);
     if (index === 0) {
-      parent.addChildren([component], componentIndex, customerUpdate);
+      parent.addChildren([block], componentIndex, customerUpdate);
     }
     if (index === 1) {
-      parent.addChildren([component], componentIndex + 1, customerUpdate);
+      parent.addChildren([block], componentIndex + 1, customerUpdate);
     }
-    return [component, index, index];
+    return [block, index, index];
   }
 
   remove(

@@ -1,4 +1,4 @@
-import Component, { rawType, operatorType, classType } from "./component";
+import Component, { rawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
@@ -21,20 +21,6 @@ class Code extends PlainText {
 
   createEmpty() {
     return new Code("\n", this.decorate.getStyle(), this.decorate.getData());
-  }
-
-  getRaw(): rawType {
-    let raw: rawType = {
-      type: this.type,
-      content: this.content
-    };
-    if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
-    }
-    if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
-    }
-    return raw;
   }
 
   render() {

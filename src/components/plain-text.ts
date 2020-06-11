@@ -1,6 +1,6 @@
-import Component, { operatorType, classType } from "./component";
+import Component, { operatorType, classType, rawType } from "./component";
+import Block from "./block";
 import ContentCollection from "./content-collection";
-import StructureCollection from "./structure-collection";
 import Paragraph from "./paragraph";
 import StructureType from "../const/structure-type";
 import DirectionType from "../const/direction-type";
@@ -8,30 +8,29 @@ import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { storeData } from "../decorate";
 
-abstract class PlainText extends Component {
-  parent?: StructureCollection<Component>;
-  structureType: StructureType = StructureType.plainText;
+abstract class PlainText extends Block {
   content: string;
+  structureType = StructureType.plainText;
 
   static exchangeOnly(component: Component, args: any[] = []): PlainText[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
   static exchange(
-    component: Component,
+    block: Block,
     args: any[],
     customerUpdate: boolean = false
   ): PlainText[] {
-    let parent = component.parent;
-    if (!parent) throw createError("该节点已失效", component);
-    let prev = parent.getPrev(component);
+    let parent = block.parent;
+    if (!parent) throw createError("该节点已失效", block);
+    let prev = parent.getPrev(block);
     if (prev instanceof PlainText) {
-      prev.receive(component, customerUpdate);
+      prev.receive(block, customerUpdate);
       return [prev];
     } else {
-      let newItem = this.exchangeOnly(component, args);
-      let index = parent.findChildrenIndex(component);
-      component.removeSelf();
+      let newItem = this.exchangeOnly(block, args);
+      let index = parent.findChildrenIndex(block);
+      block.removeSelf();
       parent.add(newItem, index, customerUpdate);
       return newItem;
     }
@@ -61,10 +60,10 @@ abstract class PlainText extends Component {
 
   split(
     index: number,
-    component?: Component | Component[],
+    block?: Block | Block[],
     customerUpdate: boolean = false
   ): operatorType {
-    if (component) {
+    if (block) {
       throw createError("纯文本组件只能输入文字");
     }
     return this.add("\n", index, customerUpdate);
@@ -94,9 +93,6 @@ abstract class PlainText extends Component {
     if (start < 0 && end === 0) {
       if (this.content.length <= 1) {
         return this.replaceSelf(new Paragraph());
-      } else {
-        // TODO: 该操作待验证
-        this.exchangeTo(Paragraph, []);
       }
       return;
     }
@@ -105,16 +101,13 @@ abstract class PlainText extends Component {
     return [this, start, start];
   }
 
-  receive(
-    component?: Component,
-    customerUpdate: boolean = false
-  ): operatorType {
-    component?.removeSelf();
+  receive(block?: Block, customerUpdate: boolean = false): operatorType {
+    block?.removeSelf();
     let size = this.content.length;
-    if (component instanceof ContentCollection) {
-      this.add(component.children.map((item) => item.content).join("") + "\n");
-    } else if (component instanceof PlainText) {
-      this.add(component.content);
+    if (block instanceof ContentCollection) {
+      this.add(block.children.map((item) => item.content).join("") + "\n");
+    } else if (block instanceof PlainText) {
+      this.add(block.content);
     }
     return [this, size, size];
   }
@@ -150,6 +143,12 @@ abstract class PlainText extends Component {
       return [paragraph, 0, 0];
     }
     return;
+  }
+
+  getRaw(): rawType {
+    let raw = super.getRaw();
+    raw.content = this.content;
+    return raw;
   }
 }
 

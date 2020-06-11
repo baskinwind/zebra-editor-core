@@ -1,6 +1,7 @@
 import Component, { operatorType, classType, rawType } from "./component";
-import StructureCollection from "./structure-collection";
+import Block from "./block";
 import ContentCollection from "./content-collection";
+import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
@@ -11,7 +12,6 @@ type tableCellChildType = string | TableItem | undefined;
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
-  structureType: StructureType = StructureType.structure;
   row: number;
   col: number;
   needHead: boolean;
@@ -85,13 +85,10 @@ class Table extends StructureCollection<TableRow> {
     this.needHead = needHead;
   }
 
-  receive(
-    component?: Component,
-    customerUpdate: boolean = false
-  ): operatorType {
-    if (!component) return;
+  receive(block?: Block, customerUpdate: boolean = false): operatorType {
+    if (!block) return;
     this.removeSelf(customerUpdate);
-    return [component, 0, 0];
+    return [block, 0, 0];
   }
 
   getRaw() {
@@ -114,7 +111,6 @@ class Table extends StructureCollection<TableRow> {
 
 class TableRow extends StructureCollection<TableCell> {
   type: ComponentType = ComponentType.tableRow;
-  structureType: StructureType = StructureType.structure;
   parent?: Table;
   emptyCell: number = 0;
   inCountEmptyCell: boolean = false;
@@ -169,7 +165,7 @@ class TableRow extends StructureCollection<TableCell> {
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ): TableCell[] {
-    throw createError("单元格不允许被删除！");
+    throw createError("单元格不允许单独删除！");
   }
 
   countEmptyCell(customerUpdate: boolean = false) {
@@ -211,7 +207,6 @@ class TableRow extends StructureCollection<TableCell> {
 
 class TableCell extends StructureCollection<TableItem> {
   type: ComponentType = ComponentType.tableCell;
-  structureType: StructureType = StructureType.structure;
   parent?: TableRow;
   cellType: "th" | "td";
 
@@ -256,26 +251,32 @@ class TableCell extends StructureCollection<TableItem> {
   }
 
   removeChildren(
-    indexOrComponent: TableItem | number,
+    indexOrTableItem: TableItem | number,
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
     if (this.getSize() === 1 && removeNumber === 1) {
-      let component = this.children.get(0) as TableItem;
-      component?.removeChildren(0, component.getSize(), customerUpdate);
-      return [component];
+      let tableItem = this.children.get(0) as TableItem;
+      tableItem?.removeChildren(0, tableItem.getSize(), customerUpdate);
+      return [tableItem];
     }
-    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+    return super.removeChildren(indexOrTableItem, removeNumber, customerUpdate);
   }
 
   childHeadDelete(
-    component: TableItem,
+    tableItem: TableItem,
     index: number,
     customerUpdate: boolean = false
   ): operatorType {
-    let prev = this.getPrev(component);
+    let prev = this.getPrev(tableItem);
     if (!prev) return;
-    return component.send(prev, customerUpdate);
+    return tableItem.sendTo(prev, customerUpdate);
+  }
+
+  getRaw() {
+    let raw = super.getRaw();
+    raw.cellType = this.cellType;
+    return raw;
   }
 
   render() {
@@ -300,16 +301,16 @@ class TableItem extends ContentCollection {
     return tableItem;
   }
 
-  static exchangeOnly(component: Component, args: any[] = []): TableItem[] {
+  static exchangeOnly(block: Block, args: any[] = []): TableItem[] {
     let newItem = new TableItem();
-    if (component instanceof ContentCollection) {
-      newItem.addChildren(component.children.toArray(), 0);
+    if (block instanceof ContentCollection) {
+      newItem.addChildren(block.children.toArray(), 0);
     }
     return [newItem];
   }
 
   static exchange(
-    component: Component,
+    block: Block,
     args: any[] = [],
     customerUpdate: boolean = false
   ): TableItem[] {
@@ -352,39 +353,39 @@ class TableItem extends ContentCollection {
 
   split(
     index: number,
-    component?: TableItem | TableItem[],
+    tableItem?: TableItem | TableItem[],
     customerUpdate: boolean = false
   ): operatorType {
     // 不允许非内容组件添加
-    let hasComponent: boolean = component !== undefined;
-    if (Array.isArray(component)) {
-      if (component.length === 0) hasComponent = false;
+    let hasComponent: boolean = tableItem !== undefined;
+    if (Array.isArray(tableItem)) {
+      if (tableItem.length === 0) hasComponent = false;
       let newList: TableItem[] = [];
-      component
+      tableItem
         .filter((item) => {
           return item instanceof ContentCollection;
         })
         .forEach((item) => {
           newList.push(...TableItem.exchangeOnly(item));
         });
-      component = newList;
-      component = component.length === 0 ? undefined : component;
-    } else if (component && component instanceof ContentCollection) {
-      component = TableItem.exchangeOnly(component);
+      tableItem = newList;
+      tableItem = tableItem.length === 0 ? undefined : tableItem;
+    } else if (tableItem && tableItem instanceof ContentCollection) {
+      tableItem = TableItem.exchangeOnly(tableItem);
     } else {
-      component = undefined;
+      tableItem = undefined;
     }
-    if (hasComponent && component === undefined) {
+    if (hasComponent && tableItem === undefined) {
       return;
     }
-    return super.split(index, component, customerUpdate);
+    return super.split(index, tableItem, customerUpdate);
   }
 
   // 表格项在删除时，默认不将光标后的内容添加到光标前
-  send(component: Component, customerUpdate: boolean = false): operatorType {
+  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
     try {
-      this.parent?.findChildrenIndex(component);
-      return super.sendTo(component, customerUpdate);
+      this.parent?.findChildrenIndex(block);
+      return super.sendTo(block, customerUpdate);
     } catch (e) {
       console.error(e);
     }
