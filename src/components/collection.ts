@@ -22,6 +22,7 @@ abstract class Collection<T extends Component> extends Block {
   ) {
     let addIndex = typeof index === "number" ? index : this.getSize();
     this.children = this.children.splice(addIndex, 0, ...components);
+    this.record.store();
   }
 
   // 内部使用，移除子元素
@@ -54,6 +55,7 @@ abstract class Collection<T extends Component> extends Block {
       .slice(removeIndex, removeIndex + removeNumber)
       .toArray();
     this.children = this.children.splice(removeIndex, removeNumber);
+    this.record.store();
     return removedComponent;
   }
 

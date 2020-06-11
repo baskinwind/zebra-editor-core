@@ -13,7 +13,6 @@ const input = (
   event?: KeyboardEvent
 ) => {
   try {
-    createRecord(start, start);
     let component = getComponentById(start.id);
     let offset = start.offset;
     let startPosition = getCursorPosition(start);

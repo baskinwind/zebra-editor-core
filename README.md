@@ -4,4 +4,4 @@
 
 ## 架构图
 
-[组成](https://raw.githubusercontent.com/acccco/zebra-draft/master/architecture.svg)
+architecture.svg

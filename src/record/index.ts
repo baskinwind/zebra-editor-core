@@ -6,18 +6,14 @@ import { recordState } from "./util";
 class Record {
   component: Component;
   list: any[] = [];
-  index: number = 0;
+  index: number = -1;
 
   constructor(component: Component) {
     this.component = component;
   }
 
-  defaultStore() {
+  store() {
     let state = this.component.snapshoot();
-    this.store(state);
-  }
-
-  store(state: any) {
     this.list.splice(this.index + 1);
     this.list.push(state);
     this.index = this.list.length - 1;
@@ -25,9 +21,9 @@ class Record {
   }
 
   undo() {
-    if (this.index === 0) return;
+    if (this.index <= 0) return;
+    this.component.restore(this.list[this.index - 1]);
     this.index -= 1;
-    this.component.restore(this.list[this.index]);
     if (this.component instanceof Block) {
       updateComponent(this.component);
     } else {
@@ -36,9 +32,9 @@ class Record {
   }
 
   redo() {
-    if (this.index === this.list.length) return;
+    if (this.index >= this.list.length - 1) return;
+    this.component.restore(this.list[this.index + 1]);
     this.index += 1;
-    this.component.restore(this.list[this.index]);
     if (this.component instanceof Block) {
       updateComponent(this.component);
     } else {

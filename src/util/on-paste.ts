@@ -4,6 +4,7 @@ import deleteSelection from "../rich-util/delete-selection";
 import StructureType from "../const/structure-type";
 import focusAt from "../rich-util/focus-at";
 import { getComponentById } from "../components/util";
+import { createRecord } from "../record/util";
 
 // 复制内容
 const onPaste = (event: ClipboardEvent) => {
@@ -17,6 +18,7 @@ const onPaste = (event: ClipboardEvent) => {
     deleteSelection(selection.range[0], selection.range[1]);
     selection = getSelection();
   }
+  createRecord(selection.range[0], selection.range[1]);
   let nowComponent = getComponentById(selection.range[0].id);
   let index = selection.range[0].offset;
 
@@ -26,17 +28,17 @@ const onPaste = (event: ClipboardEvent) => {
     return;
   }
 
+  // 过滤掉空行
+  rowData = rowData.filter((item) => {
+    return item.trim().length !== 0;
+  });
   let focus = nowComponent.add(rowData[0], index, rowData.length !== 1);
   if (rowData.length === 1) {
     return focusAt(focus);
   }
-  nowComponent.add(
-    rowData[rowData.length - 1],
-    index + rowData[0].length,
-    true
-  );
+  nowComponent.add(rowData[rowData.length - 1], index + rowData[0].length);
   let list = [];
-  for (let i = 1; i < rowData.length - 1; i++) {
+  for (let i = 1; i < rowData.length; i++) {
     list.push(new Paragraph(rowData[i]));
   }
   focus = nowComponent.split(index + rowData[0].length, list);

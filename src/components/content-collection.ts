@@ -1,5 +1,5 @@
 import Decorate, { storeData } from "../decorate";
-import Component, { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, rawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
@@ -74,7 +74,6 @@ abstract class ContentCollection extends Collection<Inline> {
       });
     super.addChildren(inline, index);
     updateComponent(this, customerUpdate);
-    this.record.defaultStore();
   }
 
   removeChildren(

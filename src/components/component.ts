@@ -49,6 +49,9 @@ abstract class Component {
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
     this.record = new Record(this);
+    Promise.resolve().then(() => {
+      this.record.store();
+    });
   }
 
   // 修改组件的表现形式
@@ -62,7 +65,7 @@ abstract class Component {
     if (this instanceof Block) {
       updateComponent(this, customerUpdate);
     }
-    this.record.defaultStore();
+    this.record.store();
     return;
   }
 
