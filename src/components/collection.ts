@@ -1,7 +1,8 @@
 import { List } from "immutable";
-import Component, { operatorType } from "./component";
+import Component from "./component";
 import Block from "./block";
 import { createError } from "./util";
+import { recordMethod } from "../record/decorators";
 
 abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
@@ -15,6 +16,7 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   // 内部使用，添加子元素
+  @recordMethod
   addChildren(
     components: T[],
     index?: number,
@@ -22,10 +24,10 @@ abstract class Collection<T extends Component> extends Block {
   ) {
     let addIndex = typeof index === "number" ? index : this.getSize();
     this.children = this.children.splice(addIndex, 0, ...components);
-    this.record.store();
   }
 
   // 内部使用，移除子元素
+  @recordMethod
   removeChildren(
     indexOrComponent: T | number,
     removeNumber: number = 1,
@@ -55,7 +57,6 @@ abstract class Collection<T extends Component> extends Block {
       .slice(removeIndex, removeIndex + removeNumber)
       .toArray();
     this.children = this.children.splice(removeIndex, removeNumber);
-    this.record.store();
     return removedComponent;
   }
 

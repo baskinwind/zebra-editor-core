@@ -1,7 +1,7 @@
 import Component from "../components/component";
 import Block from "../components/block";
 import updateComponent, { delayUpdate } from "../util/update-component";
-import { recordState } from "./util";
+import { getRecordStatus, recordSnapshoot } from "./util";
 
 class Record {
   component: Component;
@@ -13,11 +13,12 @@ class Record {
   }
 
   store() {
+    if (!getRecordStatus()) return;
     let state = this.component.snapshoot();
     this.list.splice(this.index + 1);
     this.list.push(state);
     this.index = this.list.length - 1;
-    recordState(this.component);
+    recordSnapshoot(this.component);
   }
 
   undo() {

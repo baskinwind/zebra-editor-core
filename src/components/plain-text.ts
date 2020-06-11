@@ -7,6 +7,7 @@ import DirectionType from "../const/direction-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { storeData } from "../decorate";
+import { recordMethod } from "../record/decorators";
 
 abstract class PlainText extends Block {
   content: string;
@@ -70,6 +71,7 @@ abstract class PlainText extends Block {
     return this.add("\n", index, customerUpdate);
   }
 
+  @recordMethod
   add(
     string: string,
     index?: number,
@@ -144,6 +146,20 @@ abstract class PlainText extends Block {
       return [paragraph, 0, 0];
     }
     return;
+  }
+
+  snapshoot() {
+    return {
+      content: this.content,
+      style: this.decorate.style,
+      data: this.decorate.data
+    };
+  }
+
+  restore(state?: any) {
+    this.content = state.content;
+    this.decorate.style = state.style;
+    this.decorate.data = state.data;
   }
 
   getRaw(): rawType {

@@ -1,5 +1,4 @@
 import Decorate from "../decorate";
-import Record from "../record";
 import Block from "./block";
 import Collection from "./collection";
 import ComponentType from "../const/component-type";
@@ -7,6 +6,7 @@ import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { getId } from "./util";
 import { storeData } from "../decorate/index";
+import { recordComponent, recordMethod } from "../record/decorators";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function; };
@@ -34,13 +34,12 @@ export interface rawType {
   size?: number;
 }
 
+@recordComponent
 abstract class Component {
   id: string = getId();
   parent?: Collection<Component>;
   // 修饰：样式，数据等
   decorate: Decorate;
-  // 修改历史记录
-  record: Record;
   // 类型，用于保存和恢复数据
   abstract type: ComponentType;
   // 结构上的作用
@@ -48,13 +47,12 @@ abstract class Component {
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.decorate = new Decorate(style, data);
-    this.record = new Record(this);
-    Promise.resolve().then(() => {
-      this.record.store();
-    });
+    // this.record = new Record(this);
+    // this.record.store();
   }
 
   // 修改组件的表现形式
+  @recordMethod
   modifyDecorate(
     style?: storeData,
     data?: storeData,
@@ -65,7 +63,6 @@ abstract class Component {
     if (this instanceof Block) {
       updateComponent(this, customerUpdate);
     }
-    this.record.store();
     return;
   }
 

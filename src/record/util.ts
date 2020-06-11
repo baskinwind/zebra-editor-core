@@ -26,6 +26,10 @@ const startRecord = () => {
   canRecord = true;
 };
 
+const getRecordStatus = () => {
+  return canRecord;
+};
+
 const initRecord = (component: Component) => {
   component.record.store();
   if (component instanceof StructureCollection) {
@@ -53,7 +57,7 @@ const createRecord = (start: cursorType, end: cursorType) => {
   });
 };
 
-const recordState = (component: Component) => {
+const recordSnapshoot = (component: Component) => {
   if (!canRecord) return;
   nowComponentList.push(component);
 };
@@ -88,4 +92,4 @@ const redo = () => {
   focusAt(nowRecord.redoSelection.start, nowRecord.redoSelection.end);
 };
 
-export { startRecord, initRecord, createRecord, recordState, undo, redo };
+export { startRecord, getRecordStatus, initRecord, createRecord, recordSnapshoot, undo, redo };
