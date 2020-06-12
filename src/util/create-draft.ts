@@ -5,13 +5,12 @@ import onComposttionEnd from "./on-composition-end";
 import onComposttionStart from "./on-composition-start";
 import onPaste from "./on-paste";
 import { flushSelection } from "../selection-operator/get-selection";
-import { initRecord, startRecord } from "../record/util";
+import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 
 // 将组件挂载到某个节点上
 const createDraft = (root: HTMLElement, article: Article) => {
   startUpdate();
-  startRecord();
   initRecord(article);
 
   let editorWrap = document.createElement("div");

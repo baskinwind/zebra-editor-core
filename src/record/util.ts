@@ -20,25 +20,25 @@ interface recoreType {
 let recoreQueue: recoreType[] = [];
 let nowIndex = -1;
 let nowComponentList: any[] = [];
-let canRecord = false;
 
-const startRecord = () => {
-  canRecord = true;
+const getRecordStepId = () => {
+  return nowIndex;
 };
 
-const getRecordStatus = () => {
-  return canRecord;
-};
-
-const initRecord = (component: Component) => {
+const initComponentRecord = (component: Component) => {
   component.record.store();
   if (component instanceof Collection) {
-    component.children.forEach((item) => initRecord(item));
+    component.children.forEach((item) => initComponentRecord(item));
   }
 };
 
+const initRecord = (component: Component) => {
+  nowIndex = 0;
+  initComponentRecord(component);
+};
+
 const createRecord = (start: cursorType, end: cursorType) => {
-  if (!canRecord) return;
+  if (nowIndex === -1) return;
   recoreQueue.splice(nowIndex + 1);
   nowComponentList = [];
   let newRecord = {
@@ -58,12 +58,11 @@ const createRecord = (start: cursorType, end: cursorType) => {
 };
 
 const recordSnapshoot = (component: Component) => {
-  if (!canRecord) return;
+  if (nowIndex === -1) return;
   nowComponentList.push(component);
 };
 
 const undo = () => {
-  if (!canRecord) return;
   if (nowIndex === -1) {
     focusAt();
     return;
@@ -78,7 +77,6 @@ const undo = () => {
 };
 
 const redo = () => {
-  if (!canRecord) return;
   if (nowIndex >= recoreQueue.length - 1) {
     focusAt();
     return;
@@ -93,8 +91,7 @@ const redo = () => {
 };
 
 export {
-  startRecord,
-  getRecordStatus,
+  getRecordStepId,
   initRecord,
   createRecord,
   recordSnapshoot,
