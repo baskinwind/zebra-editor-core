@@ -251,7 +251,7 @@ class ListItem extends ContentCollection {
       block = list;
     }
     if (flag) {
-      return;
+      throw createError("不允许非内容集合添加", this);
     }
     return super.split(index, block, customerUpdate);
   }
