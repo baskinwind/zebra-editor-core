@@ -1,20 +1,33 @@
-import Component, { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, rawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
-import StructureType from "../const/structure-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../builder";
 import { createError } from "./util";
+import { initRecordState } from "../record/decorators";
 
 type tableCellChildType = string | TableItem | undefined;
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
-  row: number;
   col: number;
   needHead: boolean;
+
+  static getTable(component: Block): Table | undefined {
+    let table: Table | undefined;
+    if (component instanceof TableItem) {
+      table = component.parent?.parent?.parent;
+    } else if (component instanceof TableCell) {
+      table = component.parent?.parent;
+    } else if (component instanceof TableRow) {
+      table = component.parent;
+    } else if (component instanceof Table) {
+      table = component;
+    }
+    return table;
+  }
 
   static create(raw: rawType): Table {
     let table = new Table(0, 0, [], false, raw.style, raw.data);
@@ -22,7 +35,6 @@ class Table extends StructureCollection<TableRow> {
       ? raw.children.map((item) => TableRow.create(item))
       : [];
     table.addChildren(children, 0, true);
-    table.row = raw.row || 0;
     table.col = raw.col || 0;
     table.needHead = raw.needHead || false;
     return table;
@@ -37,8 +49,6 @@ class Table extends StructureCollection<TableRow> {
     data?: storeData
   ) {
     super(style, data);
-    this.row = row;
-    this.col = col;
     this.needHead = needHead;
     this.decorate.setStyle("width", "100%");
     this.decorate.setStyle("borderCollapse", "collapse");
@@ -50,22 +60,23 @@ class Table extends StructureCollection<TableRow> {
         list.push(new TableRow(col, children[i]));
       }
     }
+    this.col = col;
     this.addChildren(list, 0, true);
   }
 
   setTableRow(row?: number) {
-    if (!row || row === this.row) return;
-    if (row > this.row) {
+    let size = this.getSize() - (this.needHead ? 1 : 0);
+    if (!row || row === size) return;
+    if (row > size) {
       let list = [];
-      for (let i = this.row; i < row; i++) {
+      for (let i = size; i < row; i++) {
         let item = new TableRow(this.col);
         list.push(item);
       }
       this.addChildren(list);
     } else {
-      this.removeChildren(row, this.row - row);
+      this.removeChildren(row, size - row);
     }
-    this.row = row;
   }
 
   setTableCol(col?: number) {
@@ -91,11 +102,22 @@ class Table extends StructureCollection<TableRow> {
     return [block, 0, 0];
   }
 
+  snapshoot(): any {
+    let snap = super.snapshoot();
+    snap.needHead = this.needHead;
+    snap.col = this.col;
+    return snap;
+  }
+
+  restore(state: any) {
+    this.needHead = state.needHead;
+    this.col = state.col;
+    super.restore(state);
+  }
+
   getRaw() {
     let raw = super.getRaw();
     raw.needHead = this.needHead;
-    raw.row = this.row;
-    raw.col = this.col;
     return raw;
   }
 
@@ -114,12 +136,10 @@ class TableRow extends StructureCollection<TableCell> {
   parent?: Table;
   emptyCell: number = 0;
   inCountEmptyCell: boolean = false;
-  size: number;
   cellType: "th" | "td";
 
   static create(raw: rawType): TableRow {
     let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
-    tableRow.size = raw.size || 0;
     let children = raw.children
       ? raw.children.map((item) => TableCell.create(item))
       : [];
@@ -135,7 +155,6 @@ class TableRow extends StructureCollection<TableCell> {
     data?: storeData
   ) {
     super(style, data);
-    this.size = size;
     this.cellType = cellType;
     let list = [];
     for (let i = 0; i < size; i++) {
@@ -146,26 +165,18 @@ class TableRow extends StructureCollection<TableCell> {
   }
 
   setSize(size?: number) {
-    if (!size || size === this.size) return;
-    if (size > this.size) {
+    let oldSize = this.getSize();
+    if (!size || size === oldSize) return;
+    if (size > oldSize) {
       let list = [];
-      for (let i = this.size; i < size; i++) {
+      for (let i = oldSize; i < size; i++) {
         let item = new TableCell("", this.cellType);
         list.push(item);
       }
       this.addChildren(list);
     } else {
-      this.removeChildren(size, this.size - size);
+      this.removeChildren(size, oldSize - size);
     }
-    this.size = size;
-  }
-
-  removeChildren(
-    indexOrComponent: TableCell | number,
-    removeNumber: number = 1,
-    customerUpdate: boolean = false
-  ): TableCell[] {
-    throw createError("单元格不允许单独删除！");
   }
 
   countEmptyCell(customerUpdate: boolean = false) {
@@ -183,8 +194,6 @@ class TableRow extends StructureCollection<TableCell> {
       this.removeSelf(customerUpdate);
       if (this.cellType === "th") {
         parent.needHead = false;
-      } else {
-        parent.row -= 1;
       }
     }
   }
@@ -290,6 +299,7 @@ class TableCell extends StructureCollection<TableItem> {
   }
 }
 
+@initRecordState
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
@@ -403,5 +413,3 @@ class TableItem extends ContentCollection {
 }
 
 export default Table;
-
-export { TableItem };

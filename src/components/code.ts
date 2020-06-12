@@ -3,7 +3,9 @@ import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../builder";
+import { initRecordState } from "../record/decorators";
 
+@initRecordState
 class Code extends PlainText {
   type = ComponentType.code;
 

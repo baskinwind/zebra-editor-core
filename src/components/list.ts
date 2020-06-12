@@ -9,9 +9,11 @@ import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
 import { createError } from "./util";
+import { initRecordState } from "../record/decorators";
 
 type listType = "ol" | "ul";
 
+@initRecordState
 class List extends StructureCollection<ListItem> {
   type = ComponentType.list;
   listType: listType;
@@ -163,6 +165,7 @@ class List extends StructureCollection<ListItem> {
   }
 }
 
+@initRecordState
 class ListItem extends ContentCollection {
   parent?: List;
   type = ComponentType.listItem;

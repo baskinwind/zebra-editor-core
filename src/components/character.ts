@@ -1,7 +1,9 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
 import { storeData } from "../decorate";
+import { initRecordState } from "../record/decorators";
 
+@initRecordState
 class Character extends Inline {
   type = ComponentType.character;
   content: string;

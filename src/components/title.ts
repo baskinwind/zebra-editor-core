@@ -6,9 +6,11 @@ import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate";
+import { initRecordState } from "../record/decorators";
 
 type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
+@initRecordState
 class Title extends ContentCollection {
   type = ComponentType.title;
   titleType: titleType;

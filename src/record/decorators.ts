@@ -1,23 +1,22 @@
-import Record from ".";
 import Component from "../components/component";
 
-const recordComponent = (constructor: typeof Component) => {
+const initRecordState = <T extends { new (...args: any[]): Component }>(
+  constructor: T
+) => {
   abstract class RecordComponent extends constructor {
-    record: Record;
     constructor(...args: any[]) {
       super(...args);
-      this.record = new Record(this);
       this.recordSnapshoot();
-    };
-
-    recordSnapshoot() {
-      this.record.store();
     }
-  };
+  }
   return RecordComponent;
 };
 
-const recordMethod = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+const recordMethod = (
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor
+) => {
   let oldFunc = descriptor.value;
   descriptor.value = function (...args: any[]) {
     let res = oldFunc.call(this, ...args);
@@ -28,7 +27,4 @@ const recordMethod = (target: any, propertyKey: string, descriptor: PropertyDesc
   };
 };
 
-export {
-  recordComponent,
-  recordMethod
-};
+export { initRecordState, recordMethod };

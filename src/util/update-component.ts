@@ -27,12 +27,13 @@ const updateComponent = (
   component?: Block | Block[],
   customerUpdate: boolean = false
 ) => {
+  // 先清空延迟更新的队列
   if (delayUpdateQueue.size) {
     console.log("delay update");
-    console.log(delayUpdateQueue);
     delayUpdateQueue.forEach((id) => update(getComponentById(id)));
     delayUpdateQueue.clear();
   }
+  // 无内容时，不触发更新
   if (!canUpdate || customerUpdate || !component) return;
   console.log("update");
   if (Array.isArray(component)) {
@@ -64,8 +65,8 @@ const update = (component: Block) => {
       update(parentComponent);
       return;
     }
-
     console.log(component.id);
+
     // 将该组件插入到合适的位置
     let index = parentComponent.children.findIndex(
       (child) => child === component

@@ -1,10 +1,11 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../builder";
 import { storeData } from "../decorate/index";
 import { rawType } from "./component";
+import { initRecordState } from "../record/decorators";
 
+@initRecordState
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;
   content = "$$$INLINEIMAGE$$$";

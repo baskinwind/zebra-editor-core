@@ -117,8 +117,8 @@ new Vue({
     },
     modifyTable() {
       modifyTable({
-        row: this.tableRow,
-        col: this.tableCol,
+        row: Number(this.tableRow),
+        col: Number(this.tableCol),
         head: this.tableHead
       });
     },

@@ -162,6 +162,18 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return [startFlag, endFlag, res];
   }
 
+  restore(state?: any) {
+    this.children.forEach((item) => {
+      item.active = false;
+      item.parent = undefined;
+    });
+    state.children.forEach((item: any) => {
+      item.active = true;
+      item.parent = this;
+    });
+    super.restore(state);
+  }
+
   getRaw(): rawType {
     let raw = super.getRaw();
     raw.children = this.children.toArray().map((item) => item.getRaw());

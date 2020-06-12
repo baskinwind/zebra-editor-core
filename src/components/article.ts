@@ -6,7 +6,9 @@ import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../builder/index";
 import { storeData } from "../decorate";
 import { saveComponent } from "./util";
+import { initRecordState } from "../record/decorators";
 
+@initRecordState
 class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;

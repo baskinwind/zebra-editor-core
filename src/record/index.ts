@@ -7,6 +7,7 @@ class Record {
   component: Component;
   list: any[] = [];
   index: number = -1;
+  stepId: number = -1;
 
   constructor(component: Component) {
     this.component = component;
@@ -21,10 +22,13 @@ class Record {
     recordSnapshoot(this.component);
   }
 
-  undo() {
+  undo(stepId: number) {
     if (this.index <= 0) return;
-    this.component.restore(this.list[this.index - 1]);
-    this.index -= 1;
+    if (this.stepId !== stepId) {
+      this.component.restore(this.list[this.index - 1]);
+      this.stepId = stepId;
+      this.index -= 1;
+    }
     if (this.component instanceof Block) {
       updateComponent(this.component);
     } else {
@@ -32,10 +36,13 @@ class Record {
     }
   }
 
-  redo() {
+  redo(stepId: number) {
     if (this.index >= this.list.length - 1) return;
-    this.component.restore(this.list[this.index + 1]);
-    this.index += 1;
+    if (this.stepId !== stepId) {
+      this.component.restore(this.list[this.index + 1]);
+      this.stepId = stepId;
+      this.index += 1;
+    }
     if (this.component instanceof Block) {
       updateComponent(this.component);
     } else {

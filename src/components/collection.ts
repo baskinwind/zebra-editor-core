@@ -3,6 +3,7 @@ import Component from "./component";
 import Block from "./block";
 import { createError } from "./util";
 import { recordMethod } from "../record/decorators";
+import { storeData } from "../decorate";
 
 abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
@@ -60,7 +61,7 @@ abstract class Collection<T extends Component> extends Block {
     return removedComponent;
   }
 
-  snapshoot() {
+  snapshoot(): any {
     return {
       children: this.children,
       style: this.decorate.style,

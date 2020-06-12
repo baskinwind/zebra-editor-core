@@ -1,8 +1,8 @@
-import focusAt from "../rich-util/focus-at";
 import Component from "../components/component";
-import StructureCollection from "../components/structure-collection";
-import updateComponent from "../util/update-component";
+import Collection from "../components/collection";
+import focusAt from "../rich-util/focus-at";
 import getSelection from "../selection-operator/get-selection";
+import updateComponent from "../util/update-component";
 import { cursorType } from "../selection-operator/util";
 
 interface recoreType {
@@ -32,7 +32,7 @@ const getRecordStatus = () => {
 
 const initRecord = (component: Component) => {
   component.record.store();
-  if (component instanceof StructureCollection) {
+  if (component instanceof Collection) {
     component.children.forEach((item) => initRecord(item));
   }
 };
@@ -70,7 +70,7 @@ const undo = () => {
   }
   let nowRecord = recoreQueue[nowIndex];
   nowRecord.componentList.forEach((item) => {
-    item.record.undo();
+    item.record.undo(nowIndex);
   });
   updateComponent();
   nowIndex -= 1;
@@ -85,11 +85,19 @@ const redo = () => {
   }
   let nowRecord = recoreQueue[nowIndex + 1];
   nowRecord.componentList.forEach((item) => {
-    item.record.redo();
+    item.record.redo(nowIndex);
   });
   updateComponent();
   nowIndex += 1;
   focusAt(nowRecord.redoSelection.start, nowRecord.redoSelection.end);
 };
 
-export { startRecord, getRecordStatus, initRecord, createRecord, recordSnapshoot, undo, redo };
+export {
+  startRecord,
+  getRecordStatus,
+  initRecord,
+  createRecord,
+  recordSnapshoot,
+  undo,
+  redo
+};
