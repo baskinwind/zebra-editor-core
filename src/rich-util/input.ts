@@ -61,7 +61,7 @@ const input = (
       return focusNode({ node: newInline, index: 1 });
     }
   } catch (e) {
-    console.error(e);
+    console.warn(e);
   }
 };
 

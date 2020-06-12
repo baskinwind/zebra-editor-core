@@ -397,7 +397,7 @@ class TableItem extends ContentCollection {
       this.parent?.findChildrenIndex(block);
       return super.sendTo(block, customerUpdate);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   }
 

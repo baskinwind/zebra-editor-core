@@ -24,35 +24,35 @@ const createDraft = (root: HTMLElement, article: Article) => {
     try {
       flushSelection();
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   });
   editorWrap.addEventListener("click", (event) => {
     try {
       onClick(event);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   });
   editorWrap.addEventListener("keydown", (event) => {
     try {
       onKeyDown(event);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   });
   editorWrap.addEventListener("compositionstart", (event) => {
     try {
       onComposttionStart(event as any);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   });
   editorWrap.addEventListener("compositionend", (event) => {
     try {
       onComposttionEnd(event as any);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   });
   editorWrap.addEventListener("paste", (event) => {
@@ -61,7 +61,7 @@ const createDraft = (root: HTMLElement, article: Article) => {
       event.preventDefault();
       onPaste(event);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   });
   editorWrap.addEventListener("dragstart", (event) => {
