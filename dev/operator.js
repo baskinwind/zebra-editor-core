@@ -14,7 +14,7 @@ import modifySelectionDecorate from "../src/selection-operator/modify-selection-
 import insertInline from "../src/selection-operator/insert-inline";
 import insertBlock from "../src/selection-operator/insert-block";
 import exchangeComponent from "../src/selection-operator/exchange-component";
-import modifyComponentDecorate from "../src/selection-operator/modify-component-decorate";
+import modifyComponentDecorate from "../src/selection-operator/modify-decorate";
 import modifyTable from "../src/selection-operator/modify-table";
 import updateComponent from "../src/util/update-component";
 import getHtml from "../src/util/get-html";

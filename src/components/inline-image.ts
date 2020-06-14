@@ -2,7 +2,7 @@ import Inline from "./inline";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate/index";
-import { rawType } from "./component";
+import { IRawType } from "./component";
 import { initRecordState } from "../record/decorators";
 
 @initRecordState
@@ -11,7 +11,7 @@ class InlineImage extends Inline {
   content = "$$$INLINEIMAGE$$$";
   src: string;
 
-  static create(raw: rawType): InlineImage {
+  static create(raw: IRawType): InlineImage {
     return new InlineImage(raw.src, raw.style, raw.data);
   }
 

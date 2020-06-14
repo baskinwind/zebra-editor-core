@@ -1,9 +1,12 @@
 import { List } from "immutable";
-import Component from "./component";
+import Component, { ISnapshoot } from "./component";
 import Block from "./block";
 import { createError } from "./util";
 import { recordMethod } from "../record/decorators";
-import { storeData } from "../decorate";
+
+export interface ICollectionSnapshoot<T> extends ISnapshoot {
+  children: List<T>;
+}
 
 abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
@@ -61,18 +64,15 @@ abstract class Collection<T extends Component> extends Block {
     return removedComponent;
   }
 
-  snapshoot(): any {
-    return {
-      children: this.children,
-      style: this.decorate.style,
-      data: this.decorate.data
-    };
+  snapshoot(): ICollectionSnapshoot<T> {
+    let snap = super.snapshoot() as ICollectionSnapshoot<T>;
+    snap.children = this.children;
+    return snap;
   }
 
-  restore(state?: any) {
+  restore(state: ICollectionSnapshoot<T>) {
     this.children = state.children;
-    this.decorate.style = state.style;
-    this.decorate.data = state.data;
+    super.restore(state);
   }
 }
 

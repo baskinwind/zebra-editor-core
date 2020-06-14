@@ -1,4 +1,4 @@
-import { operatorType, rawType } from "./component";
+import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
@@ -17,7 +17,7 @@ class Media extends Block {
   type = ComponentType.media;
   structureType = StructureType.content;
 
-  static create(raw: rawType): Media {
+  static create(raw: IRawType): Media {
     return new Media(
       raw.mediaType as mediaType,
       raw.src || "",
@@ -100,7 +100,7 @@ class Media extends Block {
     return [this, 0, 1];
   }
 
-  getRaw(): rawType {
+  getRaw(): IRawType {
     let raw = super.getRaw();
     raw.src = this.src;
     raw.mediaType = this.mediaType;
@@ -110,11 +110,12 @@ class Media extends Block {
   render() {
     let builder = getContentBuilder();
     let map = {
-      image: builder.buildeImage,
-      audio: builder.buildeAudio,
-      video: builder.buildeVideo
+      image: "buildeImage",
+      audio: "buildeAudio",
+      video: "buildeVideo"
     };
-    return map[this.mediaType](
+
+    return builder[map[this.mediaType]](
       this.id,
       this.src,
       this.decorate.getStyle(),

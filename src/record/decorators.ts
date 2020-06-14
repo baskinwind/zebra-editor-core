@@ -17,6 +17,7 @@ const recordMethod = (
   propertyKey: string,
   descriptor: PropertyDescriptor
 ) => {
+  
   let oldFunc = descriptor.value;
   descriptor.value = function (...args: any[]) {
     let res = oldFunc.call(this, ...args);

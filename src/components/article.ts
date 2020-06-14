@@ -1,4 +1,4 @@
-import { operatorType, rawType } from "./component";
+import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
@@ -18,7 +18,7 @@ class Article extends StructureCollection<Block> {
     saveComponent(this, "article");
   }
 
-  static create(raw: rawType): Article {
+  static create(raw: IRawType): Article {
     let article = new Article(raw.style, raw.data);
     return article;
   }
@@ -46,11 +46,9 @@ class Article extends StructureCollection<Block> {
   }
 
   render() {
-    console.log("article create");
-    let children = this.children.map((item) => item.render()).toArray();
     return getContentBuilder().buildArticle(
       this.id,
-      children,
+      this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );

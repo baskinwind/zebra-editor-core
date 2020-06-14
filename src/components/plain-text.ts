@@ -1,4 +1,9 @@
-import Component, { operatorType, classType, rawType } from "./component";
+import Component, {
+  operatorType,
+  classType,
+  IRawType,
+  ISnapshoot
+} from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import Paragraph from "./paragraph";
@@ -8,6 +13,10 @@ import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { storeData } from "../decorate";
 import { recordMethod } from "../record/decorators";
+
+export interface IPlainTextSnapshoot extends ISnapshoot {
+  content: string;
+}
 
 abstract class PlainText extends Block {
   content: string;
@@ -56,19 +65,9 @@ abstract class PlainText extends Block {
     return this.content.length - 1;
   }
 
+  @recordMethod
   exchangeTo(builder: classType, args: any[]): Block[] {
     return builder.exchange(this, args);
-  }
-
-  split(
-    index: number,
-    block?: Block | Block[],
-    customerUpdate: boolean = false
-  ): operatorType {
-    if (block) {
-      throw createError("纯文本组件只能输入文字");
-    }
-    return this.add("\n", index, customerUpdate);
   }
 
   @recordMethod
@@ -87,6 +86,7 @@ abstract class PlainText extends Block {
     return [this, index + string.length, index + string.length];
   }
 
+  @recordMethod
   remove(
     start: number,
     end?: number,
@@ -102,6 +102,17 @@ abstract class PlainText extends Block {
     this.content = this.content.slice(0, start) + this.content.slice(end);
     updateComponent(this, customerUpdate);
     return [this, start, start];
+  }
+
+  split(
+    index: number,
+    block?: Block | Block[],
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (block) {
+      throw createError("纯文本组件只能输入文字");
+    }
+    return this.add("\n", index, customerUpdate);
   }
 
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
@@ -148,21 +159,18 @@ abstract class PlainText extends Block {
     return;
   }
 
-  snapshoot() {
-    return {
-      content: this.content,
-      style: this.decorate.style,
-      data: this.decorate.data
-    };
+  snapshoot(): IPlainTextSnapshoot {
+    let snap = super.snapshoot() as IPlainTextSnapshoot;
+    snap.content = this.content;
+    return snap;
   }
 
-  restore(state?: any) {
+  restore(state: IPlainTextSnapshoot) {
     this.content = state.content;
-    this.decorate.style = state.style;
-    this.decorate.data = state.data;
+    super.restore(state);
   }
 
-  getRaw(): rawType {
+  getRaw(): IRawType {
     let raw = super.getRaw();
     raw.content = this.content;
     return raw;

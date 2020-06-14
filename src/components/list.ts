@@ -1,4 +1,4 @@
-import { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
@@ -18,9 +18,9 @@ class List extends StructureCollection<ListItem> {
   type = ComponentType.list;
   listType: listType;
 
-  static create(raw: rawType): List {
+  static create(raw: IRawType): List {
     let children = raw.children
-      ? raw.children.map((item: rawType) => ListItem.create(item))
+      ? raw.children.map((item: IRawType) => ListItem.create(item))
       : [];
     return new List(raw.listType, children, raw.style, raw.data);
   }
@@ -148,7 +148,7 @@ class List extends StructureCollection<ListItem> {
     return [newList[0], -1, -1];
   }
 
-  getRaw(): rawType {
+  getRaw(): IRawType {
     let raw = super.getRaw();
     raw.listType = this.listType;
     return raw;

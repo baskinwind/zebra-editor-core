@@ -6,10 +6,10 @@ import Paragraph from "../components/paragraph";
 import Title from "../components/title";
 import Media from "../components/media";
 import Code from "../components/code";
-import { rawType } from "../components/component";
+import { IRawType } from "../components/component";
 
 const ComponentMap = {
-  [ComponentType.article](raw: rawType) {
+  [ComponentType.article](raw: IRawType) {
     let article = Article.create(raw);
     let children = raw.children
       ? raw.children.map((item) => ComponentMap[item.type](item))
@@ -17,22 +17,22 @@ const ComponentMap = {
     article.add(children, 0, true);
     return article;
   },
-  [ComponentType.table](raw: rawType) {
+  [ComponentType.table](raw: IRawType) {
     return Table.create(raw);
   },
-  [ComponentType.list](raw: rawType) {
+  [ComponentType.list](raw: IRawType) {
     return List.create(raw);
   },
-  [ComponentType.title](raw: rawType) {
+  [ComponentType.title](raw: IRawType) {
     return Title.create(raw);
   },
-  [ComponentType.paragraph](raw: rawType) {
+  [ComponentType.paragraph](raw: IRawType) {
     return Paragraph.create(raw);
   },
-  [ComponentType.media](raw: rawType) {
+  [ComponentType.media](raw: IRawType) {
     return Media.create(raw);
   },
-  [ComponentType.code](raw: rawType) {
+  [ComponentType.code](raw: IRawType) {
     return Code.create(raw);
   }
 };

@@ -1,3 +1,4 @@
+import { Map } from "immutable";
 import Decorate from "../decorate";
 import Record from "../record";
 import Block from "./block";
@@ -11,9 +12,9 @@ import { recordMethod } from "../record/decorators";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function };
-export interface rawType {
+export interface IRawType {
   type: ComponentType;
-  children?: rawType[];
+  children?: IRawType[];
   style?: storeData;
   data?: storeData;
   // for CharacterList
@@ -33,6 +34,10 @@ export interface rawType {
   // for TableRaw
   cellType?: "th" | "td";
   size?: number;
+}
+export interface ISnapshoot {
+  style: Map<string, string>;
+  data: Map<string, string>;
 }
 
 abstract class Component {
@@ -72,7 +77,7 @@ abstract class Component {
   }
 
   // 获得当前组件的快照，用于撤销和回退
-  snapshoot() {
+  snapshoot(): ISnapshoot {
     return {
       style: this.decorate.style,
       data: this.decorate.data
@@ -80,14 +85,14 @@ abstract class Component {
   }
 
   // 回退组件状态
-  restore(state?: any) {
+  restore(state: ISnapshoot) {
     this.decorate.style = state.style;
     this.decorate.data = state.data;
   }
 
   // 获取用于存储的内容
-  getRaw(): rawType {
-    let raw: rawType = {
+  getRaw(): IRawType {
+    let raw: IRawType = {
       type: this.type
     };
     if (!this.decorate.styleIsEmpty()) {

@@ -1,4 +1,4 @@
-import Component, { rawType } from "./component";
+import Component, { IRawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
@@ -9,7 +9,7 @@ import { initRecordState } from "../record/decorators";
 class Code extends PlainText {
   type = ComponentType.code;
 
-  static create(raw: rawType): Code {
+  static create(raw: IRawType): Code {
     return new Code(raw.content, raw.style, raw.data);
   }
 
@@ -26,8 +26,7 @@ class Code extends PlainText {
   }
 
   render() {
-    const builder = getContentBuilder();
-    return builder.buildCode(
+    return getContentBuilder().buildCode(
       this.id,
       this.content,
       this.decorate.getStyle(),

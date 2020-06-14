@@ -1,4 +1,5 @@
-import { rawType } from "./component";
+import { IRawType, classType } from "./component";
+import Inline from "./inline";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
@@ -6,16 +7,20 @@ import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
-import { initRecordState } from "../record/decorators";
+import { initRecordState, recordMethod } from "../record/decorators";
+import { ICollectionSnapshoot } from "./collection";
 
 export type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export interface ITitleSnapshoot extends ICollectionSnapshoot<Inline> {
+  titleType: titleType;
+}
 
 @initRecordState
 class Title extends ContentCollection {
   type = ComponentType.title;
   titleType: titleType;
 
-  static create(raw: rawType): Title {
+  static create(raw: IRawType): Title {
     let title = new Title(raw.titleType || "h1", "", raw.style, raw.data);
     let children = super.getChildren(raw);
     title.addChildren(children, 0, true);
@@ -50,6 +55,18 @@ class Title extends ContentCollection {
     this.titleType = type;
   }
 
+  @recordMethod
+  exchangeTo(builder: classType, args: any[]): Block[] {
+    if (builder === Title && args[0]) {
+      if (args[0] !== this.titleType) {
+        this.setTitle(args[0]);
+        return [this];
+      }
+      return [this];
+    }
+    return builder.exchange(this, args);
+  }
+
   setTitle(type: titleType = "h1") {
     if (this.titleType === type) return;
     this.titleType = type;
@@ -65,7 +82,18 @@ class Title extends ContentCollection {
     );
   }
 
-  getRaw(): rawType {
+  snapshoot(): ITitleSnapshoot {
+    let snap = super.snapshoot() as ITitleSnapshoot;
+    snap.titleType = this.titleType;
+    return snap;
+  }
+
+  restore(state: ITitleSnapshoot) {
+    this.titleType = state.titleType;
+    super.restore(state);
+  }
+
+  getRaw(): IRawType {
     let raw = super.getRaw();
     raw.titleType = this.titleType;
     return raw;

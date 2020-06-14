@@ -35,7 +35,6 @@ const initComponentRecord = (component: Component) => {
 const initRecord = (component: Component) => {
   nowIndex = -1;
   initComponentRecord(component);
-  nowIndex = 0;
 };
 
 const createRecord = (start: cursorType, end: cursorType) => {
@@ -59,7 +58,7 @@ const createRecord = (start: cursorType, end: cursorType) => {
 };
 
 const recordSnapshoot = (component: Component) => {
-  if (nowIndex === -2) return;
+  if (nowIndex < 0) return;
   nowComponentList.push(component);
 };
 

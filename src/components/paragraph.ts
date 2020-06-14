@@ -1,16 +1,16 @@
-import { rawType } from "./component";
+import { IRawType, classType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
-import { initRecordState } from "../record/decorators";
+import { initRecordState, recordMethod } from "../record/decorators";
 
 @initRecordState
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
-  static create(raw: rawType): Paragraph {
+  static create(raw: IRawType): Paragraph {
     let paragraph = new Paragraph("", raw.style, raw.data);
     let children = super.getChildren(raw);
     paragraph.addChildren(children, 0, true);
@@ -33,6 +33,12 @@ class Paragraph extends ContentCollection {
       });
     }
     return list;
+  }
+
+  @recordMethod
+  exchangeTo(builder: classType, args: any[]): Block[] {
+    if (builder === Paragraph) return [this];
+    return builder.exchange(this, args);
   }
 
   createEmpty() {

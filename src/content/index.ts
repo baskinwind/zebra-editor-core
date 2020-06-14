@@ -5,6 +5,10 @@ let nowContentBuiler: BaseBuilder<any> = ContentBulider.getInstance();
 
 export const getContentBuilder = () => nowContentBuiler;
 
+export const setContentBuilder = (builder: BaseBuilder<any>) => {
+  nowContentBuiler = builder || ContentBulider.getInstance();
+};
+
 export const changeContentBuiler = (builder: BaseBuilder<any>) => {
   nowContentBuiler = builder;
   Promise.resolve().then(() => {

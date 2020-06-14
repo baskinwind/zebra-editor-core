@@ -1,11 +1,3 @@
-import Article from "../src/components/article";
-import Title from "../src/components/title";
-import Media from "../src/components/media";
-import Paragraph from "../src/components/paragraph";
-import InlineImage from "../src/components/inline-image";
-import List from "../src/components/list";
-import Table from "../src/components/table";
-import Code from "../src/components/code";
 import ComponentFactory from "../src/components";
 
 let factory = ComponentFactory.getInstance();
@@ -35,70 +27,66 @@ let pledgeCn = [
 ];
 
 let article = factory.buildArticle();
-// article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
-// article.add(factory.buildTitle("h2", "冰与火之歌"));
+article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
+article.add(factory.buildTitle("h2", "冰与火之歌"));
 
-// article.add(factory.buildTitle("h3", "图片"));
-// article.add(
-//   factory.buildMedia('image', "./draft-img-1.jpg")
-// );
+article.add(factory.buildTitle("h3", "图片"));
+article.add(factory.buildMedia("image", "./draft-img-1.jpg"));
 
-// article.add(factory.buildTitle("h3", "代码块"));
-// let code = factory.buildCode(`function greeter(user) {
-//     return \`Hello, \${user}. welcome to zebra-draft.\`;
-// }
+article.add(factory.buildTitle("h3", "代码块"));
+let code = factory.buildCode(`function greeter(user) {
+    return \`Hello, \${user}. welcome to zebra-draft.\`;
+}
 
-// let user = "Night's Watch";
+let user = "Night's Watch";
 
-// document.body.innerHTML = greeter(user);
-// `);
-// code.addInto(article);
+document.body.innerHTML = greeter(user);
+`);
+code.addInto(article);
 
-// article.add(factory.buildTitle("h3", "列表"));
-// let ol = factory.buildList("ol", [
-//   "权力的游戏",
-//   "列王的纷争",
-//   "冰雨的风暴",
-//   "群鸦的盛宴",
-//   "魔龙的狂舞"
-// ]);
-// ol.addInto(article);
+article.add(factory.buildTitle("h3", "列表"));
+let ol = factory.buildList("ol", [
+  "权力的游戏",
+  "列王的纷争",
+  "冰雨的风暴",
+  "群鸦的盛宴",
+  "魔龙的狂舞"
+]);
+ol.addInto(article);
 
-// let ul = factory.buildList("ul", [
-//   "琼恩·雪诺",
-//   "丹妮莉丝·坦格利安",
-//   "艾莉亚·史塔克",
-//   "提利昂·兰尼斯特"
-// ]);
-// ul.addInto(article);
+let ul = factory.buildList("ul", [
+  "琼恩·雪诺",
+  "丹妮莉丝·坦格利安",
+  "艾莉亚·史塔克",
+  "提利昂·兰尼斯特"
+]);
+ul.addInto(article);
 
-// article.add(factory.buildTitle("h3", "段落"));
-// pledge.forEach((item) => {
-//   article.add(factory.buildParagraph(item));
-// });
+article.add(factory.buildTitle("h3", "段落"));
+pledge.forEach((item) => {
+  article.add(factory.buildParagraph(item));
+});
 
-// pledgeCn.forEach((item) => {
-//   article.add(factory.buildParagraph(item));
-// });
+pledgeCn.forEach((item) => {
+  article.add(factory.buildParagraph(item));
+});
 
-// article.add(factory.buildTitle("h3", "图文混排"));
-// let para = factory.buildParagraph("");
-// para.add(factory.buildInlineImage("./emjoy-1.png"));
-// para.addText("Valar Morghulis");
-// para.add(factory.buildInlineImage("./emjoy-2.png"));
-// para.addText("凡人皆有一死");
-// para.add(factory.buildInlineImage("./emjoy-3.png"));
-// para.addInto(article);
+article.add(factory.buildTitle("h3", "图文混排"));
+let para = factory.buildParagraph("");
+para.add(factory.buildInlineImage("./emjoy-1.png"));
+para.addText("Valar Morghulis");
+para.add(factory.buildInlineImage("./emjoy-2.png"));
+para.addText("凡人皆有一死");
+para.add(factory.buildInlineImage("./emjoy-3.png"));
+para.addInto(article);
 
-// article.add(factory.buildTitle("h3", "表格"));
-// let table = factory.buildTable(3, 3, [
-//   ["表头一", "表头二", "表头三"],
-//   ["1-1", "1-2", "1-3"],
-//   ["2-1", "2-2", "2-3"],
-//   ["3-1", "3-2", "3-3"]
-// ]);
-// table.addInto(article);
-
-article.add(factory.buildParagraph("qwer"));
+article.add(factory.buildTitle("h3", "表格"));
+let table = factory.buildTable(3, 3, [
+  ["表头一", "表头二", "表头三"],
+  ["1-1", "1-2", "1-3"],
+  ["2-1", "2-2", "2-3"],
+  ["3-1", "3-2", "3-3"]
+]);
+table.addInto(article);
 
 export default article;

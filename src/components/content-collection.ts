@@ -1,5 +1,5 @@
 import Decorate, { storeData } from "../decorate";
-import { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
@@ -14,10 +14,10 @@ import { getContentBuilder } from "../content";
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
-  static getChildren(raw: rawType): Inline[] {
+  static getChildren(raw: IRawType): Inline[] {
     if (!raw.children) return [];
     let children: Inline[] = [];
-    raw.children.forEach((item: rawType) => {
+    raw.children.forEach((item: IRawType) => {
       if (item.type === ComponentType.characterList) {
         if (!item.content) return;
         for (let char of item.content) {
@@ -241,12 +241,12 @@ abstract class ContentCollection extends Collection<Inline> {
     return content;
   }
 
-  getRaw(): rawType {
+  getRaw(): IRawType {
     let children = this.getRawData().map((item) => {
       if (item.getRaw) {
         return item.getRaw();
       }
-      let raw: rawType = {
+      let raw: IRawType = {
         type: ComponentType.characterList,
         content: item[0]
       };
@@ -258,7 +258,7 @@ abstract class ContentCollection extends Collection<Inline> {
       }
       return raw;
     });
-    let raw: rawType = {
+    let raw: IRawType = {
       type: this.type,
       children: children
     };

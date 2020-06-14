@@ -1,9 +1,10 @@
-import { operatorType, rawType } from "./component";
+import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
+import { recordMethod } from "../record/decorators";
 
 abstract class StructureCollection<T extends Block> extends Collection<T> {
   structureType = StructureType.structure;
@@ -45,6 +46,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return;
   }
 
+  @recordMethod
   replaceChild(block: T[], oldComponent: T, customerUpdate: boolean = false) {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
@@ -174,7 +176,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     super.restore(state);
   }
 
-  getRaw(): rawType {
+  getRaw(): IRawType {
     let raw = super.getRaw();
     raw.children = this.children.toArray().map((item) => item.getRaw());
     return raw;

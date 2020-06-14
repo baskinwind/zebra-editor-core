@@ -7,7 +7,6 @@ import Paragraph from "./paragraph";
 import Media, { mediaType } from "./media";
 import Code from "./code";
 import InlineImage from "./inline-image";
-import { createError } from "./util";
 
 class ComponentFactory {
   static bulider: ComponentFactory;
@@ -18,13 +17,12 @@ class ComponentFactory {
     return this.bulider;
   }
 
-  constructor() {
-    throw createError("实例化构造器请调用 getInstance 方法");
-  }
+  private constructor() {}
 
   buildArticle(style: storeData = {}, data: storeData = {}) {
     return new Article(style, data);
   }
+
   buildList(
     type: listType = "ul",
     children: string[] = [],
@@ -33,6 +31,7 @@ class ComponentFactory {
   ) {
     return new List(type, children, style, data);
   }
+
   buildTable(
     row: number,
     col: number,
@@ -43,6 +42,7 @@ class ComponentFactory {
   ) {
     return new Table(row, col, children, needHead, style, data);
   }
+
   buildTitle(
     type: titleType,
     text?: string,
@@ -51,9 +51,11 @@ class ComponentFactory {
   ) {
     return new Title(type, text, style, data);
   }
+
   buildParagraph(text?: string, style: storeData = {}, data: storeData = {}) {
     return new Paragraph(text, style, data);
   }
+
   buildMedia(
     mediaType: mediaType,
     src: string,
@@ -62,9 +64,11 @@ class ComponentFactory {
   ) {
     return new Media(mediaType, src, style, data);
   }
+
   buildCode(content: string = "", style: storeData = {}, data: storeData = {}) {
     return new Code(content, style, data);
   }
+
   buildInlineImage(src: string, style: storeData = {}, data: storeData = {}) {
     return new InlineImage(src, style, data);
   }

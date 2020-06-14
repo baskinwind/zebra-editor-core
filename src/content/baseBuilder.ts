@@ -1,13 +1,9 @@
-import { createError } from "../components/util";
-
 export interface mapData {
   [key: string]: any;
 }
 
 abstract class BaseBuilder<T> {
-  constructor() {
-    throw createError("实例化构造器请调用 getInstance 方法");
-  }
+  private constructor() {}
 
   abstract buildArticle(
     id: string,

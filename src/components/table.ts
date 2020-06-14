@@ -1,4 +1,4 @@
-import { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
@@ -7,8 +7,14 @@ import { storeData } from "../decorate";
 import { getContentBuilder } from "../content";
 import { createError } from "./util";
 import { initRecordState } from "../record/decorators";
+import { ICollectionSnapshoot } from "./collection";
 
 type tableCellChildType = string | TableItem | undefined;
+
+interface ITableSnapshoot extends ICollectionSnapshoot<TableRow> {
+  col: number;
+  needHead: boolean;
+}
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
@@ -29,7 +35,7 @@ class Table extends StructureCollection<TableRow> {
     return table;
   }
 
-  static create(raw: rawType): Table {
+  static create(raw: IRawType): Table {
     let table = new Table(0, 0, [], false, raw.style, raw.data);
     let children = raw.children
       ? raw.children.map((item) => TableRow.create(item))
@@ -102,14 +108,14 @@ class Table extends StructureCollection<TableRow> {
     return [block, 0, 0];
   }
 
-  snapshoot(): any {
-    let snap = super.snapshoot();
+  snapshoot(): ITableSnapshoot {
+    let snap = super.snapshoot() as ITableSnapshoot;
     snap.needHead = this.needHead;
     snap.col = this.col;
     return snap;
   }
 
-  restore(state: any) {
+  restore(state: ITableSnapshoot) {
     this.needHead = state.needHead;
     this.col = state.col;
     super.restore(state);
@@ -138,7 +144,7 @@ class TableRow extends StructureCollection<TableCell> {
   inCountEmptyCell: boolean = false;
   cellType: "th" | "td";
 
-  static create(raw: rawType): TableRow {
+  static create(raw: IRawType): TableRow {
     let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
     let children = raw.children
       ? raw.children.map((item) => TableCell.create(item))
@@ -219,7 +225,7 @@ class TableCell extends StructureCollection<TableItem> {
   parent?: TableRow;
   cellType: "th" | "td";
 
-  static create(raw: rawType): TableCell {
+  static create(raw: IRawType): TableCell {
     let tableCell = new TableCell("", raw.cellType, raw.style, raw.data);
     let children = raw.children
       ? raw.children.map((item) => TableItem.create(item))
@@ -304,7 +310,7 @@ class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
 
-  static create(raw: rawType): TableItem {
+  static create(raw: IRawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
     let children = super.getChildren(raw);
     tableItem.addChildren(children, 0, true);
