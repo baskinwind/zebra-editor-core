@@ -1,4 +1,4 @@
-import { operatorType, classType, IRawType } from "./component";
+import { operatorType, classType, IRawType, ISnapshoot } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
@@ -9,9 +9,13 @@ import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { createError } from "./util";
-import { initRecordState } from "../record/decorators";
+import { initRecordState, recordMethod } from "../record/decorators";
+import { ICollectionSnapshoot } from "./collection";
 
 export type listType = "ol" | "ul";
+export interface IListSnapshoot extends ICollectionSnapshoot<ListItem> {
+  listType: listType;
+}
 
 @initRecordState
 class List extends StructureCollection<ListItem> {
@@ -69,6 +73,7 @@ class List extends StructureCollection<ListItem> {
     this.addChildren(list, 0, true);
   }
 
+  @recordMethod
   setListType(type: listType = "ul") {
     if (type === this.listType) return;
     this.listType = type;
@@ -148,6 +153,17 @@ class List extends StructureCollection<ListItem> {
     return [newList[0], -1, -1];
   }
 
+  snapshoot(): IListSnapshoot {
+    let snap = super.snapshoot() as IListSnapshoot;
+    snap.listType = this.listType;
+    return snap;
+  }
+
+  restore(state: IListSnapshoot) {
+    this.listType = state.listType;
+    super.restore(state);
+  }
+
   getRaw(): IRawType {
     let raw = super.getRaw();
     raw.listType = this.listType;
@@ -199,6 +215,7 @@ class ListItem extends ContentCollection {
     return new ListItem("", this.decorate.getStyle(), this.decorate.getData());
   }
 
+  @recordMethod
   exchangeTo(
     builder: classType,
     args: any[],
