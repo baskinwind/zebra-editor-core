@@ -1,6 +1,6 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../builder";
+import { getContentBuilder } from "../content";
 import { storeData } from "../decorate/index";
 import { rawType } from "./component";
 import { initRecordState } from "../record/decorators";
@@ -12,10 +12,10 @@ class InlineImage extends Inline {
   src: string;
 
   static create(raw: rawType): InlineImage {
-    return new InlineImage(raw.src || "", raw.style, raw.data);
+    return new InlineImage(raw.src, raw.style, raw.data);
   }
 
-  constructor(src: string, style?: storeData, data?: storeData) {
+  constructor(src: string = "", style?: storeData, data?: storeData) {
     super(style, data);
     this.src = src;
   }

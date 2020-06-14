@@ -3,7 +3,7 @@ import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getContentBuilder } from "../builder/index";
+import { getContentBuilder } from "../content/index";
 import { storeData } from "../decorate";
 import { saveComponent } from "./util";
 import { initRecordState } from "../record/decorators";
@@ -13,7 +13,7 @@ class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;
 
-  constructor(style: storeData = {}, data: storeData = {}) {
+  constructor(style?: storeData, data?: storeData) {
     super(style, data);
     saveComponent(this, "article");
   }

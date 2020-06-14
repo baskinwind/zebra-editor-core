@@ -6,7 +6,7 @@ import { getRecordStepId, recordSnapshoot } from "./util";
 class Record {
   component: Component;
   recordMap: { [key: number]: any } = {};
-  stepId: number = -1;
+  stepId: number = -2;
 
   constructor(component: Component) {
     this.component = component;
@@ -14,32 +14,19 @@ class Record {
 
   store() {
     let stepId = getRecordStepId();
-    if (stepId === -1) return;
-    if (!this.recordMap[stepId]) {
-      recordSnapshoot(this.component);
-    }
+    if (stepId === -2) return;
+    recordSnapshoot(this.component);
     this.recordMap[stepId] = this.component.snapshoot();
   }
 
-  undo(stepId: number) {
-    if (stepId === -1 || !this.recordMap[stepId]) return;
-    if (this.stepId !== stepId) {
-      this.stepId = stepId;
-      this.component.restore(this.recordMap[stepId]);
+  restore(stepId: number) {
+    if (stepId === -2) return;
+    let step = stepId;
+    while (!this.recordMap[step] && step !== -1) {
+      step--;
     }
-    if (this.component instanceof Block) {
-      updateComponent(this.component);
-    } else {
-      delayUpdate([this.component.parent!.id]);
-    }
-  }
-
-  redo(stepId: number) {
-    if (stepId === -1 || !this.recordMap[stepId]) return;
-    if (this.stepId !== stepId) {
-      this.stepId = stepId;
-      this.component.restore(this.recordMap[stepId]);
-    }
+    if (!this.recordMap[step]) return;
+    this.component.restore(this.recordMap[step]);
     if (this.component instanceof Block) {
       updateComponent(this.component);
     } else {

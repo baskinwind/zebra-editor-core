@@ -9,7 +9,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
-import { getContentBuilder } from "../builder";
+import { getContentBuilder } from "../content";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
@@ -47,7 +47,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return newContent;
   }
 
-  constructor(text?: string, style?: storeData, data?: storeData) {
+  constructor(text: string = "", style?: storeData, data?: storeData) {
     super(style, data);
     if (text) {
       this.addText(text, 0, true);

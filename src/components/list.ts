@@ -1,4 +1,4 @@
-import Component, { operatorType, classType, rawType } from "./component";
+import { operatorType, classType, rawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
@@ -6,12 +6,12 @@ import PlainText from "./plain-text";
 import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { getContentBuilder } from "../builder";
+import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { createError } from "./util";
 import { initRecordState } from "../record/decorators";
 
-type listType = "ol" | "ul";
+export type listType = "ol" | "ul";
 
 @initRecordState
 class List extends StructureCollection<ListItem> {

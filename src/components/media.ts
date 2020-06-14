@@ -5,10 +5,10 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate/index";
 import { createError } from "./util";
-import { getContentBuilder } from "../builder";
+import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
 
-type mediaType = "image" | "audio" | "video";
+export type mediaType = "image" | "audio" | "video";
 
 @initRecordState
 class Media extends Block {

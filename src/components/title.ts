@@ -4,11 +4,11 @@ import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { getContentBuilder } from "../builder";
+import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState } from "../record/decorators";
 
-type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 @initRecordState
 class Title extends ContentCollection {

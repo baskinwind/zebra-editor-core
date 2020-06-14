@@ -1,9 +1,9 @@
 import Component, { classType, operatorType } from "./component";
+import Collection from "./collection";
 import StructureCollection from "./structure-collection";
 import DirectionType from "../const/direction-type";
 import { saveComponent, createError } from "./util";
 import { storeData } from "../decorate/index";
-import Collection from "./collection";
 
 abstract class Block extends Component {
   // 否是有效的
@@ -29,7 +29,7 @@ abstract class Block extends Component {
     throw createError("组件未实现 create 静态方法", this);
   }
 
-  constructor(style: storeData = {}, data: storeData = {}) {
+  constructor(style?: storeData, data?: storeData) {
     super(style, data);
     saveComponent(this);
   }

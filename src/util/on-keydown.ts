@@ -30,7 +30,6 @@ const onKeyDown = (event: KeyboardEvent) => {
   }
 
   let selection = getSelection();
-  createRecord(selection.range[0], selection.range[1]);
   // 选中 article 直接子节点时，选中 table 前后时，会有该情况发生
   if (selection.selectStructure) {
     event?.preventDefault();
@@ -62,6 +61,7 @@ const onKeyDown = (event: KeyboardEvent) => {
     return;
   }
 
+  createRecord(selection.range[0], selection.range[1]);
   // 换行
   if (isEnter) {
     enter(selection.range[0], selection.range[1], event);

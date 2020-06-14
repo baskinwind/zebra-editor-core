@@ -1,10 +1,10 @@
 import Article from "../components/article";
-import { changeContentBuiler } from "../builder";
-import htmlBuilder from "../builder/html-builder";
+import { changeContentBuiler } from "../content";
+import HtmlBuilder from "../content/html-builder";
 
 // 生成 HTML
 const getHtml = (article: Article) => {
-  changeContentBuiler(htmlBuilder);
+  changeContentBuiler(HtmlBuilder.getInstance());
   return article.render();
 };
 

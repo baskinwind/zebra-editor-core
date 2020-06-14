@@ -18,7 +18,7 @@ interface recoreType {
 }
 
 let recoreQueue: recoreType[] = [];
-let nowIndex = -1;
+let nowIndex = -2;
 let nowComponentList: any[] = [];
 
 const getRecordStepId = () => {
@@ -33,12 +33,13 @@ const initComponentRecord = (component: Component) => {
 };
 
 const initRecord = (component: Component) => {
-  nowIndex = 0;
+  nowIndex = -1;
   initComponentRecord(component);
+  nowIndex = 0;
 };
 
 const createRecord = (start: cursorType, end: cursorType) => {
-  if (nowIndex === -1) return;
+  if (nowIndex === -2) return;
   recoreQueue.splice(nowIndex + 1);
   nowComponentList = [];
   let newRecord = {
@@ -58,18 +59,15 @@ const createRecord = (start: cursorType, end: cursorType) => {
 };
 
 const recordSnapshoot = (component: Component) => {
-  if (nowIndex === -1) return;
+  if (nowIndex === -2) return;
   nowComponentList.push(component);
 };
 
 const undo = () => {
-  if (nowIndex === -1) {
-    focusAt();
-    return;
-  }
+  if (nowIndex === -1) return;
   let nowRecord = recoreQueue[nowIndex];
   nowRecord.componentList.forEach((item) => {
-    item.record.undo(nowIndex);
+    item.record.restore(nowIndex - 1);
   });
   updateComponent();
   nowIndex -= 1;
@@ -77,13 +75,10 @@ const undo = () => {
 };
 
 const redo = () => {
-  if (nowIndex >= recoreQueue.length - 1) {
-    focusAt();
-    return;
-  }
+  if (nowIndex === recoreQueue.length - 1) return;
   let nowRecord = recoreQueue[nowIndex + 1];
   nowRecord.componentList.forEach((item) => {
-    item.record.redo(nowIndex);
+    item.record.restore(nowIndex + 1);
   });
   updateComponent();
   nowIndex += 1;

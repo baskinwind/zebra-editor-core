@@ -6,6 +6,9 @@ import InlineImage from "../src/components/inline-image";
 import List from "../src/components/list";
 import Table from "../src/components/table";
 import Code from "../src/components/code";
+import ComponentFactory from "../src/components";
+
+let factory = ComponentFactory.getInstance();
 
 let pledge = [
   "Night gathers, and now my watch begins.",
@@ -31,17 +34,17 @@ let pledgeCn = [
   "我将生命与荣耀献给守夜人，今夜如此，夜夜皆然。"
 ];
 
-let article = new Article();
-// article.add(new Title("h1", "A Song of Ice and Fire"));
-// article.add(new Title("h2", "冰与火之歌"));
+let article = factory.buildArticle();
+// article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
+// article.add(factory.buildTitle("h2", "冰与火之歌"));
 
-// article.add(new Title("h3", "图片"));
+// article.add(factory.buildTitle("h3", "图片"));
 // article.add(
-//   new Media('image', "./draft-img-1.jpg")
+//   factory.buildMedia('image', "./draft-img-1.jpg")
 // );
 
-// article.add(new Title("h3", "代码块"));
-// let code = new Code(`function greeter(user) {
+// article.add(factory.buildTitle("h3", "代码块"));
+// let code = factory.buildCode(`function greeter(user) {
 //     return \`Hello, \${user}. welcome to zebra-draft.\`;
 // }
 
@@ -51,8 +54,8 @@ let article = new Article();
 // `);
 // code.addInto(article);
 
-// article.add(new Title("h3", "列表"));
-// let ol = new List("ol", [
+// article.add(factory.buildTitle("h3", "列表"));
+// let ol = factory.buildList("ol", [
 //   "权力的游戏",
 //   "列王的纷争",
 //   "冰雨的风暴",
@@ -61,7 +64,7 @@ let article = new Article();
 // ]);
 // ol.addInto(article);
 
-// let ul = new List("ul", [
+// let ul = factory.buildList("ul", [
 //   "琼恩·雪诺",
 //   "丹妮莉丝·坦格利安",
 //   "艾莉亚·史塔克",
@@ -69,26 +72,26 @@ let article = new Article();
 // ]);
 // ul.addInto(article);
 
-// article.add(new Title("h3", "段落"));
+// article.add(factory.buildTitle("h3", "段落"));
 // pledge.forEach((item) => {
-//   article.add(new Paragraph(item));
+//   article.add(factory.buildParagraph(item));
 // });
 
 // pledgeCn.forEach((item) => {
-//   article.add(new Paragraph(item));
+//   article.add(factory.buildParagraph(item));
 // });
 
-// article.add(new Title("h3", "图文混排"));
-// let para = new Paragraph("");
-// para.add(new InlineImage("./emjoy-1.png"));
+// article.add(factory.buildTitle("h3", "图文混排"));
+// let para = factory.buildParagraph("");
+// para.add(factory.buildInlineImage("./emjoy-1.png"));
 // para.addText("Valar Morghulis");
-// para.add(new InlineImage("./emjoy-2.png"));
+// para.add(factory.buildInlineImage("./emjoy-2.png"));
 // para.addText("凡人皆有一死");
-// para.add(new InlineImage("./emjoy-3.png"));
+// para.add(factory.buildInlineImage("./emjoy-3.png"));
 // para.addInto(article);
 
-// article.add(new Title("h3", "表格"));
-// let table = new Table(3, 3, [
+// article.add(factory.buildTitle("h3", "表格"));
+// let table = factory.buildTable(3, 3, [
 //   ["表头一", "表头二", "表头三"],
 //   ["1-1", "1-2", "1-3"],
 //   ["2-1", "2-2", "2-3"],
@@ -96,7 +99,6 @@ let article = new Article();
 // ]);
 // table.addInto(article);
 
-article.add(new Paragraph('12341234123'));
-article.add(new Paragraph('12341234123'));
+article.add(factory.buildParagraph("qwer"));
 
 export default article;

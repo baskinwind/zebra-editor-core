@@ -3,7 +3,7 @@ import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../builder";
+import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
 
 @initRecordState

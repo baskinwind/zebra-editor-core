@@ -21,7 +21,7 @@ export const saveComponent = <T extends Block = Block>(
 export const getComponentById = <T extends Block = Block>(id: string): T => {
   if (!id) {
     let article = store["article"];
-    if (!article) throw Error("未生成文章，请先生成文章后调用。");
+    if (!article) throw Error("生成文章后调用。");
     return store["article"].children.get(0);
   }
   return store[id];
