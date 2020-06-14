@@ -19,7 +19,7 @@ interface recoreType {
 
 let recoreQueue: recoreType[] = [];
 let nowIndex = -2;
-let nowComponentList: any[] = [];
+let nowComponentList: Component[] = [];
 
 const getRecordStepId = () => {
   return nowIndex;

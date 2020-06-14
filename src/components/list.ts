@@ -170,7 +170,7 @@ class ListItem extends ContentCollection {
   parent?: List;
   type = ComponentType.listItem;
 
-  static create(raw: any): ListItem {
+  static create(raw: IRawType): ListItem {
     let listItem = new ListItem("", raw.style, raw.data);
     let children = super.getChildren(raw);
     listItem.addChildren(children, 0, true);

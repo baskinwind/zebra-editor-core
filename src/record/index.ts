@@ -1,11 +1,11 @@
-import Component from "../components/component";
+import Component, { ISnapshoot } from "../components/component";
 import Block from "../components/block";
 import updateComponent, { delayUpdate } from "../util/update-component";
 import { getRecordStepId, recordSnapshoot } from "./util";
 
 class Record {
   component: Component;
-  recordMap: { [key: number]: any } = {};
+  recordMap: { [key: number]: ISnapshoot } = {};
   stepId: number = -2;
 
   constructor(component: Component) {

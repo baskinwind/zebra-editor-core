@@ -137,7 +137,12 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return parapraph;
   }
 
-  buildCode(id: string, content: string, style: any, data: any): HTMLElement {
+  buildCode(
+    id: string,
+    content: string,
+    style: mapData,
+    data: mapData
+  ): HTMLElement {
     const pre = document.createElement("pre");
     pre.id = id;
     pre.classList.add(`zebra-draft-title-code`);

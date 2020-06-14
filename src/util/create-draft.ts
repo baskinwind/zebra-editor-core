@@ -42,14 +42,14 @@ const createDraft = (root: HTMLElement, article: Article) => {
   });
   editorWrap.addEventListener("compositionstart", (event) => {
     try {
-      onComposttionStart(event as any);
+      onComposttionStart(event as CompositionEvent);
     } catch (e) {
       console.warn(e);
     }
   });
   editorWrap.addEventListener("compositionend", (event) => {
     try {
-      onComposttionEnd(event as any);
+      onComposttionEnd(event as CompositionEvent);
     } catch (e) {
       console.warn(e);
     }

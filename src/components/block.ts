@@ -1,4 +1,4 @@
-import Component, { classType, operatorType } from "./component";
+import Component, { classType, operatorType, IRawType } from "./component";
 import Collection from "./collection";
 import StructureCollection from "./structure-collection";
 import DirectionType from "../const/direction-type";
@@ -25,7 +25,7 @@ abstract class Block extends Component {
   }
 
   // 根据 raw 保存的内容恢复组件
-  static create(raw: any): Component {
+  static create(raw: IRawType): Component {
     throw createError("组件未实现 create 静态方法", this);
   }
 

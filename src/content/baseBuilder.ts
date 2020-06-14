@@ -1,9 +1,9 @@
 export interface mapData {
-  [key: string]: any;
+  [key: string]: string;
 }
 
-abstract class BaseBuilder<T> {
-  private constructor() {}
+abstract class BaseBuilder<T = any> {
+  protected constructor() {}
 
   abstract buildArticle(
     id: string,
@@ -48,7 +48,12 @@ abstract class BaseBuilder<T> {
     data: mapData
   ): T;
 
-  abstract buildCode(id: string, content: string, style: any, data: any): T;
+  abstract buildCode(
+    id: string,
+    content: string,
+    style: mapData,
+    data: mapData
+  ): T;
 
   abstract buildeImage(
     id: string,

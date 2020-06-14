@@ -17,7 +17,7 @@ class ComponentFactory {
     return this.bulider;
   }
 
-  private constructor() {}
+  protected constructor() {}
 
   buildArticle(style: storeData = {}, data: storeData = {}) {
     return new Article(style, data);

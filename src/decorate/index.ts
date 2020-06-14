@@ -1,7 +1,7 @@
 import { Map } from "immutable";
 
 export interface storeData {
-  [key: string]: any;
+  [key: string]: string;
 }
 
 class Decorate {

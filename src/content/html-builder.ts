@@ -97,7 +97,12 @@ class HtmlBuilder extends BaseBuilder<string> {
     )}">${inlineList.reduce((acc, item) => acc + item, "")}</${tag}>`;
   }
 
-  buildCode(id: string, content: string, style: any, data: any): string {
+  buildCode(
+    id: string,
+    content: string,
+    style: mapData,
+    data: mapData
+  ): string {
     let className = `zebra-draft-code`;
     return `<pre class="${className}" style="${this.getStyle(
       style

@@ -9,7 +9,7 @@ const mount = (
   idOrDom: string | HTMLElement,
   article?: Article,
   option?: {
-    contentBuilder?: BaseBuilder<any>;
+    contentBuilder?: BaseBuilder;
     componentFactory?: ComponentFactory;
   }
 ) => {

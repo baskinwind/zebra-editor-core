@@ -25,14 +25,14 @@ let selectionStore: selectionType = {
   ]
 };
 
-let flushTimer: any = null;
+let flushTimer: number;
 
 // 至少隔 300 毫秒后，才能保存当前选取的内容，避免过度触发该 API
 const flushSelection = () => {
   if (flushTimer) return;
   getSelection();
   flushTimer = setTimeout(() => {
-    flushTimer = null;
+    flushTimer = 0;
   }, 300);
 };
 
@@ -65,7 +65,7 @@ const getSelection = () => {
   ) {
     // 选中了结构组件的直接子节点：返回该直接子节点
     // Chrome 会出现该情况
-    let component = getComponentById<StructureCollection<any>>(anchorNode.id);
+    let component = getComponentById<StructureCollection>(anchorNode.id);
     if (component.type === ComponentType.article) {
       let child = component.children.get(section.anchorOffset - 1);
       return {

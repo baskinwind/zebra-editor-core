@@ -1,12 +1,14 @@
 import { operatorType, IRawType } from "./component";
 import Block from "./block";
-import Collection from "./collection";
+import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { recordMethod } from "../record/decorators";
 
-abstract class StructureCollection<T extends Block> extends Collection<T> {
+abstract class StructureCollection<T extends Block = Block> extends Collection<
+  T
+> {
   structureType = StructureType.structure;
 
   createEmpty(): StructureCollection<T> {
@@ -164,12 +166,12 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return [startFlag, endFlag, res];
   }
 
-  restore(state?: any) {
+  restore(state: ICollectionSnapshoot<T>) {
     this.children.forEach((item) => {
       item.active = false;
       item.parent = undefined;
     });
-    state.children.forEach((item: any) => {
+    state.children.forEach((item) => {
       item.active = true;
       item.parent = this;
     });
