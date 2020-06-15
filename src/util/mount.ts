@@ -1,15 +1,12 @@
 import Article from "../components/article";
-import createDraft from "./create-draft";
+import createDraft, { IOption } from "./create-draft";
 import createEmptyArticle from "./create-empty-article";
-import BaseBuilder from "../content/baseBuilder";
 
 // 将组件挂载到某个节点上
 const mount = (
   idOrDom: string | HTMLElement,
   article?: Article,
-  option?: {
-    contentBuilder?: BaseBuilder;
-  }
+  option?: IOption
 ) => {
   if (!article) article = createEmptyArticle();
   let root;

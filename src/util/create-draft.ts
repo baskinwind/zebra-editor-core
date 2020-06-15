@@ -1,29 +1,24 @@
 import Block from "../components/block";
-import BaseBuilder from "../content/baseBuilder";
-import onClick from "./on-click";
-import onKeyDown from "./on-keydown";
-import onComposttionEnd from "./on-composition-end";
-import onComposttionStart from "./on-composition-start";
-import onPaste from "./on-paste";
-import { flushSelection } from "../selection-operator/get-selection";
+import BaseBuilder from "../content/base-builder";
+import BaseOperator from "../user-operator/base-operator";
+import UserOperator from "../user-operator";
 import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 import { setContentBuilder } from "../content";
 
+export interface IOption {
+  contentBuilder?: BaseBuilder;
+  userOperator?: BaseOperator;
+}
+
 // 将组件挂载到某个节点上
-const createDraft = (
-  root: HTMLElement,
-  block: Block,
-  option?: {
-    contentBuilder?: BaseBuilder;
-  }
-) => {
+const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   startUpdate();
   initRecord(block);
   if (option && option.contentBuilder) {
     setContentBuilder(option.contentBuilder);
   }
-
+  let operator = option?.userOperator || UserOperator.getInstance();
   let editorWrap = document.createElement("div");
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("zebra-draft-root");
@@ -32,35 +27,35 @@ const createDraft = (
   block.active = true;
   editorWrap.addEventListener("blur", (event) => {
     try {
-      flushSelection();
+      operator.onBlur(event);
     } catch (e) {
       console.warn(e);
     }
   });
   editorWrap.addEventListener("click", (event) => {
     try {
-      onClick(event);
+      operator.onClick(event);
     } catch (e) {
       console.warn(e);
     }
   });
   editorWrap.addEventListener("keydown", (event) => {
     try {
-      onKeyDown(event);
+      operator.onKeyDown(event);
     } catch (e) {
       console.warn(e);
     }
   });
   editorWrap.addEventListener("compositionstart", (event) => {
     try {
-      onComposttionStart(event as CompositionEvent);
+      operator.onCompositionStart(event as CompositionEvent);
     } catch (e) {
       console.warn(e);
     }
   });
   editorWrap.addEventListener("compositionend", (event) => {
     try {
-      onComposttionEnd(event as CompositionEvent);
+      operator.onCompositionEnd(event as CompositionEvent);
     } catch (e) {
       console.warn(e);
     }
@@ -68,15 +63,13 @@ const createDraft = (
   editorWrap.addEventListener("paste", (event) => {
     console.info("仅可复制文本内容");
     try {
-      event.preventDefault();
-      onPaste(event);
+      operator.onPaste(event);
     } catch (e) {
       console.warn(e);
     }
   });
   editorWrap.addEventListener("dragstart", (event) => {
     event.preventDefault();
-    console.info("拖拽功能暂不可用！！！");
   });
   root.innerHTML = "";
   root.appendChild(editorWrap);

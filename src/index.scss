@@ -31,7 +31,7 @@
     margin: 0;
     &.zebra-draft-image-loading {
       background: #efefef;
-      padding: 50px 0;
+      padding: 20px 0;
       &::before {
         content: "图片加载中···";
         display: block;
@@ -51,13 +51,7 @@
     }
   }
   .zebra-draft-inline-image {
-    &.zebra-draft-image-loading {
-      img {
-        height: 1px;
-        padding: 0.2em;
-        opacity: 0;
-      }
-    }
+    min-width: 1em;
     img {
       opacity: 1;
       transition: opacity 1s;

@@ -1,9 +1,10 @@
-import Article from "../components/article";
-import Paragraph from "../components/paragraph";
+import ComponentFactory from "../components";
+
+let factory = ComponentFactory.getInstance();
 
 const createEmptyArticle = () => {
-  let article = new Article();
-  article.add(new Paragraph());
+  let article = factory.buildArticle();
+  article.add(factory.buildParagraph());
   return article;
 };
 

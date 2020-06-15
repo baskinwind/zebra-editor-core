@@ -1,5 +1,5 @@
 import ContentBulider from "./content-builder";
-import BaseBuilder from "./baseBuilder";
+import BaseBuilder from "./base-builder";
 
 let nowContentBuiler: BaseBuilder = ContentBulider.getInstance();
 

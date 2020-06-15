@@ -1,4 +1,4 @@
-import BaseBuilder, { mapData } from "./baseBuilder";
+import BaseBuilder, { mapData } from "./base-builder";
 
 class HtmlBuilder extends BaseBuilder<string> {
   static bulider: HtmlBuilder;

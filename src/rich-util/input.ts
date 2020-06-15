@@ -3,9 +3,12 @@ import Character from "../components/character";
 import InlineImage from "../components/inline-image";
 import focusAt, { focusNode } from "./focus-at";
 import { getBlockById } from "../components/util";
-import { getCursorPosition, cursorType } from "../selection-operator/util";
-import { needUpdate } from "../util/update-component";
-import { createRecord } from "../record/util";
+import {
+  getCursorPosition,
+  cursorType,
+  getContainer
+} from "../selection-operator/util";
+import updateComponent, { needUpdate } from "../util/update-component";
 
 const input = (
   charOrInline: string | Inline,
@@ -27,13 +30,40 @@ const input = (
       charOrInline = new Character(charOrInline);
     }
 
+    // 插入图片时，不强制更新，但要生成符合要求的文档，并手动更正光标位置
+    let node = startPosition?.node;
+    if (charOrInline instanceof InlineImage) {
+      event?.preventDefault();
+      let container = getContainer(node);
+      let newInline = charOrInline.render();
+      if (node instanceof HTMLImageElement) {
+        container.replaceWith(container, newInline);
+      } else {
+        let nodeParent = node.parentElement;
+        if (!nodeParent) return;
+        if (startPosition?.index === 0) {
+          container.replaceWith(newInline, container);
+        } else if (startPosition?.index === node.nodeValue?.length) {
+          container.replaceWith(container, newInline);
+        } else {
+          updateComponent(component);
+          focusAt({
+            id: component.id,
+            offset: offset + 1
+          });
+          return;
+        }
+      }
+      return focusNode({ node: newInline, index: 1 });
+    }
+
     // 强制更新
     if (
-      startNode instanceof HTMLImageElement ||
-      startNode instanceof HTMLBRElement ||
-      charOrInline instanceof Character ||
       needUpdate() ||
-      !event ||
+      startNode instanceof HTMLBRElement ||
+      startNode instanceof HTMLImageElement ||
+      charOrInline instanceof Character ||
+      (!event && typeof charOrInline === "string") ||
       event?.defaultPrevented
     ) {
       event?.preventDefault();
@@ -43,23 +73,6 @@ const input = (
 
     // 普通的文字输入，不需要强制更新，默认行为不会破坏文档结构
     component.add(charOrInline, offset, true);
-    // 插入图片时，不强制更新，但要生成符合要求的文档，并手动更正光标位置
-    let node = startPosition?.node;
-    if (charOrInline instanceof InlineImage) {
-      let newInline = charOrInline.render();
-      if (node instanceof HTMLImageElement) {
-        node.parentElement?.replaceWith(node.parentElement, newInline);
-      } else {
-        let nodeParent = node.parentElement;
-        if (!nodeParent) return;
-        let nodeClone = nodeParent.cloneNode(true);
-        node.nodeValue = node.nodeValue?.slice(0, startPosition?.index) || "";
-        nodeClone.childNodes[0].nodeValue =
-          nodeClone.childNodes[0].nodeValue?.slice(startPosition?.index) || "";
-        nodeParent.replaceWith(nodeParent, newInline, nodeClone);
-      }
-      return focusNode({ node: newInline, index: 1 });
-    }
   } catch (e) {
     console.warn(e);
   }

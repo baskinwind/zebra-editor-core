@@ -73,7 +73,7 @@ const findFocusNode = (dom: Node, index: number): [boolean, Node, number] => {
     dom instanceof HTMLAudioElement ||
     dom instanceof HTMLVideoElement
   ) {
-    if (index < 1) {
+    if (index <= 1) {
       return [true, dom, index];
     }
     return [false, dom, 1];

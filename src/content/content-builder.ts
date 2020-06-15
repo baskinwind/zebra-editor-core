@@ -1,4 +1,4 @@
-import BaseBuilder, { mapData } from "./baseBuilder";
+import BaseBuilder, { mapData } from "./base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 
@@ -218,19 +218,8 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let defaultStyle: mapData = {};
-    if (data.bold) {
-      defaultStyle.fontWeight = "bold";
-    }
-    if (data.italic) {
-      defaultStyle.fontStyle = "italic";
-    }
-    if (data.delete) {
-      defaultStyle.textDecoration = "line-through";
-    }
     let wrap = document.createElement("span");
     wrap.innerText = charList;
-    console.log(Object.assign(defaultStyle, style));
-    
     this.addStyle(wrap, Object.assign(defaultStyle, style));
     if (data.link) {
       let link = document.createElement("a");
