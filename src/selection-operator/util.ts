@@ -1,7 +1,7 @@
 import Component from "../components/component";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getComponentById, createError } from "../components/util";
+import { getBlockById, createError } from "../components/util";
 
 export interface cursorType {
   id: string;
@@ -124,7 +124,7 @@ export const getCursorPosition = (
 
 // 获取所有选中的叶节点，不包括结构性的组件
 export const getSelectedIdList = (startId: string, endId: string) => {
-  let component = getComponentById(startId);
+  let component = getBlockById(startId);
   let parent = component.parent;
   if (!parent) throw createError("该节点已失效", component);
   while (parent.type !== ComponentType.article) {

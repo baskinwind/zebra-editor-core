@@ -6,7 +6,7 @@ export const getId = () => {
   return generate();
 };
 
-export const saveComponent = <T extends Block = Block>(
+export const saveBlock = <T extends Block = Block>(
   component: T,
   key?: string
 ) => {
@@ -18,7 +18,7 @@ export const saveComponent = <T extends Block = Block>(
   store[component.id] = component;
 };
 
-export const getComponentById = <T extends Block = Block>(id: string): T => {
+export const getBlockById = <T extends Block = Block>(id: string): T => {
   if (!id) {
     let article = store["article"];
     if (!article) throw Error("生成文章后调用。");

@@ -5,7 +5,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContentBuilder } from "../content/index";
 import { storeData } from "../decorate";
-import { saveComponent } from "./util";
+import { saveBlock } from "./util";
 import { initRecordState } from "../record/decorators";
 
 @initRecordState
@@ -15,7 +15,7 @@ class Article extends StructureCollection<Block> {
 
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
-    saveComponent(this, "article");
+    saveBlock(this, "article");
   }
 
   static create(raw: IRawType): Article {

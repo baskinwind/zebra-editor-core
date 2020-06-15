@@ -2,7 +2,7 @@ import Component, { classType, operatorType, IRawType } from "./component";
 import Collection from "./collection";
 import StructureCollection from "./structure-collection";
 import DirectionType from "../const/direction-type";
-import { saveComponent, createError } from "./util";
+import { saveBlock, createError } from "./util";
 import { storeData } from "../decorate/index";
 
 abstract class Block extends Component {
@@ -31,7 +31,7 @@ abstract class Block extends Component {
 
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
-    saveComponent(this);
+    saveBlock(this);
   }
 
   // 判断该组件是否为空，为空并不代表无效

@@ -1,5 +1,5 @@
 import Block from "../components/block";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
@@ -30,7 +30,7 @@ const updateComponent = (
   // 先清空延迟更新的队列
   if (delayUpdateQueue.size) {
     console.log("delay update");
-    delayUpdateQueue.forEach((id) => update(getComponentById(id)));
+    delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
   }
   // 无内容时，不触发更新

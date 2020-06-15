@@ -1,7 +1,7 @@
 import StructureCollection from "../components/structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import { getElememtSize, getContainer, cursorType, getParent } from "./util";
 
 export interface selectionType {
@@ -65,7 +65,7 @@ const getSelection = () => {
   ) {
     // 选中了结构组件的直接子节点：返回该直接子节点
     // Chrome 会出现该情况
-    let component = getComponentById<StructureCollection>(anchorNode.id);
+    let component = getBlockById<StructureCollection>(anchorNode.id);
     if (component.type === ComponentType.article) {
       let child = component.children.get(section.anchorOffset - 1);
       return {

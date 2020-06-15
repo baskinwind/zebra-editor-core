@@ -1,7 +1,7 @@
 import Block from "../components/block";
 import getSelection from "./get-selection";
 import focusAt from "../rich-util/focus-at";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import { getSelectedIdList } from "./util";
 import { classType } from "../components/component";
 import { createRecord } from "../record/util";
@@ -15,11 +15,11 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
 
   let idList = getSelectedIdList(start.id, end.id);
   let endToTailSize =
-    getComponentById(idList[idList.length - 1]).getSize() - end.offset;
+    getBlockById(idList[idList.length - 1]).getSize() - end.offset;
   let exchangeList: Block[] = [];
   let idMap: { [key: string]: any } = {};
   idList.forEach((id) => {
-    getComponentById(id)
+    getBlockById(id)
       .exchangeTo(newClass, args)
       .forEach((item) => {
         if (!idMap[item.id]) {

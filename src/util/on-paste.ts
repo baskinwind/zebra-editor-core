@@ -3,7 +3,7 @@ import getSelection from "../selection-operator/get-selection";
 import deleteSelection from "../rich-util/delete-selection";
 import StructureType from "../const/structure-type";
 import focusAt from "../rich-util/focus-at";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 
 // 复制内容
@@ -19,7 +19,7 @@ const onPaste = (event: ClipboardEvent) => {
     selection = getSelection();
   }
   createRecord(selection.range[0], selection.range[1]);
-  let nowComponent = getComponentById(selection.range[0].id);
+  let nowComponent = getBlockById(selection.range[0].id);
   let index = selection.range[0].offset;
 
   // 纯文本组件直接输入即可

@@ -3,13 +3,13 @@ import "./operator";
 import article from "./article";
 import mount from "../src/util/mount";
 import createByRaw from "../src/util/create-by-raw";
-import { getComponentById } from "../src/components/util";
+import { getBlockById } from "../src/components/util";
 
 mount("root", article);
 
 window.article = article;
 
-window.getComponentById = getComponentById;
+window.getComponentById = getBlockById;
 
 window.getRaw = () => {
   return article.getRaw();

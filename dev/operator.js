@@ -73,13 +73,13 @@ new Vue({
     },
 
     bold() {
-      modifySelectionDecorate({ fontWeight: "bold" });
+      modifySelectionDecorate({}, { bold: true });
     },
     deleteType() {
-      modifySelectionDecorate({ textDecoration: "line-through" });
+      modifySelectionDecorate({}, { delete: true });
     },
     itailc() {
-      modifySelectionDecorate({ fontStyle: "italic" });
+      modifySelectionDecorate({}, { italic: true });
     },
     red() {
       modifySelectionDecorate({ color: "red" });

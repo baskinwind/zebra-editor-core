@@ -1,6 +1,6 @@
 import Table from "../components/table";
 import getSelection from "./get-selection";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 
 // 修改表格内容
@@ -12,7 +12,7 @@ const modifyTable = (option: {
   let selection = getSelection();
   if (!selection.isCollapsed) return;
   let id = selection.range[0].id;
-  let component = getComponentById(id);
+  let component = getBlockById(id);
   let table = Table.getTable(component);
   if (!table) return;
   createRecord(selection.range[0], selection.range[1]);

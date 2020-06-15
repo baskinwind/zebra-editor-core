@@ -217,20 +217,31 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
-    const span = document.createElement("span");
-    span.id = id;
-    span.dataset.type = ComponentType.characterList;
-    span.dataset.structure = StructureType.partialContent;
-    this.addStyle(span, style);
+    let defaultStyle: mapData = {};
+    if (data.bold) {
+      defaultStyle.fontWeight = "bold";
+    }
+    if (data.italic) {
+      defaultStyle.fontStyle = "italic";
+    }
+    if (data.delete) {
+      defaultStyle.textDecoration = "line-through";
+    }
+    let wrap = document.createElement("span");
+    wrap.innerText = charList;
+    console.log(Object.assign(defaultStyle, style));
+    
+    this.addStyle(wrap, Object.assign(defaultStyle, style));
     if (data.link) {
       let link = document.createElement("a");
       link.href = data.link;
-      link.innerText = charList;
-      span.appendChild(link);
-    } else {
-      span.innerText = charList;
+      link.appendChild(wrap);
+      wrap = link;
     }
-    return span;
+    wrap.id = id;
+    wrap.dataset.type = ComponentType.characterList;
+    wrap.dataset.structure = StructureType.partialContent;
+    return wrap;
   }
 
   buildInlineImage(

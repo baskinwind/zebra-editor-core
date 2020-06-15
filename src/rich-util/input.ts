@@ -2,7 +2,7 @@ import Inline from "../components/inline";
 import Character from "../components/character";
 import InlineImage from "../components/inline-image";
 import focusAt, { focusNode } from "./focus-at";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import { getCursorPosition, cursorType } from "../selection-operator/util";
 import { needUpdate } from "../util/update-component";
 import { createRecord } from "../record/util";
@@ -13,7 +13,7 @@ const input = (
   event?: KeyboardEvent
 ) => {
   try {
-    let component = getComponentById(start.id);
+    let component = getBlockById(start.id);
     let offset = start.offset;
     let startPosition = getCursorPosition(start);
     if (!startPosition) return;

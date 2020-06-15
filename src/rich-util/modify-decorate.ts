@@ -1,5 +1,5 @@
 import focusAt from "./focus-at";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import { storeData } from "../decorate";
 
 const modifyDecorate = (
@@ -9,7 +9,7 @@ const modifyDecorate = (
 ) => {
   idList.forEach((id) => {
     let customerUpdate = !data && !style?.remove;
-    let component = getComponentById(id);
+    let component = getBlockById(id);
     component.modifyDecorate(style, data, customerUpdate);
     if (customerUpdate && style) {
       let dom = document.getElementById(component.id);

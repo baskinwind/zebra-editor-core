@@ -5,7 +5,7 @@ import enter from "../rich-util/enter";
 import backspace from "../rich-util/backspace";
 import Paragraph from "../components/paragraph";
 import focusAt from "../rich-util/focus-at";
-import { getComponentById } from "../components/util";
+import { getBlockById } from "../components/util";
 import DirectionType from "../const/direction-type";
 import { createRecord } from "../record/util";
 
@@ -33,7 +33,7 @@ const onKeyDown = (event: KeyboardEvent) => {
   // 选中 article 直接子节点时，选中 table 前后时，会有该情况发生
   if (selection.selectStructure) {
     event?.preventDefault();
-    let component = getComponentById(selection.range[0].id);
+    let component = getBlockById(selection.range[0].id);
     if (isEnter) {
       focusAt(
         component.parent?.add(new Paragraph(), selection.range[0].offset)
@@ -50,7 +50,7 @@ const onKeyDown = (event: KeyboardEvent) => {
   }
 
   if (isArrow) {
-    let component = getComponentById(selection.range[0].id);
+    let component = getBlockById(selection.range[0].id);
     let map = {
       ArrowUp: DirectionType.up,
       ArrowDown: DirectionType.down,

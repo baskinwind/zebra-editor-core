@@ -1,4 +1,5 @@
-import Article from "../components/article";
+import Block from "../components/block";
+import BaseBuilder from "../content/baseBuilder";
 import onClick from "./on-click";
 import onKeyDown from "./on-keydown";
 import onComposttionEnd from "./on-composition-end";
@@ -7,18 +8,28 @@ import onPaste from "./on-paste";
 import { flushSelection } from "../selection-operator/get-selection";
 import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
+import { setContentBuilder } from "../content";
 
 // 将组件挂载到某个节点上
-const createDraft = (root: HTMLElement, article: Article) => {
+const createDraft = (
+  root: HTMLElement,
+  block: Block,
+  option?: {
+    contentBuilder?: BaseBuilder;
+  }
+) => {
   startUpdate();
-  initRecord(article);
+  initRecord(block);
+  if (option && option.contentBuilder) {
+    setContentBuilder(option.contentBuilder);
+  }
 
   let editorWrap = document.createElement("div");
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("zebra-draft-root");
   editorWrap.style.whiteSpace = "pre-wrap";
-  editorWrap.appendChild(article.render());
-  article.active = true;
+  editorWrap.appendChild(block.render());
+  block.active = true;
   editorWrap.addEventListener("blur", (event) => {
     try {
       flushSelection();

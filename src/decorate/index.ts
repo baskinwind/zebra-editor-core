@@ -57,7 +57,12 @@ class Decorate {
       }
       this.removeData(value);
     }
-    this.data = this.data.set(name, value);
+
+    if (typeof value === "boolean" && this.data.get(name) === value) {
+      this.data = this.data.delete(name);
+    } else {
+      this.data = this.data.set(name, value);
+    }
   }
   mergeData(data?: storeData) {
     if (!data) return;
