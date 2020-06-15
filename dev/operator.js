@@ -1,8 +1,9 @@
 import "./index.scss";
 import article from "./article";
+import ComponentFactory from "../src/components";
 
-import InlineImage from "../src/components/inline-image";
-import Media from "../src/components/media";
+let factory = ComponentFactory.getInstance();
+
 import Title from "../src/components/title";
 import Paragraph from "../src/components/paragraph";
 import Code from "../src/components/code";
@@ -125,18 +126,18 @@ new Vue({
 
     insertInlineImage() {
       let index = Math.floor(Math.random() * 3 + 1);
-      insertInline(new InlineImage(`./emjoy-${index}.png`));
+      insertInline(factory.buildInlineImage(`./emjoy-${index}.png`));
     },
     customerInlineImage() {
-      insertInline(new InlineImage(this.inlineImage));
+      insertInline(factory.buildInlineImage(this.inlineImage));
     },
 
     insertImage() {
       let index = Math.floor(Math.random() * 3 + 1);
-      insertBlock(new Media("image", `./draft-img-${index}.jpg`));
+      insertBlock(factory.buildMedia("image", `./draft-img-${index}.jpg`));
     },
     customerImage() {
-      insertBlock(new Media(ComponentType.image, this.image));
+      insertBlock(factory.buildMedia(ComponentType.image, this.image));
     }
   }
 });
