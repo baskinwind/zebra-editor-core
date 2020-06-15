@@ -9,6 +9,7 @@ import input from "../rich-util/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
+import { createRecord } from "../record/util";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
@@ -30,7 +31,7 @@ class UserOperator extends BaseOperator {
       let section = window.getSelection();
       try {
         section?.removeAllRanges();
-      } catch {}
+      } catch { }
       let range = new Range();
       range.selectNode(target);
       section?.addRange(range);
@@ -46,6 +47,7 @@ class UserOperator extends BaseOperator {
 
   onCompositionStart(event: CompositionEvent) {
     let selection = getSelection();
+    createRecord(selection.range[0], selection.range[1]);
     if (!selection.isCollapsed) {
       backspace(selection.range[0], selection.range[1], event);
     }
@@ -53,6 +55,7 @@ class UserOperator extends BaseOperator {
 
   onCompositionEnd(event: CompositionEvent) {
     let selection = getBeforeSelection();
+    // createRecord(selection.range[0], selection.range[1]);
     input(event.data, {
       id: selection.range[0].id,
       offset: selection.range[0].offset - event.data.length
@@ -87,7 +90,7 @@ class UserOperator extends BaseOperator {
     component.handleArrow(selection.range[0].offset, direction);
   }
 
-  handleFunctionKey(event: KeyboardEvent) {}
+  handleFunctionKey(event: KeyboardEvent) { }
 }
 
 export default UserOperator;

@@ -1,26 +1,12 @@
 import "./index.scss";
 import article from "./article";
 import ComponentFactory from "../src/components";
+import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
+import modifyDecorate from "../src/selection-operator/modify-decorate";
+
+import { modifyTable, insertBlock, insertInline, exchange, getHtml, undo, redo, updateComponent } from "../src";
 
 let factory = ComponentFactory.getInstance();
-
-import Title from "../src/components/title";
-import Paragraph from "../src/components/paragraph";
-import Code from "../src/components/code";
-import Table from "../src/components/table";
-import List from "../src/components/list";
-import ComponentType from "../src/const/component-type";
-
-import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
-import insertInline from "../src/selection-operator/insert-inline";
-import insertBlock from "../src/selection-operator/insert-block";
-import exchangeComponent from "../src/selection-operator/exchange-component";
-import modifyComponentDecorate from "../src/selection-operator/modify-decorate";
-import modifyTable from "../src/selection-operator/modify-table";
-import updateComponent from "../src/util/update-component";
-import getHtml from "../src/util/get-html";
-
-import { undo, redo } from "../src/record/util";
 
 new Vue({
   el: "#operator",
@@ -63,13 +49,13 @@ new Vue({
 
     modifyType(tag) {
       if (tag === "normal") {
-        exchangeComponent(Paragraph, tag);
+        exchange('paragraph', tag);
       } else if (tag === "code") {
-        exchangeComponent(Code);
+        exchange('code');
       } else if (tag === "ul" || tag === "ol") {
-        exchangeComponent(List, tag);
+        exchange('list', tag);
       } else {
-        exchangeComponent(Title, tag);
+        exchange('title', tag);
       }
     },
 
@@ -104,17 +90,17 @@ new Vue({
     },
 
     modifyStyle(name, value) {
-      modifyComponentDecorate({ [name]: value });
+      modifyDecorate({ [name]: value });
     },
     customerBlockStyle() {
       if (this.blockStyle && this.blockStyleValue) {
         let key = this.toHump(this.blockStyle);
-        modifyComponentDecorate({ [key]: this.blockStyleValue });
+        modifyDecorate({ [key]: this.blockStyleValue });
       }
     },
 
     addTable() {
-      insertBlock(new Table(3, 3));
+      insertBlock(factory.buildTable(3, 3));
     },
     modifyTable() {
       modifyTable({
@@ -137,7 +123,7 @@ new Vue({
       insertBlock(factory.buildMedia("image", `./draft-img-${index}.jpg`));
     },
     customerImage() {
-      insertBlock(factory.buildMedia(ComponentType.image, this.image));
+      insertBlock(factory.buildMedia('image', this.image));
     }
   }
 });

@@ -17,7 +17,7 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
   let endToTailSize =
     getBlockById(idList[idList.length - 1]).getSize() - end.offset;
   let exchangeList: Block[] = [];
-  let idMap: { [key: string]: any } = {};
+  let idMap: { [key: string]: any; } = {};
   idList.forEach((id) => {
     getBlockById(id)
       .exchangeTo(newClass, args)

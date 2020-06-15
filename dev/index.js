@@ -9,7 +9,7 @@ mount("root", article);
 
 window.article = article;
 
-window.getComponentById = getBlockById;
+window.getBlockById = getBlockById;
 
 window.getRaw = () => {
   return article.getRaw();

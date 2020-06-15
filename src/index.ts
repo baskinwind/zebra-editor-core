@@ -10,7 +10,6 @@ import UserOperator from "./user-operator";
 // 选区相关操作
 import focusAt from "./rich-util/focus-at";
 import getSelection from "./selection-operator/get-selection";
-import exchangeComponent from "./selection-operator/exchange-component";
 import insertBlock from "./selection-operator/insert-block";
 import insertInline from "./selection-operator/insert-inline";
 import modifyBlockDecorate from "./selection-operator/modify-decorate";
@@ -23,6 +22,8 @@ import createEmptyArticle from "./util/create-empty-article";
 import getHtml from "./util/get-html";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
+import exchange from "./util/exchange";
+import updateComponent from "./util/update-component";
 
 // 文章历史相关
 import { initRecord, createRecord, undo, redo } from "./record/util";
@@ -33,12 +34,13 @@ export {
   UserOperator,
   focusAt,
   getSelection,
-  exchangeComponent,
   insertBlock,
   insertInline,
   modifyBlockDecorate,
   modifySelectionDecorate,
   modifyTable,
+  exchange,
+  updateComponent,
   mount,
   createEmptyArticle,
   getHtml,
@@ -47,5 +49,5 @@ export {
   initRecord,
   createRecord,
   undo,
-  redo
+  redo,
 };
