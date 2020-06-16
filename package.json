@@ -1,12 +1,13 @@
 {
   "name": "zebra-draft",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.1",
+  "license": "MIT",
   "description": "Zebra-draft - modern rich text editor.",
   "keywords": [
     "draft",
     "editor",
-    "richtext"
+    "richtext",
+    "typescript"
   ],
   "author": "aco <wwsxuan@163.com>",
   "main": "dist/zebra-draft.js",
@@ -36,8 +37,10 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --hot --config build/dev.config.js",
+    "build:example": "webpack --config build/dev.config.js",
     "build:umd": "webpack --config build/prod.config.js",
-    "build:mjs": "tsc --sourceMap false"
+    "build:mjs": "tsc --sourceMap false",
+    "build": "npm run build:umd && npm run build:mjs"
   },
   "browserslist": [
     "last 1 chrome version",

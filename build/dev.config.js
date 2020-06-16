@@ -7,7 +7,7 @@ module.exports = {
   entry: "./dev/index.js",
   output: {
     filename: "index.js",
-    path: path.resolve(__dirname, "example")
+    path: path.resolve(__dirname, "../example")
   },
   devtool: "source-map",
   module: {

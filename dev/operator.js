@@ -35,8 +35,8 @@ new Vue({
       inlineStyleValue: "20px",
       blockStyle: "line-height",
       blockStyleValue: "2em",
-      inlineImage: "./emjoy-1.png",
-      image: "./draft-img-1.jpg",
+      inlineImage: "https://acohome.cn/demo/zebra-draft/emjoy-1.png",
+      image: "https://acohome.cn/demo/zebra-draft/draft-img-1.jpg",
       link: "http://acohome.com",
       tableRow: 3,
       tableCol: 3,
@@ -137,7 +137,11 @@ new Vue({
 
     insertInlineImage() {
       let index = Math.floor(Math.random() * 3 + 1);
-      insertInline(factory.buildInlineImage(`./emjoy-${index}.png`));
+      insertInline(
+        factory.buildInlineImage(
+          `https://acohome.cn/demo/zebra-draft/emjoy-${index}.png`
+        )
+      );
     },
     customerInlineImage() {
       insertInline(factory.buildInlineImage(this.inlineImage));
@@ -145,7 +149,12 @@ new Vue({
 
     insertImage() {
       let index = Math.floor(Math.random() * 3 + 1);
-      insertBlock(factory.buildMedia("image", `./draft-img-${index}.jpg`));
+      insertBlock(
+        factory.buildMedia(
+          "image",
+          `https://acohome.cn/demo/zebra-draft/draft-img-${index}.jpg`
+        )
+      );
     },
     customerImage() {
       insertBlock(factory.buildMedia("image", this.image));
