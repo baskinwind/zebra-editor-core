@@ -1,20 +1,22 @@
 {
   "compilerOptions": {
+    "outDir": "./lib",
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "declaration": true,
     "experimentalDecorators": true,
-    "target": "es5",
     "downlevelIteration": true,
     "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["shortid"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "types": ["shortid"],
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": true,
     "sourceMap": true
   },
-  "include": ["src", "dev/index.js"]
+  "include": ["src"]
 }

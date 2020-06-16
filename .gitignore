@@ -9,7 +9,8 @@ node_modules
 /coverage
 
 # production
-/build
+/dist
+/lib
 /example
 .zip
 
