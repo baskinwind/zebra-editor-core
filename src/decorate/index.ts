@@ -1,12 +1,14 @@
 import { Map } from "immutable";
 
+type storeValueType = string | number | boolean;
+
 export interface storeData {
-  [key: string]: string;
+  [key: string]: storeValueType;
 }
 
 class Decorate {
-  style: Map<string, string>;
-  data: Map<string, string>;
+  style: Map<string, storeValueType>;
+  data: Map<string, storeValueType>;
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.style = Map(style);
@@ -16,13 +18,13 @@ class Decorate {
   getStyle() {
     return this.style.toObject();
   }
-  setStyle(name: string, value: string) {
+  setStyle(name: string, value: storeValueType) {
     if (name === "remove") {
       if (value === "all") {
         this.clearStyle();
         return;
       }
-      this.removeStyle(value);
+      this.removeStyle(value as string);
     }
     if (this.style.get(name) === value) {
       this.style = this.style.delete(name);
@@ -49,13 +51,13 @@ class Decorate {
   getData() {
     return this.data.toObject();
   }
-  setData(name: string, value: string) {
+  setData(name: string, value: storeValueType) {
     if (name === "remove") {
       if (value === "all") {
         this.clearData();
         return;
       }
-      this.removeData(value);
+      this.removeData(value as string);
     }
 
     if (typeof value === "boolean" && this.data.get(name) === value) {

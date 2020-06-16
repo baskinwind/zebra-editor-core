@@ -1,8 +1,6 @@
 .zebra-draft-root {
   outline: none;
   table {
-    width: 100%;
-    border-collapse: collapse;
     p {
       margin: 0;
     }
@@ -15,13 +13,20 @@
     }
   }
 
+  code {
+    background: #f8f8f8;
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+
   .zebra-draft-title-code {
     padding: 10px;
     border-radius: 4px;
     font-size: 14px;
     font-family: Consolas, monospace;
-    line-height: 1.3em;
     background: #f8f8f8;
+    border: 1px solid #eee;
+    line-height: 1.5;
     code {
       font-family: inherit;
     }

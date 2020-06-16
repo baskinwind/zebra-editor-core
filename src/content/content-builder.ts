@@ -217,10 +217,12 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
-    let defaultStyle: mapData = {};
     let wrap = document.createElement("span");
+    if (data.code) {
+      wrap = document.createElement("code");
+    }
     wrap.innerText = charList;
-    this.addStyle(wrap, Object.assign(defaultStyle, style));
+    this.addStyle(wrap, Object.assign(style));
     if (data.link) {
       let link = document.createElement("a");
       link.href = data.link;

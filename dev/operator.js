@@ -17,6 +17,7 @@ import {
   deleteText,
   itailc,
   underline,
+  code,
   color,
   bgColor,
   clearAllStyle,
@@ -88,6 +89,9 @@ new Vue({
     },
     underline() {
       underline();
+    },
+    code() {
+      code();
     },
     red() {
       color("red");
