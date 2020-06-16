@@ -1,9 +1,7 @@
 import "../src/index.scss";
 import "./operator";
 import article from "./article";
-import mount from "../src/util/mount";
-import createByRaw from "../src/util/create-by-raw";
-import { getBlockById } from "../src/components/util";
+import { mount, createByRaw, getBlockById } from "../src";
 
 mount("root", article);
 

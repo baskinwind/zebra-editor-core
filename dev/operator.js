@@ -1,10 +1,28 @@
 import "./index.scss";
 import article from "./article";
-import ComponentFactory from "../src/components";
-import modifySelectionDecorate from "../src/selection-operator/modify-selection-decorate";
-import modifyDecorate from "../src/selection-operator/modify-decorate";
 
-import { modifyTable, insertBlock, insertInline, exchange, getHtml, undo, redo, updateComponent } from "../src";
+import {
+  ComponentFactory,
+  modifyTable,
+  insertBlock,
+  insertInline,
+  exchange,
+  getHtml,
+  undo,
+  redo,
+  updateComponent,
+  modifySelectionDecorate,
+  modifyDecorate,
+  bold,
+  deleteText,
+  itailc,
+  underline,
+  color,
+  bgColor,
+  clearAllStyle,
+  link,
+  unlink
+} from "../src";
 
 let factory = ComponentFactory.getInstance();
 
@@ -49,30 +67,36 @@ new Vue({
 
     modifyType(tag) {
       if (tag === "normal") {
-        exchange('paragraph', tag);
+        exchange("paragraph", tag);
       } else if (tag === "code") {
-        exchange('code');
+        exchange("code");
       } else if (tag === "ul" || tag === "ol") {
-        exchange('list', tag);
+        exchange("list", tag);
       } else {
-        exchange('title', tag);
+        exchange("title", tag);
       }
     },
 
     bold() {
-      modifySelectionDecorate({ fontWeight: "bold" });
+      bold();
     },
-    deleteType() {
-      modifySelectionDecorate({ textDecoration: "line-through" });
+    deleteText() {
+      deleteText();
     },
     itailc() {
-      modifySelectionDecorate({ fontStyle: "italic" });
+      itailc();
+    },
+    underline() {
+      underline();
     },
     red() {
-      modifySelectionDecorate({ color: "red" });
+      color("red");
+    },
+    bgRed() {
+      bgColor("red");
     },
     clearStyle() {
-      modifySelectionDecorate({ remove: "all" });
+      clearAllStyle();
     },
     customerInlineStyle() {
       if (this.inlineStyle && this.inlineStyleValue) {
@@ -80,13 +104,14 @@ new Vue({
         modifySelectionDecorate({ [key]: this.inlineStyleValue });
       }
     },
+
     addLink() {
       if (this.link) {
-        modifySelectionDecorate({}, { link: this.link });
+        link(this.link);
       }
     },
     unLink() {
-      modifySelectionDecorate({}, { remove: "link" });
+      unlink();
     },
 
     modifyStyle(name, value) {
@@ -123,7 +148,7 @@ new Vue({
       insertBlock(factory.buildMedia("image", `./draft-img-${index}.jpg`));
     },
     customerImage() {
-      insertBlock(factory.buildMedia('image', this.image));
+      insertBlock(factory.buildMedia("image", this.image));
     }
   }
 });

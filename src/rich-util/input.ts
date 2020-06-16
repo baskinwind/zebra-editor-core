@@ -34,6 +34,7 @@ const input = (
     let node = startPosition?.node;
     if (charOrInline instanceof InlineImage) {
       event?.preventDefault();
+      component.add(charOrInline, offset, true);
       let container = getContainer(node);
       let newInline = charOrInline.render();
       if (node instanceof HTMLImageElement) {

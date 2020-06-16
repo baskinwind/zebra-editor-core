@@ -3,6 +3,7 @@ import ComponentFactory from "./components";
 
 // 内容生成器
 import ContentBuilder from "./content/content-builder";
+import { getBlockById } from "./components/util";
 
 // 用户操作处理
 import UserOperator from "./user-operator";
@@ -12,7 +13,7 @@ import focusAt from "./rich-util/focus-at";
 import getSelection from "./selection-operator/get-selection";
 import insertBlock from "./selection-operator/insert-block";
 import insertInline from "./selection-operator/insert-inline";
-import modifyBlockDecorate from "./selection-operator/modify-decorate";
+import modifyDecorate from "./selection-operator/modify-decorate";
 import modifySelectionDecorate from "./selection-operator/modify-selection-decorate";
 import modifyTable from "./selection-operator/modify-table";
 
@@ -22,24 +23,26 @@ import createEmptyArticle from "./util/create-empty-article";
 import getHtml from "./util/get-html";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
-import exchange from "./util/exchange";
 import updateComponent from "./util/update-component";
 
 // 文章历史相关
 import { initRecord, createRecord, undo, redo } from "./record/util";
 
+// 一些快捷操作
+export * from "./quick-util";
+
 export {
   ComponentFactory,
+  getBlockById,
   ContentBuilder,
   UserOperator,
   focusAt,
   getSelection,
   insertBlock,
   insertInline,
-  modifyBlockDecorate,
+  modifyDecorate,
   modifySelectionDecorate,
   modifyTable,
-  exchange,
   updateComponent,
   mount,
   createEmptyArticle,
@@ -49,5 +52,5 @@ export {
   initRecord,
   createRecord,
   undo,
-  redo,
+  redo
 };

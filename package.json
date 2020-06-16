@@ -23,8 +23,9 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "dev": "webpack-dev-server --hot",
-    "build": "webpack"
+    "dev": "webpack-dev-server --hot --config build/dev.config.js",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir lib",
+    "build:umd": "webpack --config build/prod.config.js"
   },
   "browserslist": [
     "last 1 chrome version",
