@@ -1,14 +1,12 @@
 import { Map } from "immutable";
 
-type storeValueType = string | number | boolean;
-
 export interface storeData {
-  [key: string]: storeValueType;
+  [key: string]: any;
 }
 
 class Decorate {
-  style: Map<string, storeValueType>;
-  data: Map<string, storeValueType>;
+  style: Map<string, any>;
+  data: Map<string, any>;
 
   constructor(style: storeData = {}, data: storeData = {}) {
     this.style = Map(style);
@@ -18,7 +16,7 @@ class Decorate {
   getStyle() {
     return this.style.toObject();
   }
-  setStyle(name: string, value: storeValueType) {
+  setStyle(name: string, value: any) {
     if (name === "remove") {
       if (value === "all") {
         this.clearStyle();
@@ -51,7 +49,7 @@ class Decorate {
   getData() {
     return this.data.toObject();
   }
-  setData(name: string, value: storeValueType) {
+  setData(name: string, value: any) {
     if (name === "remove") {
       if (value === "all") {
         this.clearData();

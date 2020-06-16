@@ -1,5 +1,10 @@
 import Component from "../components/component";
-import { cursorType, getCursorPosition } from "../selection-operator/util";
+import {
+  cursorType,
+  getCursorPosition,
+  getContainWindow,
+  getContainDocument
+} from "../selection-operator/util";
 import { getBeforeSelection } from "../selection-operator/get-selection";
 
 type focusAtType = cursorType | [Component, number, number];
@@ -41,9 +46,9 @@ type focusNodeType = {
 
 // 从开始节点的某处，选到接收节点的某处
 const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
-  let section = window.getSelection();
+  let section = getContainWindow().getSelection();
   section?.removeAllRanges();
-  let range = new Range();
+  let range = getContainDocument().createRange();
   if (start.node instanceof HTMLImageElement) {
     if (start.index === 0) {
       range.setStartBefore(start.node);

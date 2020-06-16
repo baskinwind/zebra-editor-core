@@ -1,5 +1,6 @@
 import Block from "../components/block";
 import { getBlockById } from "../components/util";
+import { getContainDocument } from "../selection-operator/util";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
@@ -44,7 +45,8 @@ const updateComponent = (
 };
 
 const update = (component: Block) => {
-  let dom = document.getElementById(component.id);
+  let containDocument = getContainDocument();
+  let dom = containDocument.getElementById(component.id);
   if (dom) {
     // 有对应元素时，替换或是删除
     console.log(component.id);
@@ -58,7 +60,7 @@ const update = (component: Block) => {
     // 组件失效，或是组件没有父节点时，不更新
     if (!component.active || !component.parent) return;
     let parentComponent = component.parent;
-    let parentDom = document.getElementById(parentComponent.id);
+    let parentDom = containDocument.getElementById(parentComponent.id);
 
     // 未找到父组件对应的元素时，更新父组件
     if (!parentDom) {
@@ -78,7 +80,7 @@ const update = (component: Block) => {
       if (afterComId) {
         parentDom.insertBefore(
           component.render(),
-          document.getElementById(afterComId)
+          containDocument.getElementById(afterComId)
         );
       }
     }

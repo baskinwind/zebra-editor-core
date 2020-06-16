@@ -4,6 +4,7 @@ import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
+import { storeData } from "../decorate";
 
 @initRecordState
 class Code extends PlainText {
@@ -19,6 +20,19 @@ class Code extends PlainText {
       code.add(component.children.map((item) => item.content).join(""), 0);
     }
     return [code];
+  }
+
+  constructor(
+    content: string = "",
+    style: storeData = {},
+    data: storeData = {}
+  ) {
+    super(content, style, data);
+    this.decorate.setStyle("background", "#f8f8f8");
+    this.decorate.setStyle("padding", "10px");
+    this.decorate.setStyle("borderRadius", "4px");
+    this.decorate.setStyle("border", "1px solid #eee");
+    this.content = content;
   }
 
   createEmpty() {

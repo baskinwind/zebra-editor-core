@@ -1,5 +1,5 @@
 export interface mapData {
-  [key: string]: string;
+  [key: string]: any;
 }
 
 abstract class BaseBuilder<T = any> {

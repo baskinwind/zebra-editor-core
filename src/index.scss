@@ -34,32 +34,9 @@
 
   .zebra-draft-image {
     margin: 0;
-    &.zebra-draft-image-loading {
-      background: #efefef;
-      padding: 20px 0;
-      &::before {
-        content: "图片加载中···";
-        display: block;
-        width: 100%;
-        text-align: center;
-        color: #a5a5a5;
-      }
-      img {
-        height: 1px;
-        opacity: 0;
-        width: 100%;
-      }
-    }
-    img {
-      opacity: 1;
-      transition: opacity 1s;
-    }
   }
+
   .zebra-draft-inline-image {
     min-width: 1em;
-    img {
-      opacity: 1;
-      transition: opacity 1s;
-    }
   }
 }

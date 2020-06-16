@@ -46,6 +46,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     const table = document.createElement("table");
     table.id = id;
     table.dataset.structure = StructureType.structure;
+    table.border = "1";
     this.addStyle(table, style);
     if (style) {
       for (let key in style) {
@@ -160,7 +161,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
     const figure = document.createElement("figure");
     figure.id = id;
-    figure.classList.add("zebra-draft-image", "zebra-draft-image-loading");
+    figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     this.addStyle(figure, style);
@@ -170,9 +171,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     image.alt = data.alt || "";
     image.style.maxWidth = "100%";
     image.style.display = "block";
-    image.addEventListener("load", () => {
-      figure.classList.remove("zebra-draft-image-loading");
-    });
     if (data.link) {
       const link = document.createElement("a");
       link.href = data.link;

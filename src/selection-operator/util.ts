@@ -1,4 +1,4 @@
-import Component from "../components/component";
+// @ts-nocheck
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getBlockById, createError } from "../components/util";
@@ -7,6 +7,21 @@ export interface cursorType {
   id: string;
   offset: number;
 }
+
+let containDocument: Document = document;
+let containWindow: Window = window;
+
+export const setContainDocument = (content: Document | null) => {
+  containDocument = content || document;
+};
+
+export const setContainWindow = (content: Window | null) => {
+  containWindow = content || window;
+};
+
+export const getContainDocument = () => containDocument;
+
+export const getContainWindow = () => containWindow;
 
 // 获取光标所在的组件
 export const getParent = (
@@ -18,14 +33,13 @@ export const getParent = (
   if (element.nodeType === 3) {
     return getParent(element.parentElement);
   }
-  if (element instanceof HTMLElement) {
-    if (
-      element.dataset.structure === StructureType.structure ||
+  if (
+    element.dataset &&
+    (element.dataset.structure === StructureType.structure ||
       element.dataset.structure === StructureType.content ||
-      element.dataset.structure === StructureType.plainText
-    ) {
-      return element;
-    }
+      element.dataset.structure === StructureType.plainText)
+  ) {
+    return element;
   }
   return getParent(element.parentElement);
 };
@@ -40,13 +54,13 @@ export const getContainer = (
   if (element.nodeType === 3) {
     return getContainer(element.parentElement);
   }
-  if (element instanceof HTMLElement) {
-    if (element instanceof HTMLImageElement) {
-      return getContainer(element.parentElement);
-    }
-    if (element.dataset.structure) {
-      return element;
-    }
+
+  if (element instanceof HTMLImageElement) {
+    return getContainer(element.parentElement);
+  }
+
+  if (element.dataset && element.dataset.structure) {
+    return element;
   }
   return getContainer(element.parentElement);
 };
@@ -78,7 +92,7 @@ const findFocusNode = (dom: Node, index: number): [boolean, Node, number] => {
     }
     return [false, dom, 1];
   }
-  if (dom instanceof Element && dom.children.length !== 0) {
+  if (dom.children && dom.children.length !== 0) {
     let consume = 0;
     for (let i = 0; i < dom.children.length; i++) {
       const element = dom.children[i];
@@ -107,7 +121,7 @@ export const getCursorPosition = (
       index: number;
     }
   | undefined => {
-  let dom = document.getElementById(cursor.id);
+  let dom = containDocument.getElementById(cursor.id);
   if (!dom) return;
   if (dom.dataset.type === ComponentType.media) {
     return {

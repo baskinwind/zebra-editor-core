@@ -2,7 +2,14 @@ import StructureCollection from "../components/structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getBlockById } from "../components/util";
-import { getElememtSize, getContainer, cursorType, getParent } from "./util";
+import {
+  getElememtSize,
+  getContainer,
+  cursorType,
+  getParent,
+  getContainDocument,
+  getContainWindow
+} from "./util";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -43,8 +50,8 @@ const getBeforeSelection = () => {
 
 // 获取选区信息，从 range[0].id 组件的 offset 位置开始，到 range[1].id 的 offset 位置结束
 const getSelection = () => {
-  let root = [...document.querySelectorAll(".zebra-draft-root")];
-  let section = window.getSelection();
+  let root = getContainDocument();
+  let section = getContainWindow().getSelection();
   // 无选区：直接返回保存的选区内容
   if (
     !section ||
@@ -55,8 +62,7 @@ const getSelection = () => {
     return selectionStore;
   }
   // 光标焦点不在根节点内：直接返回保存的选区内容
-  if (!root.some((item) => item.contains(section!.anchorNode)))
-    return selectionStore;
+  if (!root.contains(section!.anchorNode)) return selectionStore;
   // 光标焦点在 Article 组件
   let anchorNode = section?.anchorNode;
   if (
