@@ -128,7 +128,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   }
 
   getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
-    if (this.isEmpty()) return [false, false, []];
+    if (!this.active) return [false, false, []];
     if (!endId) {
       endId = startId;
     }

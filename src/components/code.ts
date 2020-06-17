@@ -28,11 +28,13 @@ class Code extends PlainText {
     data: storeData = {}
   ) {
     super(content, style, data);
-    this.decorate.setStyle("background", "#f8f8f8");
-    this.decorate.setStyle("padding", "10px");
-    this.decorate.setStyle("borderRadius", "4px");
-    this.decorate.setStyle("border", "1px solid #eee");
     this.content = content;
+    this.decorate.mergeStyle({
+      background: "#f8f8f8",
+      padding: "10px",
+      borderRadius: "4px",
+      border: "1px solid #eee"
+    });
   }
 
   createEmpty() {

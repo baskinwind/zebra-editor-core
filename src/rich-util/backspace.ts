@@ -30,8 +30,6 @@ const backspace = (
     return focusAt(component.remove(start.offset, start.offset + 1));
   }
 
-  // TODO: 验证所有浏览器的中文输入问题
-  let isComposing = false;
   let idList = getSelectedIdList(start.id, end.id);
 
   // 选中多行，需要阻止默认行为
@@ -39,32 +37,25 @@ const backspace = (
   if (idList.length === 0) return;
   if (idList.length === 1) {
     let component = getBlockById(idList[0]);
-    let focus = component.remove(start.offset, end.offset, isComposing);
-    if (!isComposing) {
-      return focusAt(focus);
-    }
-    return;
+    let focus = component.remove(start.offset, end.offset);
+    return focusAt(focus);
   }
 
   let firstComponent = getBlockById(idList[0]);
   let lastComponent = getBlockById(idList[idList.length - 1]);
   // 为了避免 send 时，组件不更新，此处需要开启更新
-  firstComponent.remove(start.offset, undefined, isComposing);
-  lastComponent.remove(0, end.offset, isComposing);
+  firstComponent.remove(start.offset);
+  lastComponent.remove(0, end.offset);
 
   // 其他情况，删除中间行，首尾行合并
-  lastComponent.sendTo(firstComponent, isComposing);
+  lastComponent.sendTo(firstComponent);
   for (let i = 1; i < idList.length - 1; i++) {
-    getBlockById(idList[i]).removeSelf(isComposing);
+    getBlockById(idList[i]).removeSelf();
   }
-  if (!isComposing) {
-    return focusAt({
-      id: firstComponent.id,
-      offset: start.offset
-    });
-  } else {
-    delayUpdate(idList);
-  }
+  return focusAt({
+    id: firstComponent.id,
+    offset: start.offset
+  });
 };
 
 export default backspace;

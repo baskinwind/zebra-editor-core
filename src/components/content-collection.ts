@@ -10,6 +10,7 @@ import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { getContentBuilder } from "../content";
+import { recordMethod } from "../record/decorators";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
@@ -196,6 +197,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return block.receive(this, customerUpdate);
   }
 
+  @recordMethod
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     let size = this.getSize();
     if (!block) return [this, size, size];
@@ -208,7 +210,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return;
   }
 
-  getRawData() {
+  fromatChildren() {
     let content: any[] = [];
     let acc: Character[] = [];
     let prevDecorate: Decorate;
@@ -242,7 +244,7 @@ abstract class ContentCollection extends Collection<Inline> {
   }
 
   getRaw(): IRawType {
-    let children = this.getRawData().map((item) => {
+    let children = this.fromatChildren().map((item) => {
       if (item.getRaw) {
         return item.getRaw();
       }
@@ -273,7 +275,7 @@ abstract class ContentCollection extends Collection<Inline> {
 
   getContent() {
     const builder = getContentBuilder();
-    return this.getRawData().map((item, index) => {
+    return this.fromatChildren().map((item, index) => {
       if (item.render) {
         return item.render();
       }

@@ -51,79 +51,95 @@ export const getContainer = (
   if (element === null || element === undefined)
     throw Error("容器节点获取失败");
   // 文本节点处理
-  if (element.nodeType === 3) {
+  if (
+    element.nodeType === 3 ||
+    element.nodeName === "IMG" ||
+    element.nodeName === "AUDIO" ||
+    element.nodeName === "VIDEO"
+  ) {
     return getContainer(element.parentElement);
   }
 
-  if (element instanceof HTMLImageElement) {
-    return getContainer(element.parentElement);
-  }
-
-  if (element.dataset && element.dataset.structure) {
-    return element;
-  }
-  return getContainer(element.parentElement);
+  return element;
 };
 
 // 获取元素的长度，修正图片长度为 0 的错误
 export const getElememtSize = (element?: Element): number => {
   if (element === undefined) return 0;
-  if (element instanceof HTMLImageElement) return 1;
-  if (element instanceof HTMLAudioElement) return 1;
-  if (element instanceof HTMLVideoElement) return 1;
-  if (element instanceof HTMLElement) {
-    let type = element.dataset.type;
-    if (type === ComponentType.inlineImage) {
-      return 1;
-    }
-    return element.innerText.length;
+  if (
+    element.nodeName === "IMG" ||
+    element.nodeName === "AUDIO" ||
+    element.nodeName === "VIDEO" ||
+    element.contentEditable === "true" ||
+    (element.dataset && element.dataset.type === ComponentType.inlineImage)
+  ) {
+    return 1;
   }
-  return 0;
+
+  if (element.children) {
+    let size = 0;
+    for (let i = 0; i < element.children.length; i++) {
+      let item = element.children[i];
+      size += getElememtSize(item);
+    }
+    return size;
+  }
+
+  return element.textContent?.length || 0;
 };
 
-const findFocusNode = (dom: Node, index: number): [boolean, Node, number] => {
+const findFocusNode = (
+  element: Node,
+  index: number
+): [boolean, Node, number] => {
   if (
-    dom instanceof HTMLImageElement ||
-    dom instanceof HTMLAudioElement ||
-    dom instanceof HTMLVideoElement
+    element.nodeName === "IMG" ||
+    element.nodeName === "AUDIO" ||
+    element.nodeName === "VIDEO" ||
+    element.contentEditable === "true"
   ) {
     if (index <= 1) {
-      return [true, dom, index];
+      return [true, element, index];
     }
-    return [false, dom, 1];
+    return [false, element, 1];
   }
-  if (dom.children && dom.children.length !== 0) {
+
+  if (element.children && element.children.length !== 0) {
     let consume = 0;
-    for (let i = 0; i < dom.children.length; i++) {
-      const element = dom.children[i];
-      let res = findFocusNode(element, index - consume);
+    for (let i = 0; i < element.children.length; i++) {
+      let item = element.children[i];
+      let res = findFocusNode(item, index - consume);
       if (res[0]) {
         return res;
       }
       consume += res[2];
     }
-    return [false, dom, consume];
+    return [false, element, consume];
   }
-  let charLength = dom.textContent?.length || 0;
+
+  let charLength = element.textContent?.length || 0;
   if (index > charLength) {
-    return [false, dom.childNodes[0], charLength];
+    return [false, element.childNodes[0], charLength];
   }
+
   // 兼容 p 标签内的 br 标签
-  return [true, dom.childNodes.length ? dom.childNodes[0] : dom, index];
+  return [
+    true,
+    element.childNodes.length ? element.childNodes[0] : element,
+    index
+  ];
 };
 
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
 export const getCursorPosition = (
   cursor: cursorType
-):
-  | {
-      node: Node;
-      index: number;
-    }
-  | undefined => {
+): {
+  node: Node;
+  index: number;
+} => {
   let dom = containDocument.getElementById(cursor.id);
-  if (!dom) return;
-  if (dom.dataset.type === ComponentType.media) {
+  if (!dom) throw Error("该节点已失效");
+  if (dom.dataset && dom.dataset.type === ComponentType.media) {
     return {
       node: dom,
       index: cursor.offset === 0 ? 0 : 1
@@ -136,8 +152,32 @@ export const getCursorPosition = (
   };
 };
 
+// 获取光标在 parent 中的偏移量
+export const getOffset = (
+  parent: Element,
+  wrap: Element,
+  offset: number
+): number => {
+  const countSize = (parent, node) => {
+    let size = 0;
+    for (let i = 0; i < parent.children.length; i++) {
+      let elememt = parent.children[i];
+      if (elememt === node) {
+        break;
+      }
+      if (elememt.contains(node)) {
+        size += countSize(elememt, node);
+      } else {
+        size += getElememtSize(elememt);
+      }
+    }
+    return size;
+  };
+  return countSize(parent, wrap) + offset;
+};
+
 // 获取所有选中的叶节点，不包括结构性的组件
-export const getSelectedIdList = (startId: string, endId: string) => {
+export const getSelectedIdList = (startId: string, endId: string): string[] => {
   let component = getBlockById(startId);
   let parent = component.parent;
   if (!parent) throw createError("该节点已失效", component);

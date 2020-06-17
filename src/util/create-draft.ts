@@ -15,6 +15,8 @@ export interface IOption {
   userOperator?: BaseOperator;
 }
 
+// const defaultS
+
 // 将组件挂载到某个节点上
 const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   startUpdate();
@@ -26,15 +28,11 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   // 生成 iframe 并获取 document 与 window 对象
   root.innerHTML = "";
   let iframe = document.createElement("iframe");
+  iframe.id = "iframe";
   iframe.width = "100%";
   iframe.height = "100%";
-  iframe.style.border = "none";
+  iframe.frameBorder = "0";
   root.appendChild(iframe);
-  if (iframe.contentDocument) {
-    iframe.contentDocument.body.style.margin = "20px";
-  }
-  setContainDocument(iframe.contentDocument);
-  setContainWindow(iframe.contentWindow);
 
   // 生成容器
   let operator = option?.userOperator || UserOperator.getInstance();
@@ -46,7 +44,18 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   editorWrap.style.minHeight = "100%";
   editorWrap.appendChild(block.render());
   block.active = true;
-  iframe.contentDocument?.body.appendChild(editorWrap);
+
+  // firefox 下必须异步才能获取 contentDocument 与 contentWindow
+  setTimeout(() => {
+    if (iframe.contentDocument) {
+      iframe.contentDocument.body.style.margin = "20px";
+    }
+    iframe.contentDocument?.body.appendChild(editorWrap);
+    setContainDocument(iframe.contentDocument);
+    setContainWindow(iframe.contentWindow);
+    // @ts-ignore
+    window.aaaa = () => iframe.contentWindow?.getSelection();
+  });
 
   // 监听事件
   editorWrap.addEventListener("blur", (event) => {

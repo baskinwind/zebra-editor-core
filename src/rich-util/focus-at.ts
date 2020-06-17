@@ -49,7 +49,11 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
   let section = getContainWindow().getSelection();
   section?.removeAllRanges();
   let range = getContainDocument().createRange();
-  if (start.node instanceof HTMLImageElement) {
+  if (
+    start.node.nodeName === "IMG" ||
+    start.node.nodeName === "AUDIO" ||
+    start.node.nodeName === "VIDEO"
+  ) {
     if (start.index === 0) {
       range.setStartBefore(start.node);
     }
@@ -59,7 +63,11 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
   } else {
     range.setStart(start.node, start.index);
   }
-  if (end.node instanceof HTMLImageElement) {
+  if (
+    end.node.nodeName === "IMG" ||
+    end.node.nodeName === "AUDIO" ||
+    end.node.nodeName === "VIDEO"
+  ) {
     if (end.index === 0) {
       range.setEndBefore(end.node);
     }

@@ -1,6 +1,7 @@
 import BaseBuilder, { mapData } from "./base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import { getContainDocument } from "../selection-operator/util";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
   static bulider: ContentBuilder;
@@ -25,7 +26,8 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
-    const article = document.createElement("article");
+    let containDocument = getContainDocument();
+    const article = containDocument.createElement("article");
     article.id = id;
     article.classList.add("zebra-draft-article");
     article.dataset.type = ComponentType.article;
@@ -43,10 +45,10 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ) {
-    const table = document.createElement("table");
+    let containDocument = getContainDocument();
+    const table = containDocument.createElement("table");
     table.id = id;
     table.dataset.structure = StructureType.structure;
-    table.border = "1";
     this.addStyle(table, style);
     if (style) {
       for (let key in style) {
@@ -63,7 +65,8 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ) {
-    const tr = document.createElement("tr");
+    let containDocument = getContainDocument();
+    const tr = containDocument.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.structure;
     this.addStyle(tr, style);
@@ -83,7 +86,8 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ) {
-    const td = document.createElement(cellType);
+    let containDocument = getContainDocument();
+    const td = containDocument.createElement(cellType);
     td.id = id;
     td.dataset.structure = StructureType.structure;
     this.addStyle(td, style);
@@ -102,8 +106,9 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
+    let containDocument = getContainDocument();
     let tag = data.tag || "ul";
-    const list = document.createElement(tag);
+    const list = containDocument.createElement(tag);
     list.id = id;
     list.classList.add("zebra-draft-list");
     list.dataset.type = ComponentType.article;
@@ -121,8 +126,9 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
+    let containDocument = getContainDocument();
     let tag = data.tag || "p";
-    const parapraph = document.createElement(tag);
+    const parapraph = containDocument.createElement(tag);
     parapraph.id = id;
     parapraph.classList.add(`zebra-draft-${tag}`);
     parapraph.dataset.type = ComponentType.paragraph;
@@ -133,7 +139,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
         parapraph.appendChild(component);
       });
     } else {
-      parapraph.appendChild(document.createElement("br"));
+      parapraph.appendChild(containDocument.createElement("br"));
     }
     return parapraph;
   }
@@ -144,13 +150,14 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
-    const pre = document.createElement("pre");
+    let containDocument = getContainDocument();
+    const pre = containDocument.createElement("pre");
     pre.id = id;
     pre.classList.add(`zebra-draft-title-code`);
     pre.dataset.type = ComponentType.code;
     pre.dataset.structure = StructureType.plainText;
     this.addStyle(pre, style);
-    const code = document.createElement("code");
+    const code = containDocument.createElement("code");
     code.append(content);
     code.dataset.type = ComponentType.characterList;
     code.dataset.structure = StructureType.partialContent;
@@ -159,20 +166,21 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   }
 
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
-    const figure = document.createElement("figure");
+    let containDocument = getContainDocument();
+    const figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     this.addStyle(figure, style);
     let child;
-    let image = document.createElement("img");
+    let image = containDocument.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
     image.style.maxWidth = "100%";
     image.style.display = "block";
     if (data.link) {
-      const link = document.createElement("a");
+      const link = containDocument.createElement("a");
       link.href = data.link;
       link.appendChild(image);
       child = link;
@@ -184,26 +192,28 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   }
 
   buildeAudio(id: string, src: string, style: mapData, data: mapData) {
-    const figure = document.createElement("figure");
+    let containDocument = getContainDocument();
+    const figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     this.addStyle(figure, style);
-    let audio = document.createElement("audio");
+    let audio = containDocument.createElement("audio");
     audio.src = src;
     figure.appendChild(audio);
     return figure;
   }
 
   buildeVideo(id: string, src: string, style: mapData, data: mapData) {
-    const figure = document.createElement("figure");
+    let containDocument = getContainDocument();
+    const figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     this.addStyle(figure, style);
-    let video = document.createElement("video");
+    let video = containDocument.createElement("video");
     video.src = src;
     figure.appendChild(video);
     return figure;
@@ -215,14 +225,15 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
-    let wrap = document.createElement("span");
+    let containDocument = getContainDocument();
+    let wrap = containDocument.createElement("span");
     if (data.code) {
-      wrap = document.createElement("code");
+      wrap = containDocument.createElement("code");
     }
     wrap.innerText = charList;
     this.addStyle(wrap, Object.assign(style));
     if (data.link) {
-      let link = document.createElement("a");
+      let link = containDocument.createElement("a");
       link.href = data.link;
       link.appendChild(wrap);
       wrap = link;
@@ -239,19 +250,20 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData
   ): HTMLElement {
-    const span = document.createElement("span");
+    let containDocument = getContainDocument();
+    const span = containDocument.createElement("span");
     span.id = id;
     span.classList.add("zebra-draft-inline-image");
     span.dataset.type = ComponentType.inlineImage;
     span.dataset.structure = StructureType.partialContent;
     this.addStyle(span, style);
     let child;
-    let image = document.createElement("img");
+    let image = containDocument.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
     image.style.minWidth = "1em";
     if (data.link) {
-      const link = document.createElement("a");
+      const link = containDocument.createElement("a");
       link.href = data.link;
       link.appendChild(image);
       child = link;

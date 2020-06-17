@@ -35,7 +35,10 @@ const bgColor = (color: string) => {
 };
 
 const clearAllStyle = () => {
-  modifySelectionDecorate({ remove: "all" });
+  modifySelectionDecorate(
+    { remove: "all" },
+    { remove: "bold,delete,itailc,underline,code" }
+  );
 };
 
 const link = (link: string) => {

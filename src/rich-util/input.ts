@@ -37,7 +37,7 @@ const input = (
       component.add(charOrInline, offset, true);
       let container = getContainer(node);
       let newInline = charOrInline.render();
-      if (node instanceof HTMLImageElement) {
+      if (node.nodeName === "IMG") {
         container.replaceWith(container, newInline);
       } else {
         let nodeParent = node.parentElement;
@@ -61,8 +61,8 @@ const input = (
     // 强制更新
     if (
       needUpdate() ||
-      startNode instanceof HTMLBRElement ||
-      startNode instanceof HTMLImageElement ||
+      startNode.nodeName === "BR" ||
+      startNode.nodeName === "IMG" ||
       charOrInline instanceof Character ||
       (!event && typeof charOrInline === "string") ||
       event?.defaultPrevented

@@ -10,6 +10,7 @@ import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
+import { getContainWindow } from "../selection-operator/util";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
@@ -26,17 +27,17 @@ class UserOperator extends BaseOperator {
 
   onClick(event: MouseEvent) {
     // 修复点击图片未选中图片的问题
-    let target = event.target;
-    if (target instanceof HTMLImageElement) {
-      let section = window.getSelection();
+    let target = event.target as any;
+    if (target.nodeName === "IMG") {
+      let section = getContainWindow().getSelection();
       try {
         section?.removeAllRanges();
-      } catch { }
+      } catch {}
       let range = new Range();
       range.selectNode(target);
       section?.addRange(range);
     }
-    if (target instanceof HTMLLinkElement) {
+    if (target.nodeName === "A") {
       event.preventDefault();
     }
   }
@@ -90,7 +91,7 @@ class UserOperator extends BaseOperator {
     component.handleArrow(selection.range[0].offset, direction);
   }
 
-  handleFunctionKey(event: KeyboardEvent) { }
+  handleFunctionKey(event: KeyboardEvent) {}
 }
 
 export default UserOperator;

@@ -16,6 +16,12 @@ class Decorate {
   getStyle() {
     return this.style.toObject();
   }
+  mergeStyle(style?: storeData) {
+    if (!style) return;
+    for (let key in style) {
+      this.setStyle(key, style[key]);
+    }
+  }
   setStyle(name: string, value: any) {
     if (name === "remove") {
       if (value === "all") {
@@ -30,14 +36,11 @@ class Decorate {
       this.style = this.style.set(name, value);
     }
   }
-  mergeStyle(style?: storeData) {
-    if (!style) return;
-    for (let key in style) {
-      this.setStyle(key, style[key]);
-    }
-  }
   removeStyle(name: string) {
-    this.style = this.style.delete(name);
+    let list = name.split(",");
+    list.forEach((key) => {
+      this.style = this.style.delete(key);
+    });
   }
   clearStyle() {
     this.style = this.style.clear();
@@ -48,6 +51,12 @@ class Decorate {
 
   getData() {
     return this.data.toObject();
+  }
+  mergeData(data?: storeData) {
+    if (!data) return;
+    for (let key in data) {
+      this.setData(key, data[key]);
+    }
   }
   setData(name: string, value: any) {
     if (name === "remove") {
@@ -64,14 +73,11 @@ class Decorate {
       this.data = this.data.set(name, value);
     }
   }
-  mergeData(data?: storeData) {
-    if (!data) return;
-    for (let key in data) {
-      this.setData(key, data[key]);
-    }
-  }
   removeData(name: string) {
-    this.data = this.data.delete(name);
+    let list = name.split(",");
+    list.forEach((key) => {
+      this.data = this.data.delete(key);
+    });
   }
   clearData() {
     this.data = this.data.clear();

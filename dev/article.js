@@ -31,7 +31,12 @@ article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
 article.add(factory.buildTitle("h2", "冰与火之歌"));
 
 article.add(factory.buildTitle("h3", "图片"));
-article.add(factory.buildMedia("image", "https://acohome.cn/demo/zebra-draft/draft-img-1.jpg"));
+article.add(
+  factory.buildMedia(
+    "image",
+    "https://acohome.cn/demo/zebra-draft/draft-img-1.jpg"
+  )
+);
 
 article.add(factory.buildTitle("h3", "代码块"));
 let code = factory.buildCode(`function greeter(user) {
