@@ -2,7 +2,6 @@ import Component from "../components/component";
 import {
   cursorType,
   getCursorPosition,
-  getContainWindow,
   getContainDocument
 } from "../selection-operator/util";
 import { getBeforeSelection } from "../selection-operator/get-selection";
@@ -46,9 +45,11 @@ type focusNodeType = {
 
 // 从开始节点的某处，选到接收节点的某处
 const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
-  let section = getContainWindow().getSelection();
+  let doc = getContainDocument();
+  let section = doc.getSelection();
   section?.removeAllRanges();
-  let range = getContainDocument().createRange();
+  let range = doc.createRange();
+
   if (
     start.node.nodeName === "IMG" ||
     start.node.nodeName === "AUDIO" ||
@@ -78,6 +79,9 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
     range.setEnd(end.node, end.index);
   }
   section?.addRange(range);
+  let editor = doc.getElementsByClassName("x-editor-root")[0];
+  // @ts-ignore
+  editor.focus();
 };
 
 export default focusAt;

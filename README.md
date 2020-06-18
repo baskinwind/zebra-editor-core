@@ -1,6 +1,6 @@
-# ZebraDraft
+# XEditor
 
-zebra-draft.js 富文本编辑器功能核心。
+x-deitor.js 富文本编辑器功能核心。
 
 [draft demo](https://acohome.cn/demo/zebra-draft/index.html)
 

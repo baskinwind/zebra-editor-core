@@ -76,7 +76,7 @@ export const getElememtSize = (element?: Element): number => {
     return 1;
   }
 
-  if (element.children) {
+  if (element.children && element.children.length) {
     let size = 0;
     for (let i = 0; i < element.children.length; i++) {
       let item = element.children[i];
@@ -160,6 +160,7 @@ export const getOffset = (
 ): number => {
   const countSize = (parent, node) => {
     let size = 0;
+    if (parent === node) return size;
     for (let i = 0; i < parent.children.length; i++) {
       let elememt = parent.children[i];
       if (elememt === node) {

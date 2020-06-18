@@ -38,7 +38,7 @@ new Vue({
       blockStyleValue: "2em",
       inlineImage: "https://acohome.cn/demo/zebra-draft/emjoy-1.png",
       image: "https://acohome.cn/demo/zebra-draft/draft-img-1.jpg",
-      link: "http://acohome.com",
+      link: "http://acohome.cn",
       tableRow: 3,
       tableCol: 3,
       tableHead: true

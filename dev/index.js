@@ -1,4 +1,3 @@
-import "../src/index.scss";
 import "./operator";
 import article from "./article";
 import { mount, createByRaw, getBlockById } from "../src";

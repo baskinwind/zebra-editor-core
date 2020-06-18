@@ -23,7 +23,14 @@ const underline = () => {
 };
 
 const code = () => {
-  modifySelectionDecorate({}, { code: true });
+  modifySelectionDecorate(
+    {
+      background: "#f8f8f8",
+      padding: "2px 4px",
+      borderRadius: "2px"
+    },
+    { code: true }
+  );
 };
 
 const color = (color: string) => {

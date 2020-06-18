@@ -237,6 +237,13 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       link.href = data.link;
       link.appendChild(wrap);
       wrap = link;
+      link.addEventListener("click", (event: MouseEvent) => {
+        if (event.metaKey || event.ctrlKey) {
+          window.open(link.href);
+        } else {
+          event.preventDefault();
+        }
+      });
     }
     wrap.id = id;
     wrap.dataset.type = ComponentType.characterList;

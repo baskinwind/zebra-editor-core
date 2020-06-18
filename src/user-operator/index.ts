@@ -37,9 +37,6 @@ class UserOperator extends BaseOperator {
       range.selectNode(target);
       section?.addRange(range);
     }
-    if (target.nodeName === "A") {
-      event.preventDefault();
-    }
   }
 
   onPaste(event: ClipboardEvent) {
@@ -57,9 +54,10 @@ class UserOperator extends BaseOperator {
   onCompositionEnd(event: CompositionEvent) {
     let selection = getBeforeSelection();
     // createRecord(selection.range[0], selection.range[1]);
+    // 混合输入会导致获取选区多一位
     input(event.data, {
       id: selection.range[0].id,
-      offset: selection.range[0].offset - event.data.length
+      offset: selection.range[0].offset - 1
     });
   }
 

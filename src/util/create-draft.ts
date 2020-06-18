@@ -9,13 +9,12 @@ import {
   setContainDocument,
   setContainWindow
 } from "../selection-operator/util";
+import defaultStyle from "./default-style";
 
 export interface IOption {
   contentBuilder?: BaseBuilder;
   userOperator?: BaseOperator;
 }
-
-// const defaultS
 
 // 将组件挂载到某个节点上
 const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
@@ -24,6 +23,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   if (option && option.contentBuilder) {
     setContentBuilder(option.contentBuilder);
   }
+  let operator = option?.userOperator || UserOperator.getInstance();
 
   // 生成 iframe 并获取 document 与 window 对象
   root.innerHTML = "";
@@ -34,11 +34,12 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   iframe.frameBorder = "0";
   root.appendChild(iframe);
 
+  // @ts-ignore
+  let editorWrap = iframe.contentDocument.createElement("div");
+
   // 生成容器
-  let operator = option?.userOperator || UserOperator.getInstance();
-  let editorWrap = document.createElement("div");
   editorWrap.contentEditable = "true";
-  editorWrap.classList.add("zebra-draft-root");
+  editorWrap.classList.add("x-editor-root");
   editorWrap.style.whiteSpace = "pre-wrap";
   editorWrap.style.outline = "none";
   editorWrap.style.minHeight = "100%";
@@ -49,12 +50,13 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   setTimeout(() => {
     if (iframe.contentDocument) {
       iframe.contentDocument.body.style.margin = "20px";
+      iframe.contentDocument.body.appendChild(editorWrap);
+      let style = iframe.contentDocument?.createElement("style");
+      style.textContent = defaultStyle;
+      iframe.contentDocument.head.appendChild(style);
+      setContainDocument(iframe.contentDocument);
+      setContainWindow(iframe.contentWindow);
     }
-    iframe.contentDocument?.body.appendChild(editorWrap);
-    setContainDocument(iframe.contentDocument);
-    setContainWindow(iframe.contentWindow);
-    // @ts-ignore
-    window.aaaa = () => iframe.contentWindow?.getSelection();
   });
 
   // 监听事件
@@ -104,6 +106,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   editorWrap.addEventListener("dragstart", (event) => {
     event.preventDefault();
   });
+
   return root;
 };
 

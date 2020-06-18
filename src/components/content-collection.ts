@@ -129,6 +129,13 @@ abstract class ContentCollection extends Collection<Inline> {
     if (block) {
       if (!Array.isArray(block)) block = [block];
       parent.addChildren(block, componentIndex + 1, customerUpdate);
+      if (this.isEmpty()) {
+        this.removeSelf();
+      }
+      if (splitBlock.isEmpty()) {
+        splitBlock.removeSelf();
+        return [block[block.length - 1], 0, 0];
+      }
     }
     return [splitBlock, 0, 0];
   }
