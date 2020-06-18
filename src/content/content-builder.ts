@@ -49,7 +49,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     const table = containDocument.createElement("table");
     table.id = id;
     table.dataset.structure = StructureType.structure;
-    table.contentEditable = "false";
     this.addStyle(table, style);
     if (style) {
       for (let key in style) {
@@ -91,7 +90,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     const td = containDocument.createElement(cellType);
     td.id = id;
     td.dataset.structure = StructureType.structure;
-    td.contentEditable = "true";
     this.addStyle(td, style);
     if (style) {
       for (let key in style) {

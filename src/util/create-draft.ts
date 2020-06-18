@@ -58,13 +58,8 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   // 监听事件
   editorWrap.addEventListener("blur", (event) => {
     console.log('blur');
-    if (iframe.contentDocument?.body.dataset.mousedown === 'false') {
-      // @ts-ignore
-      iframe.contentDocument?.body.dataset.focus = "false";
-    } else {
-      // @ts-ignore
-      iframe.contentDocument?.body.dataset.mousedown = "false";
-    }
+    // @ts-ignore
+    iframe.contentDocument?.body.dataset.focus = "false";
     try {
       operator.onBlur(event);
     } catch (e) {
@@ -75,8 +70,6 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     console.log('mousedown');
     // @ts-ignore
     iframe.contentDocument?.body.dataset.focus = "true";
-    // @ts-ignore
-    iframe.contentDocument?.body.dataset.mousedown = "true";
   });
   editorWrap.addEventListener("click", (event) => {
     try {
