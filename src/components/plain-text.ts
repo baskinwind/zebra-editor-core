@@ -8,7 +8,6 @@ import Block from "./block";
 import ContentCollection from "./content-collection";
 import Paragraph from "./paragraph";
 import StructureType from "../const/structure-type";
-import DirectionType from "../const/direction-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { storeData } from "../decorate";

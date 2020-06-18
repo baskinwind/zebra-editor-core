@@ -79,9 +79,9 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
     range.setEnd(end.node, end.index);
   }
   section?.addRange(range);
-  let editor = doc.getElementsByClassName("x-editor-root")[0];
-  // @ts-ignore
-  editor.focus();
+  if (doc.body.dataset.focus === 'false') {
+    doc.body.focus();
+  }
 };
 
 export default focusAt;

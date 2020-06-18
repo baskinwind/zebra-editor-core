@@ -7,14 +7,16 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
   event?.preventDefault();
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     let component = getBlockById(start.id);
-    return focusAt(component.split(start.offset));
+    focusAt(component.split(start.offset));
+    return;
   }
   let idList = getSelectedIdList(start.id, end.id);
   if (idList.length === 0) return;
   if (idList.length === 1) {
     let component = getBlockById(idList[0]);
     component.remove(start.offset, end.offset);
-    return focusAt(component.split(start.offset));
+    focusAt(component.split(start.offset));
+    return;
   }
 
   // 选中多行
@@ -29,6 +31,7 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
     id: lastComponent.id,
     offset: 0
   });
+  return;
 };
 
 export default enter;

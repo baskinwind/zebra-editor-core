@@ -10,6 +10,7 @@ import {
   setContainWindow
 } from "../selection-operator/util";
 import defaultStyle from "./default-style";
+import focusAt from "../rich-util/focus-at";
 
 export interface IOption {
   contentBuilder?: BaseBuilder;
@@ -35,38 +36,47 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   root.appendChild(iframe);
 
   // @ts-ignore
-  let editorWrap = iframe.contentDocument.createElement("div");
+  let editorWrap = iframe.contentDocument.body;
 
   // 生成容器
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("x-editor-root");
-  editorWrap.style.whiteSpace = "pre-wrap";
-  editorWrap.style.minHeight = "100%";
   editorWrap.appendChild(block.render());
   block.active = true;
 
   // firefox 下必须异步才能获取 contentDocument 与 contentWindow
   setTimeout(() => {
     if (iframe.contentDocument) {
-      iframe.contentDocument.body.style.margin = "20px";
-      iframe.contentDocument.body.appendChild(editorWrap);
       let style = iframe.contentDocument?.createElement("style");
       style.textContent = defaultStyle;
       iframe.contentDocument.head.appendChild(style);
       setContainDocument(iframe.contentDocument);
       setContainWindow(iframe.contentWindow);
-      // @ts-ignore
-      window.aaaa = () => iframe.contentDocument?.getSelection();
     }
   });
 
   // 监听事件
   editorWrap.addEventListener("blur", (event) => {
+    console.log('blur');
+    if (iframe.contentDocument?.body.dataset.mousedown === 'false') {
+      // @ts-ignore
+      iframe.contentDocument?.body.dataset.focus = "false";
+    } else {
+      // @ts-ignore
+      iframe.contentDocument?.body.dataset.mousedown = "false";
+    }
     try {
       operator.onBlur(event);
     } catch (e) {
       console.warn(e);
     }
+  });
+  editorWrap.addEventListener("mousedown", (event) => {
+    console.log('mousedown');
+    // @ts-ignore
+    iframe.contentDocument?.body.dataset.focus = "true";
+    // @ts-ignore
+    iframe.contentDocument?.body.dataset.mousedown = "true";
   });
   editorWrap.addEventListener("click", (event) => {
     try {

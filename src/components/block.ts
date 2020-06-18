@@ -1,7 +1,6 @@
 import Component, { classType, operatorType, IRawType } from "./component";
 import Collection from "./collection";
 import StructureCollection from "./structure-collection";
-import DirectionType from "../const/direction-type";
 import { saveBlock, createError } from "./util";
 import { storeData } from "../decorate/index";
 

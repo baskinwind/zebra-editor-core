@@ -33,7 +33,7 @@ class UserOperator extends BaseOperator {
       let section = getContainWindow().getSelection();
       try {
         section?.removeAllRanges();
-      } catch {}
+      } catch { }
       let range = new Range();
       range.selectNode(target);
       section?.addRange(range);
@@ -59,7 +59,7 @@ class UserOperator extends BaseOperator {
     input(event.data, {
       id: selection.range[0].id,
       offset: selection.range[0].offset - 1
-    });
+    }, event);
   }
 
   onKeyDown(event: KeyboardEvent) {

@@ -17,7 +17,7 @@ class Code extends PlainText {
   static exchangeOnly(component: Component, args: any[] = []): Code[] {
     let code = new Code();
     if (component instanceof ContentCollection) {
-      code.add(component.children.map((item) => item.content).join(""), 0);
+      code.add(component.children.map((item) => item.content).join("") + "\n", 0);
     }
     return [code];
   }

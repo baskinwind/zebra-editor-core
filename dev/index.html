@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>XEditor Demo</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  </head>
-  <script id="operator-template" type="text/x-template">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XEditor Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
         <button @click="undo">undo</button>
@@ -38,7 +39,7 @@
       <div>
         <p>设置选中内容样式：</p>
         <div>
-          <button @click="bold">加粗</button>
+          <button @click.prevent="bold">加粗</button>
           <button @click="deleteText">删除</button>
           <button @click="itailc">斜体</button>
           <button @click="underline">下划线</button>
@@ -130,10 +131,11 @@
     </div>
   </script>
 
-  <body>
-    <div class="flex">
-      <div id="operator"></div>
-      <div class="draft-wrap" id="root"></div>
-    </div>
-  </body>
+<body>
+  <div class="flex">
+    <div id="operator"></div>
+    <div class="draft-wrap" id="root"></div>
+  </div>
+</body>
+
 </html>

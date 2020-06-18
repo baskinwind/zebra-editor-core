@@ -13,7 +13,7 @@ import updateComponent, { needUpdate } from "../util/update-component";
 const input = (
   charOrInline: string | Inline,
   start: cursorType,
-  event?: KeyboardEvent
+  event?: KeyboardEvent | CompositionEvent
 ) => {
   try {
     let component = getBlockById(start.id);
