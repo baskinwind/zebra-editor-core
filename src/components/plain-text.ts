@@ -126,37 +126,13 @@ abstract class PlainText extends Block {
     return [this, size, size];
   }
 
-  // 在纯文本中 Enter 被用作换行，导致不能创建新行，光标会被困在 Code 区域内
-  // 当在 Code 的第一行，按下向上时，若该 Code 为 Article 的第一个子元素，则在 Code 上生成新行
-  // 向下操作为向上的反向
-  handleArrow(index: number, direction: DirectionType): operatorType {
-    let contentList = this.content.split("\n");
-    if (direction === DirectionType.up && index <= contentList[0].length) {
-      let parent = this.parent;
-      if (!parent) throw createError("该节点已失效", this);
-      let index = parent.findChildrenIndex(this);
-      if (index !== 0) {
-        return [parent.children.get(index - 1) as Component, 0, 0];
-      }
-      let paragraph = new Paragraph();
-      this.parent?.add(paragraph, 0);
-      return [paragraph, 0, 0];
-    }
-    if (
-      direction === DirectionType.down &&
-      index > this.content.length - contentList[contentList.length - 2].length
-    ) {
-      let parent = this.parent;
-      if (!parent) throw createError("该节点已失效", this);
-      let index = parent.findChildrenIndex(this);
-      if (index !== parent.getSize() - 1) {
-        return [parent.children.get(index + 1) as Component, 0, 0];
-      }
-      let paragraph = new Paragraph();
-      this.parent?.add(paragraph, parent.getSize());
-      return [paragraph, 0, 0];
-    }
-    return;
+  addEmptyParagraph(bottom: boolean = true): operatorType {
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效", this);
+    let index = parent.findChildrenIndex(this);
+    let paragraph = new Paragraph();
+    parent.add(paragraph, index + (bottom ? 1 : 0));
+    return [paragraph, 0, 0];
   }
 
   snapshoot(): IPlainTextSnapshoot {

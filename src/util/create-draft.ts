@@ -41,7 +41,6 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   editorWrap.contentEditable = "true";
   editorWrap.classList.add("x-editor-root");
   editorWrap.style.whiteSpace = "pre-wrap";
-  editorWrap.style.outline = "none";
   editorWrap.style.minHeight = "100%";
   editorWrap.appendChild(block.render());
   block.active = true;
@@ -56,6 +55,8 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
       iframe.contentDocument.head.appendChild(style);
       setContainDocument(iframe.contentDocument);
       setContainWindow(iframe.contentWindow);
+      // @ts-ignore
+      window.aaaa = () => iframe.contentDocument?.getSelection();
     }
   });
 

@@ -11,6 +11,7 @@ import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
+import focusAt from "../rich-util/focus-at";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
@@ -84,12 +85,19 @@ class UserOperator extends BaseOperator {
   }
 
   handleArrawKey(direction: DirectionType) {
-    let selection = getSelection();
-    let component = getBlockById(selection.range[0].id);
-    component.handleArrow(selection.range[0].offset, direction);
+    // let selection = getSelection();
+    // let component = getBlockById(selection.range[0].id);
+    // component.handleArrow(selection.range[0].offset, direction);
   }
 
-  handleFunctionKey(event: KeyboardEvent) {}
+  handleFunctionKey(event: KeyboardEvent) {
+    let selection = getSelection();
+    if (event.metaKey && event.key === "Enter") {
+      let component = getBlockById(selection.range[1].id);
+      focusAt(component.addEmptyParagraph(!event.shiftKey));
+      return;
+    }
+  }
 }
 
 export default UserOperator;

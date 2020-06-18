@@ -106,6 +106,12 @@ abstract class Block extends Component {
     return;
   }
 
+  // 在一些组件中 Enter 被使用，导致不能在组件下方或上方创建新行
+  // 使用该 api 创建上方或是下方的新行 
+  addEmptyParagraph(bottom: boolean): operatorType {
+    return;
+  }
+
   // 修改子组件的表现形式，仅在 ContentCollection 组件内有用
   modifyContentDecorate(
     start: number,
@@ -127,11 +133,6 @@ abstract class Block extends Component {
     component?: Component,
     customerUpdate: boolean = false
   ): operatorType {
-    return;
-  }
-
-  // 处理方向键，一般不用实现
-  handleArrow(index: number, direction: DirectionType): operatorType {
     return;
   }
 }
