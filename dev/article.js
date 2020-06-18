@@ -32,10 +32,7 @@ article.add(factory.buildTitle("h2", "冰与火之歌"));
 
 article.add(factory.buildTitle("h3", "图片"));
 article.add(
-  factory.buildMedia(
-    "image",
-    "https://acohome.cn/demo/zebra-draft/draft-img-1.jpg"
-  )
+  factory.buildMedia("image", "https://acohome.cn/image/block-1.jpg")
 );
 
 article.add(factory.buildTitle("h3", "代码块"));
@@ -78,17 +75,11 @@ pledgeCn.forEach((item) => {
 
 article.add(factory.buildTitle("h3", "图文混排"));
 let para = factory.buildParagraph("");
-para.add(
-  factory.buildInlineImage("https://acohome.cn/demo/zebra-draft/emjoy-1.png")
-);
+para.add(factory.buildInlineImage("https://acohome.cn/image/emjoy-1.png"));
 para.addText("Valar Morghulis");
-para.add(
-  factory.buildInlineImage("https://acohome.cn/demo/zebra-draft/emjoy-2.png")
-);
+para.add(factory.buildInlineImage("https://acohome.cn/image/emjoy-2.png"));
 para.addText("凡人皆有一死");
-para.add(
-  factory.buildInlineImage("https://acohome.cn/demo/zebra-draft/emjoy-3.png")
-);
+para.add(factory.buildInlineImage("https://acohome.cn/image/emjoy-3.png"));
 para.addInto(article);
 
 article.add(factory.buildTitle("h3", "表格"));

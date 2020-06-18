@@ -1,9 +1,21 @@
-# XEditor
+# ZebraEditor
 
-x-deitor.js 富文本编辑器功能核心。
+zebra-editor.js 富文本编辑器功能核心。
 
-[draft demo](https://acohome.cn/demo/zebra-draft/index.html)
+[demo](https://acohome.cn/demo/x-editor/index.html)
 
-## 组成
+## 使用
 
-[component](https://raw.githubusercontent.com/acccco/zebra-draft/master/architecture.svg)
+```
+yarn add zebra-editor
+
+# or
+
+npm i zebra-editor
+```
+
+```
+import { mount } from "zebra-editor"
+
+mount('root');
+```
