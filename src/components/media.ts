@@ -36,7 +36,7 @@ class Media extends Block {
     this.mediaType = mediaType;
     this.src = src;
     this.decorate.mergeStyle({
-      margin: 0
+      margin: "10px"
     });
   }
 

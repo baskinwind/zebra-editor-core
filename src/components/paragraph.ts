@@ -5,6 +5,7 @@ import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
 import { initRecordState, recordMethod } from "../record/decorators";
+import { storeData } from "../decorate";
 
 @initRecordState
 class Paragraph extends ContentCollection {
@@ -33,6 +34,13 @@ class Paragraph extends ContentCollection {
       });
     }
     return list;
+  }
+
+  constructor(text: string = "", style?: storeData, data?: storeData) {
+    super(text, style, data);
+    this.decorate.mergeStyle({
+      fontSize: "16px"
+    });
   }
 
   @recordMethod

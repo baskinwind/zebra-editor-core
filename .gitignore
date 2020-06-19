@@ -12,7 +12,6 @@ node_modules
 /dist
 /lib
 /example
-.zip
 
 # misc
 .DS_Store

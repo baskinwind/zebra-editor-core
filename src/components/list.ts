@@ -211,6 +211,13 @@ class ListItem extends ContentCollection {
     return list;
   }
 
+  constructor(text: string = "", style?: storeData, data?: storeData) {
+    super(text, style, data);
+    this.decorate.mergeStyle({
+      fontSize: "16px"
+    });
+  }
+
   createEmpty() {
     return new ListItem("", this.decorate.getStyle(), this.decorate.getData());
   }

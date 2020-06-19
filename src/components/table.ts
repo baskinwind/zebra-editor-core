@@ -333,6 +333,14 @@ class TableItem extends ContentCollection {
     throw createError("不允许切换成表格内段落");
   }
 
+  constructor(text: string = "", style?: storeData, data?: storeData) {
+    super(text, style, data);
+    this.decorate.mergeStyle({
+      fontSize: "16px",
+      margin: "0"
+    });
+  }
+
   exchangeTo(builder: classType, args: any[]): Block[] {
     throw createError("表格内段落不允许切换类型！！", this);
   }

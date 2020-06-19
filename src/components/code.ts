@@ -17,7 +17,10 @@ class Code extends PlainText {
   static exchangeOnly(component: Component, args: any[] = []): Code[] {
     let code = new Code();
     if (component instanceof ContentCollection) {
-      code.add(component.children.map((item) => item.content).join("") + "\n", 0);
+      code.add(
+        component.children.map((item) => item.content).join("") + "\n",
+        0
+      );
     }
     return [code];
   }
@@ -30,10 +33,11 @@ class Code extends PlainText {
     super(content, style, data);
     this.content = content;
     this.decorate.mergeStyle({
-      background: "#f8f8f8",
       padding: "10px",
+      border: "1px solid #eee",
       borderRadius: "4px",
-      border: "1px solid #eee"
+      background: "#f8f8f8",
+      lineHeight: "1.3em"
     });
   }
 

@@ -8,6 +8,7 @@ import { createRecord } from "../record/util";
 
 // 复制内容
 const onPaste = (event: ClipboardEvent) => {
+  event.preventDefault();
   let copyInData = event.clipboardData?.getData("text/plain");
   if (!copyInData) return;
   let rowData = copyInData.split("\n");
@@ -36,7 +37,6 @@ const onPaste = (event: ClipboardEvent) => {
   if (rowData.length === 1) {
     return focusAt(focus);
   }
-  nowComponent.add(rowData[rowData.length - 1], index + rowData[0].length);
   let list = [];
   for (let i = 1; i < rowData.length; i++) {
     list.push(new Paragraph(rowData[i]));

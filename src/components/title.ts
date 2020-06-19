@@ -15,6 +15,33 @@ export interface ITitleSnapshoot extends ICollectionSnapshoot<Inline> {
   titleType: titleType;
 }
 
+const styleMap = {
+  h1: {
+    fontSize: "32px",
+    fontWeight: "700"
+  },
+  h2: {
+    fontSize: "24px",
+    fontWeight: "700"
+  },
+  h3: {
+    fontSize: "20px",
+    fontWeight: "700"
+  },
+  h4: {
+    fontSize: "16px",
+    fontWeight: "700"
+  },
+  h5: {
+    fontSize: "14px",
+    fontWeight: "700"
+  },
+  h6: {
+    fontSize: "12px",
+    fontWeight: "700"
+  }
+};
+
 @initRecordState
 class Title extends ContentCollection {
   type = ComponentType.title;
@@ -53,6 +80,7 @@ class Title extends ContentCollection {
   ) {
     super(text, style, data);
     this.titleType = type;
+    this.decorate.mergeStyle(styleMap[type]);
   }
 
   @recordMethod
@@ -70,6 +98,7 @@ class Title extends ContentCollection {
   setTitle(type: titleType = "h1") {
     if (this.titleType === type) return;
     this.titleType = type;
+    this.decorate.mergeStyle(styleMap[type]);
     updateComponent(this);
   }
 
