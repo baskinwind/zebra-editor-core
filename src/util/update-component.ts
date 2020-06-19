@@ -1,7 +1,6 @@
 import Block from "../components/block";
 import { getBlockById } from "../components/util";
 import { getContainDocument } from "../selection-operator/util";
-import ComponentType from "../const/component-type";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
@@ -58,7 +57,7 @@ const update = (component: Block) => {
     }
   } else {
     // 没有对应元素
-    // 组件失效，或是组件没有父节点时，不更新
+    // 组件失效，或是组件没有父节点时，不需更新
     if (!component.active || !component.parent) return;
     let parentComponent = component.parent;
     let parentDom = containDocument.getElementById(parentComponent.id);

@@ -79,8 +79,14 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
     range.setEnd(end.node, end.index);
   }
   section?.addRange(range);
-  if (doc.body.dataset.focus === 'false') {
-    doc.body.focus();
+  if (doc.body.dataset.focus === "false") {
+    let contentEdit = start.node.parentElement;
+    while (contentEdit && contentEdit?.contentEditable !== "true") {
+      contentEdit = contentEdit?.parentElement;
+    }
+    if (contentEdit) {
+      contentEdit.focus();
+    }
   }
 };
 

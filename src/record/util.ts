@@ -65,9 +65,10 @@ const recordSnapshoot = (component: Component) => {
 const undo = () => {
   if (nowIndex === -1) return;
   let nowRecord = recoreQueue[nowIndex];
-  nowRecord.componentList.forEach((item) => {
+  for (let i = nowRecord.componentList.length - 1; i >= 0; i--) {
+    const item = nowRecord.componentList[i];
     item.record.restore(nowIndex - 1);
-  });
+  }
   updateComponent();
   nowIndex -= 1;
   focusAt(nowRecord.undoSelection.start, nowRecord.undoSelection.end);

@@ -76,9 +76,9 @@ pledgeCn.forEach((item) => {
 article.add(factory.buildTitle("h3", "图文混排"));
 let para = factory.buildParagraph("");
 para.add(factory.buildInlineImage("https://acohome.cn/image/emjoy-1.png"));
-para.addText("Valar Morghulis");
+para.addText(" Valar Morghulis ");
 para.add(factory.buildInlineImage("https://acohome.cn/image/emjoy-2.png"));
-para.addText("凡人皆有一死");
+para.addText(" 凡人皆有一死 ");
 para.add(factory.buildInlineImage("https://acohome.cn/image/emjoy-3.png"));
 para.addInto(article);
 

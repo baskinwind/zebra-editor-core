@@ -5,6 +5,7 @@ const webpack = require("webpack");
 module.exports = {
   mode: "development",
   entry: "./dev/index.js",
+  stats: "errors-only",
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "../example")
