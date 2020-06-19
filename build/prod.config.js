@@ -8,7 +8,7 @@ module.exports = {
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "../dist"),
-    library: "ZebraEditor",
+    library: "ZebraEditorCore",
     libraryTarget: "umd"
   },
   plugins: [new CleanWebpackPlugin()],
