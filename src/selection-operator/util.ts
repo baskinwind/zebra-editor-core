@@ -159,8 +159,8 @@ export const getOffset = (
   offset: number
 ): number => {
   const countSize = (parent, node) => {
+    if (parent === node) return 0;
     let size = 0;
-    if (parent === node) return size;
     for (let i = 0; i < parent.children.length; i++) {
       let elememt = parent.children[i];
       if (elememt === node) {
@@ -168,6 +168,7 @@ export const getOffset = (
       }
       if (elememt.contains(node)) {
         size += countSize(elememt, node);
+        break;
       } else {
         size += getElememtSize(elememt);
       }

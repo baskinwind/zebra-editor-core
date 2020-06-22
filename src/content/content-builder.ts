@@ -109,7 +109,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    let tag = data.tag || "ul";
+    let tag: string = data.tag || "ul";
     const list = containDocument.createElement(tag);
     list.id = id;
     list.classList.add("zebra-draft-list");
@@ -129,7 +129,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    let tag = data.tag || "p";
+    let tag: string = data.tag || "p";
     const parapraph = containDocument.createElement(tag);
     parapraph.id = id;
     parapraph.classList.add(`zebra-draft-${tag}`);

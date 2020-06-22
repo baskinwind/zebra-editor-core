@@ -14,6 +14,7 @@ import defaultStyle from "./default-style";
 export interface IOption {
   contentBuilder?: BaseBuilder;
   userOperator?: BaseOperator;
+  placeholder?: string;
 }
 
 // 将组件挂载到某个节点上
@@ -41,20 +42,49 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     }
 
     let style = iframe.contentDocument.createElement("style");
-    let editor = iframe.contentDocument.body;
     style.textContent = defaultStyle;
     iframe.contentDocument.head.appendChild(style);
     setContainDocument(iframe.contentDocument);
     setContainWindow(iframe.contentWindow);
 
     // 生成容器
+    let editor = iframe.contentDocument.createElement("div");
+    editor.classList.add("zebra-editor-page");
     editor.contentEditable = "true";
     editor.appendChild(block.render());
     block.active = true;
+    iframe.contentDocument.body.appendChild(editor);
+
+    let placeholder = iframe.contentDocument.createElement("div");
+    placeholder.classList.add("zebra-editor-placeholder");
+    placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
+    iframe.contentDocument.body.appendChild(placeholder);
+    if (!block.isEmpty()) {
+      placeholder.style.display = "none";
+    } else {
+      placeholder.style.display = "block";
+    }
+
+    document.addEventListener("editorchange", (e) => {
+      if (!block.isEmpty()) {
+        placeholder.style.display = "none";
+      } else {
+        placeholder.style.display = "block";
+      }
+    });
+
+    editor.addEventListener("input", (event) => {
+      try {
+        operator.onInput(event as InputEvent);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
 
     // 监听事件
     editor.addEventListener("blur", (event) => {
-      editor.dataset.focus = "false";
+      // @ts-ignore
+      iframe.contentDocument.body.dataset.focus = "false";
       try {
         operator.onBlur(event);
       } catch (e) {
@@ -62,7 +92,8 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
       }
     });
     editor.addEventListener("mousedown", (event) => {
-      editor.dataset.focus = "true";
+      // @ts-ignore
+      iframe.contentDocument.body.dataset.focus = "true";
     });
     editor.addEventListener("click", (event) => {
       try {
@@ -101,6 +132,9 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
       }
     });
     editor.addEventListener("dragstart", (event) => {
+      event.preventDefault();
+    });
+    editor.addEventListener("drop", (event) => {
       event.preventDefault();
     });
   });

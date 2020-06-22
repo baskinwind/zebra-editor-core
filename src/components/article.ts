@@ -23,6 +23,13 @@ class Article extends StructureCollection<Block> {
     return article;
   }
 
+  isEmpty() {
+    if (this.getSize() === 1 && this.children.get(0)?.getSize() === 0) {
+      return true;
+    }
+    return false;
+  }
+
   childHeadDelete(
     block: Block,
     index: number,

@@ -45,6 +45,7 @@ const updateComponent = (
 };
 
 const update = (component: Block) => {
+  document.dispatchEvent(new Event("editorchange"));
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(component.id);
   if (dom) {

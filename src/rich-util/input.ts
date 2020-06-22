@@ -13,7 +13,7 @@ import updateComponent, { needUpdate } from "../util/update-component";
 const input = (
   charOrInline: string | Inline,
   start: cursorType,
-  event?: KeyboardEvent | CompositionEvent
+  event?: KeyboardEvent | CompositionEvent | InputEvent
 ) => {
   try {
     let component = getBlockById(start.id);
@@ -60,6 +60,7 @@ const input = (
 
     // 强制更新
     if (
+      start.offset === 0 ||
       needUpdate() ||
       startNode.nodeName === "BR" ||
       startNode.nodeName === "IMG" ||

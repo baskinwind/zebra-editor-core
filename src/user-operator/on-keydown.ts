@@ -1,20 +1,22 @@
 import Paragraph from "../components/paragraph";
 import getSelection from "../selection-operator/get-selection";
 import input from "../rich-util/input";
+import ComponentType from "../const/component-type";
 import enter from "../rich-util/enter";
 import backspace from "../rich-util/backspace";
 import focusAt from "../rich-util/focus-at";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
-import ComponentType from "../const/component-type";
 
+// keydown 主要处理一些特殊表现的按键
+// enter backspace tab
 const onKeyDown = (event: KeyboardEvent) => {
   let key = event.key;
   let lowerKey = key.toLowerCase();
   let isEnter = lowerKey === "enter";
   let isBackspace = lowerKey === "backspace";
   let isTab = lowerKey === "tab";
-  if (!(isEnter || isBackspace || key.length === 1 || isTab)) {
+  if (!(isEnter || isBackspace || isTab)) {
     return;
   }
 
@@ -60,15 +62,6 @@ const onKeyDown = (event: KeyboardEvent) => {
     }
     event.preventDefault();
     input("    ", selection.range[0], event);
-  }
-
-  // 字符输入
-  if (key.length === 1) {
-    if (!selection.isCollapsed) {
-      backspace(selection.range[0], selection.range[1], event);
-      selection = getSelection();
-    }
-    input(key, selection.range[0], event);
   }
 };
 

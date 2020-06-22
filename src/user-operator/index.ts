@@ -7,6 +7,7 @@ import getSelection, {
 import backspace from "../rich-util/backspace";
 import input from "../rich-util/input";
 import onKeyDown from "./on-keydown";
+import onInput from "./on-input";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
@@ -33,7 +34,7 @@ class UserOperator extends BaseOperator {
       let section = getContainWindow().getSelection();
       try {
         section?.removeAllRanges();
-      } catch { }
+      } catch {}
       let range = new Range();
       range.selectNode(target);
       section?.addRange(range);
@@ -53,13 +54,20 @@ class UserOperator extends BaseOperator {
   }
 
   onCompositionEnd(event: CompositionEvent) {
-    let selection = getBeforeSelection();
-    // createRecord(selection.range[0], selection.range[1]);
-    // 混合输入会导致获取选区多一位
-    input(event.data, {
-      id: selection.range[0].id,
-      offset: selection.range[0].offset - 1
-    }, event);
+    let selection = getSelection();
+    // 混合输入会导致获取选区在输入文字的后方
+    input(
+      event.data,
+      {
+        id: selection.range[0].id,
+        offset: selection.range[0].offset - event.data.length
+      },
+      event
+    );
+  }
+
+  onInput(event: InputEvent) {
+    onInput(event);
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -84,11 +92,7 @@ class UserOperator extends BaseOperator {
     return;
   }
 
-  handleArrawKey(direction: DirectionType) {
-    // let selection = getSelection();
-    // let component = getBlockById(selection.range[0].id);
-    // component.handleArrow(selection.range[0].offset, direction);
-  }
+  handleArrawKey(direction: DirectionType) {}
 
   handleFunctionKey(event: KeyboardEvent) {
     let selection = getSelection();
