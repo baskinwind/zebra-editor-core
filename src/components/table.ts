@@ -127,6 +127,12 @@ class Table extends StructureCollection<TableRow> {
     return raw;
   }
 
+  getStatistic() {
+    let res = super.getStatistic();
+    res.table += 1;
+    return res;
+  }
+
   render() {
     return getContentBuilder().buildTable(
       this.id,

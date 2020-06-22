@@ -150,6 +150,12 @@ abstract class PlainText extends Block {
     raw.content = this.content;
     return raw;
   }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.word = this.content.length;
+    return res;
+  }
 }
 
 export default PlainText;

@@ -294,6 +294,19 @@ abstract class ContentCollection extends Collection<Inline> {
       );
     });
   }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    this.children.forEach((item) => {
+      if (item instanceof Character) {
+        res.word += 1;
+      } else {
+        res.image += 1;
+      }
+    });
+    res.block += 1;
+    return res;
+  }
 }
 
 export default ContentCollection;

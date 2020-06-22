@@ -53,6 +53,12 @@ class Code extends PlainText {
       this.decorate.getData()
     );
   }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.code += 1;
+    return res;
+  }
 }
 
 export default Code;

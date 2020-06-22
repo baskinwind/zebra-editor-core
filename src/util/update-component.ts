@@ -49,10 +49,12 @@ const update = (component: Block) => {
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(component.id);
   if (dom) {
-    // 有对应元素时，替换或是删除
     console.log(component.id);
     if (component.active) {
-      dom.replaceWith(component.render());
+      let newRender = component.render();
+      // 节点并不需要更新
+      if (newRender === dom) return;
+      dom.replaceWith(newRender);
     } else {
       dom.remove();
     }

@@ -3,7 +3,7 @@ import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { createError } from "./util";
+import { createError, mergerStatistic } from "./util";
 import { recordMethod } from "../record/decorators";
 
 abstract class StructureCollection<T extends Block = Block> extends Collection<
@@ -182,6 +182,14 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     let raw = super.getRaw();
     raw.children = this.children.toArray().map((item) => item.getRaw());
     return raw;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    this.children.forEach((item) => {
+      res = mergerStatistic(res, item.getStatistic());
+    });
+    return res;
   }
 }
 

@@ -110,6 +110,12 @@ class Media extends Block {
     return raw;
   }
 
+  getStatistic() {
+    let res = super.getStatistic();
+    res[this.mediaType] += 1;
+    return res;
+  }
+
   render() {
     let builder = getContentBuilder();
     let map = {

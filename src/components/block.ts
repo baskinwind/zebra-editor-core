@@ -106,7 +106,7 @@ abstract class Block extends Component {
   }
 
   // 在一些组件中 Enter 被使用，导致不能在组件下方或上方创建新行
-  // 使用该 api 创建上方或是下方的新行 
+  // 使用该 api 创建上方或是下方的新行
   addEmptyParagraph(bottom: boolean): operatorType {
     return;
   }
@@ -133,6 +133,19 @@ abstract class Block extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     return;
+  }
+
+  getStatistic() {
+    return {
+      word: 0,
+      image: 0,
+      audio: 0,
+      video: 0,
+      table: 0,
+      list: 0,
+      code: 0,
+      block: 0
+    };
   }
 }
 

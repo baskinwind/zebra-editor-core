@@ -169,12 +169,22 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildeImage(id: string, src: string, style: mapData, data: mapData) {
     let containDocument = getContainDocument();
-    const figure = containDocument.createElement("figure");
-    figure.id = id;
-    figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.media;
-    figure.dataset.structure = StructureType.content;
+    let figure = containDocument.getElementById(id);
+    if (
+      !figure ||
+      figure.dataset.src !== src ||
+      figure.dataset.link !== data.link
+    ) {
+      figure = containDocument.createElement("figure");
+      figure.id = id;
+      figure.classList.add("zebra-draft-image");
+      figure.dataset.type = ComponentType.media;
+      figure.dataset.structure = StructureType.content;
+      figure.dataset.src = src;
+      figure.dataset.link = data.link;
+    }
     this.addStyle(figure, style);
+
     let child;
     let image = containDocument.createElement("img");
     image.src = src;

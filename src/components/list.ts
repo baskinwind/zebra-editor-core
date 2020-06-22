@@ -8,7 +8,7 @@ import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
-import { createError } from "./util";
+import { createError, mergerStatistic } from "./util";
 import { initRecordState, recordMethod } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 
@@ -168,6 +168,12 @@ class List extends StructureCollection<ListItem> {
     let raw = super.getRaw();
     raw.listType = this.listType;
     return raw;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.list += 1;
+    return res;
   }
 
   render() {

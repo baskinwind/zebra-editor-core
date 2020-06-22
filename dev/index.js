@@ -21,3 +21,7 @@ window.createByRawData = (raw) => {
   let article = createByRaw(raw);
   mount("root", article);
 };
+
+window.getStatistic = () => {
+  return article.getStatistic();
+};
