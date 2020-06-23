@@ -28,6 +28,7 @@ const updateComponent = (
   component?: Block | Block[],
   customerUpdate: boolean = false
 ) => {
+  document.dispatchEvent(new Event("editorchange"));
   // 先清空延迟更新的队列
   if (delayUpdateQueue.size) {
     console.log("delay update");
@@ -45,7 +46,6 @@ const updateComponent = (
 };
 
 const update = (component: Block) => {
-  document.dispatchEvent(new Event("editorchange"));
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(component.id);
   if (dom) {

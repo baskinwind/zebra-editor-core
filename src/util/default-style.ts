@@ -7,6 +7,9 @@ body{
   padding:10px;
   box-sizing:border-box;
 }
+*{
+  box-sizing: border-box;
+}
 .zebra-editor-page{
   min-height:100%;
   white-space:pre-wrap;

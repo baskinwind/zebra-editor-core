@@ -54,6 +54,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     editor.appendChild(block.render());
     block.active = true;
     iframe.contentDocument.body.appendChild(editor);
+    iframe.contentDocument.body.dataset.focus = "false";
 
     let placeholder = iframe.contentDocument.createElement("div");
     placeholder.classList.add("zebra-editor-placeholder");

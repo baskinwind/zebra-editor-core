@@ -16,10 +16,6 @@ import insertInline from "./selection-operator/insert-inline";
 import modifyDecorate from "./selection-operator/modify-decorate";
 import modifySelectionDecorate from "./selection-operator/modify-selection-decorate";
 import modifyTable from "./selection-operator/modify-table";
-import {
-  getContainDocument,
-  getContainWindow
-} from "./selection-operator/util";
 
 // 操作内容
 import mount from "./util/mount";
@@ -56,7 +52,5 @@ export {
   initRecord,
   createRecord,
   undo,
-  redo,
-  getContainDocument,
-  getContainWindow
+  redo
 };
