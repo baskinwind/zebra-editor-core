@@ -1,21 +1,21 @@
-# ZebraEditor
+# ZebraEditorCore
 
-zebra-editor.js 富文本编辑器功能核心。
+zebra-editor-core.js 富文本编辑器功能核心。
 
 [demo](https://acohome.cn/demo/x-editor/index.html)
 
 ## 使用
 
 ```
-yarn add zebra-editor
+yarn add zebra-editor-core
 
 # or
 
-npm i zebra-editor
+npm i zebra-editor-core
 ```
 
 ```
-import { mount } from "zebra-editor"
+import { mount } from "zebra-editor-core"
 
 mount('root');
 ```

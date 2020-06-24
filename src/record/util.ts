@@ -50,6 +50,10 @@ const createRecord = (start: cursorType, end: cursorType) => {
   nowIndex = recoreQueue.length - 1;
   setTimeout(() => {
     let selection = getSelection();
+    if (nowComponentList.length === 0) {
+      recoreQueue.length = recoreQueue.length - 1;
+      nowIndex = recoreQueue.length - 1;
+    }
     newRecord.redoSelection = {
       start: selection.range[0],
       end: selection.range[1]
