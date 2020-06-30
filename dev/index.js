@@ -1,6 +1,6 @@
 import "./operator";
 import article from "./article";
-import { mount, createByRaw, getBlockById } from "../src";
+import { mount, createByRaw, getBlockById, getSelectionInfo } from "../src";
 
 mount("root", article);
 
@@ -25,3 +25,5 @@ window.createByRawData = (raw) => {
 window.getStatistic = () => {
   return article.getStatistic();
 };
+
+window.getSelectionInfo = getSelectionInfo;

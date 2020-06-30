@@ -164,16 +164,20 @@ class List extends StructureCollection<ListItem> {
     super.restore(state);
   }
 
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.listType = this.listType;
-    return raw;
+  getType(): string {
+    return `${this.type}>${this.listType}`;
   }
 
   getStatistic() {
     let res = super.getStatistic();
     res.list += 1;
     return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.listType = this.listType;
+    return raw;
   }
 
   render() {

@@ -102,18 +102,22 @@ class Media extends Block {
     this.modifyDecorate(style, data, customerUpdate);
     return [this, 0, 1];
   }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.src = this.src;
-    raw.mediaType = this.mediaType;
-    return raw;
+  
+  getType(): string {
+    return `${this.type}>${this.mediaType}`;
   }
 
   getStatistic() {
     let res = super.getStatistic();
     res[this.mediaType] += 1;
     return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.src = this.src;
+    raw.mediaType = this.mediaType;
+    return raw;
   }
 
   render() {

@@ -59,13 +59,6 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     let placeholder = iframe.contentDocument.createElement("div");
     placeholder.classList.add("zebra-editor-placeholder");
     placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
-    iframe.contentDocument.body.appendChild(placeholder);
-    if (!block.isEmpty()) {
-      placeholder.style.display = "none";
-    } else {
-      placeholder.style.display = "block";
-    }
-
     document.addEventListener("editorchange", (e) => {
       if (!block.isEmpty()) {
         placeholder.style.display = "none";
@@ -73,6 +66,8 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         placeholder.style.display = "block";
       }
     });
+    iframe.contentDocument.body.appendChild(placeholder);
+    document.dispatchEvent(new Event("editorchange"));
 
     editor.addEventListener("input", (event) => {
       try {

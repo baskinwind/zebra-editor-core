@@ -179,7 +179,11 @@ export const getOffset = (
 };
 
 // 获取所有选中的叶节点，不包括结构性的组件
-export const getSelectedIdList = (startId: string, endId: string): string[] => {
+export const getSelectedIdList = (
+  startId: string,
+  endId: string = startId
+): string[] => {
+  if (startId === "") return [];
   let component = getBlockById(startId);
   let parent = component.parent;
   if (!parent) throw createError("该节点已失效", component);

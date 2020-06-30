@@ -178,18 +178,18 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     super.restore(state);
   }
 
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.children = this.children.toArray().map((item) => item.getRaw());
-    return raw;
-  }
-
   getStatistic() {
     let res = super.getStatistic();
     this.children.forEach((item) => {
       res = mergerStatistic(res, item.getStatistic());
     });
     return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.children = this.children.toArray().map((item) => item.getRaw());
+    return raw;
   }
 }
 

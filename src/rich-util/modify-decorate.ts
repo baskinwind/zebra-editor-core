@@ -12,16 +12,12 @@ const modifyDecorate = (
   idList.forEach((id) => {
     let customerUpdate = !data && !style?.remove;
     let component = getBlockById(id);
-    component.modifyDecorate(style, data, customerUpdate);
+    component.modifyDecorate(style, data);
     if (customerUpdate && style) {
       let dom = containDocument.getElementById(component.id);
       if (!dom) return;
       for (let key in style) {
-        if (dom.style[key] === style[key]) {
-          dom.style[key] = "";
-        } else {
-          dom.style[key] = style[key];
-        }
+        dom.style[key] = style[key];
       }
     }
   });

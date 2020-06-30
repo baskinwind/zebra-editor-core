@@ -10,21 +10,24 @@ body{
 *{
   box-sizing: border-box;
 }
-.zebra-editor-page{
-  min-height:100%;
-  white-space:pre-wrap;
-  overflow:auto;
+h1,h2,h3,h4,h5,h6,figure,pre,p,ul,ol{
+  margin: 10px 0;
 }
-table td, table th{
-  min-width:2em;
+a{
+  color: #1890ff;
+}
+table td,table th{
+  min-width: 2em;
   border: 1px solid #a5a5a5;
   word-break: break-all;
 }
 [contenteditable=true]{
   outline:none
 }
-p,h1,h2,h3,h4,h5,h6,figure,table,ol,ul,pre{
-  margin:10px 0;
+.zebra-editor-page{
+  min-height:100%;
+  white-space:pre-wrap;
+  overflow:auto;
 }
 .zebra-editor-placeholder{
   position: absolute;

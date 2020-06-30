@@ -147,6 +147,10 @@ abstract class Block extends Component {
       block: 0
     };
   }
+
+  getType(): string {
+    return this.type;
+  }
 }
 
 export default Block;

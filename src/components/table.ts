@@ -57,7 +57,6 @@ class Table extends StructureCollection<TableRow> {
     super(style, data);
     this.needHead = needHead;
     this.decorate.setStyle("width", "100%");
-    this.decorate.setStyle("borderCollapse", "collapse");
     let list = [];
     for (let i = 0; i < row + (needHead ? 1 : 0); i++) {
       if (needHead && i === 0) {

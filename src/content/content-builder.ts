@@ -12,7 +12,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return this.bulider;
   }
 
-  addStyle(dom: HTMLElement, style?: mapData) {
+  addStyle(dom: HTMLElement, style?: mapData, data?: mapData) {
     if (style) {
       for (let key in style) {
         dom.style[key] = style[key];
@@ -32,7 +32,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     article.classList.add("zebra-draft-article");
     article.dataset.type = ComponentType.article;
     article.dataset.structure = StructureType.structure;
-    this.addStyle(article, style);
+    this.addStyle(article, style, data);
     componentList.forEach((component) => {
       article.appendChild(component);
     });
@@ -46,18 +46,17 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ) {
     let containDocument = getContainDocument();
+    const figure = containDocument.createElement("figure");
+    figure.id = id;
+    figure.dataset.structure = StructureType.structure;
+    figure.contentEditable = "false";
+    this.addStyle(figure, style, data);
     const table = containDocument.createElement("table");
-    table.id = id;
-    table.dataset.structure = StructureType.structure;
-    table.contentEditable = "false";
-    this.addStyle(table, style);
-    if (style) {
-      for (let key in style) {
-        table.style[key] = style[key];
-      }
-    }
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
     componentList.forEach((item) => table.appendChild(item));
-    return table;
+    figure.appendChild(table);
+    return figure;
   }
 
   buildTableRow(
@@ -70,12 +69,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     const tr = containDocument.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.structure;
-    this.addStyle(tr, style);
-    if (style) {
-      for (let key in style) {
-        tr.style[key] = style[key];
-      }
-    }
+    this.addStyle(tr, style, data);
     componentList.forEach((item) => tr.appendChild(item));
     return tr;
   }
@@ -92,12 +86,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     td.id = id;
     td.dataset.structure = StructureType.structure;
     td.contentEditable = "true";
-    this.addStyle(td, style);
-    if (style) {
-      for (let key in style) {
-        td.style[key] = style[key];
-      }
-    }
     componentList.forEach((item) => td.appendChild(item));
     return td;
   }
@@ -115,7 +103,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     list.classList.add("zebra-draft-list");
     list.dataset.type = ComponentType.article;
     list.dataset.structure = StructureType.structure;
-    this.addStyle(list, style);
+    this.addStyle(list, style, data);
     componentList.forEach((component) => {
       list.appendChild(component);
     });
@@ -135,7 +123,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     parapraph.classList.add(`zebra-draft-${tag}`);
     parapraph.dataset.type = ComponentType.paragraph;
     parapraph.dataset.structure = StructureType.content;
-    this.addStyle(parapraph, style);
+    this.addStyle(parapraph, style, data);
     if (inlineList.length) {
       inlineList.forEach((component) => {
         parapraph.appendChild(component);
@@ -158,7 +146,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     pre.classList.add(`zebra-draft-title-code`);
     pre.dataset.type = ComponentType.code;
     pre.dataset.structure = StructureType.plainText;
-    this.addStyle(pre, style);
+    this.addStyle(pre, style, data);
     const code = containDocument.createElement("code");
     code.append(content);
     code.dataset.type = ComponentType.characterList;
@@ -183,7 +171,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       figure.dataset.src = src;
       figure.dataset.link = data.link;
     }
-    this.addStyle(figure, style);
+    this.addStyle(figure, style, data);
 
     let child;
     let image = containDocument.createElement("img");
@@ -210,7 +198,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
-    this.addStyle(figure, style);
+    this.addStyle(figure, style, data);
     let audio = containDocument.createElement("audio");
     audio.src = src;
     figure.appendChild(audio);
@@ -224,7 +212,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     figure.classList.add("zebra-draft-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
-    this.addStyle(figure, style);
+    this.addStyle(figure, style, data);
     let video = containDocument.createElement("video");
     video.src = src;
     figure.appendChild(video);
@@ -243,7 +231,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       wrap = containDocument.createElement("code");
     }
     wrap.innerText = charList;
-    this.addStyle(wrap, Object.assign(style));
+    this.addStyle(wrap, style, data);
     if (data.link) {
       let link = containDocument.createElement("a");
       link.href = data.link;
@@ -275,7 +263,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     span.classList.add("zebra-draft-inline-image");
     span.dataset.type = ComponentType.inlineImage;
     span.dataset.structure = StructureType.partialContent;
-    this.addStyle(span, style);
+    this.addStyle(span, style, data);
     let child;
     let image = containDocument.createElement("img");
     image.src = src;

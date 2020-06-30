@@ -33,16 +33,21 @@ class Code extends PlainText {
     super(content, style, data);
     this.content = content;
     this.decorate.mergeStyle({
+      fontSize: "14px",
       padding: "10px",
-      border: "1px solid #eee",
       borderRadius: "4px",
-      background: "#f8f8f8",
-      lineHeight: "1.3em"
+      background: "#f8f8f8"
     });
   }
 
   createEmpty() {
     return new Code("\n", this.decorate.getStyle(), this.decorate.getData());
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.code += 1;
+    return res;
   }
 
   render() {
@@ -52,12 +57,6 @@ class Code extends PlainText {
       this.decorate.getStyle(),
       this.decorate.getData()
     );
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.code += 1;
-    return res;
   }
 }
 

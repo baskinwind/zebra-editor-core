@@ -1,3 +1,4 @@
+import { throttle } from "lodash-es";
 import Block from "../components/block";
 import { getBlockById } from "../components/util";
 import { getContainDocument } from "../selection-operator/util";
@@ -23,12 +24,18 @@ const needUpdate = () => {
   return delayUpdateQueue.size !== 0;
 };
 
+let lock = false;
+
 // 更新组件
 const updateComponent = (
   component?: Block | Block[],
   customerUpdate: boolean = false
 ) => {
-  document.dispatchEvent(new Event("editorchange"));
+  if (!lock) {
+    lock = true;
+    document.dispatchEvent(new Event("editorchange"));
+    setTimeout(() => (lock = false), 1000);
+  }
   // 先清空延迟更新的队列
   if (delayUpdateQueue.size) {
     console.log("delay update");

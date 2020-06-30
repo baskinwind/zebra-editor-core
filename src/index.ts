@@ -16,6 +16,7 @@ import insertInline from "./selection-operator/insert-inline";
 import modifyDecorate from "./selection-operator/modify-decorate";
 import modifySelectionDecorate from "./selection-operator/modify-selection-decorate";
 import modifyTable from "./selection-operator/modify-table";
+import getSelectionInfo from "./selection-operator/get-selection-info";
 
 // 操作内容
 import mount from "./util/mount";
@@ -42,6 +43,7 @@ export {
   modifyDecorate,
   modifySelectionDecorate,
   modifyTable,
+  getSelectionInfo,
   updateComponent,
   mount,
   getHtml,

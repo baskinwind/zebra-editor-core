@@ -17,28 +17,22 @@ export interface ITitleSnapshoot extends ICollectionSnapshoot<Inline> {
 
 const styleMap = {
   h1: {
-    fontSize: "32px",
-    fontWeight: "700"
+    fontSize: 32
   },
   h2: {
-    fontSize: "24px",
-    fontWeight: "700"
+    fontSize: 24
   },
   h3: {
-    fontSize: "20px",
-    fontWeight: "700"
+    fontSize: 20
   },
   h4: {
-    fontSize: "16px",
-    fontWeight: "700"
+    fontSize: 16
   },
   h5: {
-    fontSize: "14px",
-    fontWeight: "700"
+    fontSize: 14
   },
   h6: {
-    fontSize: "12px",
-    fontWeight: "700"
+    fontSize: 12
   }
 };
 
@@ -80,7 +74,13 @@ class Title extends ContentCollection {
   ) {
     super(text, style, data);
     this.titleType = type;
-    this.decorate.mergeStyle(styleMap[type]);
+    this.decorate.mergeData({
+      bold: true
+    });
+    this.decorate.mergeStyle({
+      fontWeight: "bold",
+      fontSize: styleMap[type].fontSize + "px"
+    });
   }
 
   @recordMethod
@@ -120,6 +120,10 @@ class Title extends ContentCollection {
   restore(state: ITitleSnapshoot) {
     this.titleType = state.titleType;
     super.restore(state);
+  }
+
+  getType(): string {
+    return `${this.type}>${this.titleType}`;
   }
 
   getRaw(): IRawType {

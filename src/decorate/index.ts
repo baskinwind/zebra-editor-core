@@ -30,11 +30,7 @@ class Decorate {
       }
       this.removeStyle(value as string);
     }
-    if (this.style.get(name) === value) {
-      this.style = this.style.delete(name);
-    } else {
-      this.style = this.style.set(name, value);
-    }
+    this.style = this.style.set(name, value);
   }
   removeStyle(name: string) {
     let list = name.split(",");
@@ -66,12 +62,7 @@ class Decorate {
       }
       this.removeData(value as string);
     }
-
-    if (typeof value === "boolean" && this.data.get(name) === value) {
-      this.data = this.data.delete(name);
-    } else {
-      this.data = this.data.set(name, value);
-    }
+    this.data = this.data.set(name, value);
   }
   removeData(name: string) {
     let list = name.split(",");
