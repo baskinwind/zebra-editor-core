@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import { IRawType, classType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
@@ -12,7 +13,11 @@ class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
   static create(raw: IRawType): Paragraph {
-    let paragraph = new Paragraph("", raw.style, raw.data);
+    let paragraph = getComponentFactory().buildParagraph(
+      "",
+      raw.style,
+      raw.data
+    );
     let children = super.getChildren(raw);
     paragraph.addChildren(children, 0, true);
     return paragraph;
@@ -21,7 +26,7 @@ class Paragraph extends ContentCollection {
   static exchangeOnly(block: Block, args: any[] = []): Paragraph[] {
     let list: Paragraph[] = [];
     if (block instanceof ContentCollection) {
-      let newParagraph = new Paragraph();
+      let newParagraph = getComponentFactory().buildParagraph();
       newParagraph.addChildren(block.children.toArray(), 0);
       list.push(newParagraph);
     } else if (block instanceof PlainText) {
@@ -30,7 +35,7 @@ class Paragraph extends ContentCollection {
         stringList.pop();
       }
       stringList.forEach((item) => {
-        list.push(new Paragraph(item));
+        list.push(getComponentFactory().buildParagraph(item));
       });
     }
     return list;
@@ -50,7 +55,11 @@ class Paragraph extends ContentCollection {
   }
 
   createEmpty() {
-    return new Paragraph("", this.decorate.getStyle(), this.decorate.getData());
+    return getComponentFactory().buildParagraph(
+      "",
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 
   render() {

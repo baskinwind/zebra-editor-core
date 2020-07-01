@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
@@ -36,7 +37,14 @@ class Table extends StructureCollection<TableRow> {
   }
 
   static create(raw: IRawType): Table {
-    let table = new Table(0, 0, [], false, raw.style, raw.data);
+    let table = getComponentFactory().buildTable(
+      0,
+      0,
+      [],
+      false,
+      raw.style,
+      raw.data
+    );
     let children = raw.children
       ? raw.children.map((item) => TableRow.create(item))
       : [];

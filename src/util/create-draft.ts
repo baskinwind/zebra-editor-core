@@ -1,7 +1,8 @@
 import Block from "../components/block";
 import BaseBuilder from "../content/base-builder";
-import BaseOperator from "../user-operator/base-operator";
 import UserOperator from "../user-operator";
+import BaseOperator from "../user-operator/base-operator";
+import ComponentFactory, { setComponentFactory } from "../components";
 import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 import { setContentBuilder } from "../content";
@@ -12,9 +13,10 @@ import {
 import defaultStyle from "./default-style";
 
 export interface IOption {
-  contentBuilder?: BaseBuilder;
-  userOperator?: BaseOperator;
   placeholder?: string;
+  userOperator?: BaseOperator;
+  contentBuilder?: BaseBuilder;
+  componentFactory?: ComponentFactory;
 }
 
 // 将组件挂载到某个节点上
@@ -23,6 +25,9 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   initRecord(block);
   if (option && option.contentBuilder) {
     setContentBuilder(option.contentBuilder);
+  }
+  if (option && option.componentFactory) {
+    setComponentFactory(option.componentFactory);
   }
   let operator = option?.userOperator || UserOperator.getInstance();
 

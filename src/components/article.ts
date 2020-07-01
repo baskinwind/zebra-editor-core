@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
@@ -19,8 +20,7 @@ class Article extends StructureCollection<Block> {
   }
 
   static create(raw: IRawType): Article {
-    let article = new Article(raw.style, raw.data);
-    return article;
+    return getComponentFactory().buildArticle(raw.style, raw.data);
   }
 
   isEmpty() {

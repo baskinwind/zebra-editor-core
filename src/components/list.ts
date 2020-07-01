@@ -1,4 +1,5 @@
-import { operatorType, classType, IRawType, ISnapshoot } from "./component";
+import { getComponentFactory } from ".";
+import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
@@ -8,7 +9,7 @@ import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
-import { createError, mergerStatistic } from "./util";
+import { createError } from "./util";
 import { initRecordState, recordMethod } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 
@@ -26,7 +27,12 @@ class List extends StructureCollection<ListItem> {
     let children = raw.children
       ? raw.children.map((item: IRawType) => ListItem.create(item))
       : [];
-    return new List(raw.listType, children, raw.style, raw.data);
+    return getComponentFactory().buildList(
+      raw.listType,
+      children,
+      raw.style,
+      raw.data
+    );
   }
 
   static exchangeOnly(block: Block, args: any[] = []): ListItem[] {
@@ -48,7 +54,7 @@ class List extends StructureCollection<ListItem> {
       prev.add(newItem, undefined, customerUpdate);
     } else {
       // 否则新生成一个 List
-      let newList = new List(args[0]);
+      let newList = getComponentFactory().buildList(args[0]);
       newList.add(newItem, 0, true);
       parent.add(newList, index, customerUpdate);
     }
@@ -66,7 +72,7 @@ class List extends StructureCollection<ListItem> {
     this.listType = type;
     let list = children.map((item) => {
       if (typeof item === "string") {
-        item = new ListItem(item);
+        item = getComponentFactory().buildListItem(item);
       }
       return item;
     });
@@ -81,7 +87,7 @@ class List extends StructureCollection<ListItem> {
   }
 
   createEmpty() {
-    return new List(
+    return getComponentFactory().buildList(
       this.listType,
       [],
       this.decorate.getStyle(),
@@ -197,7 +203,7 @@ class ListItem extends ContentCollection {
   type = ComponentType.listItem;
 
   static create(raw: IRawType): ListItem {
-    let listItem = new ListItem("", raw.style, raw.data);
+    let listItem = getComponentFactory().buildListItem("", raw.style, raw.data);
     let children = super.getChildren(raw);
     listItem.addChildren(children, 0, true);
     return listItem;
@@ -206,7 +212,7 @@ class ListItem extends ContentCollection {
   static exchangeOnly(block: Block, args: any[] = []): ListItem[] {
     let list: ListItem[] = [];
     if (block instanceof ContentCollection) {
-      let newItem = new ListItem();
+      let newItem = getComponentFactory().buildListItem();
       newItem.addChildren(block.children.toArray(), 0);
       list.push(newItem);
     } else if (block instanceof PlainText) {
@@ -215,7 +221,7 @@ class ListItem extends ContentCollection {
         stringList.pop();
       }
       stringList.forEach((item) => {
-        list.push(new ListItem(item));
+        list.push(getComponentFactory().buildListItem(item));
       });
     }
     return list;
@@ -229,7 +235,11 @@ class ListItem extends ContentCollection {
   }
 
   createEmpty() {
-    return new ListItem("", this.decorate.getStyle(), this.decorate.getData());
+    return getComponentFactory().buildListItem(
+      "",
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 
   @recordMethod
@@ -270,7 +280,7 @@ class ListItem extends ContentCollection {
     // 连续两个空行则切断列表
     if (this.isEmpty() && itemIndex !== 0) {
       this.removeSelf();
-      if (!block) block = new Paragraph();
+      if (!block) block = getComponentFactory().buildParagraph();
       return parent.split(itemIndex, block, customerUpdate);
     }
     // 不允许非内容集合添加
@@ -290,6 +300,10 @@ class ListItem extends ContentCollection {
     return super.split(index, block, customerUpdate);
   }
 
+  onSelect() {
+    this.parent?.onSelect();
+  }
+
   render() {
     const builder = getContentBuilder();
     return builder.buildParagraph(
@@ -302,3 +316,5 @@ class ListItem extends ContentCollection {
 }
 
 export default List;
+
+export { ListItem };

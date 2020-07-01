@@ -1,6 +1,6 @@
 import { storeData } from "../decorate";
 import Article from "./article";
-import List, { listType } from "./list";
+import List, { listType, ListItem } from "./list";
 import Table from "./table";
 import Title, { titleType } from "./title";
 import Paragraph from "./paragraph";
@@ -25,11 +25,19 @@ class ComponentFactory {
 
   buildList(
     type: listType = "ul",
-    children: string[] = [],
+    children: (string | ListItem)[] = [],
     style: storeData = {},
     data: storeData = {}
   ) {
     return new List(type, children, style, data);
+  }
+
+  buildListItem(
+    text: string = "",
+    style: storeData = {},
+    data: storeData = {}
+  ) {
+    return new ListItem(text, style, data);
   }
 
   buildTable(
@@ -74,4 +82,14 @@ class ComponentFactory {
   }
 }
 
+let nowFactory = ComponentFactory.getInstance();
+
+const setComponentFactory = (factory: ComponentFactory) => {
+  nowFactory = factory;
+};
+
+const getComponentFactory = () => nowFactory;
+
 export default ComponentFactory;
+
+export { setComponentFactory, getComponentFactory };

@@ -13,6 +13,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   }
 
   addStyle(dom: HTMLElement, style?: mapData, data?: mapData) {
+    dom.setAttribute("style", "");
     if (style) {
       for (let key in style) {
         dom.style[key] = style[key];
@@ -169,25 +170,24 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       figure.dataset.type = ComponentType.media;
       figure.dataset.structure = StructureType.content;
       figure.dataset.src = src;
-      figure.dataset.link = data.link;
+      let child;
+      let image = containDocument.createElement("img");
+      image.src = src;
+      image.alt = data.alt || "";
+      image.style.maxWidth = "100%";
+      image.style.display = "block";
+      if (data.link) {
+        figure.dataset.link = data.link;
+        const link = containDocument.createElement("a");
+        link.href = data.link;
+        link.appendChild(image);
+        child = link;
+      } else {
+        child = image;
+      }
+      figure.appendChild(child);
     }
     this.addStyle(figure, style, data);
-
-    let child;
-    let image = containDocument.createElement("img");
-    image.src = src;
-    image.alt = data.alt || "";
-    image.style.maxWidth = "100%";
-    image.style.display = "block";
-    if (data.link) {
-      const link = containDocument.createElement("a");
-      link.href = data.link;
-      link.appendChild(image);
-      child = link;
-    } else {
-      child = image;
-    }
-    figure.appendChild(child);
     return figure;
   }
 

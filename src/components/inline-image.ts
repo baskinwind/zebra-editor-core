@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
@@ -12,7 +13,11 @@ class InlineImage extends Inline {
   src: string;
 
   static create(raw: IRawType): InlineImage {
-    return new InlineImage(raw.src, raw.style, raw.data);
+    return getComponentFactory().buildInlineImage(
+      raw.src || "",
+      raw.style,
+      raw.data
+    );
   }
 
   constructor(src: string = "", style?: storeData, data?: storeData) {

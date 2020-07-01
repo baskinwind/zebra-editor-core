@@ -135,6 +135,7 @@ abstract class Block extends Component {
     return;
   }
 
+  // 获取统计数据
   getStatistic() {
     return {
       word: 0,
@@ -148,9 +149,13 @@ abstract class Block extends Component {
     };
   }
 
+  // 获取类型
   getType(): string {
     return this.type;
   }
+
+  // 当组件被选中时的行为，对外暴露，但不实现，由开发者定义行为
+  onSelect(): any {}
 }
 
 export default Block;

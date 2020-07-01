@@ -1,6 +1,6 @@
+import { getComponentFactory } from ".";
 import { operatorType, IRawType } from "./component";
 import Block from "./block";
-import Paragraph from "./paragraph";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate/index";
@@ -18,7 +18,7 @@ class Media extends Block {
   structureType = StructureType.content;
 
   static create(raw: IRawType): Media {
-    return new Media(
+    return getComponentFactory().buildMedia(
       raw.mediaType as mediaType,
       raw.src || "",
       raw.style,
@@ -36,7 +36,8 @@ class Media extends Block {
     this.mediaType = mediaType;
     this.src = src;
     this.decorate.mergeStyle({
-      padding: "10px"
+      padding: "10px",
+      margin: "auto"
     });
   }
 
@@ -49,7 +50,7 @@ class Media extends Block {
   }
 
   removeSelf(customerUpdate: boolean = false): operatorType {
-    let paragraph = new Paragraph();
+    let paragraph = getComponentFactory().buildParagraph();
     this.replaceSelf(paragraph, customerUpdate);
     return [paragraph, 0, 0];
   }
@@ -72,7 +73,7 @@ class Media extends Block {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     if (!block) {
-      block = new Paragraph();
+      block = getComponentFactory().buildParagraph();
     }
     let componentIndex = parent.findChildrenIndex(this);
     if (index === 0) {
@@ -89,7 +90,10 @@ class Media extends Block {
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    return this.replaceSelf(new Paragraph(), customerUpdate);
+    return this.replaceSelf(
+      getComponentFactory().buildParagraph(),
+      customerUpdate
+    );
   }
 
   modifyContentDecorate(
@@ -102,7 +106,7 @@ class Media extends Block {
     this.modifyDecorate(style, data, customerUpdate);
     return [this, 0, 1];
   }
-  
+
   getType(): string {
     return `${this.type}>${this.mediaType}`;
   }

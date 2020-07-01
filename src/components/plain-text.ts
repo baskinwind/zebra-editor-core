@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import Component, {
   operatorType,
   classType,
@@ -6,7 +7,6 @@ import Component, {
 } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
-import Paragraph from "./paragraph";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { createError } from "./util";
@@ -94,7 +94,7 @@ abstract class PlainText extends Block {
     if (end === undefined) end = this.content.length;
     if (start < 0 && end === 0) {
       if (this.content.length <= 1) {
-        return this.replaceSelf(new Paragraph());
+        return this.replaceSelf(getComponentFactory().buildParagraph());
       }
       return;
     }
@@ -129,7 +129,7 @@ abstract class PlainText extends Block {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     let index = parent.findChildrenIndex(this);
-    let paragraph = new Paragraph();
+    let paragraph = getComponentFactory().buildParagraph();
     parent.add(paragraph, index + (bottom ? 1 : 0));
     return [paragraph, 0, 0];
   }

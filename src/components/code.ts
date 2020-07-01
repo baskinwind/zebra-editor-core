@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import Component, { IRawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
@@ -11,11 +12,11 @@ class Code extends PlainText {
   type = ComponentType.code;
 
   static create(raw: IRawType): Code {
-    return new Code(raw.content, raw.style, raw.data);
+    return getComponentFactory().buildCode(raw.content, raw.style, raw.data);
   }
 
   static exchangeOnly(component: Component, args: any[] = []): Code[] {
-    let code = new Code();
+    let code = getComponentFactory().buildCode();
     if (component instanceof ContentCollection) {
       code.add(
         component.children.map((item) => item.content).join("") + "\n",
@@ -36,12 +37,19 @@ class Code extends PlainText {
       fontSize: "14px",
       padding: "10px",
       borderRadius: "4px",
-      background: "#f8f8f8"
+      backgroundColor: "#f8f8f8"
+    });
+    this.decorate.mergeData({
+      bgcolor: { color: "#f8f8f8" }
     });
   }
 
   createEmpty() {
-    return new Code("\n", this.decorate.getStyle(), this.decorate.getData());
+    return getComponentFactory().buildCode(
+      "\n",
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 
   getStatistic() {
