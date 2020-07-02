@@ -5,7 +5,7 @@ import Component, {
   IRawType,
   ISnapshoot
 } from "./component";
-import Block from "./block";
+import Block, { IBlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
@@ -13,7 +13,7 @@ import { createError } from "./util";
 import { storeData } from "../decorate";
 import { recordMethod } from "../record/decorators";
 
-export interface IPlainTextSnapshoot extends ISnapshoot {
+export interface IPlainTextSnapshoot extends IBlockSnapshoot {
   content: string;
 }
 
