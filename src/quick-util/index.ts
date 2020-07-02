@@ -7,19 +7,19 @@ import modifySelectionDecorate from "../selection-operator/modify-selection-deco
 
 // 一些便捷操作
 const bold = () => {
-  modifySelectionDecorate({ fontWeight: "bold" }, { bold: true });
+  modifySelectionDecorate({}, { bold: true });
 };
 
 const deleteText = () => {
-  modifySelectionDecorate({ textDecoration: "line-through" }, { delete: true });
+  modifySelectionDecorate({}, { deleteText: true });
 };
 
 const itailc = () => {
-  modifySelectionDecorate({ fontStyle: "italic" }, { itailc: true });
+  modifySelectionDecorate({}, { italic: true });
 };
 
 const underline = () => {
-  modifySelectionDecorate({ textDecoration: "underline" }, { underline: true });
+  modifySelectionDecorate({}, { underline: true });
 };
 
 const code = () => {

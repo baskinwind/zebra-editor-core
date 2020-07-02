@@ -223,6 +223,10 @@ class TableRow extends StructureCollection<TableCell> {
     return raw;
   }
 
+  onSelect() {
+    return this.parent?.onSelect();
+  }
+
   render() {
     return getContentBuilder().buildTableRow(
       this.id,
@@ -305,6 +309,10 @@ class TableCell extends StructureCollection<TableItem> {
     let raw = super.getRaw();
     raw.cellType = this.cellType;
     return raw;
+  }
+
+  onSelect() {
+    return this.parent?.onSelect();
   }
 
   render() {
@@ -426,6 +434,10 @@ class TableItem extends ContentCollection {
     } catch (e) {
       console.warn(e);
     }
+  }
+
+  onSelect() {
+    return this.parent?.onSelect();
   }
 
   render() {

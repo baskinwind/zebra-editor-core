@@ -9,6 +9,7 @@ import updateComponent from "../util/update-component";
 import { getId } from "./util";
 import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
+import { getContentBuilder } from "../content";
 
 export type operatorType = [Component, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function };
@@ -66,6 +67,7 @@ abstract class Component {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
     if (this instanceof Block) {
+      getContentBuilder().setUpdateDecorate();
       updateComponent(this, customerUpdate);
     }
     return;

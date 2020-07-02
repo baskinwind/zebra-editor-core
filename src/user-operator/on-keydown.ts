@@ -1,4 +1,4 @@
-import Paragraph from "../components/paragraph";
+import { getComponentFactory } from "../components";
 import getSelection from "../selection-operator/get-selection";
 import input from "../rich-util/input";
 import ComponentType from "../const/component-type";
@@ -29,14 +29,17 @@ const onKeyDown = (event: KeyboardEvent) => {
     if (isEnter) {
       createRecord(selection.range[0], selection.range[1]);
       focusAt(
-        component.parent?.add(new Paragraph(), selection.range[0].offset)
+        component.parent?.add(
+          getComponentFactory().buildParagraph(),
+          selection.range[0].offset
+        )
       );
       return;
     }
     if (isBackspace) {
       if (component.type === ComponentType.table) {
         createRecord(selection.range[0], selection.range[1]);
-        focusAt(component.replaceSelf(new Paragraph()));
+        focusAt(component.replaceSelf(getComponentFactory().buildParagraph()));
         return;
       }
     }

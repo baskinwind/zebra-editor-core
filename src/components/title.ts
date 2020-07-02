@@ -1,3 +1,4 @@
+import { getComponentFactory } from ".";
 import { IRawType, classType } from "./component";
 import Inline from "./inline";
 import Block from "./block";
@@ -42,7 +43,12 @@ class Title extends ContentCollection {
   titleType: titleType;
 
   static create(raw: IRawType): Title {
-    let title = new Title(raw.titleType || "h1", "", raw.style, raw.data);
+    let title = getComponentFactory().buildTitle(
+      raw.titleType || "h1",
+      "",
+      raw.style,
+      raw.data
+    );
     let children = super.getChildren(raw);
     title.addChildren(children, 0, true);
     return title;
@@ -51,7 +57,7 @@ class Title extends ContentCollection {
   static exchangeOnly(block: Block, args: any[] = []): Title[] {
     let list = [];
     if (block instanceof ContentCollection) {
-      let newTitle = new Title(args[0] || "h1");
+      let newTitle = getComponentFactory().buildTitle(args[0] || "h1");
       newTitle.addChildren(block.children.toArray(), 0);
       list.push(newTitle);
     } else if (block instanceof PlainText) {
@@ -60,7 +66,7 @@ class Title extends ContentCollection {
         stringList.pop();
       }
       stringList.forEach((item) => {
-        list.push(new Title(args[0] || "h1", item));
+        list.push(getComponentFactory().buildTitle(args[0] || "h1", item));
       });
     }
     return list;
@@ -103,7 +109,7 @@ class Title extends ContentCollection {
   }
 
   createEmpty() {
-    return new Title(
+    return getComponentFactory().buildTitle(
       this.titleType,
       "",
       this.decorate.getStyle(),

@@ -1,3 +1,4 @@
+import { eq } from "lodash-es";
 import Decorate, { storeData } from "../decorate";
 import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";

@@ -1,8 +1,17 @@
-import Component, { classType, operatorType, IRawType } from "./component";
+import Component, {
+  classType,
+  operatorType,
+  IRawType,
+  ISnapshoot
+} from "./component";
 import Collection from "./collection";
 import StructureCollection from "./structure-collection";
 import { saveBlock, createError } from "./util";
 import { storeData } from "../decorate/index";
+
+export interface IBlockSnapshoot extends ISnapshoot {
+  active: boolean;
+}
 
 abstract class Block extends Component {
   // 否是有效的
@@ -133,6 +142,17 @@ abstract class Block extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     return;
+  }
+
+  snapshoot(): IBlockSnapshoot {
+    let snap = super.snapshoot() as IBlockSnapshoot;
+    snap.active = this.active;
+    return snap;
+  }
+
+  restore(state: IBlockSnapshoot) {
+    this.active = state.active;
+    super.restore(state);
   }
 
   // 获取统计数据

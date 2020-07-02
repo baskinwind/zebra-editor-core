@@ -4,6 +4,7 @@ import Block from "../components/block";
 import getSelection from "./get-selection";
 import { getSelectedIdList } from "./util";
 import { getBlockById } from "../components/util";
+import PlainText from "../components/plain-text";
 
 const charMerge = (
   block: Block,
@@ -11,6 +12,7 @@ const charMerge = (
   end: number,
   base?: Map<string, any>[]
 ) => {
+  if (start < 0) return;
   if (!(block instanceof ContentCollection)) return;
   let charStyle = base ? base[0] : block.children.get(start)!.decorate.style;
   let charData = base ? base[1] : block.children.get(start)!.decorate.data;
@@ -23,13 +25,25 @@ const charMerge = (
   return [charStyle, charData];
 };
 
-const getSelectionInfo = () => {
+interface info {
+  path: string[];
+  blockType: string;
+  blockDecorate: {
+    style: { [key: string]: any };
+    data: { [key: string]: any };
+  };
+  textDecorate: {
+    style: { [key: string]: any };
+    data: { [key: string]: any };
+  };
+}
+
+const getSelectionInfo = (): info => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
   let idList = getSelectedIdList(start.id, end.id);
-  let blockList = idList.map((id) => getBlockById(id));
-  let res: any = {
+  let res: info = {
     path: [],
     blockType: "",
     blockDecorate: {
@@ -41,6 +55,8 @@ const getSelectionInfo = () => {
       data: {}
     }
   };
+  if (idList.length === 0) return res;
+  let blockList = idList.map((id) => getBlockById(id));
 
   // 确定路径
   let pathList: string[][] = [];
@@ -54,7 +70,7 @@ const getSelectionInfo = () => {
   }
 
   let isSameBlock = true;
-  let resPath = [];
+  let resPath: string[] = [];
   let count = 0;
   allLoop: while (pathList[0][count]) {
     for (let i = 1; i < pathList.length; i++) {
@@ -89,11 +105,7 @@ const getSelectionInfo = () => {
     let block = blockList[0];
     if (!(block instanceof ContentCollection)) return res;
     if (selection.isCollapsed) {
-      const char = block.children.get(start.offset - 1);
-      if (!char) return res;
-      res.textDecorate.style = char.decorate.getStyle();
-      res.textDecorate.data = char.decorate.getData();
-      return res;
+      start.offset -= 1;
     }
     let merged = charMerge(blockList[0], start.offset, end.offset);
     if (merged) {

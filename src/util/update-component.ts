@@ -2,6 +2,7 @@ import { throttle } from "lodash-es";
 import Block from "../components/block";
 import { getBlockById } from "../components/util";
 import { getContainDocument } from "../selection-operator/util";
+import StructureType from "../const/structure-type";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
@@ -31,24 +32,28 @@ const updateComponent = (
   component?: Block | Block[],
   customerUpdate: boolean = false
 ) => {
-  if (!lock) {
-    lock = true;
-    document.dispatchEvent(new Event("editorchange"));
-    setTimeout(() => (lock = false), 1000);
-  }
-  // 先清空延迟更新的队列
+  // 清空延迟更新队列
   if (delayUpdateQueue.size) {
-    console.log("delay update");
+    console.info("delay update");
     delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
   }
-  // 无内容时，不触发更新
+  // 无内容，不更新
   if (!canUpdate || customerUpdate || !component) return;
-  console.log("update");
+
+  console.info("update");
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));
   } else {
     update(component);
+  }
+
+  if (!lock) {
+    lock = true;
+    setTimeout(() => {
+      document.dispatchEvent(new Event("editorchange"));
+    });
+    setTimeout(() => (lock = false), 1000);
   }
 };
 
@@ -56,7 +61,8 @@ const update = (component: Block) => {
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(component.id);
   if (dom) {
-    console.log(component.id);
+    if (component.structureType === StructureType.structure) return;
+    console.info(component.id);
     if (component.active) {
       let newRender = component.render();
       // 节点并不需要更新
@@ -77,8 +83,7 @@ const update = (component: Block) => {
       update(parentComponent);
       return;
     }
-    console.log(component.id);
-
+    console.info(component.id);
     // 将该组件插入到合适的位置
     let index = parentComponent.children.findIndex(
       (child) => child === component

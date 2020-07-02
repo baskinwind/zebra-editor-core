@@ -28,15 +28,18 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    const article = containDocument.createElement("article");
-    article.id = id;
-    article.classList.add("zebra-draft-article");
-    article.dataset.type = ComponentType.article;
-    article.dataset.structure = StructureType.structure;
+    let article = containDocument.getElementById(id);
+    if (!article || !this.updateDecorate) {
+      article = containDocument.createElement("article");
+      article.id = id;
+      article.classList.add("zebra-draft-article");
+      article.dataset.type = ComponentType.article;
+      article.dataset.structure = StructureType.structure;
+      componentList.forEach((component) => {
+        article?.appendChild(component);
+      });
+    }
     this.addStyle(article, style, data);
-    componentList.forEach((component) => {
-      article.appendChild(component);
-    });
     return article;
   }
 
@@ -47,16 +50,19 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ) {
     let containDocument = getContainDocument();
-    const figure = containDocument.createElement("figure");
-    figure.id = id;
-    figure.dataset.structure = StructureType.structure;
-    figure.contentEditable = "false";
+    let figure = containDocument.getElementById(id);
+    if (!figure || !this.updateDecorate) {
+      figure = containDocument.createElement("figure");
+      figure.id = id;
+      figure.dataset.structure = StructureType.structure;
+      figure.contentEditable = "false";
+      const table = containDocument.createElement("table");
+      table.style.width = "100%";
+      table.style.borderCollapse = "collapse";
+      componentList.forEach((item) => table.appendChild(item));
+      figure.appendChild(table);
+    }
     this.addStyle(figure, style, data);
-    const table = containDocument.createElement("table");
-    table.style.width = "100%";
-    table.style.borderCollapse = "collapse";
-    componentList.forEach((item) => table.appendChild(item));
-    figure.appendChild(table);
     return figure;
   }
 
@@ -70,8 +76,8 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     const tr = containDocument.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.structure;
-    this.addStyle(tr, style, data);
     componentList.forEach((item) => tr.appendChild(item));
+    this.addStyle(tr, style, data);
     return tr;
   }
 
@@ -83,12 +89,13 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ) {
     let containDocument = getContainDocument();
-    const td = containDocument.createElement(cellType);
-    td.id = id;
-    td.dataset.structure = StructureType.structure;
-    td.contentEditable = "true";
-    componentList.forEach((item) => td.appendChild(item));
-    return td;
+    const cell = containDocument.createElement(cellType);
+    cell.id = id;
+    cell.dataset.structure = StructureType.structure;
+    cell.contentEditable = "true";
+    componentList.forEach((item) => cell.appendChild(item));
+    this.addStyle(cell, style, data);
+    return cell;
   }
 
   buildList(
@@ -98,16 +105,19 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    let tag: string = data.tag || "ul";
-    const list = containDocument.createElement(tag);
-    list.id = id;
-    list.classList.add("zebra-draft-list");
-    list.dataset.type = ComponentType.article;
-    list.dataset.structure = StructureType.structure;
+    let list = containDocument.getElementById(id);
+    if (!list || !this.updateDecorate) {
+      let tag: string = data.tag || "ul";
+      list = containDocument.createElement(tag);
+      list.id = id;
+      list.classList.add("zebra-draft-list");
+      list.dataset.type = ComponentType.article;
+      list.dataset.structure = StructureType.structure;
+      componentList.forEach((component) => {
+        list?.appendChild(component);
+      });
+    }
     this.addStyle(list, style, data);
-    componentList.forEach((component) => {
-      list.appendChild(component);
-    });
     return list;
   }
 
@@ -118,20 +128,23 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    let tag: string = data.tag || "p";
-    const parapraph = containDocument.createElement(tag);
-    parapraph.id = id;
-    parapraph.classList.add(`zebra-draft-${tag}`);
-    parapraph.dataset.type = ComponentType.paragraph;
-    parapraph.dataset.structure = StructureType.content;
-    this.addStyle(parapraph, style, data);
-    if (inlineList.length) {
-      inlineList.forEach((component) => {
-        parapraph.appendChild(component);
-      });
-    } else {
-      parapraph.appendChild(containDocument.createElement("br"));
+    let parapraph = containDocument.getElementById(id);
+    if (!parapraph || !this.updateDecorate) {
+      const tag: string = data.tag || "p";
+      parapraph = containDocument.createElement(tag);
+      parapraph.id = id;
+      parapraph.classList.add(`zebra-draft-${tag}`);
+      parapraph.dataset.type = ComponentType.paragraph;
+      parapraph.dataset.structure = StructureType.content;
+      if (inlineList.length) {
+        inlineList.forEach((component) => {
+          parapraph?.appendChild(component);
+        });
+      } else {
+        parapraph.appendChild(containDocument.createElement("br"));
+      }
     }
+    this.addStyle(parapraph, style, data);
     return parapraph;
   }
 
@@ -142,17 +155,20 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    const pre = containDocument.createElement("pre");
-    pre.id = id;
-    pre.classList.add(`zebra-draft-title-code`);
-    pre.dataset.type = ComponentType.code;
-    pre.dataset.structure = StructureType.plainText;
+    let pre = containDocument.getElementById(id);
+    if (!pre || !this.updateDecorate) {
+      pre = containDocument.createElement("pre");
+      pre.id = id;
+      pre.classList.add(`zebra-draft-title-code`);
+      pre.dataset.type = ComponentType.code;
+      pre.dataset.structure = StructureType.plainText;
+      const code = containDocument.createElement("code");
+      code.append(content);
+      code.dataset.type = ComponentType.characterList;
+      code.dataset.structure = StructureType.partialContent;
+      pre.appendChild(code);
+    }
     this.addStyle(pre, style, data);
-    const code = containDocument.createElement("code");
-    code.append(content);
-    code.dataset.type = ComponentType.characterList;
-    code.dataset.structure = StructureType.partialContent;
-    pre.appendChild(code);
     return pre;
   }
 
@@ -193,29 +209,35 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildeAudio(id: string, src: string, style: mapData, data: mapData) {
     let containDocument = getContainDocument();
-    const figure = containDocument.createElement("figure");
-    figure.id = id;
-    figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.media;
-    figure.dataset.structure = StructureType.content;
+    let figure = containDocument.getElementById(id);
+    if (!figure || !this.updateDecorate) {
+      figure = containDocument.createElement("figure");
+      figure.id = id;
+      figure.classList.add("zebra-draft-image");
+      figure.dataset.type = ComponentType.media;
+      figure.dataset.structure = StructureType.content;
+      let audio = containDocument.createElement("audio");
+      audio.src = src;
+      figure.appendChild(audio);
+    }
     this.addStyle(figure, style, data);
-    let audio = containDocument.createElement("audio");
-    audio.src = src;
-    figure.appendChild(audio);
     return figure;
   }
 
   buildeVideo(id: string, src: string, style: mapData, data: mapData) {
     let containDocument = getContainDocument();
-    const figure = containDocument.createElement("figure");
-    figure.id = id;
-    figure.classList.add("zebra-draft-image");
-    figure.dataset.type = ComponentType.media;
-    figure.dataset.structure = StructureType.content;
+    let figure = containDocument.getElementById(id);
+    if (!figure || !this.updateDecorate) {
+      figure = containDocument.createElement("figure");
+      figure.id = id;
+      figure.classList.add("zebra-draft-image");
+      figure.dataset.type = ComponentType.media;
+      figure.dataset.structure = StructureType.content;
+      let video = containDocument.createElement("video");
+      video.src = src;
+      figure.appendChild(video);
+    }
     this.addStyle(figure, style, data);
-    let video = containDocument.createElement("video");
-    video.src = src;
-    figure.appendChild(video);
     return figure;
   }
 
@@ -227,11 +249,33 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = getContainDocument();
     let wrap = containDocument.createElement("span");
-    if (data.code) {
-      wrap = containDocument.createElement("code");
+    if (data.bold) {
+      wrap = containDocument.createElement("strong");
+    } else if (data.bold === false) {
+      style.fontWeight = "normal";
     }
     wrap.innerText = charList;
     this.addStyle(wrap, style, data);
+    if (data.italic) {
+      let em = containDocument.createElement("em");
+      em.appendChild(wrap);
+      wrap = em;
+    }
+    if (data.deleteText) {
+      let s = containDocument.createElement("s");
+      s.appendChild(wrap);
+      wrap = s;
+    }
+    if (data.underline) {
+      let u = containDocument.createElement("u");
+      u.appendChild(wrap);
+      wrap = u;
+    }
+    if (data.code) {
+      let code = containDocument.createElement("code");
+      code.appendChild(wrap);
+      wrap = code;
+    }
     if (data.link) {
       let link = containDocument.createElement("a");
       link.href = data.link;

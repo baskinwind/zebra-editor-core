@@ -1,13 +1,13 @@
 import getSelection from "../selection-operator/get-selection";
 import input from "../rich-util/input";
 import backspace from "../rich-util/backspace";
-import { createRecord } from "../record/util";
+import { createTextRecord } from "../record/util";
 
 const onInput = (event: InputEvent) => {
   let key = event.data || "";
   let selection = getSelection();
 
-  createRecord(selection.range[0], selection.range[1]);
+  createTextRecord(selection.range[0], selection.range[1]);
   if (!selection.isCollapsed) {
     backspace(selection.range[0], selection.range[1]);
     selection = getSelection();

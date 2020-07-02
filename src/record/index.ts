@@ -12,8 +12,8 @@ class Record {
     this.component = component;
   }
 
-  store() {
-    let stepId = getRecordStepId();
+  store(isInit?: boolean) {
+    let stepId = getRecordStepId() - (isInit ? 1 : 0);
     if (stepId === -2) return;
     recordSnapshoot(this.component);
     this.recordMap[stepId] = this.component.snapshoot();

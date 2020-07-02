@@ -301,7 +301,7 @@ class ListItem extends ContentCollection {
   }
 
   onSelect() {
-    this.parent?.onSelect();
+    return this.parent?.onSelect();
   }
 
   render() {

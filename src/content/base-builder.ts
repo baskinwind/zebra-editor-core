@@ -5,6 +5,13 @@ export interface mapData {
 abstract class BaseBuilder<T = any> {
   protected constructor() {}
 
+  protected updateDecorate: boolean = false;
+
+  setUpdateDecorate() {
+    this.updateDecorate = true;
+    setTimeout(() => (this.updateDecorate = false));
+  }
+
   abstract buildArticle(
     id: string,
     componentList: T[],

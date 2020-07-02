@@ -6,7 +6,7 @@ const initRecordState = <T extends { new (...args: any[]): Component }>(
   abstract class RecordComponent extends constructor {
     constructor(...args: any[]) {
       super(...args);
-      this.recordSnapshoot();
+      this.record.store(true);
     }
   }
   return RecordComponent;

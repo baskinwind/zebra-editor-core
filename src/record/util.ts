@@ -11,6 +11,7 @@ interface recoreType {
     end: cursorType;
   };
   componentList: Component[];
+  idList: string[];
   redoSelection: {
     start: cursorType;
     end: cursorType;
@@ -18,33 +19,33 @@ interface recoreType {
 }
 
 let recoreQueue: recoreType[] = [];
-let nowIndex = -2;
+let nowIndex = -1;
 let nowComponentList: Component[] = [];
+let nowIdList: string[] = [];
+// 纯文字输入优化
+let isTextRecord: boolean = false;
 
 const getRecordStepId = () => {
   return nowIndex;
 };
 
-const initComponentRecord = (component: Component) => {
+const initRecord = (component: Component) => {
   component.record.store();
   if (component instanceof Collection) {
-    component.children.forEach((item) => initComponentRecord(item));
+    component.children.forEach((item) => initRecord(item));
   }
 };
 
-const initRecord = (component: Component) => {
-  nowIndex = -1;
-  initComponentRecord(component);
-};
-
-const createRecord = (start: cursorType, end: cursorType) => {
+const startRecord = (start: cursorType, end: cursorType) => {
   if (nowIndex === -2) return;
   recoreQueue.splice(nowIndex + 1);
   nowComponentList = [];
+  nowIdList = [];
   let newRecord = {
     undoSelection: { start, end },
+    redoSelection: { start, end },
     componentList: nowComponentList,
-    redoSelection: { start, end }
+    idList: nowIdList
   };
   recoreQueue.push(newRecord);
   nowIndex = recoreQueue.length - 1;
@@ -61,8 +62,21 @@ const createRecord = (start: cursorType, end: cursorType) => {
   });
 };
 
+const createRecord = (start: cursorType, end: cursorType) => {
+  isTextRecord = false;
+  startRecord(start, end);
+};
+
+const createTextRecord = (start: cursorType, end: cursorType) => {
+  if (isTextRecord) return;
+  isTextRecord = true;
+  startRecord(start, end);
+};
+
 const recordSnapshoot = (component: Component) => {
   if (nowIndex < 0) return;
+  if (nowIdList.includes(component.id)) return;
+  nowIdList.push(component.id);
   nowComponentList.push(component);
 };
 
@@ -81,18 +95,23 @@ const undo = () => {
 const redo = () => {
   if (nowIndex === recoreQueue.length - 1) return;
   let nowRecord = recoreQueue[nowIndex + 1];
-  nowRecord.componentList.forEach((item) => {
+  for (let i = nowRecord.componentList.length - 1; i >= 0; i--) {
+    const item = nowRecord.componentList[i];
     item.record.restore(nowIndex + 1);
-  });
+  }
   updateComponent();
   nowIndex += 1;
   focusAt(nowRecord.redoSelection.start, nowRecord.redoSelection.end);
 };
 
+// @ts-ignore
+window.recoreQueue = recoreQueue;
+
 export {
   getRecordStepId,
   initRecord,
   createRecord,
+  createTextRecord,
   recordSnapshoot,
   undo,
   redo

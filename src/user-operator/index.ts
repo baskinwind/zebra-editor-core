@@ -10,7 +10,7 @@ import onKeyDown from "./on-keydown";
 import onInput from "./on-input";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
-import { createRecord } from "../record/util";
+import { createRecord, createTextRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
 import focusAt from "../rich-util/focus-at";
 
@@ -39,6 +39,9 @@ class UserOperator extends BaseOperator {
       range.selectNode(target);
       section?.addRange(range);
     }
+    setTimeout(() => {
+      document.dispatchEvent(new Event("editorchange"));
+    });
   }
 
   onPaste(event: ClipboardEvent) {
@@ -47,7 +50,7 @@ class UserOperator extends BaseOperator {
 
   onCompositionStart(event: CompositionEvent) {
     let selection = getSelection();
-    createRecord(selection.range[0], selection.range[1]);
+    createTextRecord(selection.range[0], selection.range[1]);
     if (!selection.isCollapsed) {
       backspace(selection.range[0], selection.range[1], event);
     }
@@ -92,7 +95,11 @@ class UserOperator extends BaseOperator {
     return;
   }
 
-  handleArrawKey(direction: DirectionType) {}
+  handleArrawKey(direction: DirectionType) {
+    setTimeout(() => {
+      document.dispatchEvent(new Event("editorchange"));
+    });
+  }
 
   handleFunctionKey(event: KeyboardEvent) {
     let selection = getSelection();

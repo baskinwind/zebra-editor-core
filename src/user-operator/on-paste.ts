@@ -1,4 +1,4 @@
-import Paragraph from "../components/paragraph";
+import { getComponentFactory } from "../components";
 import getSelection from "../selection-operator/get-selection";
 import deleteSelection from "../rich-util/delete-selection";
 import StructureType from "../const/structure-type";
@@ -39,7 +39,7 @@ const onPaste = (event: ClipboardEvent) => {
   }
   let list = [];
   for (let i = 1; i < rowData.length; i++) {
-    list.push(new Paragraph(rowData[i]));
+    list.push(getComponentFactory().buildParagraph(rowData[i]));
   }
   focus = nowComponent.split(index + rowData[0].length, list);
   let endId = focus![0].id;
