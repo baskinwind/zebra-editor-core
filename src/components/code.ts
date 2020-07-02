@@ -40,7 +40,7 @@ class Code extends PlainText {
       backgroundColor: "#f8f8f8"
     });
     this.decorate.mergeData({
-      bgcolor: { color: "#f8f8f8" }
+      bgColor: { color: "#f8f8f8" }
     });
   }
 
