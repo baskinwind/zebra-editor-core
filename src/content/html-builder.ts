@@ -25,26 +25,26 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildArticle(
     id: string,
-    componentList: string[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData
   ): string {
     let className = "zebra-draft-article";
     return `<article class="${className}" ${this.getStyle(
       style
-    )}>${componentList.reduce((acc, item) => acc + item, "")}</article>`;
+    )}>${getChildren().reduce((acc, item) => acc + item, "")}</article>`;
   }
 
   buildTable(
     id: string,
-    componentList: string[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData
   ) {
     let className = "zebra-draft-table";
     return `<figure class="${className}" ${this.getStyle(
       style
-    )}><table style="width:100%;border-collapse:collapse;">${componentList.reduce(
+    )}><table style="width:100%;border-collapse:collapse;">${getChildren().reduce(
       (acc, item) => acc + item,
       ""
     )}</table></figure>`;
@@ -52,32 +52,32 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildTableRow(
     id: string,
-    componentList: string[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData
   ) {
     let className = "zebra-draft-tr";
     return `<tr class="${className}" ${this.getStyle(
       style
-    )}>${componentList.reduce((acc, item) => acc + item, "")}</tr>`;
+    )}>${getChildren().reduce((acc, item) => acc + item, "")}</tr>`;
   }
 
   buildTableCell(
     id: string,
     cellType: "th" | "td",
-    componentList: string[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData
   ) {
     let className = `zebra-draft-${cellType}`;
     return `<${cellType} class="${className}" ${this.getStyle(
       style
-    )}>${componentList.reduce((acc, item) => acc + item, "")}</${cellType}>`;
+    )}>${getChildren().reduce((acc, item) => acc + item, "")}</${cellType}>`;
   }
 
   buildList(
     id: string,
-    componentList: string[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData
   ): string {
@@ -85,12 +85,12 @@ class HtmlBuilder extends BaseBuilder<string> {
     let tag: string = data.tag || "ul";
     return `<${tag} class="${className}" ${this.getStyle(
       style
-    )}>${componentList.reduce((acc, item) => acc + item, "")}</${tag}>`;
+    )}>${getChildren().reduce((acc, item) => acc + item, "")}</${tag}>`;
   }
 
   buildParagraph(
     id: string,
-    inlineList: string[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData
   ): string {
@@ -98,7 +98,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     let className = `zebra-draft-${tag}`;
     return `<${tag} class="${className}" ${this.getStyle(
       style
-    )}>${inlineList.reduce((acc, item) => acc + item, "")}</${tag}>`;
+    )}>${getChildren().reduce((acc, item) => acc + item, "")}</${tag}>`;
   }
 
   buildCode(

@@ -106,6 +106,7 @@ abstract class Component {
     return raw;
   }
 
+
   // 渲染该组件
   abstract render(): any;
 }

@@ -14,21 +14,21 @@ abstract class BaseBuilder<T = any> {
 
   abstract buildArticle(
     id: string,
-    componentList: T[],
+    getChildren: () => T[],
     style: mapData,
     data: mapData
   ): T;
 
   abstract buildTable(
     id: string,
-    componentList: T[],
+    getChildren: () => T[],
     style: mapData,
     data: mapData
   ): T;
 
   abstract buildTableRow(
     id: string,
-    componentList: T[],
+    getChildren: () => T[],
     style: mapData,
     data: mapData
   ): T;
@@ -36,21 +36,21 @@ abstract class BaseBuilder<T = any> {
   abstract buildTableCell(
     id: string,
     cellType: "th" | "td",
-    componentList: T[],
+    getChildren: () => T[],
     style: mapData,
     data: mapData
   ): T;
 
   abstract buildList(
     id: string,
-    componentList: T[],
+    getChildren: () => T[],
     style: mapData,
     data: mapData
   ): T;
 
   abstract buildParagraph(
     id: string,
-    inlineList: T[],
+    getChildren: () => T[],
     style: mapData,
     data: mapData
   ): T;

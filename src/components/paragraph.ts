@@ -63,10 +63,9 @@ class Paragraph extends ContentCollection {
   }
 
   render() {
-    const builder = getContentBuilder();
-    return builder.buildParagraph(
+    return getContentBuilder().buildParagraph(
       this.id,
-      this.getContent(),
+      () => this.getContent(),
       this.decorate.getStyle(),
       { ...this.decorate.getData(), tag: "p" }
     );

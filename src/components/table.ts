@@ -64,7 +64,9 @@ class Table extends StructureCollection<TableRow> {
   ) {
     super(style, data);
     this.needHead = needHead;
-    this.decorate.setStyle("width", "100%");
+    this.decorate.mergeStyle({
+      margin: "auto"
+    });
     let list = [];
     for (let i = 0; i < row + (needHead ? 1 : 0); i++) {
       if (needHead && i === 0) {
@@ -143,7 +145,7 @@ class Table extends StructureCollection<TableRow> {
   render() {
     return getContentBuilder().buildTable(
       this.id,
-      this.children.map((item) => item.render()).toArray(),
+      () => this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );
@@ -230,7 +232,7 @@ class TableRow extends StructureCollection<TableCell> {
   render() {
     return getContentBuilder().buildTableRow(
       this.id,
-      this.children.map((item) => item.render()).toArray(),
+      () => this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );
@@ -319,7 +321,7 @@ class TableCell extends StructureCollection<TableItem> {
     return getContentBuilder().buildTableCell(
       this.id,
       this.cellType,
-      this.children.map((item) => item.render()).toArray(),
+      () => this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );
@@ -441,10 +443,9 @@ class TableItem extends ContentCollection {
   }
 
   render() {
-    const builder = getContentBuilder();
-    return builder.buildParagraph(
+    return getContentBuilder().buildParagraph(
       this.id,
-      this.getContent(),
+      () => this.getContent(),
       this.decorate.getStyle(),
       { ...this.decorate.getData(), tag: "p" }
     );

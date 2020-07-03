@@ -187,10 +187,9 @@ class List extends StructureCollection<ListItem> {
   }
 
   render() {
-    let children = this.children.map((item) => item.render()).toArray();
     return getContentBuilder().buildList(
       this.id,
-      children,
+      () => this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       { ...this.decorate.getData(), tag: this.listType }
     );
@@ -305,10 +304,9 @@ class ListItem extends ContentCollection {
   }
 
   render() {
-    const builder = getContentBuilder();
-    return builder.buildParagraph(
+    return getContentBuilder().buildParagraph(
       this.id,
-      this.getContent(),
+      () => this.getContent(),
       this.decorate.getStyle(),
       { ...this.decorate.getData(), tag: "li" }
     );

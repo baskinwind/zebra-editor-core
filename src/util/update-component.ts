@@ -61,7 +61,6 @@ const update = (component: Block) => {
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(component.id);
   if (dom) {
-    if (component.structureType === StructureType.structure) return;
     console.info(component.id);
     if (component.active) {
       let newRender = component.render();

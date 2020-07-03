@@ -141,7 +141,7 @@ class Title extends ContentCollection {
   render() {
     return getContentBuilder().buildParagraph(
       this.id,
-      this.getContent(),
+      () => this.getContent(),
       this.decorate.getStyle(),
       { ...this.decorate.getData(), tag: this.titleType }
     );

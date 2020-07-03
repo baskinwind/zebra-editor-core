@@ -55,7 +55,7 @@ class Article extends StructureCollection<Block> {
   render() {
     return getContentBuilder().buildArticle(
       this.id,
-      this.children.map((item) => item.render()).toArray(),
+      () => this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );

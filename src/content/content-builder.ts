@@ -23,7 +23,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildArticle(
     id: string,
-    componentList: HTMLElement[],
+    getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData
   ): HTMLElement {
@@ -35,7 +35,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       article.classList.add("zebra-draft-article");
       article.dataset.type = ComponentType.article;
       article.dataset.structure = StructureType.structure;
-      componentList.forEach((component) => {
+      getChildren().forEach((component) => {
         article?.appendChild(component);
       });
     }
@@ -45,7 +45,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildTable(
     id: string,
-    componentList: HTMLElement[],
+    getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData
   ) {
@@ -56,10 +56,11 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       figure.id = id;
       figure.dataset.structure = StructureType.structure;
       figure.contentEditable = "false";
+      figure.style.overflowX = "auto";
       const table = containDocument.createElement("table");
-      table.style.width = "100%";
+      table.style.minWidth = "100%";
       table.style.borderCollapse = "collapse";
-      componentList.forEach((item) => table.appendChild(item));
+      getChildren().forEach((item) => table.appendChild(item));
       figure.appendChild(table);
     }
     this.addStyle(figure, style, data);
@@ -68,15 +69,18 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildTableRow(
     id: string,
-    componentList: HTMLElement[],
+    getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData
   ) {
     let containDocument = getContainDocument();
-    const tr = containDocument.createElement("tr");
-    tr.id = id;
-    tr.dataset.structure = StructureType.structure;
-    componentList.forEach((item) => tr.appendChild(item));
+    let tr = containDocument.getElementById(id);
+    if (!tr || !this.updateDecorate) {
+      tr = containDocument.createElement("tr");
+      tr.id = id;
+      tr.dataset.structure = StructureType.structure;
+      getChildren().forEach((item) => tr?.appendChild(item));
+    }
     this.addStyle(tr, style, data);
     return tr;
   }
@@ -84,23 +88,26 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   buildTableCell(
     id: string,
     cellType: "th" | "td",
-    componentList: HTMLElement[],
+    getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData
   ) {
     let containDocument = getContainDocument();
-    const cell = containDocument.createElement(cellType);
-    cell.id = id;
-    cell.dataset.structure = StructureType.structure;
-    cell.contentEditable = "true";
-    componentList.forEach((item) => cell.appendChild(item));
+    let cell = containDocument.getElementById(id);
+    if (!cell || !this.updateDecorate) {
+      cell = containDocument.createElement(cellType);
+      cell.id = id;
+      cell.dataset.structure = StructureType.structure;
+      cell.contentEditable = "true";
+      getChildren().forEach((item) => cell?.appendChild(item));
+    }
     this.addStyle(cell, style, data);
     return cell;
   }
 
   buildList(
     id: string,
-    componentList: HTMLElement[],
+    getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData
   ): HTMLElement {
@@ -113,7 +120,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       list.classList.add("zebra-draft-list");
       list.dataset.type = ComponentType.article;
       list.dataset.structure = StructureType.structure;
-      componentList.forEach((component) => {
+      getChildren().forEach((component) => {
         list?.appendChild(component);
       });
     }
@@ -123,7 +130,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildParagraph(
     id: string,
-    inlineList: HTMLElement[],
+    getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData
   ): HTMLElement {
@@ -136,8 +143,9 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       parapraph.classList.add(`zebra-draft-${tag}`);
       parapraph.dataset.type = ComponentType.paragraph;
       parapraph.dataset.structure = StructureType.content;
-      if (inlineList.length) {
-        inlineList.forEach((component) => {
+      let children = getChildren();
+      if (children.length) {
+        children.forEach((component) => {
           parapraph?.appendChild(component);
         });
       } else {
