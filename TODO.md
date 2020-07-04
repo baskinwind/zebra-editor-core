@@ -1,1 +1,3 @@
 - 复制内容
+- return OperatorType 第一个参数变为数组
+- replaceSelf

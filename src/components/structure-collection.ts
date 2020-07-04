@@ -15,14 +15,19 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     throw createError("组件缺少 createEmpty 方法", this);
   }
 
-  addChildren(component: T[], index?: number, customerUpdate: boolean = false) {
+  addChildren(
+    component: T[],
+    index?: number,
+    customerUpdate: boolean = false
+  ): T[] {
     component.forEach((item) => {
       item.parent = this;
       item.active = true;
       item.recordSnapshoot();
     });
-    super.addChildren(component, index);
+    let newBlock = super.addChildren(component, index);
     updateComponent([...component].reverse(), customerUpdate);
+    return newBlock;
   }
 
   removeChildren(
@@ -31,9 +36,10 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     customerUpdate: boolean = false
   ) {
     let removed = super.removeChildren(indexOrBlock, removeNumber);
-    removed.forEach((component) => {
-      component.active = false;
-      component.parent = undefined;
+    removed.forEach((item) => {
+      item.active = false;
+      item.parent = undefined;
+      item.recordSnapshoot();
     });
     updateComponent(removed, customerUpdate);
     return removed;
@@ -50,7 +56,11 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   }
 
   @recordMethod
-  replaceChild(block: T[], oldComponent: T, customerUpdate: boolean = false) {
+  replaceChild(
+    block: T[],
+    oldComponent: T,
+    customerUpdate: boolean = false
+  ): Block[] {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
       throw createError("替换组件不在子组件列表内", block);
@@ -58,11 +68,13 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     block.forEach((item) => {
       item.parent = this;
       item.active = true;
+      item.recordSnapshoot();
     });
     oldComponent.active = false;
     oldComponent.parent = undefined;
     this.children = this.children.splice(index, 1, ...block);
     updateComponent([oldComponent, ...[...block].reverse()], customerUpdate);
+    return block;
   }
 
   splitChild(
@@ -80,8 +92,10 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     if (!this.active) {
       thisIndex -= 1;
     }
-    parent.addChildren([newCollection], thisIndex + 1);
-    return newCollection;
+    return parent.addChildren(
+      [newCollection],
+      thisIndex + 1
+    )[0] as StructureCollection<T>;
   }
 
   split(
@@ -103,8 +117,12 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     }
     if (block) {
       if (!Array.isArray(block)) block = [block];
-      parent.addChildren(block, componentIndex + 1, customerUpdate);
-      return [block[0], 0, 0];
+      let newChildren = parent.addChildren(
+        block,
+        componentIndex + 1,
+        customerUpdate
+      );
+      return [newChildren[0], 0, 0];
     }
     return;
   }

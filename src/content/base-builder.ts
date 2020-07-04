@@ -48,6 +48,8 @@ abstract class BaseBuilder<T = any> {
     data: mapData
   ): T;
 
+  abstract buildListItemWrap(children: T): T;
+
   abstract buildParagraph(
     id: string,
     getChildren: () => T[],

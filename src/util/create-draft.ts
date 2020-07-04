@@ -3,7 +3,7 @@ import BaseBuilder from "../content/base-builder";
 import UserOperator from "../user-operator";
 import BaseOperator from "../user-operator/base-operator";
 import ComponentFactory, { setComponentFactory } from "../components";
-import { initRecord } from "../record/util";
+import { initRecord, createTextRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 import { setContentBuilder } from "../content";
 import {
@@ -11,6 +11,9 @@ import {
   setContainWindow
 } from "../selection-operator/util";
 import defaultStyle from "./default-style";
+import getSelection from "../selection-operator/get-selection";
+import backspace from "../rich-util/backspace";
+import input from "../rich-util/input";
 
 export interface IOption {
   placeholder?: string;
@@ -21,6 +24,7 @@ export interface IOption {
 
 // 将组件挂载到某个节点上
 const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
+  block.active = true;
   startUpdate();
   initRecord(block);
   if (option && option.contentBuilder) {
@@ -57,7 +61,6 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     editor.classList.add("zebra-editor-page");
     editor.contentEditable = "true";
     editor.appendChild(block.render());
-    block.active = true;
     iframe.contentDocument.body.appendChild(editor);
     iframe.contentDocument.body.dataset.focus = "false";
 
@@ -74,15 +77,33 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     iframe.contentDocument.body.appendChild(placeholder);
     document.dispatchEvent(new Event("editorchange"));
 
-    editor.addEventListener("input", (event) => {
+    // 监听事件
+    editor.addEventListener("input", (event: any) => {
       try {
-        operator.onInput(event as InputEvent);
+        // 排除混合输入
+        if (event.inputType === "insertCompositionText") return;
+        let key = event.data || "";
+        let selection = getSelection();
+        let start = selection.range[0];
+        start.offset = start.offset - key.length;
+        input(key, start, event);
       } catch (e) {
         console.warn(e);
       }
     });
 
-    // 监听事件
+    editor.addEventListener("beforeinput", (event: any) => {
+      if (event.inputType === "insertCompositionText") return;
+      let selection = getSelection();
+      let start = selection.range[0];
+      let end = selection.range[1];
+      createTextRecord(start, end);
+      if (!selection.isCollapsed) {
+        backspace(start, end);
+        selection = getSelection();
+      }
+    });
+
     editor.addEventListener("blur", (event) => {
       // @ts-ignore
       iframe.contentDocument.body.dataset.focus = "false";

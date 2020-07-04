@@ -11,7 +11,7 @@ import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
 import { getContentBuilder } from "../content";
 
-export type operatorType = [Component, number, number] | undefined;
+export type operatorType = [Block, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function };
 export interface IRawType {
   type: ComponentType;
@@ -105,7 +105,6 @@ abstract class Component {
     }
     return raw;
   }
-
 
   // 渲染该组件
   abstract render(): any;

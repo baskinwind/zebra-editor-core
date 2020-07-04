@@ -124,8 +124,20 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
         list?.appendChild(component);
       });
     }
+    // @ts-ignore
+    list.softLink = undefined;
     this.addStyle(list, style, data);
     return list;
+  }
+
+  buildListItemWrap(children: HTMLElement): HTMLElement {
+    let containDocument = getContainDocument();
+    let li = containDocument.createElement("li");
+    li.style.display = "block";
+    li.appendChild(children);
+    // @ts-ignore
+    children.softLink = li;
+    return li;
   }
 
   buildParagraph(

@@ -145,16 +145,16 @@ abstract class PlainText extends Block {
     super.restore(state);
   }
 
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.content = this.content;
-    return raw;
-  }
-
   getStatistic() {
     let res = super.getStatistic();
     res.word = this.content.length;
     return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.content = this.content;
+    return raw;
   }
 }
 

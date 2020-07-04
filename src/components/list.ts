@@ -14,12 +14,13 @@ import { initRecordState, recordMethod } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 
 export type listType = "ol" | "ul";
-export interface IListSnapshoot extends ICollectionSnapshoot<ListItem> {
+type ListChild = ListItem | List;
+export interface IListSnapshoot extends ICollectionSnapshoot<ListChild> {
   listType: listType;
 }
 
 @initRecordState
-class List extends StructureCollection<ListItem> {
+class List extends StructureCollection<ListChild> {
   type = ComponentType.list;
   listType: listType;
 
@@ -49,8 +50,9 @@ class List extends StructureCollection<ListItem> {
     if (!parent) throw createError("该节点已失效", block);
     let prev = parent.getPrev(block);
     let index = parent.findChildrenIndex(block);
+
+    // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
     if (prev instanceof List && prev.listType === args[0]) {
-      // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
       prev.add(newItem, undefined, customerUpdate);
     } else {
       // 否则新生成一个 List
@@ -64,7 +66,7 @@ class List extends StructureCollection<ListItem> {
 
   constructor(
     type: listType = "ul",
-    children: (string | ListItem)[] = [],
+    children: (string | ListChild)[] = [],
     style?: storeData,
     data?: storeData
   ) {
@@ -96,13 +98,26 @@ class List extends StructureCollection<ListItem> {
   }
 
   addChildren(
-    listItem: ListItem[],
+    listChild: (ContentCollection | ListChild)[],
     index?: number,
     customerUpdate: boolean = false
   ) {
-    // 列表不允许添加非段落内容
-    listItem = listItem.filter((item) => item instanceof ContentCollection);
-    super.addChildren(listItem, index, customerUpdate);
+    // 列表仅能添加符合列表的内容
+    let list: ListChild[] = [];
+    listChild
+      .filter(
+        (item) => item instanceof ContentCollection || item instanceof List
+      )
+      .forEach((item) => {
+        if (item instanceof List) {
+          list.push(item);
+        } else if (!(item instanceof ListItem)) {
+          list.push(...ListItem.exchangeOnly(item));
+        } else {
+          list.push(item);
+        }
+      });
+    return super.addChildren(list, index, customerUpdate);
   }
 
   removeChildren(
@@ -110,7 +125,7 @@ class List extends StructureCollection<ListItem> {
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
-    // 若子元素需要全部，将自己也删除
+    // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
       this.removeSelf(customerUpdate);
       return [...this.children];
@@ -127,22 +142,21 @@ class List extends StructureCollection<ListItem> {
     if (index !== 0) {
       let prev = this.children.get(index - 1);
       if (!prev) return;
-      let size = prev.getSize();
-      listItem.sendTo(prev, customerUpdate);
-      return [prev, size, size];
+      return listItem.sendTo(prev, customerUpdate);
     }
-    // 第一项时，直接将该列表项转换为段落
+
+    // 第一项时，直接将该列表项添加到父元素上
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     index = parent.findChildrenIndex(this);
     listItem.removeSelf(customerUpdate);
     let paragraph = Paragraph.exchangeOnly(listItem);
-    parent.addChildren(paragraph, index);
-    return [paragraph[0], 0, 0];
+    let newBlock = parent.addChildren(paragraph, index);
+    return [newBlock[0], 0, 0];
   }
 
   add(
-    listItem: ListItem | ListItem[],
+    listItem: ListChild | ListChild[],
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
@@ -154,9 +168,9 @@ class List extends StructureCollection<ListItem> {
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     if (!block) return;
     block.removeSelf();
-    let newList = ListItem.exchangeOnly(block, []);
-    this.addChildren(newList, undefined, customerUpdate);
-    return [newList[0], -1, -1];
+    let newList = List.exchangeOnly(block, []);
+    let newBlock = this.addChildren(newList, undefined, customerUpdate);
+    return [newBlock[0], -1, -1];
   }
 
   snapshoot(): IListSnapshoot {
@@ -187,12 +201,17 @@ class List extends StructureCollection<ListItem> {
   }
 
   render() {
-    return getContentBuilder().buildList(
+    let build = getContentBuilder();
+    let content = build.buildList(
       this.id,
       () => this.children.map((item) => item.render()).toArray(),
       this.decorate.getStyle(),
       { ...this.decorate.getData(), tag: this.listType }
     );
+    if (this.parent instanceof List) {
+      content = build.buildListItemWrap(content);
+    }
+    return content;
   }
 }
 
@@ -249,23 +268,33 @@ class ListItem extends ContentCollection {
   ): Block[] {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
+
+    // 需要转换成列表时，切换列表类型即可
     if (builder === List) {
       parent.setListType(args[0]);
       return [this];
     }
+
+    // 将其放到列表的父组件内
     let grandParent = parent?.parent;
     if (!grandParent) throw createError("该节点已失效", this);
     let index = parent.findChildrenIndex(this);
     let parentIndex = grandParent.findChildrenIndex(parent);
     this.removeSelf();
-    let newListItem = builder.exchangeOnly(this, args);
+    let newItem = builder.exchangeOnly(this, args);
+    parent.splitChild(index, customerUpdate);
+
     // 当列表仅有一项时，removeSelf 导致 parent 也会被删除
     if (parent.active) {
-      parent.split(index, newListItem, customerUpdate);
+      let newChildren = grandParent.addChildren(
+        newItem,
+        parentIndex + 1,
+        customerUpdate
+      );
+      return newChildren;
     } else {
-      grandParent.addChildren(newListItem, parentIndex);
+      return grandParent.addChildren(newItem, parentIndex);
     }
-    return newListItem;
   }
 
   split(
@@ -276,27 +305,70 @@ class ListItem extends ContentCollection {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     let itemIndex = parent.findChildrenIndex(this);
+    let prev = parent.getPrev(this);
+
     // 连续两个空行则切断列表
-    if (this.isEmpty() && itemIndex !== 0) {
+    if (this.isEmpty() && itemIndex !== 0 && prev instanceof ListItem) {
       this.removeSelf();
       if (!block) block = getComponentFactory().buildParagraph();
       return parent.split(itemIndex, block, customerUpdate);
     }
-    // 不允许非内容集合添加
+
+    // 不允许非列表元素添加
     let flag: boolean = false;
     if (block) {
       if (!Array.isArray(block)) block = [block];
-      let list: ListItem[] = [];
+      let list: ListChild[] = [];
       block
-        .filter((item) => item instanceof ContentCollection)
-        .forEach((item) => list.push(...ListItem.exchangeOnly(item)));
+        .filter(
+          (item) => item instanceof ContentCollection || item instanceof List
+        )
+        .forEach((item) => {
+          if (item instanceof List) {
+            list.push(item);
+          } else if (!(item instanceof ListItem)) {
+            list.push(...ListItem.exchangeOnly(item));
+          } else {
+            list.push(item);
+          }
+        });
+
       flag = list.length === 0;
       block = list;
     }
     if (flag) {
-      throw createError("不允许非内容集合添加", this);
+      throw createError("不允许非列表元素添加", this);
     }
     return super.split(index, block, customerUpdate);
+  }
+
+  indent(customerUpdate: boolean = false): operatorType {
+    let newList = getComponentFactory().buildList(this.parent?.listType);
+    this.replaceSelf(newList, customerUpdate);
+    return newList.add(this);
+  }
+
+  outdent(customerUpdate: boolean = false): operatorType {
+    let parent = this.parent;
+    let grandParent = parent?.parent;
+    if (!parent || !grandParent || !(this.parent?.parent instanceof List))
+      return;
+    let index = parent.findChildrenIndex(this);
+    let parentIndex = grandParent.findChildrenIndex(parent);
+    this.removeSelf();
+    parent.splitChild(index, customerUpdate);
+
+    // 当列表仅有一项时，removeSelf 导致 parent 也会被删除
+    if (parent.active) {
+      let newChildren = grandParent.addChildren(
+        [this],
+        parentIndex + 1,
+        customerUpdate
+      );
+      return [newChildren[0], -1, -1];
+    } else {
+      return grandParent.add(this, parentIndex);
+    }
   }
 
   onSelect() {

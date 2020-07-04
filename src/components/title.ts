@@ -56,8 +56,11 @@ class Title extends ContentCollection {
 
   static exchangeOnly(block: Block, args: any[] = []): Title[] {
     let list = [];
-    if (block instanceof ContentCollection) {
-      let newTitle = getComponentFactory().buildTitle(args[0] || "h1");
+    let titleType = args[0] || "h1";
+    if (block instanceof Title && block.titleType === titleType) {
+      list.push(block);
+    } else if (block instanceof ContentCollection) {
+      let newTitle = getComponentFactory().buildTitle(titleType);
       newTitle.addChildren(block.children.toArray(), 0);
       list.push(newTitle);
     } else if (block instanceof PlainText) {
@@ -66,7 +69,7 @@ class Title extends ContentCollection {
         stringList.pop();
       }
       stringList.forEach((item) => {
-        list.push(getComponentFactory().buildTitle(args[0] || "h1", item));
+        list.push(getComponentFactory().buildTitle(titleType, item));
       });
     }
     return list;

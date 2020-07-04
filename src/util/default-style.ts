@@ -12,6 +12,8 @@ body{
 }
 h1,h2,h3,h4,h5,h6,figure,pre,p,ul,ol{
   margin: 10px 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 a{
   color: #1890ff;

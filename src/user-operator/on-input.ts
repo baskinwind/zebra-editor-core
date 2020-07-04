@@ -6,22 +6,11 @@ import { createTextRecord } from "../record/util";
 const onInput = (event: InputEvent) => {
   let key = event.data || "";
   let selection = getSelection();
-
-  createTextRecord(selection.range[0], selection.range[1]);
-  if (!selection.isCollapsed) {
-    backspace(selection.range[0], selection.range[1]);
-    selection = getSelection();
-  }
+  let start = selection.range[0];
+  start.offset = start.offset - key.length;
   // 排除混合输入
   if (event.inputType === "insertCompositionText") return;
-  input(
-    key,
-    {
-      id: selection.range[0].id,
-      offset: selection.range[0].offset - key.length
-    },
-    event
-  );
+  input(key, start, event);
 };
 
 export default onInput;

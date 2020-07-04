@@ -74,10 +74,10 @@ abstract class ContentCollection extends Collection<Inline> {
       .forEach((item) => {
         item.parent = this;
       });
-    super.addChildren(inline, index);
+    let res = super.addChildren(inline, index);
     updateComponent(this, customerUpdate);
+    return res;
   }
-
   removeChildren(
     inline: Inline | number,
     index?: number,
@@ -86,16 +86,6 @@ abstract class ContentCollection extends Collection<Inline> {
     let removed = super.removeChildren(inline, index);
     updateComponent(this, customerUpdate);
     return removed;
-  }
-
-  addText(text: string, index?: number, customerUpdate: boolean = false) {
-    let charList: Character[] = [];
-    for (let char of text) {
-      charList.push(new Character(char));
-    }
-    this.addChildren(charList, index, customerUpdate);
-    index = index ? index : this.getSize();
-    return [this, index + text.length, index + text.length];
   }
 
   splitChild(
@@ -114,8 +104,11 @@ abstract class ContentCollection extends Collection<Inline> {
     if (!isTail) {
       newCollection.addChildren(tail, 0, true);
     }
-    parent.addChildren([newCollection], thisIndex + 1, customerUpdate);
-    return newCollection;
+    return parent.addChildren(
+      [newCollection],
+      thisIndex + 1,
+      customerUpdate
+    )[0] as ContentCollection;
   }
 
   split(
@@ -129,16 +122,30 @@ abstract class ContentCollection extends Collection<Inline> {
     let splitBlock = this.splitChild(index, customerUpdate);
     if (block) {
       if (!Array.isArray(block)) block = [block];
-      parent.addChildren(block, componentIndex + 1, customerUpdate);
+      let newChildren = parent.addChildren(
+        block,
+        componentIndex + 1,
+        customerUpdate
+      );
       if (this.isEmpty()) {
         this.removeSelf();
       }
       if (splitBlock.isEmpty()) {
         splitBlock.removeSelf();
-        return [block[block.length - 1], 0, 0];
+        return [newChildren[block.length - 1], 0, 0];
       }
     }
     return [splitBlock, 0, 0];
+  }
+
+  addText(text: string, index?: number, customerUpdate: boolean = false) {
+    let charList: Character[] = [];
+    for (let char of text) {
+      charList.push(new Character(char));
+    }
+    this.addChildren(charList, index, customerUpdate);
+    index = index ? index : this.getSize();
+    return [this, index + text.length, index + text.length];
   }
 
   add(
@@ -146,7 +153,7 @@ abstract class ContentCollection extends Collection<Inline> {
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    index = index ? index : this.getSize();
+    index = index !== undefined ? index : this.getSize();
     if (typeof inline === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];

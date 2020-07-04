@@ -25,7 +25,9 @@ class Paragraph extends ContentCollection {
 
   static exchangeOnly(block: Block, args: any[] = []): Paragraph[] {
     let list: Paragraph[] = [];
-    if (block instanceof ContentCollection) {
+    if (block instanceof Paragraph) {
+      list.push(block);
+    } else if (block instanceof ContentCollection) {
       let newParagraph = getComponentFactory().buildParagraph();
       newParagraph.addChildren(block.children.toArray(), 0);
       list.push(newParagraph);

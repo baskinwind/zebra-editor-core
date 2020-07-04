@@ -19,11 +19,15 @@ interface recoreType {
 }
 
 let recoreQueue: recoreType[] = [];
+let newRecord: recoreType;
 let nowIndex = -1;
 let nowComponentList: Component[] = [];
 let nowIdList: string[] = [];
 // 纯文字输入优化
 let isTextRecord: boolean = false;
+
+// @ts-ignore
+window.recoreQueue = recoreQueue;
 
 const getRecordStepId = () => {
   return nowIndex;
@@ -41,7 +45,7 @@ const startRecord = (start: cursorType, end: cursorType) => {
   recoreQueue.splice(nowIndex + 1);
   nowComponentList = [];
   nowIdList = [];
-  let newRecord = {
+  newRecord = {
     undoSelection: { start, end },
     redoSelection: { start, end },
     componentList: nowComponentList,
@@ -49,22 +53,26 @@ const startRecord = (start: cursorType, end: cursorType) => {
   };
   recoreQueue.push(newRecord);
   nowIndex = recoreQueue.length - 1;
+  return newRecord;
+};
+
+const createRecord = (start: cursorType, end: cursorType) => {
+  if (isTextRecord) {
+    let selection = getSelection();
+    newRecord.redoSelection = {
+      start: selection.range[0],
+      end: selection.range[1]
+    };
+    isTextRecord = false;
+  }
+  startRecord(start, end);
   setTimeout(() => {
     let selection = getSelection();
-    if (nowComponentList.length === 0) {
-      recoreQueue.length = recoreQueue.length - 1;
-      nowIndex = recoreQueue.length - 1;
-    }
     newRecord.redoSelection = {
       start: selection.range[0],
       end: selection.range[1]
     };
   });
-};
-
-const createRecord = (start: cursorType, end: cursorType) => {
-  isTextRecord = false;
-  startRecord(start, end);
 };
 
 const createTextRecord = (start: cursorType, end: cursorType) => {
@@ -81,6 +89,14 @@ const recordSnapshoot = (component: Component) => {
 };
 
 const undo = () => {
+  if (isTextRecord) {
+    let selection = getSelection();
+    newRecord.redoSelection = {
+      start: selection.range[0],
+      end: selection.range[1]
+    };
+    isTextRecord = false;
+  }
   if (nowIndex === -1) return;
   let nowRecord = recoreQueue[nowIndex];
   for (let i = nowRecord.componentList.length - 1; i >= 0; i--) {
@@ -93,6 +109,14 @@ const undo = () => {
 };
 
 const redo = () => {
+  if (isTextRecord) {
+    let selection = getSelection();
+    newRecord.redoSelection = {
+      start: selection.range[0],
+      end: selection.range[1]
+    };
+    isTextRecord = false;
+  }
   if (nowIndex === recoreQueue.length - 1) return;
   let nowRecord = recoreQueue[nowIndex + 1];
   for (let i = nowRecord.componentList.length - 1; i >= 0; i--) {

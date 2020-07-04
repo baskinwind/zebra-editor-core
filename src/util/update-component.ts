@@ -92,10 +92,10 @@ const update = (component: Block) => {
     } else {
       let afterComId = parentComponent.children.get(index + 1)?.id;
       if (afterComId) {
-        parentDom.insertBefore(
-          component.render(),
-          containDocument.getElementById(afterComId)
-        );
+        let afterDom = containDocument.getElementById(afterComId);
+        // @ts-ignore
+        afterDom = afterDom.softLink ? afterDom.softLink : afterDom;
+        parentDom.insertBefore(component.render(), afterDom);
       }
     }
   }

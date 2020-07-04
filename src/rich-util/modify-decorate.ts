@@ -9,8 +9,8 @@ const modifyDecorate = (
   data?: storeData
 ) => {
   idList.forEach((id) => {
-    let component = getBlockById(id);
-    component.modifyDecorate(style, data);
+    let block = getBlockById(id);
+    block.modifyDecorate(style, data);
   });
   focusAt();
 };

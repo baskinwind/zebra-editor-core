@@ -18,6 +18,11 @@ abstract class Block extends Component {
   active: boolean = false;
   parent?: StructureCollection<Block>;
 
+  // 根据 raw 保存的内容恢复组件
+  static create(raw: IRawType): Component {
+    throw createError("组件未实现 create 静态方法", this);
+  }
+
   // 定义如何将别的组件转换为当前组件，不会触发更新
   static exchangeOnly(component: Component, args?: any[]): Component[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
@@ -32,14 +37,14 @@ abstract class Block extends Component {
     throw createError("组件未实现 exchange 静态方法", this);
   }
 
-  // 根据 raw 保存的内容恢复组件
-  static create(raw: IRawType): Component {
-    throw createError("组件未实现 create 静态方法", this);
-  }
-
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
     saveBlock(this);
+  }
+
+  // 获取类型
+  getType(): string {
+    return this.type;
   }
 
   // 判断该组件是否为空，为空并不代表无效
@@ -47,6 +52,7 @@ abstract class Block extends Component {
     return false;
   }
 
+  // 获取子组件的长度
   getSize(): number {
     return 0;
   }
@@ -63,12 +69,12 @@ abstract class Block extends Component {
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
-    collection: Collection<Component>,
+    collection: StructureCollection<Block>,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    collection.addChildren([this], index, customerUpdate);
-    return [this, 0, 0];
+    let newBlock = collection.addChildren([this], index, customerUpdate);
+    return [newBlock[0], 0, 0];
   }
 
   // 从其父组件内移除
@@ -79,12 +85,14 @@ abstract class Block extends Component {
 
   // 替换为另一个组件
   replaceSelf(
-    component: Block | Block[],
+    block: Block | Block[],
     customerUpdate: boolean = false
   ): operatorType {
-    if (!Array.isArray(component)) component = [component];
-    this.parent?.replaceChild(component, this, customerUpdate);
-    return [component[0], 0, 0];
+    if (!Array.isArray(block)) block = [block];
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效", this);
+    let replaceBlock = parent.replaceChild(block, this, customerUpdate);
+    return [replaceBlock[0], 0, 0];
   }
 
   // 添加子组件
@@ -111,6 +119,14 @@ abstract class Block extends Component {
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
+    return;
+  }
+
+  indent(customerUpdate: boolean = false): operatorType {
+    return;
+  }
+
+  outdent(customerUpdate: boolean = false): operatorType {
     return;
   }
 
@@ -167,11 +183,6 @@ abstract class Block extends Component {
       code: 0,
       block: 0
     };
-  }
-
-  // 获取类型
-  getType(): string {
-    return this.type;
   }
 
   // 当组件被选中时的行为，对外暴露，但不实现，由开发者定义行为
