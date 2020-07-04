@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>XEditor Demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
-<script id="operator-template" type="text/x-template">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>XEditor Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <script id="operator-template" type="text/x-template">
     <div class="operator">
       <div>
         <button @click="undo">undo</button>
@@ -88,6 +87,13 @@
       <div>
         <p>表格相关：</p>
         <div>
+          <button @click="indent">缩进</button>
+          <button @click="outdent">取消缩进</button>
+        </div>
+      </div>
+      <div>
+        <p>列表相关：</p>
+        <div>
           <button @click="addTable">添加表格（默认 3*3 带表头）</button>
         </div>
         <p>修改表格大小</p>
@@ -131,11 +137,10 @@
     </div>
   </script>
 
-<body>
-  <div class="flex">
-    <div id="operator"></div>
-    <div class="draft-wrap" id="root"></div>
-  </div>
-</body>
-
+  <body>
+    <div class="flex">
+      <div id="operator"></div>
+      <div class="draft-wrap" id="root"></div>
+    </div>
+  </body>
 </html>

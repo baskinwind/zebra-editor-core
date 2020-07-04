@@ -22,7 +22,8 @@ import {
   bgColor,
   clearAllStyle,
   link,
-  unlink
+  unlink,
+  modifyIndent
 } from "../src";
 
 let factory = ComponentFactory.getInstance();
@@ -137,6 +138,13 @@ new Vue({
         col: Number(this.tableCol),
         head: this.tableHead
       });
+    },
+
+    indent() {
+      modifyIndent();
+    },
+    outdent() {
+      modifyIndent(true);
     },
 
     insertInlineImage() {

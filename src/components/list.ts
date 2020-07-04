@@ -343,6 +343,10 @@ class ListItem extends ContentCollection {
   }
 
   indent(customerUpdate: boolean = false): operatorType {
+    let prev = this.parent?.getPrev(this);
+    if (prev instanceof List) {
+      return this.sendTo(prev);
+    }
     let newList = getComponentFactory().buildList(this.parent?.listType);
     this.replaceSelf(newList, customerUpdate);
     return newList.add(this);
@@ -355,8 +359,8 @@ class ListItem extends ContentCollection {
       return;
     let index = parent.findChildrenIndex(this);
     let parentIndex = grandParent.findChildrenIndex(parent);
-    this.removeSelf();
     parent.splitChild(index, customerUpdate);
+    this.removeSelf();
 
     // 当列表仅有一项时，removeSelf 导致 parent 也会被删除
     if (parent.active) {
