@@ -133,6 +133,14 @@ class List extends StructureCollection<ListChild> {
     return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
+  onlyRemoveChildren(
+    indexOrComponent: ListItem | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ) {
+    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+  }
+
   childHeadDelete(
     listItem: ListItem,
     index: number,
@@ -357,10 +365,14 @@ class ListItem extends ContentCollection {
     let grandParent = parent?.parent;
     if (!parent || !grandParent || !(this.parent?.parent instanceof List))
       return;
-
+    let removed = parent.onlyRemoveChildren(
+      0,
+      parent.getSize(),
+      customerUpdate
+    );
     let parentIndex = grandParent.findChildrenIndex(parent);
-    let removed = parent.removeChildren(0, parent.getSize());
-    grandParent.addChildren(removed, parentIndex);
+    grandParent.addChildren(removed, parentIndex, customerUpdate);
+    parent.removeSelf();
     return;
   }
 
