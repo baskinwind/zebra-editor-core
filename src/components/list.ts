@@ -11,7 +11,7 @@ import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { createError } from "./util";
 import { initRecordState, recordMethod } from "../record/decorators";
-import { ICollectionSnapshoot } from "./collection";
+import Collection, { ICollectionSnapshoot } from "./collection";
 
 export type listType = "ol" | "ul";
 type ListChild = ListItem | List;
@@ -357,26 +357,21 @@ class ListItem extends ContentCollection {
     let grandParent = parent?.parent;
     if (!parent || !grandParent || !(this.parent?.parent instanceof List))
       return;
-    let index = parent.findChildrenIndex(this);
-    let parentIndex = grandParent.findChildrenIndex(parent);
-    parent.splitChild(index, customerUpdate);
-    this.removeSelf();
 
-    // 当列表仅有一项时，removeSelf 导致 parent 也会被删除
-    if (parent.active) {
-      let newChildren = grandParent.addChildren(
-        [this],
-        parentIndex + 1,
-        customerUpdate
-      );
-      return [newChildren[0], -1, -1];
-    } else {
-      return grandParent.add(this, parentIndex);
-    }
+    let parentIndex = grandParent.findChildrenIndex(parent);
+    let removed = parent.removeChildren(0, parent.getSize());
+    grandParent.addChildren(removed, parentIndex);
+    return;
   }
 
   onSelect() {
-    return this.parent?.onSelect();
+    let outList: Block | undefined = this.parent;
+    while (outList?.parent instanceof List) {
+      outList = outList?.parent;
+    }
+    if (outList) {
+      return outList?.onSelect(this);
+    }
   }
 
   render() {

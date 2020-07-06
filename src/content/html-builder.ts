@@ -88,6 +88,10 @@ class HtmlBuilder extends BaseBuilder<string> {
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</${tag}>`;
   }
 
+  buildListItemWrap(children: string): string {
+    return `<li class="zebra-list-item-wrap" style="display: block">${children}</li>`;
+  }
+
   buildParagraph(
     id: string,
     getChildren: () => string[],

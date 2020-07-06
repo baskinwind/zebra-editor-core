@@ -68,7 +68,9 @@ const update = (component: Block) => {
       if (newRender === dom) return;
       dom.replaceWith(newRender);
     } else {
-      dom.remove();
+      // @ts-ignore
+      dom = dom.softLink ? dom.softLink : dom;
+      dom?.remove();
     }
   } else {
     // 没有对应元素

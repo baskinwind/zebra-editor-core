@@ -186,7 +186,7 @@ abstract class Block extends Component {
   }
 
   // 当组件被选中时的行为，对外暴露，但不实现，由开发者定义行为
-  onSelect(): any {}
+  onSelect(target?: Block): any {}
 }
 
 export default Block;

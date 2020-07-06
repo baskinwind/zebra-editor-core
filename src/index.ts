@@ -17,7 +17,7 @@ import modifyDecorate from "./selection-operator/modify-decorate";
 import modifySelectionDecorate from "./selection-operator/modify-selection-decorate";
 import modifyTable from "./selection-operator/modify-table";
 import modifyIndent from "./selection-operator/modify-indent";
-import getSelectionInfo from "./selection-operator/get-selection-info";
+import exchangeComponent from "./selection-operator/exchange-component";
 
 // 操作内容
 import mount from "./util/mount";
@@ -45,7 +45,7 @@ export {
   modifySelectionDecorate,
   modifyTable,
   modifyIndent,
-  getSelectionInfo,
+  exchangeComponent,
   updateComponent,
   mount,
   getHtml,
