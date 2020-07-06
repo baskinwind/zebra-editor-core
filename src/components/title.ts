@@ -94,7 +94,8 @@ class Title extends ContentCollection {
 
   @recordMethod
   exchangeTo(builder: classType, args: any[]): Block[] {
-    if (builder === Title && args[0]) {
+    // @ts-ignore
+    if (builder === this.constructor && args[0]) {
       if (args[0] !== this.titleType) {
         this.setTitle(args[0]);
         return [this];

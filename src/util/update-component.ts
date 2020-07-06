@@ -38,22 +38,22 @@ const updateComponent = (
     delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
   }
-  // 无内容，不更新
-  if (!canUpdate || customerUpdate || !component) return;
-
-  console.info("update");
-  if (Array.isArray(component)) {
-    component.forEach((item) => update(item));
-  } else {
-    update(component);
-  }
 
   if (!lock) {
     lock = true;
     setTimeout(() => {
       document.dispatchEvent(new Event("editorchange"));
     });
-    setTimeout(() => (lock = false), 1000);
+    setTimeout(() => (lock = false), 100);
+  }
+
+  // 无内容，不更新
+  if (!canUpdate || customerUpdate || !component) return;
+  console.info("update");
+  if (Array.isArray(component)) {
+    component.forEach((item) => update(item));
+  } else {
+    update(component);
   }
 };
 
@@ -62,14 +62,14 @@ const update = (component: Block) => {
   let dom = containDocument.getElementById(component.id);
   if (dom) {
     console.info(component.id);
+    // @ts-ignore
+    dom = dom.softLink ? dom.softLink : dom;
     if (component.active) {
       let newRender = component.render();
       // 节点并不需要更新
       if (newRender === dom) return;
-      dom.replaceWith(newRender);
+      dom?.replaceWith(newRender);
     } else {
-      // @ts-ignore
-      dom = dom.softLink ? dom.softLink : dom;
       dom?.remove();
     }
   } else {

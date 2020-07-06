@@ -278,7 +278,8 @@ class ListItem extends ContentCollection {
     if (!parent) throw createError("该节点已失效", this);
 
     // 需要转换成列表时，切换列表类型即可
-    if (builder === List) {
+    // @ts-ignore
+    if (builder === this.parent?.constructor) {
       parent.setListType(args[0]);
       return [this];
     }
@@ -365,11 +366,17 @@ class ListItem extends ContentCollection {
     let grandParent = parent?.parent;
     if (!parent || !grandParent || !(this.parent?.parent instanceof List))
       return;
+
+    // let removed = parent.children.slice(0).toArray();
     let removed = parent.onlyRemoveChildren(
       0,
       parent.getSize(),
       customerUpdate
     );
+    // removed.forEach((item) => {
+    //   item.parent = undefined;
+    //   item.active = false;
+    // });
     let parentIndex = grandParent.findChildrenIndex(parent);
     grandParent.addChildren(removed, parentIndex, customerUpdate);
     parent.removeSelf();

@@ -52,7 +52,8 @@ class Paragraph extends ContentCollection {
 
   @recordMethod
   exchangeTo(builder: classType, args: any[]): Block[] {
-    if (builder === Paragraph) return [this];
+    // @ts-ignore
+    if (builder === this.constructor) return [this];
     return builder.exchange(this, args);
   }
 
