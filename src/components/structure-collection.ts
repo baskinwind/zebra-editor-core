@@ -11,6 +11,10 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
 > {
   structureType = StructureType.structure;
 
+  getChild(index: number): Block | undefined {
+    return this.children.get(index);
+  }
+
   createEmpty(): StructureCollection<T> {
     throw createError("组件缺少 createEmpty 方法", this);
   }
@@ -82,22 +86,14 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   splitChild(
     index: number,
     customerUpdate: boolean = false
-  ): StructureCollection<T> | undefined {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
-    if (index >= this.getSize()) return;
+  ): StructureCollection<T> {
+    if (index >= this.getSize()) throw createError("分割点不在列表内");
+
     let tail = this.children.slice(index).toArray();
-    let thisIndex = parent.findChildrenIndex(this);
     this.removeChildren(index, this.getSize() - index, customerUpdate);
     let newCollection = this.createEmpty();
-    newCollection.addChildren(tail, 0, true);
-    if (!this.active) {
-      thisIndex -= 1;
-    }
-    return parent.addChildren(
-      [newCollection],
-      thisIndex + 1
-    )[0] as StructureCollection<T>;
+    newCollection.add(tail, 0, true);
+    return newCollection;
   }
 
   split(
@@ -105,11 +101,11 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     block?: Block | Block[],
     customerUpdate: boolean = false
   ): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
     if (index !== 0) {
-      this.splitChild(index, customerUpdate);
+      let newCollection = this.splitChild(index, customerUpdate);
+      parent.add(newCollection, componentIndex + 1, customerUpdate);
     } else {
       componentIndex -= 1;
     }
@@ -119,12 +115,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     }
     if (block) {
       if (!Array.isArray(block)) block = [block];
-      let newChildren = parent.addChildren(
-        block,
-        componentIndex + 1,
-        customerUpdate
-      );
-      return [newChildren[0], 0, 0];
+      return parent.add(block, componentIndex + 1, customerUpdate);
     }
     return;
   }

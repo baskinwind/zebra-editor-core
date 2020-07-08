@@ -10,12 +10,7 @@ import { IRawType } from "../components/component";
 
 const ComponentMap = {
   [ComponentType.article](raw: IRawType) {
-    let article = Article.create(raw);
-    let children = raw.children
-      ? raw.children.map((item) => ComponentMap[item.type](item))
-      : [];
-    article.add(children, 0, true);
-    return article;
+    return Article.create(raw);
   },
   [ComponentType.table](raw: IRawType) {
     return Table.create(raw);

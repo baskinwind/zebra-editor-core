@@ -60,10 +60,6 @@ abstract class ContentCollection extends Collection<Inline> {
     throw createError("组件缺少 createEmpty 方法", this);
   }
 
-  exchangeTo(builder: classType, args: any[]): Block[] {
-    return builder.exchange(this, args);
-  }
-
   addChildren(
     inline: Inline[],
     index?: number,
@@ -77,75 +73,6 @@ abstract class ContentCollection extends Collection<Inline> {
     let res = super.addChildren(inline, index);
     updateComponent(this, customerUpdate);
     return res;
-  }
-  removeChildren(
-    inline: Inline | number,
-    index?: number,
-    customerUpdate: boolean = false
-  ) {
-    let removed = super.removeChildren(inline, index);
-    updateComponent(this, customerUpdate);
-    return removed;
-  }
-
-  splitChild(
-    index: number,
-    customerUpdate: boolean = false
-  ): ContentCollection {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效，不能分割", this);
-    let isTail = index === this.getSize();
-    let tail = isTail ? [] : this.children.slice(index).toArray();
-    if (!isTail) {
-      this.removeChildren(index, this.getSize() - index, customerUpdate);
-    }
-    let thisIndex = parent.findChildrenIndex(this);
-    let newCollection = this.createEmpty();
-    if (!isTail) {
-      newCollection.addChildren(tail, 0, true);
-    }
-    return parent.addChildren(
-      [newCollection],
-      thisIndex + 1,
-      customerUpdate
-    )[0] as ContentCollection;
-  }
-
-  split(
-    index: number,
-    block?: Block | Block[],
-    customerUpdate: boolean = false
-  ): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
-    let componentIndex = parent.findChildrenIndex(this);
-    let splitBlock = this.splitChild(index, customerUpdate);
-    if (block) {
-      if (!Array.isArray(block)) block = [block];
-      let newChildren = parent.addChildren(
-        block,
-        componentIndex + 1,
-        customerUpdate
-      );
-      if (this.isEmpty()) {
-        this.removeSelf();
-      }
-      if (splitBlock.isEmpty()) {
-        splitBlock.removeSelf();
-        return [newChildren[block.length - 1], 0, 0];
-      }
-    }
-    return [splitBlock, 0, 0];
-  }
-
-  addText(text: string, index?: number, customerUpdate: boolean = false) {
-    let charList: Character[] = [];
-    for (let char of text) {
-      charList.push(new Character(char));
-    }
-    this.addChildren(charList, index, customerUpdate);
-    index = index ? index : this.getSize();
-    return [this, index + text.length, index + text.length];
   }
 
   add(
@@ -171,13 +98,22 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, index + inline.length, index + inline.length];
   }
 
+  removeChildren(
+    inline: Inline | number,
+    index?: number,
+    customerUpdate: boolean = false
+  ) {
+    let removed = super.removeChildren(inline, index);
+    updateComponent(this, customerUpdate);
+    return removed;
+  }
+
   remove(
     start: number,
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent();
     if (end === undefined) end = this.getSize();
     if (start < 0 && end === 0) {
       let index = parent.findChildrenIndex(this);
@@ -189,6 +125,54 @@ abstract class ContentCollection extends Collection<Inline> {
     }
     this.removeChildren(start, end - start, customerUpdate);
     return [this, start, start];
+  }
+
+  splitChild(
+    index: number,
+    customerUpdate: boolean = false
+  ): ContentCollection {
+    let isTail = index === this.getSize();
+    let tail = isTail ? [] : this.children.slice(index).toArray();
+    if (!isTail) {
+      this.removeChildren(index, this.getSize() - index, customerUpdate);
+    }
+    let newCollection = this.createEmpty();
+    if (!isTail) {
+      newCollection.add(tail, 0, true);
+    }
+    return newCollection;
+  }
+
+  split(
+    index: number,
+    block?: Block | Block[],
+    customerUpdate: boolean = false
+  ): operatorType {
+    let parent = this.getParent();
+    let splitBlock = this.splitChild(index, customerUpdate);
+    let blockIndex = parent.findChildrenIndex(this);
+    let focus;
+    if (!block) {
+      focus = parent.add(splitBlock, blockIndex + 1);
+      blockIndex += 1;
+    } else {
+      if (!Array.isArray(block)) block = [block];
+      focus = parent.add(block, blockIndex + 1, customerUpdate);
+      if (this.isEmpty()) {
+        this.removeSelf();
+      }
+    }
+    return focus;
+  }
+
+  addText(text: string, index?: number, customerUpdate: boolean = false) {
+    let charList: Character[] = [];
+    for (let char of text) {
+      charList.push(new Character(char));
+    }
+    this.addChildren(charList, index, customerUpdate);
+    index = index ? index : this.getSize();
+    return [this, index + text.length, index + text.length];
   }
 
   modifyContentDecorate(

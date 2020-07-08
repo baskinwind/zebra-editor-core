@@ -140,6 +140,20 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return li;
   }
 
+  buildListItem(
+    id: string,
+    getChildren: () => HTMLElement,
+    style: mapData,
+    data: mapData
+  ): HTMLElement {
+    let containDocument = getContainDocument();
+    let li = containDocument.createElement("li");
+    li.id = id;
+    li.appendChild(getChildren());
+    this.addStyle(li, style, data);
+    return li;
+  }
+
   buildParagraph(
     id: string,
     getChildren: () => HTMLElement[],

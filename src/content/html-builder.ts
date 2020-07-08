@@ -92,6 +92,19 @@ class HtmlBuilder extends BaseBuilder<string> {
     return `<li class="zebra-list-item-wrap" style="display: block">${children}</li>`;
   }
 
+  buildListItem(
+    id: string,
+    getChildren: () => string,
+    style: mapData,
+    data: mapData
+  ): string {
+    let className = "zebra-draft-list";
+    let tag: string = data.tag || "ul";
+    return `<${tag} class="${className}" ${this.getStyle(
+      style
+    )}>${getChildren()}</${tag}>`;
+  }
+
   buildParagraph(
     id: string,
     getChildren: () => string[],

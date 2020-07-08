@@ -72,7 +72,7 @@ new Vue({
         exchange("paragraph", tag);
       } else if (tag === "code") {
         exchange("code");
-      } else if (tag === "ul" || tag === "ol") {
+      } else if (tag === "ul" || tag === "ol" || tag === "nl") {
         exchange("list", tag);
       } else {
         exchange("title", tag);

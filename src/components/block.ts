@@ -4,10 +4,10 @@ import Component, {
   IRawType,
   ISnapshoot
 } from "./component";
-import Collection from "./collection";
 import StructureCollection from "./structure-collection";
 import { saveBlock, createError } from "./util";
 import { storeData } from "../decorate/index";
+import { recordMethod } from "../record/decorators";
 
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;
@@ -47,6 +47,13 @@ abstract class Block extends Component {
     return this.type;
   }
 
+  // 获取父节点
+  getParent() {
+    let parent = this.parent;
+    if (!parent) throw createError("该节点已失效", this);
+    return parent;
+  }
+
   // 判断该组件是否为空，为空并不代表无效
   isEmpty(): boolean {
     return false;
@@ -63,8 +70,11 @@ abstract class Block extends Component {
   }
 
   // 将当前组件转换为 builder 类型的组件
+  @recordMethod
   exchangeTo(builder: classType, args: any[]): Block[] {
-    throw createError("组件未实现 exchangeTo 方法", this);
+    // @ts-ignore
+    if (builder === this.constructor) return [this];
+    return builder.exchange(this, args);
   }
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
@@ -89,8 +99,7 @@ abstract class Block extends Component {
     customerUpdate: boolean = false
   ): operatorType {
     if (!Array.isArray(block)) block = [block];
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent();
     let replaceBlock = parent.replaceChild(block, this, customerUpdate);
     return [replaceBlock[0], 0, 0];
   }
@@ -98,16 +107,7 @@ abstract class Block extends Component {
   // 添加子组件
   add(
     component: string | Component | Component[],
-    index: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    return;
-  }
-
-  // 在 index 处切分
-  split(
-    index: number,
-    component?: Component | Component[],
+    index?: number,
     customerUpdate: boolean = false
   ): operatorType {
     return;
@@ -117,6 +117,15 @@ abstract class Block extends Component {
   remove(
     start?: number,
     end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return;
+  }
+
+  // 在 index 处切分
+  split(
+    index: number,
+    component?: Component | Component[],
     customerUpdate: boolean = false
   ): operatorType {
     return;

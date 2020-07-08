@@ -30,17 +30,14 @@ abstract class PlainText extends Block {
     args: any[],
     customerUpdate: boolean = false
   ): PlainText[] {
-    let parent = block.parent;
-    if (!parent) throw createError("该节点已失效", block);
+    let parent = block.getParent();
     let prev = parent.getPrev(block);
     if (prev instanceof PlainText) {
       prev.receive(block, customerUpdate);
       return [prev];
     } else {
       let newItem = this.exchangeOnly(block, args);
-      let index = parent.findChildrenIndex(block);
-      block.removeSelf();
-      parent.add(newItem, index, customerUpdate);
+      block.replaceSelf(newItem, customerUpdate);
       return newItem;
     }
   }
@@ -65,18 +62,13 @@ abstract class PlainText extends Block {
   }
 
   @recordMethod
-  exchangeTo(builder: classType, args: any[]): Block[] {
-    return builder.exchange(this, args);
-  }
-
-  @recordMethod
   add(
     string: string,
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
     if (typeof string !== "string") {
-      throw createError("纯文本组件只能输入文字");
+      throw createError("纯文本组件仅能输入文字");
     }
     index = index === undefined ? this.content.length : index;
     this.content =
@@ -109,7 +101,7 @@ abstract class PlainText extends Block {
     customerUpdate: boolean = false
   ): operatorType {
     if (block) {
-      throw createError("纯文本组件只能输入文字");
+      throw createError("纯文本组件仅能输入文字");
     }
     return this.add("\n", index, customerUpdate);
   }
@@ -126,8 +118,7 @@ abstract class PlainText extends Block {
   }
 
   addEmptyParagraph(bottom: boolean = true): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent();
     let index = parent.findChildrenIndex(this);
     let paragraph = getComponentFactory().buildParagraph();
     parent.add(paragraph, index + (bottom ? 1 : 0));

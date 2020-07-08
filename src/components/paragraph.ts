@@ -50,13 +50,6 @@ class Paragraph extends ContentCollection {
     });
   }
 
-  @recordMethod
-  exchangeTo(builder: classType, args: any[]): Block[] {
-    // @ts-ignore
-    if (builder === this.constructor) return [this];
-    return builder.exchange(this, args);
-  }
-
   createEmpty() {
     return getComponentFactory().buildParagraph(
       "",

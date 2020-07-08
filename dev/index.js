@@ -26,4 +26,10 @@ window.getStatistic = () => {
   return article.getStatistic();
 };
 
+window.flush = () => {
+  let raw = article.getRaw();
+  let articleRaw = createByRaw(raw);
+  mount("root", articleRaw);
+};
+
 window.getSelectionInfo = getSelectionInfo;

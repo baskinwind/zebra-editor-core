@@ -66,7 +66,7 @@ const update = (component: Block) => {
     dom = dom.softLink ? dom.softLink : dom;
     if (component.active) {
       let newRender = component.render();
-      // 节点并不需要更新
+      // 当仅发生样式变化时，render 返回节点不会变化
       if (newRender === dom) return;
       dom?.replaceWith(newRender);
     } else {
@@ -86,13 +86,11 @@ const update = (component: Block) => {
     }
     console.info(component.id);
     // 将该组件插入到合适的位置
-    let index = parentComponent.children.findIndex(
-      (child) => child === component
-    );
-    if (index === parentComponent.children.size - 1) {
+    let index = parentComponent.findChildrenIndex(component);
+    if (index === parentComponent.getSize() - 1) {
       parentDom.appendChild(component.render());
     } else {
-      let afterComId = parentComponent.children.get(index + 1)?.id;
+      let afterComId = parentComponent.getChild(index + 1)?.id;
       if (afterComId) {
         let afterDom = containDocument.getElementById(afterComId);
         // @ts-ignore

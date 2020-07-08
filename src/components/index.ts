@@ -1,12 +1,13 @@
 import { storeData } from "../decorate";
 import Article from "./article";
-import List, { listType, ListItem } from "./list";
+import List, { listType } from "./list";
 import Table from "./table";
 import Title, { titleType } from "./title";
 import Paragraph from "./paragraph";
 import Media, { mediaType } from "./media";
 import Code from "./code";
 import InlineImage from "./inline-image";
+import ComponentType from "../const/component-type";
 
 class ComponentFactory {
   static bulider: ComponentFactory;
@@ -17,7 +18,20 @@ class ComponentFactory {
     return this.bulider;
   }
 
-  protected constructor() {}
+  typeMap: { [key: string]: any };
+
+  protected constructor() {
+    this.typeMap = {
+      [ComponentType.article]: Article,
+      [ComponentType.list]: List,
+      [ComponentType.table]: Table,
+      [ComponentType.title]: Title,
+      [ComponentType.paragraph]: Paragraph,
+      [ComponentType.media]: Media,
+      [ComponentType.code]: Code,
+      [ComponentType.inlineImage]: InlineImage
+    };
+  }
 
   buildArticle(style: storeData = {}, data: storeData = {}) {
     return new Article(style, data);
@@ -30,14 +44,6 @@ class ComponentFactory {
     data: storeData = {}
   ) {
     return new List(type, children, style, data);
-  }
-
-  buildListItem(
-    text: string = "",
-    style: storeData = {},
-    data: storeData = {}
-  ) {
-    return new ListItem(text, style, data);
   }
 
   buildTable(

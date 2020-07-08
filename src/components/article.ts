@@ -8,6 +8,7 @@ import { getContentBuilder } from "../content/index";
 import { storeData } from "../decorate";
 import { saveBlock } from "./util";
 import { initRecordState } from "../record/decorators";
+import ComponentMap from "../const/component-map";
 
 @initRecordState
 class Article extends StructureCollection<Block> {
@@ -20,14 +21,16 @@ class Article extends StructureCollection<Block> {
   }
 
   static create(raw: IRawType): Article {
-    return getComponentFactory().buildArticle(raw.style, raw.data);
+    let article = getComponentFactory().buildArticle(raw.style, raw.data);
+    let children = raw.children
+      ? raw.children.map((item) => ComponentMap[item.type](item))
+      : [];
+    article.add(children, 0, true);
+    return article;
   }
 
   isEmpty() {
-    if (this.getSize() === 1 && this.children.get(0)?.getSize() === 0) {
-      return true;
-    }
-    return false;
+    return this.getSize() === 1 && this.children.get(0)?.getSize() === 0;
   }
 
   childHeadDelete(

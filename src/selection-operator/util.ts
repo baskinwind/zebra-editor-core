@@ -1,7 +1,7 @@
 // @ts-nocheck
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getBlockById, createError } from "../components/util";
+import { getBlockById } from "../components/util";
 
 export interface cursorType {
   id: string;
@@ -185,11 +185,9 @@ export const getSelectedIdList = (
 ): string[] => {
   if (startId === "") return [];
   let component = getBlockById(startId);
-  let parent = component.parent;
-  if (!parent) throw createError("该节点已失效", component);
+  let parent = component.getParent();
   while (parent.type !== ComponentType.article) {
-    if (!parent.parent) throw createError("该节点已失效", parent);
-    parent = parent.parent;
+    parent = parent.getParent();
   }
   return parent.getIdList(startId, endId)[2];
 };

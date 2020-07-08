@@ -4,7 +4,6 @@ import Block from "./block";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate/index";
-import { createError } from "./util";
 import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
 
@@ -69,8 +68,7 @@ class Media extends Block {
     block?: Block,
     customerUpdate: boolean = false
   ): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent();
     if (!block) {
       block = getComponentFactory().buildParagraph();
     }

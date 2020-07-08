@@ -210,8 +210,7 @@ class TableRow extends StructureCollection<TableCell> {
     this.inCountEmptyCell = true;
     this.emptyCell += 1;
     if (this.emptyCell === this.getSize()) {
-      let parent = this.parent;
-      if (!parent) throw createError("该节点已失效", this);
+      let parent = this.getParent();
       this.removeSelf(customerUpdate);
       if (this.cellType === "th") {
         parent.needHead = false;
@@ -353,7 +352,7 @@ class TableItem extends ContentCollection {
     args: any[] = [],
     customerUpdate: boolean = false
   ): TableItem[] {
-    throw createError("不允许切换成表格内段落");
+    throw createError("不允许切换表格内段落");
   }
 
   constructor(text: string = "", style?: storeData, data?: storeData) {
@@ -378,8 +377,7 @@ class TableItem extends ContentCollection {
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent() as TableCell;
     let focus = super.remove(start, end, customerUpdate);
     if (parent.isEmpty()) {
       parent.parent?.countEmptyCell(customerUpdate);
@@ -389,8 +387,7 @@ class TableItem extends ContentCollection {
 
   // 监控：当表格内容一行全被删除时，把一整行移除
   removeSelf(customerUpdate: boolean = false): operatorType {
-    let parent = this.parent;
-    if (!parent) throw createError("该节点已失效", this);
+    let parent = this.getParent() as TableCell;
     let focus = super.removeSelf(customerUpdate);
     if (parent.isEmpty()) {
       parent.parent?.countEmptyCell(customerUpdate);

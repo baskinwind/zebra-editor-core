@@ -12,7 +12,8 @@ enum ComponentType {
   tableRow = "TABLEROW",
   tableCell = "TABLECELL",
   tableItem = "TABLECELLITEM",
-  article = "ARTICLE"
+  article = "ARTICLE",
+  empty = "EMPTY"
 }
 
 export default ComponentType;
