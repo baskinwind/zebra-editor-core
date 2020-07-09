@@ -3,13 +3,14 @@ import { operatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
-import BlockWrapper from "./empty";
+import BlockWrapper from "./block-wrapper";
 import ComponentMap from "../const/component-map";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState, recordMethod } from "../record/decorators";
+import { nextTicket } from "./util";
 
 export type listType = "ol" | "ul" | "nl";
 export interface IListSnapshoot extends ICollectionSnapshoot<ListItemWrapper> {
@@ -25,10 +26,15 @@ class ListItemWrapper extends BlockWrapper {
   }
 
   render() {
+    let style: any = {};
+    let block = this.getChild();
+    if (block instanceof List) {
+      style.display = "block";
+    }
     return getContentBuilder().buildListItem(
       this.id,
       () => this.children.get(0)?.render(),
-      this.decorate.getStyle(),
+      { ...this.decorate.getStyle(), ...style },
       this.decorate.getData()
     );
   }
@@ -38,6 +44,9 @@ class ListItemWrapper extends BlockWrapper {
 class List extends StructureCollection<ListItemWrapper> {
   type = ComponentType.list;
   listType: listType;
+  style = {
+    paddingLeft: "40px"
+  };
 
   static create(raw: IRawType): List {
     let children = raw.children
@@ -94,18 +103,22 @@ class List extends StructureCollection<ListItemWrapper> {
       return item;
     });
     this.addChildren(list, 0, true);
-    this.decorate.mergeStyle({
-      paddingLeft: this.listType !== "nl" ? "40px" : "0px"
-    });
+    if (this.listType === "nl") {
+      this.decorate.mergeStyle({
+        paddingLeft: "0px"
+      });
+    }
   }
 
   @recordMethod
-  setListType(type: listType = "ul") {
+  setListType(type: listType = "ol") {
     if (type === this.listType) return;
     this.listType = type;
-    this.decorate.mergeStyle({
-      paddingLeft: this.listType !== "nl" ? "40px" : "0px"
-    });
+    if (this.listType === "nl") {
+      this.decorate.mergeStyle({
+        paddingLeft: "0px"
+      });
+    }
     this.children.forEach((item) => {
       if (this.listType === "nl") {
         item.decorate.mergeStyle({ display: "block" });
@@ -146,10 +159,12 @@ class List extends StructureCollection<ListItemWrapper> {
     index?: number,
     customerUpdate: boolean = false
   ): operatorType {
+    // 连续输入空行，截断列表
     if (typeof index === "number" && index !== 0) {
-      let prev = this.getChild(index - 1);
-      if (prev?.isEmpty() && !Array.isArray(block) && block.isEmpty()) {
+      let now = this.getChild(index - 1);
+      if (now?.isEmpty() && !Array.isArray(block) && block.isEmpty()) {
         let focus = this.split(index, block, customerUpdate);
+        now.removeSelf();
         return focus;
       }
     }
@@ -162,13 +177,18 @@ class List extends StructureCollection<ListItemWrapper> {
     indexOrComponent: ListItemWrapper | number,
     removeNumber: number = 1,
     customerUpdate: boolean = false
-  ) {
+  ): ListItemWrapper[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
-      this.removeSelf(customerUpdate);
-      return [...this.children];
+      nextTicket(() => {
+        this.removeSelf(customerUpdate);
+      });
     }
-    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+    let removed = super
+      .removeChildren(indexOrComponent, removeNumber, customerUpdate)
+      .map((item) => item.getChild());
+    // @ts-ignore
+    return removed;
   }
 
   replaceChild(
@@ -205,10 +225,22 @@ class List extends StructureCollection<ListItemWrapper> {
     return parent.add(empty.children.toArray(), index);
   }
 
+  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
+    return block.receive(this, customerUpdate);
+  }
+
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     if (!block) return;
-    block.removeSelf();
-    return this.add(block, undefined, customerUpdate);
+    let focus;
+    if (block instanceof List) {
+      let removed = block.removeChildren(0, block.getSize());
+      this.add(removed, undefined, customerUpdate);
+      block.removeSelf();
+    } else {
+      block.removeSelf();
+      focus = this.add(block, undefined, customerUpdate);
+    }
+    return focus;
   }
 
   snapshoot(): IListSnapshoot {

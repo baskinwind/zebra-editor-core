@@ -1,13 +1,19 @@
 import { getComponentFactory } from ".";
-import { operatorType, IRawType } from "./component";
-import Block from "./block";
+import { operatorType, IRawType, classType } from "./component";
+import Block, { IBlockSnapshoot } from "./block";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate/index";
 import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
+import updateComponent from "../util/update-component";
 
 export type mediaType = "image" | "audio" | "video";
+
+export interface IMediaSnapshoot extends IBlockSnapshoot {
+  mediaType: mediaType;
+  src: string;
+}
 
 @initRecordState
 class Media extends Block {
@@ -15,6 +21,9 @@ class Media extends Block {
   mediaType: mediaType;
   type = ComponentType.media;
   structureType = StructureType.content;
+  style = {
+    margin: "auto"
+  };
 
   static create(raw: IRawType): Media {
     return getComponentFactory().buildMedia(
@@ -34,17 +43,17 @@ class Media extends Block {
     super(style, data);
     this.mediaType = mediaType;
     this.src = src;
-    this.decorate.mergeStyle({
-      margin: "auto"
-    });
   }
 
   setSrc(src: string) {
+    if (this.src === src) return;
     this.src = src;
+    updateComponent(this);
+    this.recordSnapshoot();
   }
 
-  getSize(): number {
-    return 1;
+  exchangeTo(builder: classType, args: any[]): Block[] {
+    return [];
   }
 
   removeSelf(customerUpdate: boolean = false): operatorType {
@@ -102,6 +111,23 @@ class Media extends Block {
   ) {
     this.modifyDecorate(style, data, customerUpdate);
     return [this, 0, 1];
+  }
+
+  snapshoot(): IMediaSnapshoot {
+    let snap = super.snapshoot() as IMediaSnapshoot;
+    snap.mediaType = this.mediaType;
+    snap.src = this.src;
+    return snap;
+  }
+
+  restore(state: IMediaSnapshoot) {
+    this.mediaType = state.mediaType;
+    this.src = state.src;
+    super.restore(state);
+  }
+
+  getSize(): number {
+    return 1;
   }
 
   getType(): string {

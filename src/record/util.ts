@@ -1,7 +1,9 @@
 import Component from "../components/component";
 import Collection from "../components/collection";
 import focusAt from "../rich-util/focus-at";
-import getSelection from "../selection-operator/get-selection";
+import getSelection, {
+  getBeforeSelection
+} from "../selection-operator/get-selection";
 import updateComponent from "../util/update-component";
 import { cursorType } from "../selection-operator/util";
 
@@ -56,7 +58,12 @@ const startRecord = (start: cursorType, end: cursorType) => {
   return newRecord;
 };
 
-const createRecord = (start: cursorType, end: cursorType) => {
+const createRecord = (start?: cursorType, end?: cursorType) => {
+  if (!start || !end) {
+    let selection = getBeforeSelection();
+    start = selection.range[0];
+    end = selection.range[1];
+  }
   if (isTextRecord) {
     let selection = getSelection();
     newRecord.redoSelection = {

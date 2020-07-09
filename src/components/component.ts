@@ -35,6 +35,8 @@ export interface IRawType {
   // for TableRaw
   cellType?: "th" | "td";
   size?: number;
+  // for code
+  language?: string;
 }
 export interface ISnapshoot {
   style: Map<string, string>;
@@ -51,9 +53,12 @@ abstract class Component {
   abstract type: ComponentType;
   // 结构上的作用
   abstract structureType: StructureType;
+  // 默认的数据和样式
+  data: storeData = {};
+  style: storeData = {};
 
   constructor(style: storeData = {}, data: storeData = {}) {
-    this.decorate = new Decorate(style, data);
+    this.decorate = new Decorate(this, style, data);
     this.record = new Record(this);
   }
 

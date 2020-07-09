@@ -1,20 +1,27 @@
 import { Map } from "immutable";
+import Component from "../components/component";
 
 export interface storeData {
   [key: string]: any;
 }
 
 class Decorate {
+  component: Component;
   style: Map<string, any>;
   data: Map<string, any>;
 
-  constructor(style: storeData = {}, data: storeData = {}) {
+  constructor(
+    component: Component,
+    style: storeData = {},
+    data: storeData = {}
+  ) {
+    this.component = component;
     this.style = Map(style);
     this.data = Map(data);
   }
 
   getStyle() {
-    return this.style.toObject();
+    return { ...this.component.style, ...this.style.toObject() };
   }
   mergeStyle(style?: storeData) {
     if (!style) return;
@@ -46,7 +53,7 @@ class Decorate {
   }
 
   getData() {
-    return this.data.toObject();
+    return { ...this.component.data, ...this.data.toObject() };
   }
   mergeData(data?: storeData) {
     if (!data) return;

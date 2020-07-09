@@ -11,6 +11,9 @@ import { storeData } from "../decorate";
 @initRecordState
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
+  style = {
+    fontSize: "16px"
+  };
 
   static create(raw: IRawType): Paragraph {
     let paragraph = getComponentFactory().buildParagraph(
@@ -41,13 +44,6 @@ class Paragraph extends ContentCollection {
       });
     }
     return list;
-  }
-
-  constructor(text: string = "", style?: storeData, data?: storeData) {
-    super(text, style, data);
-    this.decorate.mergeStyle({
-      fontSize: "16px"
-    });
   }
 
   createEmpty() {

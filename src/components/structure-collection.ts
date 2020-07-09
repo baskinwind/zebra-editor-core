@@ -3,7 +3,7 @@ import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { createError, mergerStatistic } from "./util";
+import { createError, mergerStatistic, nextTicket } from "./util";
 import { recordMethod } from "../record/decorators";
 
 abstract class StructureCollection<T extends Block = Block> extends Collection<
@@ -51,6 +51,19 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     return removed;
   }
 
+  remove(
+    start: number,
+    end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (end === undefined) end = this.getSize();
+    if (start < 0 || start > end) {
+      throw createError(`start：${start}、end：${end}不合法。`, this);
+    }
+    this.removeChildren(start, end - start, customerUpdate);
+    return [this, start, start];
+  }
+
   // 定义当组件的子组件的首位发生删除时的行为
   // 默认不处理，而不是报错
   childHeadDelete(
@@ -87,7 +100,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     index: number,
     customerUpdate: boolean = false
   ): StructureCollection<T> {
-    if (index >= this.getSize()) throw createError("分割点不在列表内");
+    if (index > this.getSize()) throw createError("分割点不在列表内");
 
     let tail = this.children.slice(index).toArray();
     this.removeChildren(index, this.getSize() - index, customerUpdate);
@@ -107,10 +120,6 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
       let newCollection = this.splitChild(index, customerUpdate);
       parent.add(newCollection, componentIndex + 1, customerUpdate);
     } else {
-      componentIndex -= 1;
-    }
-    if (this.isEmpty()) {
-      this.removeSelf();
       componentIndex -= 1;
     }
     if (block) {

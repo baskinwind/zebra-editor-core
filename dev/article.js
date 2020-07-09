@@ -36,14 +36,17 @@ article.add(
 );
 
 article.add(factory.buildTitle("h3", "代码块"));
-let code = factory.buildCode(`function greeter(user) {
+let code = factory.buildCode(
+  `function greeter(user) {
     return \`Hello, \${user}. welcome to zebra-draft.\`;
 }
 
 let user = "Night's Watch";
 
 document.body.innerHTML = greeter(user);
-`);
+`,
+  "javascript"
+);
 code.addInto(article);
 
 article.add(factory.buildTitle("h3", "列表"));
@@ -90,5 +93,11 @@ let table = factory.buildTable(3, 3, [
   ["3-1", "3-2", "3-3"]
 ]);
 table.addInto(article);
+
+// let ul = factory.buildList(
+//   "ol",
+//   [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((i) => i + "")
+// );
+// ul.addInto(article);
 
 export default article;

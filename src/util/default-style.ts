@@ -17,8 +17,24 @@ h1,h2,h3,h4,h5,h6,figure,pre,p,ul,ol{
 li>h1,li>h2,li>h3,li>h4,li>h5,li>h6,li>p,li>figure,li>pre,li>ul,li>ol{
   margin: 0;
 }
+table p{
+  margin: 0;
+}
 a{
   color: #1890ff;
+}
+pre{
+  position: relative;
+}
+pre::before{
+  z-index:10;
+  content: attr(data-language);
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  text-transform: uppercase;
+  color: #ccc;
+  font-weight: bold;
 }
 table td,table th{
   min-width: 2em;

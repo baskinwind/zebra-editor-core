@@ -185,6 +185,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   buildCode(
     id: string,
     content: string,
+    language: string,
     style: mapData,
     data: mapData
   ): HTMLElement {
@@ -202,6 +203,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       code.dataset.structure = StructureType.partialContent;
       pre.appendChild(code);
     }
+    pre.dataset.language = language;
     this.addStyle(pre, style, data);
     return pre;
   }

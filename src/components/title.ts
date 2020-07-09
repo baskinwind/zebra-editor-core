@@ -18,22 +18,28 @@ export interface ITitleSnapshoot extends ICollectionSnapshoot<Inline> {
 
 const styleMap = {
   h1: {
-    fontSize: 32
+    fontSize: "32px",
+    fontWeight: "bold"
   },
   h2: {
-    fontSize: 24
+    fontSize: "24px",
+    fontWeight: "bold"
   },
   h3: {
-    fontSize: 20
+    fontSize: "20px",
+    fontWeight: "bold"
   },
   h4: {
-    fontSize: 16
+    fontSize: "16px",
+    fontWeight: "bold"
   },
   h5: {
-    fontSize: 14
+    fontSize: "14px",
+    fontWeight: "bold"
   },
   h6: {
-    fontSize: 12
+    fontSize: "12px",
+    fontWeight: "bold"
   }
 };
 
@@ -41,6 +47,9 @@ const styleMap = {
 class Title extends ContentCollection {
   type = ComponentType.title;
   titleType: titleType;
+  data = {
+    bold: true
+  };
 
   static create(raw: IRawType): Title {
     let title = getComponentFactory().buildTitle(
@@ -83,13 +92,7 @@ class Title extends ContentCollection {
   ) {
     super(text, style, data);
     this.titleType = type;
-    this.decorate.mergeData({
-      bold: true
-    });
-    this.decorate.mergeStyle({
-      fontWeight: "bold",
-      fontSize: styleMap[type].fontSize + "px"
-    });
+    this.style = styleMap[type];
   }
 
   @recordMethod
@@ -108,7 +111,7 @@ class Title extends ContentCollection {
   setTitle(type: titleType = "h1") {
     if (this.titleType === type) return;
     this.titleType = type;
-    this.decorate.mergeStyle(styleMap[type]);
+    this.style = styleMap[type];
     updateComponent(this);
   }
 
@@ -129,6 +132,7 @@ class Title extends ContentCollection {
 
   restore(state: ITitleSnapshoot) {
     this.titleType = state.titleType;
+    this.style = styleMap[state.titleType];
     super.restore(state);
   }
 

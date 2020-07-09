@@ -57,3 +57,7 @@ export const mergerStatistic = (oldS: IStatistic, newS: IStatistic) => {
     block: oldS.block + newS.block
   };
 };
+
+export const nextTicket = (func: () => void) => {
+  Promise.resolve().then(func);
+};

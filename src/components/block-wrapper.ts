@@ -1,5 +1,5 @@
 import { List } from "immutable";
-import { operatorType, IRawType } from "./component";
+import { operatorType } from "./component";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import ComponentBlockype from "../const/component-type";
@@ -24,6 +24,10 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     let child = this.children.get(0);
     if (!child) throw createError("子组件获取失败");
     return child;
+  }
+
+  getRealParent() {
+    return this.getParent();
   }
 
   isEmpty(): boolean {
@@ -66,7 +70,7 @@ abstract class BlockWrapper extends StructureCollection<Block> {
   }
 
   remove(
-    start?: number,
+    start: number,
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
@@ -107,12 +111,20 @@ abstract class BlockWrapper extends StructureCollection<Block> {
 
   getPrev(idOrBlock: string | Block): Block | undefined {
     let parent = this.getParent();
-    return parent.getPrev(this);
+    let prev = parent.getPrev(this);
+    if (prev instanceof BlockWrapper) {
+      return prev.getChild();
+    }
+    return prev;
   }
 
   getNext(idOrBlock: string | Block): Block | undefined {
     let parent = this.getParent();
-    return parent.getNext(this);
+    let next = parent.getNext(this);
+    if (next instanceof BlockWrapper) {
+      return next.getChild();
+    }
+    return next;
   }
 
   split(

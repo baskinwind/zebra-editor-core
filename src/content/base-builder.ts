@@ -67,6 +67,7 @@ abstract class BaseBuilder<T = any> {
   abstract buildCode(
     id: string,
     content: string,
+    language: string,
     style: mapData,
     data: mapData
   ): T;

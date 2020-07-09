@@ -88,6 +88,7 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
       contentEdit.focus();
     }
   }
+  document.dispatchEvent(new Event("editorchange"));
 };
 
 export default focusAt;

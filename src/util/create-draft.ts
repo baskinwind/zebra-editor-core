@@ -20,6 +20,8 @@ export interface IOption {
   userOperator?: BaseOperator;
   contentBuilder?: BaseBuilder;
   componentFactory?: ComponentFactory;
+  beforeCreate?: (document: Document, window: Window | null) => void;
+  afterCreate?: (document: Document, window: Window | null) => void;
 }
 
 // 将组件挂载到某个节点上
@@ -27,9 +29,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   block.active = true;
   startUpdate();
   initRecord(block);
-  if (option && option.contentBuilder) {
-    setContentBuilder(option.contentBuilder);
-  }
+  setContentBuilder(option?.contentBuilder);
   if (option && option.componentFactory) {
     setComponentFactory(option.componentFactory);
   }
@@ -53,6 +53,9 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     let style = iframe.contentDocument.createElement("style");
     style.textContent = defaultStyle;
     iframe.contentDocument.head.appendChild(style);
+    if (option && option.beforeCreate) {
+      option.beforeCreate(iframe.contentDocument, iframe.contentWindow);
+    }
     setContainDocument(iframe.contentDocument);
     setContainWindow(iframe.contentWindow);
 
@@ -80,13 +83,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     // 监听事件
     editor.addEventListener("input", (event: any) => {
       try {
-        // 排除混合输入
-        if (event.inputType === "insertCompositionText") return;
-        let key = event.data || "";
-        let selection = getSelection();
-        let start = selection.range[0];
-        start.offset = start.offset - key.length;
-        input(key, start, event);
+        operator.onInput(event);
       } catch (e) {
         console.warn(e);
       }
@@ -159,6 +156,10 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     editor.addEventListener("drop", (event) => {
       event.preventDefault();
     });
+
+    if (option && option.afterCreate) {
+      option.afterCreate(iframe.contentDocument, iframe.contentWindow);
+    }
   });
 
   return root;

@@ -8,6 +8,8 @@ import StructureCollection from "./structure-collection";
 import { saveBlock, createError } from "./util";
 import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
+import ComponentType from "../const/component-type";
+import ComponentFactory, { getComponentFactory } from ".";
 
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;
@@ -52,6 +54,10 @@ abstract class Block extends Component {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     return parent;
+  }
+
+  getRealParent() {
+    return this.getParent();
   }
 
   // 判断该组件是否为空，为空并不代表无效
@@ -132,17 +138,48 @@ abstract class Block extends Component {
   }
 
   indent(customerUpdate: boolean = false): operatorType {
+    let parent = this.getParent();
+    let prev = parent.getPrev(this);
+    let next = parent.getNext(this);
+    if (prev?.type === ComponentType.list) {
+      this.sendTo(prev, customerUpdate);
+      if (next?.type === ComponentType.list) {
+        next.sendTo(prev, customerUpdate);
+      }
+    } else if (next?.type === ComponentType.list) {
+      this.removeSelf(customerUpdate);
+      next.add(this, 0, customerUpdate);
+    } else {
+      let newList = getComponentFactory().buildList("ol");
+      this.replaceSelf(newList, customerUpdate);
+      newList.add(this, undefined, customerUpdate);
+    }
     return;
   }
 
   outdent(customerUpdate: boolean = false): operatorType {
+    let parent = this.getParent();
+    if (parent.type === ComponentType.article) {
+      return;
+    }
+    let realParent = parent;
+    if (parent.type === ComponentType.empty) {
+      realParent = parent.getParent();
+    }
+    let index = parent.findChildrenIndex(this);
+    this.removeSelf(customerUpdate);
+    realParent.split(index, this, customerUpdate);
     return;
   }
 
   // 在一些组件中 Enter 被使用，导致不能在组件下方或上方创建新行
   // 使用该 api 创建上方或是下方的新行
   addEmptyParagraph(bottom: boolean): operatorType {
-    return;
+    let parent = this.getParent();
+    let index = parent.findChildrenIndex(this);
+    let paragraph = getComponentFactory().buildParagraph();
+    parent.add(paragraph, index + (bottom ? 1 : 0));
+    return [paragraph, 0, 0];
   }
 
   // 修改子组件的表现形式，仅在 ContentCollection 组件内有用

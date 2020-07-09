@@ -6,13 +6,30 @@ import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
 import { storeData } from "../decorate";
+import updateComponent from "../util/update-component";
 
 @initRecordState
 class Code extends PlainText {
   type = ComponentType.code;
+  style = {
+    overflow: "auto",
+    fontSize: "14px",
+    padding: "10px",
+    borderRadius: "4px",
+    backgroundColor: "#f8f8f8"
+  };
+  data = {
+    bgColor: { color: "#f8f8f8" }
+  };
+  language: string;
 
   static create(raw: IRawType): Code {
-    return getComponentFactory().buildCode(raw.content, raw.style, raw.data);
+    return getComponentFactory().buildCode(
+      raw.content,
+      raw.language,
+      raw.style,
+      raw.data
+    );
   }
 
   static exchangeOnly(component: Component, args: any[] = []): Code[] {
@@ -28,11 +45,13 @@ class Code extends PlainText {
 
   constructor(
     content: string = "",
+    language: string = "",
     style: storeData = {},
     data: storeData = {}
   ) {
     super(content, style, data);
     this.content = content;
+    this.language = language;
     this.decorate.mergeStyle({
       fontSize: "14px",
       padding: "10px",
@@ -44,9 +63,15 @@ class Code extends PlainText {
     });
   }
 
+  setLanguage(language: string) {
+    this.language = language;
+    updateComponent(this);
+  }
+
   createEmpty() {
     return getComponentFactory().buildCode(
       "\n",
+      this.language,
       this.decorate.getStyle(),
       this.decorate.getData()
     );
@@ -58,10 +83,17 @@ class Code extends PlainText {
     return res;
   }
 
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.language = this.language;
+    return raw;
+  }
+
   render() {
     return getContentBuilder().buildCode(
       this.id,
       this.content,
+      this.language,
       this.decorate.getStyle(),
       this.decorate.getData()
     );

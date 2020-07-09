@@ -121,6 +121,7 @@ class HtmlBuilder extends BaseBuilder<string> {
   buildCode(
     id: string,
     content: string,
+    language: string,
     style: mapData,
     data: mapData
   ): string {

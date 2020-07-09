@@ -21,6 +21,9 @@ class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
   col: number;
   needHead: boolean;
+  style = {
+    margin: "auto"
+  };
 
   static getTable(component: Block): Table | undefined {
     let table: Table | undefined;
@@ -64,9 +67,6 @@ class Table extends StructureCollection<TableRow> {
   ) {
     super(style, data);
     this.needHead = needHead;
-    this.decorate.mergeStyle({
-      margin: "auto"
-    });
     let list = [];
     for (let i = 0; i < row + (needHead ? 1 : 0); i++) {
       if (needHead && i === 0) {
@@ -213,6 +213,7 @@ class TableRow extends StructureCollection<TableCell> {
       let parent = this.getParent();
       this.removeSelf(customerUpdate);
       if (this.cellType === "th") {
+        // @ts-ignore
         parent.needHead = false;
       }
     }
@@ -331,6 +332,9 @@ class TableCell extends StructureCollection<TableItem> {
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
+  style = {
+    fontSize: "16px"
+  };
 
   static create(raw: IRawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
@@ -353,14 +357,6 @@ class TableItem extends ContentCollection {
     customerUpdate: boolean = false
   ): TableItem[] {
     throw createError("不允许切换表格内段落");
-  }
-
-  constructor(text: string = "", style?: storeData, data?: storeData) {
-    super(text, style, data);
-    this.decorate.mergeStyle({
-      fontSize: "16px",
-      margin: "0"
-    });
   }
 
   exchangeTo(builder: classType, args: any[]): Block[] {

@@ -6,13 +6,16 @@ import { getContainDocument } from "../selection-operator/util";
 const modifyDecorate = (
   idList: string[],
   style?: storeData,
-  data?: storeData
+  data?: storeData,
+  focus: boolean = true
 ) => {
   idList.forEach((id) => {
     let block = getBlockById(id);
     block.modifyDecorate(style, data);
   });
-  focusAt();
+  if (focus) {
+    focusAt();
+  }
 };
 
 export default modifyDecorate;

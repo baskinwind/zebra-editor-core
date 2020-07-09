@@ -1,11 +1,11 @@
 import ContentBulider from "./content-builder";
 import BaseBuilder from "./base-builder";
 
-let nowContentBuiler: BaseBuilder = ContentBulider.getInstance();
+let nowContentBuiler: BaseBuilder;
 
 export const getContentBuilder = () => nowContentBuiler;
 
-export const setContentBuilder = (builder: BaseBuilder) => {
+export const setContentBuilder = (builder?: BaseBuilder) => {
   nowContentBuiler = builder || ContentBulider.getInstance();
 };
 

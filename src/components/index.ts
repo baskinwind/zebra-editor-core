@@ -39,7 +39,7 @@ class ComponentFactory {
 
   buildList(
     type: listType = "ul",
-    children: (string | ListItem)[] = [],
+    children: string[] = [],
     style: storeData = {},
     data: storeData = {}
   ) {
@@ -79,8 +79,13 @@ class ComponentFactory {
     return new Media(mediaType, src, style, data);
   }
 
-  buildCode(content: string = "", style: storeData = {}, data: storeData = {}) {
-    return new Code(content, style, data);
+  buildCode(
+    content: string = "",
+    language: string = "",
+    style: storeData = {},
+    data: storeData = {}
+  ) {
+    return new Code(content, language, style, data);
   }
 
   buildInlineImage(src: string, style: storeData = {}, data: storeData = {}) {

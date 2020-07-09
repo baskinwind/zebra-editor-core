@@ -34,7 +34,7 @@ const updateComponent = (
 ) => {
   // 清空延迟更新队列
   if (delayUpdateQueue.size) {
-    console.info("delay update");
+    // console.info("delay update");
     delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
   }
@@ -49,7 +49,7 @@ const updateComponent = (
 
   // 无内容，不更新
   if (!canUpdate || customerUpdate || !component) return;
-  console.info("update");
+  // console.info("update");
   if (Array.isArray(component)) {
     component.forEach((item) => update(item));
   } else {
@@ -61,9 +61,7 @@ const update = (component: Block) => {
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(component.id);
   if (dom) {
-    console.info(component.id);
-    // @ts-ignore
-    dom = dom.softLink ? dom.softLink : dom;
+    // console.info(component.id);
     if (component.active) {
       let newRender = component.render();
       // 当仅发生样式变化时，render 返回节点不会变化
@@ -84,7 +82,7 @@ const update = (component: Block) => {
       update(parentComponent);
       return;
     }
-    console.info(component.id);
+    // console.info(component.id);
     // 将该组件插入到合适的位置
     let index = parentComponent.findChildrenIndex(component);
     if (index === parentComponent.getSize() - 1) {

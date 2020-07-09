@@ -20,6 +20,9 @@ export interface IPlainTextSnapshoot extends IBlockSnapshoot {
 abstract class PlainText extends Block {
   content: string;
   structureType = StructureType.plainText;
+  style = {
+    overflow: "auto"
+  };
 
   static exchangeOnly(component: Component, args: any[] = []): PlainText[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
@@ -52,7 +55,6 @@ abstract class PlainText extends Block {
     if (content[content.length - 1] !== "\n") {
       content += "\n";
     }
-    this.decorate.setStyle("overflow", "auto");
     this.content = content;
   }
 
@@ -115,14 +117,6 @@ abstract class PlainText extends Block {
       this.add(block.content);
     }
     return [this, size, size];
-  }
-
-  addEmptyParagraph(bottom: boolean = true): operatorType {
-    let parent = this.getParent();
-    let index = parent.findChildrenIndex(this);
-    let paragraph = getComponentFactory().buildParagraph();
-    parent.add(paragraph, index + (bottom ? 1 : 0));
-    return [paragraph, 0, 0];
   }
 
   snapshoot(): IPlainTextSnapshoot {
