@@ -26,16 +26,17 @@ let nowIndex = -1;
 let nowComponentList: Component[] = [];
 let nowIdList: string[] = [];
 // 纯文字输入优化
-let isTextRecord: boolean = false;
-
-// @ts-ignore
-window.recoreQueue = recoreQueue;
+let isDurationRecord: boolean = false;
 
 const getRecordStepId = () => {
   return nowIndex;
 };
 
 const initRecord = (component: Component) => {
+  recoreQueue = [];
+  nowIndex = -1;
+  nowComponentList = [];
+  nowIdList = [];
   component.record.store();
   if (component instanceof Collection) {
     component.children.forEach((item) => initRecord(item));
@@ -64,13 +65,13 @@ const createRecord = (start?: cursorType, end?: cursorType) => {
     start = selection.range[0];
     end = selection.range[1];
   }
-  if (isTextRecord) {
+  if (isDurationRecord) {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
       end: selection.range[1]
     };
-    isTextRecord = false;
+    isDurationRecord = false;
   }
   startRecord(start, end);
   setTimeout(() => {
@@ -82,9 +83,9 @@ const createRecord = (start?: cursorType, end?: cursorType) => {
   });
 };
 
-const createTextRecord = (start: cursorType, end: cursorType) => {
-  if (isTextRecord) return;
-  isTextRecord = true;
+const createDurationRecord = (start: cursorType, end: cursorType) => {
+  if (isDurationRecord) return;
+  isDurationRecord = true;
   startRecord(start, end);
 };
 
@@ -96,13 +97,13 @@ const recordSnapshoot = (component: Component) => {
 };
 
 const undo = () => {
-  if (isTextRecord) {
+  if (isDurationRecord) {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
       end: selection.range[1]
     };
-    isTextRecord = false;
+    isDurationRecord = false;
   }
   if (nowIndex === -1) return;
   let nowRecord = recoreQueue[nowIndex];
@@ -116,13 +117,13 @@ const undo = () => {
 };
 
 const redo = () => {
-  if (isTextRecord) {
+  if (isDurationRecord) {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
       end: selection.range[1]
     };
-    isTextRecord = false;
+    isDurationRecord = false;
   }
   if (nowIndex === recoreQueue.length - 1) return;
   let nowRecord = recoreQueue[nowIndex + 1];
@@ -135,14 +136,11 @@ const redo = () => {
   focusAt(nowRecord.redoSelection.start, nowRecord.redoSelection.end);
 };
 
-// @ts-ignore
-window.recoreQueue = recoreQueue;
-
 export {
   getRecordStepId,
   initRecord,
   createRecord,
-  createTextRecord,
+  createDurationRecord,
   recordSnapshoot,
   undo,
   redo

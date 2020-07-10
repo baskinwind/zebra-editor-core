@@ -21,7 +21,7 @@ class Media extends Block {
   mediaType: mediaType;
   type = ComponentType.media;
   structureType = StructureType.content;
-  style = {
+  style: storeData = {
     margin: "auto"
   };
 

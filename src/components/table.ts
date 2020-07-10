@@ -21,7 +21,7 @@ class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
   col: number;
   needHead: boolean;
-  style = {
+  style: storeData = {
     margin: "auto"
   };
 
@@ -332,7 +332,7 @@ class TableCell extends StructureCollection<TableItem> {
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
-  style = {
+  style: storeData = {
     fontSize: "16px"
   };
 

@@ -11,14 +11,14 @@ import updateComponent from "../util/update-component";
 @initRecordState
 class Code extends PlainText {
   type = ComponentType.code;
-  style = {
+  style: storeData = {
     overflow: "auto",
     fontSize: "14px",
     padding: "10px",
     borderRadius: "4px",
     backgroundColor: "#f8f8f8"
   };
-  data = {
+  data: storeData = {
     bgColor: { color: "#f8f8f8" }
   };
   language: string;
@@ -52,15 +52,6 @@ class Code extends PlainText {
     super(content, style, data);
     this.content = content;
     this.language = language;
-    this.decorate.mergeStyle({
-      fontSize: "14px",
-      padding: "10px",
-      borderRadius: "4px",
-      backgroundColor: "#f8f8f8"
-    });
-    this.decorate.mergeData({
-      bgColor: { color: "#f8f8f8" }
-    });
   }
 
   setLanguage(language: string) {

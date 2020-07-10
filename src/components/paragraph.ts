@@ -11,7 +11,7 @@ import { storeData } from "../decorate";
 @initRecordState
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
-  style = {
+  style: storeData = {
     fontSize: "16px"
   };
 

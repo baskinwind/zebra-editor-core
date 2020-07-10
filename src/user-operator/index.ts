@@ -7,10 +7,9 @@ import getSelection, {
 import backspace from "../rich-util/backspace";
 import input from "../rich-util/input";
 import onKeyDown from "./on-keydown";
-import onInput from "./on-input";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
-import { createRecord, createTextRecord } from "../record/util";
+import { createDurationRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
 import focusAt from "../rich-util/focus-at";
 
@@ -50,7 +49,7 @@ class UserOperator extends BaseOperator {
 
   onCompositionStart(event: CompositionEvent) {
     let selection = getSelection();
-    createTextRecord(selection.range[0], selection.range[1]);
+    createDurationRecord(selection.range[0], selection.range[1]);
     if (!selection.isCollapsed) {
       backspace(selection.range[0], selection.range[1], event);
     }
@@ -70,7 +69,19 @@ class UserOperator extends BaseOperator {
   }
 
   onInput(event: InputEvent) {
-    onInput(event);
+    // 排除已经处理的输入
+    if (
+      event.inputType === "insertCompositionText" ||
+      event.inputType === "deleteContentBackward" ||
+      !event.data ||
+      event.data === ""
+    )
+      return;
+    let data = event.data;
+    let selection = getSelection();
+    let start = selection.range[0];
+    start.offset = start.offset - data.length;
+    input(data, start, event);
   }
 
   onKeyDown(event: KeyboardEvent) {

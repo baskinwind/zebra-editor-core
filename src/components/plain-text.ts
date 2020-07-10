@@ -20,7 +20,7 @@ export interface IPlainTextSnapshoot extends IBlockSnapshoot {
 abstract class PlainText extends Block {
   content: string;
   structureType = StructureType.plainText;
-  style = {
+  style: storeData = {
     overflow: "auto"
   };
 

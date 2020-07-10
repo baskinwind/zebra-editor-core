@@ -3,7 +3,7 @@ import BaseBuilder from "../content/base-builder";
 import UserOperator from "../user-operator";
 import BaseOperator from "../user-operator/base-operator";
 import ComponentFactory, { setComponentFactory } from "../components";
-import { initRecord, createTextRecord } from "../record/util";
+import { initRecord, createDurationRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 import { setContentBuilder } from "../content";
 import {
@@ -90,11 +90,18 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     });
 
     editor.addEventListener("beforeinput", (event: any) => {
-      if (event.inputType === "insertCompositionText") return;
+      // 排除已经处理的输入
+      if (
+        event.inputType === "insertCompositionText" ||
+        event.inputType === "deleteContentBackward" ||
+        !event.data ||
+        event.data === ""
+      )
+        return;
       let selection = getSelection();
       let start = selection.range[0];
       let end = selection.range[1];
-      createTextRecord(start, end);
+      createDurationRecord(start, end);
       if (!selection.isCollapsed) {
         backspace(start, end);
         selection = getSelection();

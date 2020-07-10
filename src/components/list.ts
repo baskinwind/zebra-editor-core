@@ -44,7 +44,7 @@ class ListItemWrapper extends BlockWrapper {
 class List extends StructureCollection<ListItemWrapper> {
   type = ComponentType.list;
   listType: listType;
-  style = {
+  style: storeData = {
     paddingLeft: "40px"
   };
 
