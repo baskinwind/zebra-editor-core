@@ -3,7 +3,7 @@ import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { createError, mergerStatistic, nextTicket } from "./util";
+import { createError, mergerStatistic } from "./util";
 import { recordMethod } from "../record/decorators";
 
 abstract class StructureCollection<T extends Block = Block> extends Collection<
@@ -11,12 +11,80 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
 > {
   structureType = StructureType.structure;
 
-  getChild(index: number): Block | undefined {
-    return this.children.get(index);
-  }
-
   createEmpty(): StructureCollection<T> {
     throw createError("组件缺少 createEmpty 方法", this);
+  }
+
+  findChildrenIndex(idOrBlock: string | Block): number {
+    let id = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
+    let index = this.children.findIndex((item) => item.id === id);
+    if (index < 0) throw createError("该组件不在子组件列表中");
+    return index;
+  }
+
+  getPrev(idOrBlock: string | T): T | undefined {
+    let index = this.findChildrenIndex(idOrBlock);
+    if (index === 0) return;
+    return this.getChild(index - 1);
+  }
+
+  getNext(idOrBlock: string | T): T | undefined {
+    let index = this.findChildrenIndex(idOrBlock);
+    if (index === this.getSize()) return;
+    return this.getChild(index + 1);
+  }
+
+  getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
+    if (!this.active) return [false, false, []];
+    if (!endId) {
+      endId = startId;
+    }
+    let res: string[] = [];
+    let startFlag = false;
+    let endFlag = false;
+
+    this.children.forEach((item) => {
+      if (endFlag) return;
+      if (item instanceof StructureCollection) {
+        let temp = item.getIdList(startFlag ? "" : startId, endId);
+        startFlag = startFlag || temp[0];
+        endFlag = endFlag || temp[1];
+        res.push(...temp[2]);
+        return;
+      }
+      if (item.id === startId || startId === "") {
+        res.push(item.id);
+        startFlag = true;
+        if (item.id === endId) {
+          endFlag = true;
+        }
+        return;
+      }
+      if (item.id === endId) {
+        res.push(item.id);
+        endFlag = true;
+        return;
+      }
+      if (startFlag && !endFlag) {
+        res.push(item.id);
+      }
+    });
+    // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
+    return [startFlag, endFlag, res];
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    this.children.forEach((item) => {
+      res = mergerStatistic(res, item.getStatistic());
+    });
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.children = this.children.toArray().map((item) => item.getRaw());
+    return raw;
   }
 
   addChildren(
@@ -32,6 +100,18 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     let newBlock = super.addChildren(component, index);
     updateComponent([...component].reverse(), customerUpdate);
     return newBlock;
+  }
+
+  add(
+    block: T | T[],
+    index?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    if (!Array.isArray(block)) {
+      block = [block];
+    }
+    this.addChildren(block, index, customerUpdate);
+    return [block[0], 0, 0];
   }
 
   removeChildren(
@@ -62,16 +142,6 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     }
     this.removeChildren(start, end - start, customerUpdate);
     return [this, start, start];
-  }
-
-  // 定义当组件的子组件的首位发生删除时的行为
-  // 默认不处理，而不是报错
-  childHeadDelete(
-    component: T,
-    index: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    return;
   }
 
   @recordMethod
@@ -129,62 +199,14 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     return;
   }
 
-  findChildrenIndex(idOrBlock: string | Block): number {
-    let id = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
-    let index = this.children.findIndex((item) => item.id === id);
-    if (index < 0) throw createError("该组件不在子组件列表中");
-    return index;
-  }
-
-  getPrev(idOrBlock: string | T): T | undefined {
-    let index = this.findChildrenIndex(idOrBlock);
-    if (index === 0) return;
-    return this.children.get(index - 1);
-  }
-
-  getNext(idOrBlock: string | T): T | undefined {
-    let index = this.findChildrenIndex(idOrBlock);
-    if (index === this.getSize()) return;
-    return this.children.get(index + 1);
-  }
-
-  getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
-    if (!this.active) return [false, false, []];
-    if (!endId) {
-      endId = startId;
-    }
-    let res: string[] = [];
-    let startFlag = false;
-    let endFlag = false;
-
-    this.children.forEach((item) => {
-      if (endFlag) return;
-      if (item instanceof StructureCollection) {
-        let temp = item.getIdList(startFlag ? "" : startId, endId);
-        startFlag = startFlag || temp[0];
-        endFlag = endFlag || temp[1];
-        res.push(...temp[2]);
-        return;
-      }
-      if (item.id === startId || startId === "") {
-        res.push(item.id);
-        startFlag = true;
-        if (item.id === endId) {
-          endFlag = true;
-        }
-        return;
-      }
-      if (item.id === endId) {
-        res.push(item.id);
-        endFlag = true;
-        return;
-      }
-      if (startFlag && !endFlag) {
-        res.push(item.id);
-      }
-    });
-    // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
-    return [startFlag, endFlag, res];
+  // 定义当组件的子组件的首位发生删除时的行为
+  // 默认不处理，而不是报错
+  childHeadDelete(
+    component: T,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return;
   }
 
   restore(state: ICollectionSnapshoot<T>) {
@@ -197,20 +219,6 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
       item.parent = this;
     });
     super.restore(state);
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    this.children.forEach((item) => {
-      res = mergerStatistic(res, item.getStatistic());
-    });
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.children = this.children.toArray().map((item) => item.getRaw());
-    return raw;
   }
 }
 

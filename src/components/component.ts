@@ -62,6 +62,20 @@ abstract class Component {
     this.record = new Record(this);
   }
 
+  // 获取用于存储的内容
+  getRaw(): IRawType {
+    let raw: IRawType = {
+      type: this.type
+    };
+    if (!this.decorate.styleIsEmpty()) {
+      raw.style = this.decorate.getStyle();
+    }
+    if (!this.decorate.dataIsEmpty()) {
+      raw.data = this.decorate.getData();
+    }
+    return raw;
+  }
+
   // 修改组件的表现形式
   @recordMethod
   modifyDecorate(
@@ -95,20 +109,6 @@ abstract class Component {
   restore(state: ISnapshoot) {
     this.decorate.style = state.style;
     this.decorate.data = state.data;
-  }
-
-  // 获取用于存储的内容
-  getRaw(): IRawType {
-    let raw: IRawType = {
-      type: this.type
-    };
-    if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
-    }
-    if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
-    }
-    return raw;
   }
 
   // 渲染该组件

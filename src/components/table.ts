@@ -225,10 +225,6 @@ class TableRow extends StructureCollection<TableCell> {
     return raw;
   }
 
-  onSelect() {
-    return this.parent?.onSelect();
-  }
-
   render() {
     return getContentBuilder().buildTableRow(
       this.id,
@@ -281,7 +277,7 @@ class TableCell extends StructureCollection<TableItem> {
   }
 
   isEmpty() {
-    return this.getSize() === 1 && this.children.get(0)?.getSize() === 0;
+    return this.getSize() === 1 && this.getChild(0).getSize() === 0;
   }
 
   removeChildren(
@@ -290,7 +286,7 @@ class TableCell extends StructureCollection<TableItem> {
     customerUpdate: boolean = false
   ) {
     if (this.getSize() === 1 && removeNumber === 1) {
-      let tableItem = this.children.get(0) as TableItem;
+      let tableItem = this.getChild(0) as TableItem;
       tableItem?.removeChildren(0, tableItem.getSize(), customerUpdate);
       return [tableItem];
     }
@@ -311,10 +307,6 @@ class TableCell extends StructureCollection<TableItem> {
     let raw = super.getRaw();
     raw.cellType = this.cellType;
     return raw;
-  }
-
-  onSelect() {
-    return this.parent?.onSelect();
   }
 
   render() {
@@ -429,10 +421,6 @@ class TableItem extends ContentCollection {
     } catch (e) {
       console.warn(e);
     }
-  }
-
-  onSelect() {
-    return this.parent?.onSelect();
   }
 
   render() {

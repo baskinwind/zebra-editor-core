@@ -72,7 +72,7 @@ const getSelection = () => {
   ) {
     // @ts-ignore
     let component = getBlockById<StructureCollection>(anchorNode.id);
-    let child = component.children.get(section.anchorOffset - 1);
+    let child = component.getChild(section.anchorOffset - 1);
     return {
       isCollapsed: true,
       selectStructure: true,

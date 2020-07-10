@@ -59,15 +59,6 @@ class Code extends PlainText {
     updateComponent(this);
   }
 
-  createEmpty() {
-    return getComponentFactory().buildCode(
-      "\n",
-      this.language,
-      this.decorate.getStyle(),
-      this.decorate.getData()
-    );
-  }
-
   getStatistic() {
     let res = super.getStatistic();
     res.code += 1;
@@ -78,6 +69,15 @@ class Code extends PlainText {
     let raw = super.getRaw();
     raw.language = this.language;
     return raw;
+  }
+
+  createEmpty() {
+    return getComponentFactory().buildCode(
+      "\n",
+      this.language,
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
   }
 
   render() {

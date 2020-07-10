@@ -63,6 +63,18 @@ abstract class PlainText extends Block {
     return this.content.length - 1;
   }
 
+  getStatistic() {
+    let res = super.getStatistic();
+    res.word = this.content.length;
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.content = this.content;
+    return raw;
+  }
+
   @recordMethod
   add(
     string: string,
@@ -128,18 +140,6 @@ abstract class PlainText extends Block {
   restore(state: IPlainTextSnapshoot) {
     this.content = state.content;
     super.restore(state);
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.word = this.content.length;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.content = this.content;
-    return raw;
   }
 }
 

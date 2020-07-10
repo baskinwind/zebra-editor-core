@@ -1,6 +1,5 @@
-import { eq } from "lodash-es";
 import Decorate, { storeData } from "../decorate";
-import { operatorType, classType, IRawType } from "./component";
+import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
@@ -56,8 +55,38 @@ abstract class ContentCollection extends Collection<Inline> {
     }
   }
 
+  getStatistic() {
+    let res = super.getStatistic();
+    this.children.forEach((item) => {
+      if (item instanceof Character) {
+        res.word += 1;
+      } else {
+        res.image += 1;
+      }
+    });
+    res.block += 1;
+    return res;
+  }
+
   createEmpty(): ContentCollection {
     throw createError("组件缺少 createEmpty 方法", this);
+  }
+
+  modifyContentDecorate(
+    start: number = 0,
+    end: number = -1,
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
+    end = end < 0 ? this.getSize() + end : end;
+    if (start > end) return;
+    if (!style && !data) return;
+    for (let i = start; i <= end; i++) {
+      this.getChild(i)?.modifyDecorate(style, data);
+    }
+    updateComponent(this, customerUpdate);
+    return [this, start, end];
   }
 
   addChildren(
@@ -82,7 +111,7 @@ abstract class ContentCollection extends Collection<Inline> {
   ): operatorType {
     index = index !== undefined ? index : this.getSize();
     if (typeof inline === "string") {
-      let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
+      let decorate = this.getChild(index === 0 ? 0 : index - 1).decorate;
       let list = [];
       for (let char of inline) {
         list.push(
@@ -173,23 +202,6 @@ abstract class ContentCollection extends Collection<Inline> {
     this.addChildren(charList, index, customerUpdate);
     index = index ? index : this.getSize();
     return [this, index + text.length, index + text.length];
-  }
-
-  modifyContentDecorate(
-    start: number = 0,
-    end: number = -1,
-    style?: storeData,
-    data?: storeData,
-    customerUpdate: boolean = false
-  ) {
-    end = end < 0 ? this.getSize() + end : end;
-    if (start > end) return;
-    if (!style && !data) return;
-    for (let i = start; i <= end; i++) {
-      this.children.get(i)?.modifyDecorate(style, data);
-    }
-    updateComponent(this, customerUpdate);
-    return [this, start, end];
   }
 
   sendTo(block: Block, customerUpdate: boolean = false): operatorType {
@@ -285,19 +297,6 @@ abstract class ContentCollection extends Collection<Inline> {
         item[2] || {}
       );
     });
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    this.children.forEach((item) => {
-      if (item instanceof Character) {
-        res.word += 1;
-      } else {
-        res.image += 1;
-      }
-    });
-    res.block += 1;
-    return res;
   }
 }
 

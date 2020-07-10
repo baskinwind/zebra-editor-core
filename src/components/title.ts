@@ -95,6 +95,32 @@ class Title extends ContentCollection {
     this.style = styleMap[type];
   }
 
+  setTitle(type: titleType = "h1") {
+    if (this.titleType === type) return;
+    this.titleType = type;
+    this.style = styleMap[type];
+    updateComponent(this);
+  }
+
+  getType(): string {
+    return `${this.type}>${this.titleType}`;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.titleType = this.titleType;
+    return raw;
+  }
+
+  createEmpty() {
+    return getComponentFactory().buildTitle(
+      this.titleType,
+      "",
+      this.decorate.getStyle(),
+      this.decorate.getData()
+    );
+  }
+
   @recordMethod
   exchangeTo(builder: classType, args: any[]): Block[] {
     // @ts-ignore
@@ -108,22 +134,6 @@ class Title extends ContentCollection {
     return builder.exchange(this, args);
   }
 
-  setTitle(type: titleType = "h1") {
-    if (this.titleType === type) return;
-    this.titleType = type;
-    this.style = styleMap[type];
-    updateComponent(this);
-  }
-
-  createEmpty() {
-    return getComponentFactory().buildTitle(
-      this.titleType,
-      "",
-      this.decorate.getStyle(),
-      this.decorate.getData()
-    );
-  }
-
   snapshoot(): ITitleSnapshoot {
     let snap = super.snapshoot() as ITitleSnapshoot;
     snap.titleType = this.titleType;
@@ -134,16 +144,6 @@ class Title extends ContentCollection {
     this.titleType = state.titleType;
     this.style = styleMap[state.titleType];
     super.restore(state);
-  }
-
-  getType(): string {
-    return `${this.type}>${this.titleType}`;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.titleType = this.titleType;
-    return raw;
   }
 
   render() {

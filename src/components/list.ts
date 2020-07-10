@@ -33,7 +33,7 @@ class ListItemWrapper extends BlockWrapper {
     }
     return getContentBuilder().buildListItem(
       this.id,
-      () => this.children.get(0)?.render(),
+      () => this.getChild().render(),
       { ...this.decorate.getStyle(), ...style },
       this.decorate.getData()
     );
@@ -118,6 +118,10 @@ class List extends StructureCollection<ListItemWrapper> {
       this.decorate.mergeStyle({
         paddingLeft: "0px"
       });
+    } else {
+      this.decorate.mergeStyle({
+        paddingLeft: "40px"
+      });
     }
     this.children.forEach((item) => {
       if (this.listType === "nl") {
@@ -127,6 +131,22 @@ class List extends StructureCollection<ListItemWrapper> {
       }
     });
     updateComponent(this);
+  }
+
+  getType(): string {
+    return `${this.type}>${this.listType}`;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.list += 1;
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.listType = this.listType;
+    return raw;
   }
 
   createEmpty(): List {
@@ -252,22 +272,6 @@ class List extends StructureCollection<ListItemWrapper> {
   restore(state: IListSnapshoot) {
     this.listType = state.listType;
     super.restore(state);
-  }
-
-  getType(): string {
-    return `${this.type}>${this.listType}`;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.list += 1;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.listType = this.listType;
-    return raw;
   }
 
   render() {

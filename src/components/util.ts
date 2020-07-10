@@ -33,7 +33,7 @@ export const getBlockById = <T extends Block = Block>(id: string): T => {
   if (!id) {
     let article = store["article"];
     if (!article) throw Error("生成文章后调用。");
-    return store["article"].children.get(0);
+    return store["article"].getChild(0);
   }
   return store[id];
 };

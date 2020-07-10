@@ -52,6 +52,27 @@ class Media extends Block {
     this.recordSnapshoot();
   }
 
+  getSize(): number {
+    return 1;
+  }
+
+  getType(): string {
+    return `${this.type}>${this.mediaType}`;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res[this.mediaType] += 1;
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.src = this.src;
+    raw.mediaType = this.mediaType;
+    return raw;
+  }
+
   exchangeTo(builder: classType, args: any[]): Block[] {
     return [];
   }
@@ -62,14 +83,26 @@ class Media extends Block {
     return [paragraph, 0, 0];
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
-    if (!block) return;
-    if (block.isEmpty()) {
-      block.removeSelf(customerUpdate);
-      return [this, 1, 1];
-    }
-    super.removeSelf(customerUpdate);
-    return [block, 0, 0];
+  modifyContentDecorate(
+    start: number,
+    end: number,
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
+    this.modifyDecorate(style, data, customerUpdate);
+    return [this, 0, 1];
+  }
+
+  remove(
+    start?: number,
+    end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    return this.replaceSelf(
+      getComponentFactory().buildParagraph(),
+      customerUpdate
+    );
   }
 
   split(
@@ -91,26 +124,14 @@ class Media extends Block {
     return [block, index, index];
   }
 
-  remove(
-    start?: number,
-    end?: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    return this.replaceSelf(
-      getComponentFactory().buildParagraph(),
-      customerUpdate
-    );
-  }
-
-  modifyContentDecorate(
-    start: number,
-    end: number,
-    style?: storeData,
-    data?: storeData,
-    customerUpdate: boolean = false
-  ) {
-    this.modifyDecorate(style, data, customerUpdate);
-    return [this, 0, 1];
+  receive(block?: Block, customerUpdate: boolean = false): operatorType {
+    if (!block) return;
+    if (block.isEmpty()) {
+      block.removeSelf(customerUpdate);
+      return [this, 1, 1];
+    }
+    super.removeSelf(customerUpdate);
+    return [block, 0, 0];
   }
 
   snapshoot(): IMediaSnapshoot {
@@ -124,27 +145,6 @@ class Media extends Block {
     this.mediaType = state.mediaType;
     this.src = state.src;
     super.restore(state);
-  }
-
-  getSize(): number {
-    return 1;
-  }
-
-  getType(): string {
-    return `${this.type}>${this.mediaType}`;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res[this.mediaType] += 1;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.src = this.src;
-    raw.mediaType = this.mediaType;
-    return raw;
   }
 
   render() {

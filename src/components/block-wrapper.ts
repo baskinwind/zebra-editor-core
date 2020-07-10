@@ -8,7 +8,7 @@ import { createError } from "./util";
 import { getContentBuilder } from "../content";
 
 abstract class BlockWrapper extends StructureCollection<Block> {
-  type = ComponentBlockype.empty;
+  type = ComponentBlockype.blockWrapper;
 
   constructor(block: Block, style?: storeData, data?: storeData) {
     super(style, data);
@@ -20,7 +20,16 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     block.active = true;
   }
 
-  getChild(): Block {
+  isEmpty(): boolean {
+    return this.getChild().isEmpty();
+  }
+
+  getSize(): number {
+    let parent = this.getParent();
+    return parent.getSize();
+  }
+
+  getChild(index?: number): Block {
     let child = this.children.get(0);
     if (!child) throw createError("子组件获取失败");
     return child;
@@ -30,13 +39,27 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     return this.getParent();
   }
 
-  isEmpty(): boolean {
-    return this.children.get(0)!.isEmpty();
+  getPrev(idOrBlock: string | Block): Block | undefined {
+    let parent = this.getParent();
+    let prev = parent.getPrev(this);
+    if (prev instanceof BlockWrapper) {
+      return prev.getChild();
+    }
+    return prev;
   }
 
-  getSize(): number {
+  getNext(idOrBlock: string | Block): Block | undefined {
     let parent = this.getParent();
-    return parent.getSize();
+    let next = parent.getNext(this);
+    if (next instanceof BlockWrapper) {
+      return next.getChild();
+    }
+    return next;
+  }
+
+  findChildrenIndex(idOrBlock: string | Block): number {
+    let parent = this.getParent();
+    return parent.findChildrenIndex(this);
   }
 
   addChildren(
@@ -78,15 +101,6 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     return parent.remove(start, end, customerUpdate);
   }
 
-  childHeadDelete(
-    component: Block,
-    index: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    let parent = this.getParent();
-    return parent.childHeadDelete(this, index, customerUpdate);
-  }
-
   replaceChild(
     block: Block[],
     oldComponent: Block,
@@ -104,27 +118,13 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     return parent.splitChild(index, customerUpdate);
   }
 
-  findChildrenIndex(idOrBlock: string | Block): number {
+  childHeadDelete(
+    component: Block,
+    index: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     let parent = this.getParent();
-    return parent.findChildrenIndex(this);
-  }
-
-  getPrev(idOrBlock: string | Block): Block | undefined {
-    let parent = this.getParent();
-    let prev = parent.getPrev(this);
-    if (prev instanceof BlockWrapper) {
-      return prev.getChild();
-    }
-    return prev;
-  }
-
-  getNext(idOrBlock: string | Block): Block | undefined {
-    let parent = this.getParent();
-    let next = parent.getNext(this);
-    if (next instanceof BlockWrapper) {
-      return next.getChild();
-    }
-    return next;
+    return parent.childHeadDelete(this, index, customerUpdate);
   }
 
   split(
@@ -137,17 +137,17 @@ abstract class BlockWrapper extends StructureCollection<Block> {
   }
 
   sendTo(block: Block, customerUpdate: boolean = false): operatorType {
-    return this.children.get(0)?.sendTo(block);
+    return this.getChild().sendTo(block);
   }
 
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
-    return this.children.get(0)?.receive(block, customerUpdate);
+    return this.getChild().receive(block, customerUpdate);
   }
 
   render() {
     return getContentBuilder().buildListItem(
       this.id,
-      () => this.children.get(0)?.render(),
+      () => this.getChild().render(),
       this.decorate.getStyle(),
       this.decorate.getData()
     );

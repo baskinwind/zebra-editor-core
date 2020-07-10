@@ -15,6 +15,12 @@ abstract class Collection<T extends Component> extends Block {
     return this.children.size === 0;
   }
 
+  getChild(index: number): T {
+    let child = this.children.get(index);
+    if (!child) throw createError(`未找到${index}位置的子组件`, this);
+    return child;
+  }
+
   getSize(): number {
     return this.children.size;
   }

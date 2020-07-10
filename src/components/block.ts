@@ -20,11 +20,6 @@ abstract class Block extends Component {
   active: boolean = false;
   parent?: StructureCollection<Block>;
 
-  // 根据 raw 保存的内容恢复组件
-  static create(raw: IRawType): Component {
-    throw createError("组件未实现 create 静态方法", this);
-  }
-
   // 定义如何将别的组件转换为当前组件，不会触发更新
   static exchangeOnly(component: Component, args?: any[]): Component[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
@@ -39,14 +34,38 @@ abstract class Block extends Component {
     throw createError("组件未实现 exchange 静态方法", this);
   }
 
+  // 根据 raw 保存的内容恢复组件
+  static create(raw: IRawType): Component {
+    throw createError("组件未实现 create 静态方法", this);
+  }
+
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
     saveBlock(this);
   }
 
+  // 判断该组件是否为空，为空并不代表无效
+  isEmpty(): boolean {
+    return false;
+  }
+
   // 获取类型
   getType(): string {
     return this.type;
+  }
+
+  // 获取统计数据
+  getStatistic() {
+    return {
+      word: 0,
+      image: 0,
+      audio: 0,
+      video: 0,
+      table: 0,
+      list: 0,
+      code: 0,
+      block: 0
+    };
   }
 
   // 获取父节点
@@ -58,11 +77,6 @@ abstract class Block extends Component {
 
   getRealParent() {
     return this.getParent();
-  }
-
-  // 判断该组件是否为空，为空并不代表无效
-  isEmpty(): boolean {
-    return false;
   }
 
   // 获取子组件的长度
@@ -110,33 +124,6 @@ abstract class Block extends Component {
     return [replaceBlock[0], 0, 0];
   }
 
-  // 添加子组件
-  add(
-    component: string | Component | Component[],
-    index?: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    return;
-  }
-
-  // 移除子组件
-  remove(
-    start?: number,
-    end?: number,
-    customerUpdate: boolean = false
-  ): operatorType {
-    return;
-  }
-
-  // 在 index 处切分
-  split(
-    index: number,
-    component?: Component | Component[],
-    customerUpdate: boolean = false
-  ): operatorType {
-    return;
-  }
-
   indent(customerUpdate: boolean = false): operatorType {
     let parent = this.getParent();
     let prev = parent.getPrev(this);
@@ -163,12 +150,32 @@ abstract class Block extends Component {
       return;
     }
     let realParent = parent;
-    if (parent.type === ComponentType.empty) {
+    if (parent.type === ComponentType.blockWrapper) {
       realParent = parent.getParent();
     }
     let index = parent.findChildrenIndex(this);
     this.removeSelf(customerUpdate);
     realParent.split(index, this, customerUpdate);
+    return;
+  }
+
+  // 修改子组件的表现形式，仅在 ContentCollection 组件内有效
+  modifyContentDecorate(
+    start: number,
+    end: number,
+    style?: storeData,
+    data?: storeData,
+    customerUpdate: boolean = false
+  ) {
+    return;
+  }
+
+  // 添加子组件
+  add(
+    component: string | Component | Component[],
+    index?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
     return;
   }
 
@@ -182,14 +189,21 @@ abstract class Block extends Component {
     return [paragraph, 0, 0];
   }
 
-  // 修改子组件的表现形式，仅在 ContentCollection 组件内有用
-  modifyContentDecorate(
-    start: number,
-    end: number,
-    style?: storeData,
-    data?: storeData,
+  // 移除子组件
+  remove(
+    start?: number,
+    end?: number,
     customerUpdate: boolean = false
-  ) {
+  ): operatorType {
+    return;
+  }
+
+  // 在 index 处切分
+  split(
+    index: number,
+    component?: Component | Component[],
+    customerUpdate: boolean = false
+  ): operatorType {
     return;
   }
 
@@ -216,23 +230,6 @@ abstract class Block extends Component {
     this.active = state.active;
     super.restore(state);
   }
-
-  // 获取统计数据
-  getStatistic() {
-    return {
-      word: 0,
-      image: 0,
-      audio: 0,
-      video: 0,
-      table: 0,
-      list: 0,
-      code: 0,
-      block: 0
-    };
-  }
-
-  // 当组件被选中时的行为，对外暴露，但不实现，由开发者定义行为
-  onSelect(target?: Block): any {}
 }
 
 export default Block;
