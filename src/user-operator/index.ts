@@ -7,7 +7,7 @@ import backspace from "../rich-util/backspace";
 import input from "../rich-util/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
-import { getBlockById } from "../components/util";
+import { getBlockById, nextTicket } from "../components/util";
 import { createDurationRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
 import focusAt from "../rich-util/focus-at";
@@ -37,7 +37,9 @@ class UserOperator extends BaseOperator {
       range.selectNode(target);
       section?.addRange(range);
     }
-    document.dispatchEvent(new Event("editorchange"));
+    nextTicket(() => {
+      document.dispatchEvent(new Event("editorchange"));
+    });
   }
 
   onPaste(event: ClipboardEvent) {
@@ -59,7 +61,7 @@ class UserOperator extends BaseOperator {
       event.data,
       {
         id: selection.range[0].id,
-        offset: selection.range[0].offset - event.data.length
+        offset: selection.range[0].offset - [...event.data].length
       },
       event
     );
@@ -96,7 +98,7 @@ class UserOperator extends BaseOperator {
     let data = event.data;
     let selection = getSelection();
     let start = selection.range[0];
-    start.offset = start.offset - data.length;
+    start.offset = start.offset - [...data].length;
     input(data, start, event);
   }
 
@@ -123,7 +125,7 @@ class UserOperator extends BaseOperator {
   }
 
   handleArrawKey(direction: DirectionType) {
-    setTimeout(() => {
+    nextTicket(() => {
       document.dispatchEvent(new Event("editorchange"));
     });
   }

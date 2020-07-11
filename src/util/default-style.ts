@@ -6,6 +6,7 @@ html,body{
 body{
   padding:10px;
   box-sizing: border-box;
+  font-family: -apple-system;
 }
 *{
   box-sizing: border-box;
@@ -13,7 +14,6 @@ body{
 h1,h2,h3,h4,h5,h6,figure,p,ul,ol{
   margin: 10px 0;
   padding: 0;
-  overflow: auto;
 }
 li>h1,li>h2,li>h3,li>h4,li>h5,li>h6,li>p,li>figure,li>pre,li>ul,li>ol{
   margin: 0;
@@ -45,6 +45,9 @@ table td,table th{
 [contenteditable=true]{
   outline:none
 }
+#zebra-editor-contain span,#zebra-editor-contain strong,#zebra-editor-contain code,#zebra-editor-contain a{
+  line-height: 1.3em;
+}
 .zebra-editor-image-loading{
   position: relative;
   background: #f8f8f8;
@@ -60,8 +63,9 @@ table td,table th{
   left: 0;
   right: 0;
   margin: auto;
-  width: fit-content;
-  height: fit-content;
+  width: 100%;
+  line-height: 40px;
+  text-align: center;
   color: #ccc;
 }
 .zebra-editor-page{

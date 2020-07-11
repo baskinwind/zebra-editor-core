@@ -84,8 +84,7 @@ export const getElememtSize = (element?: Element): number => {
     }
     return size;
   }
-
-  return element.textContent?.length || 0;
+  return [...element.textContent].length || 0;
 };
 
 const findFocusNode = (
@@ -117,7 +116,7 @@ const findFocusNode = (
     return [false, element, consume];
   }
 
-  let charLength = element.textContent?.length || 0;
+  let charLength = getElememtSize(element);
   if (index > charLength) {
     return [false, element.childNodes[0], charLength];
   }

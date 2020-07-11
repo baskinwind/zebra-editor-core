@@ -40,8 +40,8 @@ new Vue({
       inlineImage: "https://acohome.cn/image/emjoy-1.png",
       image: "https://acohome.cn/image/block-1.jpg",
       link: "http://acohome.cn",
-      tableRow: 3,
-      tableCol: 3,
+      tableRow: 5,
+      tableCol: 4,
       tableHead: true
     };
   },

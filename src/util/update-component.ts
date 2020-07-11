@@ -1,6 +1,6 @@
 import { throttle } from "lodash-es";
 import Block from "../components/block";
-import { getBlockById } from "../components/util";
+import { getBlockById, nextTicket } from "../components/util";
 import { getContainDocument } from "../selection-operator/util";
 import StructureType from "../const/structure-type";
 import Component from "../components/component";
@@ -43,7 +43,7 @@ const updateComponent = (
 
   if (!lock) {
     lock = true;
-    setTimeout(() => {
+    nextTicket(() => {
       document.dispatchEvent(new Event("editorchange"));
     });
     setTimeout(() => (lock = false), 100);
@@ -87,10 +87,10 @@ const update = (component: Block) => {
     // console.info(component.id);
     // 将该组件插入到合适的位置
     let index = parentComponent.findChildrenIndex(component);
+    if (parentComponent.type === ComponentType.table) {
+      parentDom = parentDom?.children[0] as HTMLElement;
+    }
     if (index === parentComponent.getSize() - 1) {
-      if (parentComponent.type === ComponentType.table) {
-        parentDom = parentDom?.children[0] as HTMLElement;
-      }
       parentDom.appendChild(component.render());
     } else {
       let afterComId = parentComponent.getChild(index + 1)?.id;

@@ -70,7 +70,6 @@ const getSelection = () => {
   }
 
   let anchorNode = section?.anchorNode;
-
   // 当选区不在生成的文章中时，直接返回之前的选区对象
   let rootDom = getContainDocument().getElementById("zebra-editor-contain");
   if (!rootDom?.contains(anchorNode)) {
@@ -113,6 +112,17 @@ const getSelection = () => {
   let posiType = section.anchorNode.compareDocumentPosition(section.focusNode);
   let anchorOffect = section.anchorOffset;
   let focusOffset = section.focusOffset;
+  // EMOJI 标签会导致获取的光标的位置错误
+  if (section.anchorNode.nodeType === 3) {
+    anchorOffect = [
+      ...(section.anchorNode.textContent?.substr(0, anchorOffect) || "")
+    ].length;
+  }
+  if (section.focusNode.nodeType === 3) {
+    focusOffset = [
+      ...(section.focusNode.textContent?.substr(0, focusOffset) || "")
+    ].length;
+  }
   let startOffset;
   let startNode;
   let endOffset;

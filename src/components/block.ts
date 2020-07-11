@@ -5,7 +5,7 @@ import Component, {
   ISnapshoot
 } from "./component";
 import StructureCollection from "./structure-collection";
-import { saveBlock, createError } from "./util";
+import { saveBlock, createError, nextTicket } from "./util";
 import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
 import ComponentType from "../const/component-type";
@@ -42,7 +42,13 @@ abstract class Block extends Component {
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
     saveBlock(this);
+    nextTicket(() => {
+      this.init();
+    });
   }
+
+  // 提供一个初始化的方法，避免继承需要重写 constructor 方法
+  init(): void {}
 
   // 判断该组件是否为空，为空并不代表无效
   isEmpty(): boolean {

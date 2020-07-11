@@ -5,6 +5,7 @@ import {
   getContainDocument
 } from "../selection-operator/util";
 import { getBeforeSelection } from "../selection-operator/get-selection";
+import { nextTicket } from "../components/util";
 
 type focusAtType = cursorType | [Component, number, number];
 
@@ -88,7 +89,9 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
       contentEdit.focus();
     }
   }
-  document.dispatchEvent(new Event("editorchange"));
+  nextTicket(() => {
+    document.dispatchEvent(new Event("editorchange"));
+  });
 };
 
 export default focusAt;
