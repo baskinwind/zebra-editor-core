@@ -149,6 +149,11 @@ class UserOperator extends BaseOperator {
     if (selection.range[0].id === selection.range[1].id) {
       let block = getBlockById(selection.range[1].id);
       if (block instanceof Code) {
+        event.preventDefault();
+        focusAt(
+          block.onTab(selection.range[0].offset, selection.range[1].offset)
+        );
+        return;
       }
     }
   }

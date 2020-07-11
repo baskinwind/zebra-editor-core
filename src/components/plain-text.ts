@@ -18,7 +18,7 @@ export interface IPlainTextSnapshoot extends IBlockSnapshoot {
 }
 
 abstract class PlainText extends Block {
-  content: string;
+  content: string[];
   structureType = StructureType.plainText;
   style: storeData = {
     overflow: "auto"
@@ -55,7 +55,7 @@ abstract class PlainText extends Block {
     if (content[content.length - 1] !== "\n") {
       content += "\n";
     }
-    this.content = content;
+    this.content = [...content];
   }
 
   //  忽略最后一个换行符
@@ -71,7 +71,7 @@ abstract class PlainText extends Block {
 
   getRaw(): IRawType {
     let raw = super.getRaw();
-    raw.content = this.content;
+    raw.content = this.content.join("");
     return raw;
   }
 
@@ -84,11 +84,9 @@ abstract class PlainText extends Block {
     if (typeof string !== "string") {
       throw createError("纯文本组件仅能输入文字");
     }
-    let saveContent = [...this.content];
+    index = index === undefined ? this.content.length : index;
     let saveString = [...string];
-    index = index === undefined ? saveContent.length : index;
-    saveContent.splice(index, 0, string);
-    this.content = saveContent.join("");
+    this.content.splice(index, 0, ...saveString);
     updateComponent(this, customerUpdate);
     return [this, index + saveString.length, index + saveString.length];
   }
@@ -106,9 +104,7 @@ abstract class PlainText extends Block {
       }
       return;
     }
-    let saveContent = [...this.content];
-    saveContent.splice(start, end - start);
-    this.content = saveContent.join("");
+    this.content.splice(start, end - start);
     updateComponent(this, customerUpdate);
     return [this, start, start];
   }
@@ -130,19 +126,19 @@ abstract class PlainText extends Block {
     if (block instanceof ContentCollection) {
       this.add(block.children.map((item) => item.content).join("") + "\n");
     } else if (block instanceof PlainText) {
-      this.add(block.content);
+      this.content.push(...block.content);
     }
     return [this, size, size];
   }
 
   snapshoot(): IPlainTextSnapshoot {
     let snap = super.snapshoot() as IPlainTextSnapshoot;
-    snap.content = this.content;
+    snap.content = this.content.join("");
     return snap;
   }
 
   restore(state: IPlainTextSnapshoot) {
-    this.content = state.content;
+    this.content = [...state.content];
     super.restore(state);
   }
 }

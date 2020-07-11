@@ -1,5 +1,5 @@
 import { getComponentFactory } from ".";
-import Component, { IRawType } from "./component";
+import Component, { IRawType, operatorType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
@@ -50,7 +50,6 @@ class Code extends PlainText {
     data: storeData = {}
   ) {
     super(content, style, data);
-    this.content = content;
     this.language = language;
   }
 
@@ -80,17 +79,29 @@ class Code extends PlainText {
     );
   }
 
-  onTab(start: number, end: number, cancelTab: boolean = false) {
+  onTab(start: number, end: number, cancelTab: boolean = false): operatorType {
+    let addTabIndex: number[] = [];
+    let first = start;
+    while (first !== 0 && this.content[first - 1] !== "\n") {
+      first -= 1;
+    }
+    addTabIndex.push(first);
     for (let i = start; i < end; i++) {
-      if (this.content) {
+      if (this.content[i] === "\n") {
+        addTabIndex.push(i + 1);
       }
     }
+    addTabIndex.reverse().forEach((item) => {
+      this.content.splice(item, 0, " ", " ");
+    });
+    updateComponent(this);
+    return [this, start + 2, end + addTabIndex.length * 2];
   }
 
   render() {
     return getContentBuilder().buildCode(
       this.id,
-      this.content,
+      this.content.join(""),
       this.language,
       this.decorate.getStyle(),
       this.decorate.getData()
