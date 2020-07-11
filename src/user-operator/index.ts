@@ -11,6 +11,7 @@ import { getBlockById, nextTicket } from "../components/util";
 import { createDurationRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
 import focusAt from "../rich-util/focus-at";
+import Code from "../components/code";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
@@ -120,6 +121,10 @@ class UserOperator extends BaseOperator {
       this.handleArrawKey(map[event.key]);
       return;
     }
+    if (event.key.toLowerCase() === "tab") {
+      this.onTab(event);
+      return;
+    }
     onKeyDown(event);
     return;
   }
@@ -136,6 +141,15 @@ class UserOperator extends BaseOperator {
       let component = getBlockById(selection.range[1].id);
       focusAt(component.addEmptyParagraph(!event.shiftKey));
       return;
+    }
+  }
+
+  onTab(event: KeyboardEvent) {
+    let selection = getSelection();
+    if (selection.range[0].id === selection.range[1].id) {
+      let block = getBlockById(selection.range[1].id);
+      if (block instanceof Code) {
+      }
     }
   }
 }

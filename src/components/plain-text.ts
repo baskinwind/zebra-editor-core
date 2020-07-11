@@ -84,11 +84,13 @@ abstract class PlainText extends Block {
     if (typeof string !== "string") {
       throw createError("纯文本组件仅能输入文字");
     }
-    index = index === undefined ? this.content.length : index;
-    this.content =
-      this.content.slice(0, index) + string + this.content.slice(index);
+    let saveContent = [...this.content];
+    let saveString = [...string];
+    index = index === undefined ? saveContent.length : index;
+    saveContent.splice(index, 0, string);
+    this.content = saveContent.join("");
     updateComponent(this, customerUpdate);
-    return [this, index + string.length, index + string.length];
+    return [this, index + saveString.length, index + saveString.length];
   }
 
   @recordMethod
@@ -104,7 +106,9 @@ abstract class PlainText extends Block {
       }
       return;
     }
-    this.content = this.content.slice(0, start) + this.content.slice(end);
+    let saveContent = [...this.content];
+    saveContent.splice(start, end - start);
+    this.content = saveContent.join("");
     updateComponent(this, customerUpdate);
     return [this, start, start];
   }

@@ -5,18 +5,18 @@ import backspace from "../rich-util/backspace";
 import { createRecord } from "../record/util";
 
 // keydown 主要处理一些特殊表现的按键
-// enter backspace tab
+// enter backspace
 const onKeyDown = (event: KeyboardEvent) => {
   let key = event.key;
   let lowerKey = key.toLowerCase();
   let isEnter = lowerKey === "enter";
   let isBackspace = lowerKey === "backspace";
-  let isTab = lowerKey === "tab";
-  if (!(isEnter || isBackspace || isTab)) {
+  if (!(isEnter || isBackspace)) {
     return;
   }
 
   let selection = getSelection();
+  createRecord(selection.range[0], selection.range[1]);
 
   // 选中结构组件时，选中 Table 前后时，会有该情况发生
   // FIXED: 目前不可选中 Table 的前后
@@ -43,25 +43,16 @@ const onKeyDown = (event: KeyboardEvent) => {
   //   return;
   // }
 
-  createRecord(selection.range[0], selection.range[1]);
   // 换行
   if (isEnter) {
     enter(selection.range[0], selection.range[1], event);
     return;
   }
+
   // 删除
   if (isBackspace) {
     backspace(selection.range[0], selection.range[1], event);
     return;
-  }
-
-  if (isTab) {
-    if (!selection.isCollapsed) {
-      backspace(selection.range[0], selection.range[1], event);
-      selection = getSelection();
-    }
-    event.preventDefault();
-    input("    ", selection.range[0], event);
   }
 };
 

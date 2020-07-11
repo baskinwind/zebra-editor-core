@@ -80,6 +80,13 @@ class Code extends PlainText {
     );
   }
 
+  onTab(start: number, end: number, cancelTab: boolean = false) {
+    for (let i = start; i < end; i++) {
+      if (this.content) {
+      }
+    }
+  }
+
   render() {
     return getContentBuilder().buildCode(
       this.id,
