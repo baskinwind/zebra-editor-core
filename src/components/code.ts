@@ -4,7 +4,7 @@ import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
-import { initRecordState } from "../record/decorators";
+import { initRecordState, recordMethod } from "../record/decorators";
 import { storeData } from "../decorate";
 import updateComponent from "../util/update-component";
 
@@ -79,6 +79,7 @@ class Code extends PlainText {
     );
   }
 
+  @recordMethod
   onTab(start: number, end: number, cancelTab: boolean = false): operatorType {
     let addTabIndex: number[] = [];
     let first = start;

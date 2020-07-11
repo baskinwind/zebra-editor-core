@@ -73,7 +73,7 @@ class Title extends ContentCollection {
       newTitle.addChildren(block.children.toArray(), 0);
       list.push(newTitle);
     } else if (block instanceof PlainText) {
-      let stringList = block.content.split("\n");
+      let stringList = [...block.content];
       if (stringList[stringList.length - 1].length === 0) {
         stringList.pop();
       }

@@ -8,7 +8,7 @@ import input from "../rich-util/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById, nextTicket } from "../components/util";
-import { createDurationRecord } from "../record/util";
+import { createDurationRecord, createRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
 import focusAt from "../rich-util/focus-at";
 import Code from "../components/code";
@@ -150,6 +150,7 @@ class UserOperator extends BaseOperator {
       let block = getBlockById(selection.range[1].id);
       if (block instanceof Code) {
         event.preventDefault();
+        createRecord();
         focusAt(
           block.onTab(selection.range[0].offset, selection.range[1].offset)
         );
