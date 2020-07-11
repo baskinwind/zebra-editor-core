@@ -61,7 +61,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
 
     // 生成容器
     let editor = iframe.contentDocument.createElement("div");
-    editor.classList.add("zebra-editor-page");
+    editor.id = "zebra-editor-contain";
     editor.contentEditable = "true";
     editor.appendChild(block.render());
     iframe.contentDocument.body.appendChild(editor);
@@ -70,6 +70,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     let placeholder = iframe.contentDocument.createElement("div");
     placeholder.classList.add("zebra-editor-placeholder");
     placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
+
     document.addEventListener("editorchange", (e) => {
       if (!block.isEmpty()) {
         placeholder.style.display = "none";
@@ -90,21 +91,10 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
     });
 
     editor.addEventListener("beforeinput", (event: any) => {
-      // 排除已经处理的输入
-      if (
-        event.inputType === "insertCompositionText" ||
-        event.inputType === "deleteContentBackward" ||
-        !event.data ||
-        event.data === ""
-      )
-        return;
-      let selection = getSelection();
-      let start = selection.range[0];
-      let end = selection.range[1];
-      createDurationRecord(start, end);
-      if (!selection.isCollapsed) {
-        backspace(start, end);
-        selection = getSelection();
+      try {
+        operator.onBeforeInput(event);
+      } catch (e) {
+        console.warn(e);
       }
     });
 

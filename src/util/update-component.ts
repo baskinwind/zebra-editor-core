@@ -3,6 +3,8 @@ import Block from "../components/block";
 import { getBlockById } from "../components/util";
 import { getContainDocument } from "../selection-operator/util";
 import StructureType from "../const/structure-type";
+import Component from "../components/component";
+import ComponentType from "../const/component-type";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
@@ -86,13 +88,14 @@ const update = (component: Block) => {
     // 将该组件插入到合适的位置
     let index = parentComponent.findChildrenIndex(component);
     if (index === parentComponent.getSize() - 1) {
+      if (parentComponent.type === ComponentType.table) {
+        parentDom = parentDom?.children[0] as HTMLElement;
+      }
       parentDom.appendChild(component.render());
     } else {
       let afterComId = parentComponent.getChild(index + 1)?.id;
       if (afterComId) {
         let afterDom = containDocument.getElementById(afterComId);
-        // @ts-ignore
-        afterDom = afterDom.softLink ? afterDom.softLink : afterDom;
         parentDom.insertBefore(component.render(), afterDom);
       }
     }

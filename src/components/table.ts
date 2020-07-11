@@ -325,7 +325,8 @@ class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
   style: storeData = {
-    fontSize: "16px"
+    fontSize: "16px",
+    textAlign: "center"
   };
 
   static create(raw: IRawType): TableItem {

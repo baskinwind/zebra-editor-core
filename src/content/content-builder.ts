@@ -32,7 +32,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     if (!article || !this.updateDecorate) {
       article = containDocument.createElement("article");
       article.id = id;
-      article.classList.add("zebra-draft-article");
+      article.classList.add("zebra-editor-article");
       article.dataset.type = ComponentType.article;
       article.dataset.structure = StructureType.structure;
       getChildren().forEach((component) => {
@@ -117,27 +117,15 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       let tag: string = data.tag || "ul";
       list = containDocument.createElement(tag);
       list.id = id;
-      list.classList.add("zebra-draft-list");
+      list.classList.add("zebra-editor-list");
       list.dataset.type = ComponentType.article;
       list.dataset.structure = StructureType.structure;
       getChildren().forEach((component) => {
         list?.appendChild(component);
       });
     }
-    // @ts-ignore
-    list.softLink = undefined;
     this.addStyle(list, style, data);
     return list;
-  }
-
-  buildListItemWrap(children: HTMLElement): HTMLElement {
-    let containDocument = getContainDocument();
-    let li = containDocument.createElement("li");
-    li.style.display = "block";
-    li.appendChild(children);
-    // @ts-ignore
-    children.softLink = li;
-    return li;
   }
 
   buildListItem(
@@ -166,7 +154,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       const tag: string = data.tag || "p";
       parapraph = containDocument.createElement(tag);
       parapraph.id = id;
-      parapraph.classList.add(`zebra-draft-${tag}`);
+      parapraph.classList.add(`zebra-editor-${tag}`);
       parapraph.dataset.type = ComponentType.paragraph;
       parapraph.dataset.structure = StructureType.content;
       let children = getChildren();
@@ -194,7 +182,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     if (!pre || !this.updateDecorate) {
       pre = containDocument.createElement("pre");
       pre.id = id;
-      pre.classList.add(`zebra-draft-title-code`);
+      pre.classList.add(`zebra-editor-code`);
       pre.dataset.type = ComponentType.code;
       pre.dataset.structure = StructureType.plainText;
       const code = containDocument.createElement("code");
@@ -218,7 +206,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     ) {
       figure = containDocument.createElement("figure");
       figure.id = id;
-      figure.classList.add("zebra-draft-image");
+      figure.classList.add("zebra-editor-image", "zebra-editor-image-loading");
       figure.dataset.type = ComponentType.media;
       figure.dataset.structure = StructureType.content;
       figure.dataset.src = src;
@@ -228,9 +216,12 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       image.alt = data.alt || "";
       image.style.maxWidth = "100%";
       image.style.display = "block";
+      image.addEventListener("load", () => {
+        figure?.classList.remove("zebra-editor-image-loading");
+      });
       if (data.link) {
         figure.dataset.link = data.link;
-        const link = containDocument.createElement("a");
+        let link = containDocument.createElement("a");
         link.href = data.link;
         link.appendChild(image);
         child = link;
@@ -249,7 +240,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     if (!figure || !this.updateDecorate) {
       figure = containDocument.createElement("figure");
       figure.id = id;
-      figure.classList.add("zebra-draft-image");
+      figure.classList.add("zebra-editor-image");
       figure.dataset.type = ComponentType.media;
       figure.dataset.structure = StructureType.content;
       let audio = containDocument.createElement("audio");
@@ -266,7 +257,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     if (!figure || !this.updateDecorate) {
       figure = containDocument.createElement("figure");
       figure.id = id;
-      figure.classList.add("zebra-draft-image");
+      figure.classList.add("zebra-editor-image");
       figure.dataset.type = ComponentType.media;
       figure.dataset.structure = StructureType.content;
       let video = containDocument.createElement("video");
@@ -340,7 +331,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     let containDocument = getContainDocument();
     const span = containDocument.createElement("span");
     span.id = id;
-    span.classList.add("zebra-draft-inline-image");
+    span.classList.add("zebra-editor-inline-image");
     span.dataset.type = ComponentType.inlineImage;
     span.dataset.structure = StructureType.partialContent;
     this.addStyle(span, style, data);

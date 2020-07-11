@@ -30,7 +30,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
 
   getNext(idOrBlock: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrBlock);
-    if (index === this.getSize()) return;
+    if (index === this.getSize() - 1) return;
     return this.getChild(index + 1);
   }
 

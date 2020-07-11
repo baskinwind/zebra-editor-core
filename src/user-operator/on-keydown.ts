@@ -1,11 +1,7 @@
-import { getComponentFactory } from "../components";
 import getSelection from "../selection-operator/get-selection";
 import input from "../rich-util/input";
-import ComponentType from "../const/component-type";
 import enter from "../rich-util/enter";
 import backspace from "../rich-util/backspace";
-import focusAt from "../rich-util/focus-at";
-import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 
 // keydown 主要处理一些特殊表现的按键
@@ -22,29 +18,30 @@ const onKeyDown = (event: KeyboardEvent) => {
 
   let selection = getSelection();
 
-  // 选中结构组件时，选中 table 前后时，会有该情况发生
-  if (selection.selectStructure) {
-    event?.preventDefault();
-    let component = getBlockById(selection.range[0].id);
-    if (isEnter) {
-      createRecord(selection.range[0], selection.range[1]);
-      focusAt(
-        component.parent?.add(
-          getComponentFactory().buildParagraph(),
-          selection.range[0].offset
-        )
-      );
-      return;
-    }
-    if (isBackspace) {
-      if (component.type === ComponentType.table) {
-        createRecord(selection.range[0], selection.range[1]);
-        focusAt(component.replaceSelf(getComponentFactory().buildParagraph()));
-        return;
-      }
-    }
-    return;
-  }
+  // 选中结构组件时，选中 Table 前后时，会有该情况发生
+  // FIXED: 目前不可选中 Table 的前后
+  // if (selection.selectStructure) {
+  //   event?.preventDefault();
+  //   let component = getBlockById(selection.range[0].id);
+  //   if (isEnter) {
+  //     createRecord(selection.range[0], selection.range[1]);
+  //     focusAt(
+  //       component.parent?.add(
+  //         getComponentFactory().buildParagraph(),
+  //         selection.range[0].offset
+  //       )
+  //     );
+  //     return;
+  //   }
+  //   if (isBackspace) {
+  //     if (component.type === ComponentType.table) {
+  //       createRecord(selection.range[0], selection.range[1]);
+  //       focusAt(component.replaceSelf(getComponentFactory().buildParagraph()));
+  //       return;
+  //     }
+  //   }
+  //   return;
+  // }
 
   createRecord(selection.range[0], selection.range[1]);
   // 换行

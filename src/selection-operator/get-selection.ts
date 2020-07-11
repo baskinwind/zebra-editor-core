@@ -1,15 +1,14 @@
-import StructureCollection from "../components/structure-collection";
-import ComponentType from "../const/component-type";
-import StructureType from "../const/structure-type";
-import { getBlockById } from "../components/util";
 import {
   getElememtSize,
   getContainer,
   cursorType,
   getParent,
   getContainWindow,
-  getOffset
+  getOffset,
+  getContainDocument
 } from "./util";
+import { nextTicket } from "../components/util";
+import { cloneDeep } from "lodash-es";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -45,11 +44,20 @@ const flushSelection = () => {
 
 // 获得之前选区的内容
 const getBeforeSelection = () => {
-  return selectionStore;
+  return cloneDeep<selectionType>(selectionStore);
 };
+
+// 用于判断是否在同一个事件循环中，避免多次 getSelection ，而结果是同一内容
+let isSameLoop = false;
 
 // 获取选区信息，从 range[0].id 组件的 offset 位置开始，到 range[1].id 的 offset 位置结束
 const getSelection = () => {
+  if (isSameLoop) return cloneDeep<selectionType>(selectionStore);
+  isSameLoop = true;
+  nextTicket(() => {
+    isSameLoop = false;
+  });
+
   let section = getContainWindow().getSelection();
   // 无选区：直接返回保存的选区内容
   if (
@@ -61,33 +69,41 @@ const getSelection = () => {
     return selectionStore;
   }
 
+  let anchorNode = section?.anchorNode;
+
+  // 当选区不在生成的文章中时，直接返回之前的选区对象
+  let rootDom = getContainDocument().getElementById("zebra-editor-contain");
+  if (!rootDom?.contains(anchorNode)) {
+    return cloneDeep<selectionType>(selectionStore);
+  }
+
   // Chrome 的光标会在表格之后
   // 选中了结构组件的直接子节点：返回该直接子节点
-  let anchorNode = section?.anchorNode;
-  if (
-    // @ts-ignore
-    anchorNode.dataset &&
-    // @ts-ignore
-    anchorNode.dataset.structure === StructureType.structure
-  ) {
-    // @ts-ignore
-    let component = getBlockById<StructureCollection>(anchorNode.id);
-    let child = component.getChild(section.anchorOffset - 1);
-    return {
-      isCollapsed: true,
-      selectStructure: true,
-      range: [
-        {
-          id: child?.id || "",
-          offset: section.anchorOffset
-        },
-        {
-          id: child?.id || "",
-          offset: section.anchorOffset
-        }
-      ]
-    };
-  }
+  // FIXED: 目前 Table 不可以被选中
+  // if (
+  //   // @ts-ignore
+  //   anchorNode.dataset &&
+  //   // @ts-ignore
+  //   anchorNode.dataset.structure === StructureType.structure
+  // ) {
+  //   // @ts-ignore
+  //   let component = getBlockById<StructureCollection>(anchorNode.id);
+  //   let child = component.getChild(section.anchorOffset - 1);
+  //   return {
+  //     isCollapsed: true,
+  //     selectStructure: true,
+  //     range: [
+  //       {
+  //         id: child?.id || "",
+  //         offset: section.anchorOffset
+  //       },
+  //       {
+  //         id: child?.id || "",
+  //         offset: section.anchorOffset
+  //       }
+  //     ]
+  //   };
+  // }
 
   // 判断开始节点和结束节点的位置关系，
   // 0：同一节点
@@ -156,7 +172,7 @@ const getSelection = () => {
       }
     ]
   };
-  return selectionStore;
+  return cloneDeep<selectionType>(selectionStore);
 };
 
 export default getSelection;

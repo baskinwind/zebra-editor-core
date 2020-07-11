@@ -29,9 +29,6 @@
           <button @click="modifyType('h5')">五级标题</button>
           <button @click="modifyType('h6')">六级标题</button>
           <button @click="modifyType('normal')">普通段落</button>
-          <button @click="modifyType('ul')">无序列表</button>
-          <button @click="modifyType('ol')">有序列表</button>
-          <button @click="modifyType('nl')">无序号列表</button>
           <button @click="modifyType('code')">代码块</button>
         </div>
       </div>
@@ -88,6 +85,9 @@
       <div>
         <p>列表相关：</p>
         <div>
+          <button @click="modifyType('ul')">无序列表</button>
+          <button @click="modifyType('ol')">有序列表</button>
+          <button @click="modifyType('nl')">无序号列表</button>
           <button @click="indent">缩进</button>
           <button @click="outdent">取消缩进</button>
         </div>

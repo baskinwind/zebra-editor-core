@@ -45,6 +45,25 @@ table td,table th{
 [contenteditable=true]{
   outline:none
 }
+.zebra-editor-image-loading{
+  position: relative;
+  background: #f8f8f8;
+}
+.zebra-editor-image-loading img{
+  height: 40px;
+}
+.zebra-editor-image-loading:before{
+  content: '···图片加载中···';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  color: #ccc;
+}
 .zebra-editor-page{
   min-height:100%;
   white-space:pre-wrap;

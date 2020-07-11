@@ -285,9 +285,6 @@ class List extends StructureCollection<ListItemWrapper> {
         tag: this.listType === "nl" ? "ul" : this.listType
       }
     );
-    if (this.parent instanceof List) {
-      content = build.buildListItemWrap(content);
-    }
     return content;
   }
 }

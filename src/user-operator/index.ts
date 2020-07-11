@@ -1,8 +1,7 @@
 import BaseOperator from "./base-operator";
 import DirectionType from "../const/direction-type";
 import getSelection, {
-  flushSelection,
-  getBeforeSelection
+  flushSelection
 } from "../selection-operator/get-selection";
 import backspace from "../rich-util/backspace";
 import input from "../rich-util/input";
@@ -38,9 +37,7 @@ class UserOperator extends BaseOperator {
       range.selectNode(target);
       section?.addRange(range);
     }
-    setTimeout(() => {
-      document.dispatchEvent(new Event("editorchange"));
-    });
+    document.dispatchEvent(new Event("editorchange"));
   }
 
   onPaste(event: ClipboardEvent) {
@@ -66,6 +63,25 @@ class UserOperator extends BaseOperator {
       },
       event
     );
+  }
+
+  onBeforeInput(event: InputEvent) {
+    // 排除已经处理的输入
+    if (
+      event.inputType === "insertCompositionText" ||
+      event.inputType === "deleteContentBackward" ||
+      !event.data ||
+      event.data === ""
+    )
+      return;
+    let selection = getSelection();
+    let start = selection.range[0];
+    let end = selection.range[1];
+    createDurationRecord(start, end);
+    if (!selection.isCollapsed) {
+      backspace(start, end);
+      selection = getSelection();
+    }
   }
 
   onInput(event: InputEvent) {
