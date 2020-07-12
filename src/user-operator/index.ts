@@ -107,6 +107,10 @@ class UserOperator extends BaseOperator {
     if (event.isComposing || event.keyCode === 229) {
       return;
     }
+    if (event.key.toLowerCase() === "tab") {
+      this.onTab(event);
+      return;
+    }
     if (event.shiftKey || event.ctrlKey || event.metaKey) {
       this.handleFunctionKey(event);
       return;
@@ -119,10 +123,6 @@ class UserOperator extends BaseOperator {
         ArrowRight: DirectionType.right
       };
       this.handleArrawKey(map[event.key]);
-      return;
-    }
-    if (event.key.toLowerCase() === "tab") {
-      this.onTab(event);
       return;
     }
     onKeyDown(event);
@@ -145,18 +145,7 @@ class UserOperator extends BaseOperator {
   }
 
   onTab(event: KeyboardEvent) {
-    let selection = getSelection();
-    if (selection.range[0].id === selection.range[1].id) {
-      let block = getBlockById(selection.range[1].id);
-      if (block instanceof Code) {
-        event.preventDefault();
-        createRecord();
-        focusAt(
-          block.onTab(selection.range[0].offset, selection.range[1].offset)
-        );
-        return;
-      }
-    }
+    event.preventDefault();
   }
 }
 

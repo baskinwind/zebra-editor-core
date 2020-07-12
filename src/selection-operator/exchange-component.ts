@@ -18,6 +18,8 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
     getBlockById(idList[idList.length - 1]).getSize() - end.offset;
   let exchangeList: Block[] = [];
   let idMap: { [key: string]: any } = {};
+
+  // 获取转换后的组件
   idList.forEach((id) => {
     getBlockById(id)
       .exchangeTo(newClass, args)
@@ -30,6 +32,8 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
   });
   let nowStart = { id: "", offset: start.offset };
   let nowEnd = { id: "", offset: endToTailSize };
+
+  // 获得光标开始位置
   let index = 0;
   while (index < exchangeList.length) {
     let component = exchangeList[index];
@@ -41,6 +45,8 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
     nowStart.offset -= size;
     index += 1;
   }
+
+  // 获得光标结束位置
   let tailIndex = exchangeList.length - 1;
   while (tailIndex >= 0) {
     let component = exchangeList[tailIndex];

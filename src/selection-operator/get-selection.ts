@@ -47,17 +47,8 @@ const getBeforeSelection = () => {
   return cloneDeep<selectionType>(selectionStore);
 };
 
-// 用于判断是否在同一个事件循环中，避免多次 getSelection ，而结果是同一内容
-let isSameLoop = false;
-
 // 获取选区信息，从 range[0].id 组件的 offset 位置开始，到 range[1].id 的 offset 位置结束
 const getSelection = () => {
-  if (isSameLoop) return cloneDeep<selectionType>(selectionStore);
-  isSameLoop = true;
-  nextTicket(() => {
-    isSameLoop = false;
-  });
-
   let section = getContainWindow().getSelection();
   // 无选区：直接返回保存的选区内容
   if (

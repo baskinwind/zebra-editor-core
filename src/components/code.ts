@@ -35,10 +35,7 @@ class Code extends PlainText {
   static exchangeOnly(component: Component, args: any[] = []): Code[] {
     let code = getComponentFactory().buildCode();
     if (component instanceof ContentCollection) {
-      code.add(
-        component.children.map((item) => item.content).join("") + "\n",
-        0
-      );
+      code.add(component.children.map((item) => item.content).join(""), 0);
     }
     return [code];
   }
@@ -77,26 +74,6 @@ class Code extends PlainText {
       this.decorate.getStyle(),
       this.decorate.getData()
     );
-  }
-
-  @recordMethod
-  onTab(start: number, end: number, cancelTab: boolean = false): operatorType {
-    let addTabIndex: number[] = [];
-    let first = start;
-    while (first !== 0 && this.content[first - 1] !== "\n") {
-      first -= 1;
-    }
-    addTabIndex.push(first);
-    for (let i = start; i < end; i++) {
-      if (this.content[i] === "\n") {
-        addTabIndex.push(i + 1);
-      }
-    }
-    addTabIndex.reverse().forEach((item) => {
-      this.content.splice(item, 0, " ", " ");
-    });
-    updateComponent(this);
-    return [this, start + 2, end + addTabIndex.length * 2];
   }
 
   render() {

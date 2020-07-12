@@ -183,6 +183,7 @@ export const getSelectedIdList = (
   endId: string = startId
 ): string[] => {
   if (startId === "") return [];
+  if (startId === endId) return [startId];
   let component = getBlockById(startId);
   let parent = component.getParent();
   while (parent.type !== ComponentType.article) {

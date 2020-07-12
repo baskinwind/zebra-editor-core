@@ -58,7 +58,6 @@ abstract class PlainText extends Block {
     this.content = [...content];
   }
 
-  //  忽略最后一个换行符
   getSize() {
     return this.content.length - 1;
   }

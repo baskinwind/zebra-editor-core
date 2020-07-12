@@ -63,7 +63,8 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
       range.setStartAfter(start.node);
     }
   } else {
-    range.setStart(start.node, start.index);
+    let sureList = [...(start.node.textContent || "")];
+    range.setStart(start.node, sureList.slice(0, start.index).join("").length);
   }
   if (
     end.node.nodeName === "IMG" ||
@@ -77,7 +78,8 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
       range.setEndAfter(end.node);
     }
   } else {
-    range.setEnd(end.node, end.index);
+    let sureList = [...(start.node.textContent || "")];
+    range.setEnd(end.node, sureList.slice(0, start.index).join("").length);
   }
   section?.addRange(range);
   if (doc.body.dataset.focus === "false") {

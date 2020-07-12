@@ -35,11 +35,9 @@ class Paragraph extends ContentCollection {
       newParagraph.addChildren(block.children.toArray(), 0);
       list.push(newParagraph);
     } else if (block instanceof PlainText) {
-      let stringList = [...block.content];
-      if (stringList[stringList.length - 1].length === 0) {
-        stringList.pop();
-      }
-      stringList.forEach((item) => {
+      let stringList = block.content.join("").split("\n");
+      stringList.pop();
+      [...stringList].forEach((item) => {
         list.push(getComponentFactory().buildParagraph(item));
       });
     }

@@ -111,7 +111,7 @@ abstract class ContentCollection extends Collection<Inline> {
   ): operatorType {
     index = index !== undefined ? index : this.getSize();
     if (typeof inline === "string") {
-      let decorate = this.getChild(index === 0 ? 0 : index - 1).decorate;
+      let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];
       for (let char of inline) {
         list.push(
