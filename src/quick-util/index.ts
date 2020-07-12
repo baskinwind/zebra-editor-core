@@ -33,15 +33,7 @@ const code = () => {
   );
 };
 
-const color = (color: string) => {
-  modifySelectionDecorate({ color: color });
-};
-
-const bgColor = (color: string) => {
-  modifySelectionDecorate({ backgroundColor: color });
-};
-
-const clearAllStyle = () => {
+const clearAll = () => {
   modifySelectionDecorate({ remove: "all" }, { remove: "all" });
 };
 
@@ -54,29 +46,4 @@ const unlink = () => {
   modifySelectionDecorate({}, { remove: "link" });
 };
 
-type exchangeType = "paragraph" | "title" | "list" | "code";
-
-const classMap = {
-  paragraph: Paragraph,
-  title: Title,
-  list: List,
-  code: Code
-};
-
-const exchange = (type: exchangeType, args: any[]) => {
-  exchangeComponent(classMap[type] || Paragraph, args);
-};
-
-export {
-  bold,
-  deleteText,
-  itailc,
-  underline,
-  code,
-  color,
-  bgColor,
-  link,
-  unlink,
-  clearAllStyle,
-  exchange
-};
+export { bold, deleteText, itailc, underline, code, link, unlink, clearAll };

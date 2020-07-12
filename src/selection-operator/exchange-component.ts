@@ -7,12 +7,15 @@ import { classType } from "../components/component";
 import { createRecord } from "../record/util";
 
 // 修改选区中整块内容的呈现
-const exchangeComponent = (newClass: classType, ...args: any[]) => {
+const exchangeComponent = (
+  newClass: classType,
+  args: any[] = [],
+  record: boolean = true
+) => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
-  createRecord(start, end);
-
+  if (record) createRecord(start, end);
   let idList = getSelectedIdList(start.id, end.id);
   let endToTailSize =
     getBlockById(idList[idList.length - 1]).getSize() - end.offset;
