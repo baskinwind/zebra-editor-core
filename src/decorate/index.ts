@@ -23,6 +23,9 @@ class Decorate {
   getStyle() {
     return { ...this.component.style, ...this.style.toObject() };
   }
+  copyStyle() {
+    return this.style.toObject();
+  }
   mergeStyle(style?: storeData) {
     if (!style) return;
     for (let key in style) {
@@ -54,6 +57,9 @@ class Decorate {
 
   getData() {
     return { ...this.component.data, ...this.data.toObject() };
+  }
+  copyData() {
+    return this.data.toObject();
   }
   mergeData(data?: storeData) {
     if (!data) return;

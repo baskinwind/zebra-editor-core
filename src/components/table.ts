@@ -367,7 +367,7 @@ class TableItem extends ContentCollection {
   }
 
   createEmpty() {
-    return new TableItem("", this.decorate.getStyle(), this.decorate.getData());
+    return new TableItem("", this.decorate.copyStyle(), this.decorate.copyData());
   }
 
   // 监控：当表格内容一行全被删除时，把一整行移除

@@ -30,9 +30,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   startUpdate();
   initRecord(block);
   setContentBuilder(option?.contentBuilder);
-  if (option && option.componentFactory) {
-    setComponentFactory(option.componentFactory);
-  }
+  setComponentFactory(option?.componentFactory);
   let operator = option?.userOperator || UserOperator.getInstance();
 
   // 生成 iframe 并获取 document 与 window 对象

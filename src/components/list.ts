@@ -153,8 +153,8 @@ class List extends StructureCollection<ListItemWrapper> {
     return getComponentFactory().buildList(
       this.listType,
       [],
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      this.decorate.copyStyle(),
+      this.decorate.copyData()
     );
   }
 
@@ -251,16 +251,8 @@ class List extends StructureCollection<ListItemWrapper> {
 
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     if (!block) return;
-    let focus;
-    if (block instanceof List) {
-      let removed = block.removeChildren(0, block.getSize());
-      this.add(removed, undefined, customerUpdate);
-      block.removeSelf();
-    } else {
-      block.removeSelf();
-      focus = this.add(block, undefined, customerUpdate);
-    }
-    return focus;
+    block.removeSelf();
+    return this.add(block, undefined, customerUpdate);
   }
 
   snapshoot(): IListSnapshoot {

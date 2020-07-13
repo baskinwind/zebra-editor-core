@@ -47,8 +47,8 @@ class Paragraph extends ContentCollection {
   createEmpty() {
     return getComponentFactory().buildParagraph(
       "",
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      this.decorate.copyStyle(),
+      this.decorate.copyData()
     );
   }
 

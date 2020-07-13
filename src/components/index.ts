@@ -8,6 +8,7 @@ import Media, { mediaType } from "./media";
 import Code from "./code";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
+import CustomerCollection from "./customer-collection";
 
 class ComponentFactory {
   static bulider: ComponentFactory;
@@ -35,6 +36,15 @@ class ComponentFactory {
 
   buildArticle(style: storeData = {}, data: storeData = {}) {
     return new Article(style, data);
+  }
+
+  buildCustomerCollection(
+    tag: string = "div",
+    children: string[] = [],
+    style: storeData = {},
+    data: storeData = {}
+  ) {
+    return new CustomerCollection(tag, children, style, data);
   }
 
   buildList(
@@ -93,13 +103,15 @@ class ComponentFactory {
   }
 }
 
-let nowFactory = ComponentFactory.getInstance();
+let nowFactory: any;
 
-const setComponentFactory = (factory: ComponentFactory) => {
-  nowFactory = factory;
+const getComponentFactory = <
+  T extends ComponentFactory = ComponentFactory
+>(): T => nowFactory;
+
+const setComponentFactory = (factory?: ComponentFactory) => {
+  nowFactory = factory || ComponentFactory.getInstance();
 };
-
-const getComponentFactory = () => nowFactory;
 
 export default ComponentFactory;
 

@@ -37,6 +37,7 @@ export interface IRawType {
   size?: number;
   // for code
   language?: string;
+  tag?: string;
 }
 export interface ISnapshoot {
   style: Map<string, string>;
@@ -69,10 +70,10 @@ abstract class Component {
       type: this.type
     };
     if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
+      raw.style = this.decorate.copyStyle();
     }
     if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
+      raw.data = this.decorate.copyData();
     }
     return raw;
   }

@@ -13,7 +13,8 @@ enum ComponentType {
   tableCell = "TABLECELL",
   tableItem = "TABLECELLITEM",
   article = "ARTICLE",
-  blockWrapper = "BLOCKWRAPPER"
+  blockWrapper = "BLOCKWRAPPER",
+  customerCollection = "CUSTOMERCOLLECTION"
 }
 
 export default ComponentType;

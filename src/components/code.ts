@@ -71,8 +71,8 @@ class Code extends PlainText {
     return getComponentFactory().buildCode(
       "\n",
       this.language,
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      this.decorate.style.toObject(),
+      this.decorate.data.toObject()
     );
   }
 

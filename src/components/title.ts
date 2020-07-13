@@ -70,6 +70,7 @@ class Title extends ContentCollection {
       list.push(block);
     } else if (block instanceof ContentCollection) {
       let newTitle = getComponentFactory().buildTitle(titleType);
+      newTitle.style = styleMap[newTitle.titleType];
       newTitle.addChildren(block.children.toArray(), 0);
       list.push(newTitle);
     } else if (block instanceof PlainText) {
@@ -114,8 +115,8 @@ class Title extends ContentCollection {
     return getComponentFactory().buildTitle(
       this.titleType,
       "",
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      this.decorate.copyStyle(),
+      this.decorate.copyData()
     );
   }
 

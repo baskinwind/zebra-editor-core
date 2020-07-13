@@ -115,7 +115,7 @@ abstract class ContentCollection extends Collection<Inline> {
       let list = [];
       for (let char of inline) {
         list.push(
-          new Character(char, decorate?.getStyle(), decorate?.getData())
+          new Character(char, decorate?.copyStyle(), decorate?.copyData())
         );
       }
       inline = list;
@@ -235,8 +235,8 @@ abstract class ContentCollection extends Collection<Inline> {
       if (!acc.length) return;
       content.push([
         acc.map((character) => character.render()).join(""),
-        prevDecorate.styleIsEmpty() ? undefined : prevDecorate.getStyle(),
-        prevDecorate.dataIsEmpty() ? undefined : prevDecorate.getData()
+        prevDecorate.styleIsEmpty() ? undefined : prevDecorate.copyStyle(),
+        prevDecorate.dataIsEmpty() ? undefined : prevDecorate.copyData()
       ]);
       acc = [];
     };
@@ -281,10 +281,10 @@ abstract class ContentCollection extends Collection<Inline> {
       children: children
     };
     if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.getStyle();
+      raw.style = this.decorate.copyStyle();
     }
     if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.getData();
+      raw.data = this.decorate.copyData();
     }
     return raw;
   }

@@ -21,6 +21,14 @@ abstract class BaseBuilder<T = any> {
     data: mapData
   ): T;
 
+  abstract buildCustomerCollection(
+    id: string,
+    tag: string,
+    getChildren: () => T[],
+    style: mapData,
+    data: mapData
+  ): T;
+
   abstract buildTable(
     id: string,
     getChildren: () => T[],

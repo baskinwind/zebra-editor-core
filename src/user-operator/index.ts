@@ -8,10 +8,9 @@ import input from "../rich-util/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById, nextTicket } from "../components/util";
-import { createDurationRecord, createRecord } from "../record/util";
+import { createDurationRecord } from "../record/util";
 import { getContainWindow } from "../selection-operator/util";
 import focusAt from "../rich-util/focus-at";
-import Code from "../components/code";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;

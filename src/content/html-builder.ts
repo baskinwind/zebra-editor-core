@@ -35,6 +35,19 @@ class HtmlBuilder extends BaseBuilder<string> {
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</article>`;
   }
 
+  buildCustomerCollection(
+    id: string,
+    tag: string,
+    getChildren: () => string[],
+    style: mapData,
+    data: mapData
+  ): string {
+    let className = "zebra-draft-article";
+    return `<article class="${className}" ${this.getStyle(
+      style
+    )}>${getChildren().reduce((acc, item) => acc + item, "")}</article>`;
+  }
+
   buildTable(
     id: string,
     getChildren: () => string[],

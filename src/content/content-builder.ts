@@ -43,6 +43,29 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return article;
   }
 
+  buildCustomerCollection(
+    id: string,
+    tag: string,
+    getChildren: () => HTMLElement[],
+    style: mapData,
+    data: mapData
+  ): HTMLElement {
+    let containDocument = getContainDocument();
+    let collection = containDocument.getElementById(id);
+    if (!collection || !this.updateDecorate) {
+      collection = containDocument.createElement(tag);
+      collection.id = id;
+      collection.classList.add("zebra-editor-customer");
+      collection.dataset.type = ComponentType.customerCollection;
+      collection.dataset.structure = StructureType.structure;
+      getChildren().forEach((component) => {
+        collection?.appendChild(component);
+      });
+    }
+    this.addStyle(collection, style, data);
+    return collection;
+  }
+
   buildTable(
     id: string,
     getChildren: () => HTMLElement[],
