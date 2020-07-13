@@ -6,7 +6,7 @@ import {
   modifyTable,
   insertBlock,
   insertInline,
-  exchange,
+  exchangeComponent,
   getHtml,
   undo,
   redo,
@@ -69,13 +69,13 @@ new Vue({
 
     modifyType(tag) {
       if (tag === "normal") {
-        exchange("paragraph", tag);
+        exchangeComponent(factory.typeMap.PARAGRAPH);
       } else if (tag === "code") {
-        exchange("code");
+        exchangeComponent(factory.typeMap.CODE);
       } else if (tag === "ul" || tag === "ol" || tag === "nl") {
-        exchange("list", tag);
+        exchangeComponent(factory.typeMap.LIST, tag);
       } else {
-        exchange("title", tag);
+        exchangeComponent(factory.typeMap.TITLE, tag);
       }
     },
 

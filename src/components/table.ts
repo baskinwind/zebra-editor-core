@@ -225,6 +225,11 @@ class TableRow extends StructureCollection<TableCell> {
     return raw;
   }
 
+  addEmptyParagraph(bottom: boolean): operatorType {
+    let parent = this.getParent();
+    return parent.addEmptyParagraph(bottom);
+  }
+
   render() {
     return getContentBuilder().buildTableRow(
       this.id,
@@ -301,6 +306,11 @@ class TableCell extends StructureCollection<TableItem> {
     let prev = this.getPrev(tableItem);
     if (!prev) return;
     return tableItem.sendTo(prev, customerUpdate);
+  }
+
+  addEmptyParagraph(bottom: boolean): operatorType {
+    let parent = this.getParent();
+    return parent.addEmptyParagraph(bottom);
   }
 
   getRaw() {

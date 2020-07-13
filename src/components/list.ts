@@ -180,7 +180,7 @@ class List extends StructureCollection<ListItemWrapper> {
     customerUpdate: boolean = false
   ): operatorType {
     // 连续输入空行，截断列表
-    if (typeof index === "number" && index !== 0) {
+    if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
       if (now?.isEmpty() && !Array.isArray(block) && block.isEmpty()) {
         let focus = this.split(index, block, customerUpdate);

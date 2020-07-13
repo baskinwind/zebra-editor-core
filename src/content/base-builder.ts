@@ -1,3 +1,5 @@
+import { nextTicket } from "../components/util";
+
 export interface mapData {
   [key: string]: any;
 }
@@ -9,7 +11,7 @@ abstract class BaseBuilder<T = any> {
 
   setUpdateDecorate() {
     this.updateDecorate = true;
-    setTimeout(() => (this.updateDecorate = false));
+    nextTicket(() => (this.updateDecorate = false));
   }
 
   abstract buildArticle(

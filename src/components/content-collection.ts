@@ -204,6 +204,11 @@ abstract class ContentCollection extends Collection<Inline> {
     return [this, index + text.length, index + text.length];
   }
 
+  addEmptyParagraph(bottom: boolean): operatorType {
+    let parent = this.getParent();
+    return parent.addEmptyParagraph(bottom);
+  }
+
   sendTo(block: Block, customerUpdate: boolean = false): operatorType {
     return block.receive(this, customerUpdate);
   }

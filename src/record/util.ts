@@ -6,6 +6,7 @@ import getSelection, {
 } from "../selection-operator/get-selection";
 import updateComponent from "../util/update-component";
 import { cursorType } from "../selection-operator/util";
+import { nextTicket } from "../components/util";
 
 interface recoreType {
   undoSelection: {
@@ -20,13 +21,20 @@ interface recoreType {
   };
 }
 
+// 历史栈
 let recoreQueue: recoreType[] = [];
+// 当前栈
 let newRecord: recoreType;
+// 当前历史记录的位置
 let nowIndex = -1;
+// 当前记录的组件
 let nowComponentList: Component[] = [];
+// 当前记录的组件的 ID
 let nowIdList: string[] = [];
-// 纯文字输入优化
+// 纯文字输入优化：是否是在一个持续记录的状态中
 let isDurationRecord: boolean = false;
+// 优化：在一个 event loop 中记录最多只能发生一次
+let isInLoop: boolean = false;
 
 const getRecordStepId = () => {
   return nowIndex;
@@ -44,7 +52,18 @@ const initRecord = (component: Component) => {
 };
 
 const startRecord = (start: cursorType, end: cursorType) => {
+  if (isInLoop) return;
+  isInLoop = true;
+  nextTicket(() => {
+    isInLoop = false;
+  });
   if (nowIndex === -2) return;
+  for (let i = nowIndex + 1; i < recoreQueue.length; i++) {
+    let componentList = recoreQueue[i].componentList;
+    componentList.forEach((item) => {
+      item.record.clear(nowIndex + 1);
+    });
+  }
   recoreQueue.splice(nowIndex + 1);
   nowComponentList = [];
   nowIdList = [];
@@ -60,6 +79,14 @@ const startRecord = (start: cursorType, end: cursorType) => {
 };
 
 const createRecord = (start?: cursorType, end?: cursorType) => {
+  if (isDurationRecord) {
+    let selection = getSelection();
+    newRecord.redoSelection = {
+      start: selection.range[0],
+      end: selection.range[1]
+    };
+    isDurationRecord = false;
+  }
   if (!start || !end) {
     let selection = getBeforeSelection();
     start = selection.range[0];

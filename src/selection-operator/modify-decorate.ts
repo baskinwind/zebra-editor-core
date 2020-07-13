@@ -8,13 +8,12 @@ import { createRecord } from "../record/util";
 const modifyBlockDecorate = (
   style?: storeData,
   data?: storeData,
-  focus: boolean = true,
-  record: boolean = true
+  focus: boolean = true
 ) => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
-  if (record) createRecord(start, end);
+  createRecord(start, end);
   let idList = getSelectedIdList(start.id, end.id);
   modifyDecorate(idList, style, data, focus);
 };

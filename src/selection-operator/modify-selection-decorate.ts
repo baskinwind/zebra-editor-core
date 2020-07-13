@@ -4,11 +4,7 @@ import { storeData } from "../decorate";
 import { createRecord } from "../record/util";
 
 // 修改选内内的文字
-const modifySelectionDecorate = (
-  style?: storeData,
-  data?: storeData,
-  record: boolean = true
-) => {
+const modifySelectionDecorate = (style?: storeData, data?: storeData) => {
   let selection = getSelection();
   // 为光标时，不需要处理
   if (selection.isCollapsed) {
@@ -16,7 +12,7 @@ const modifySelectionDecorate = (
   }
   let start = selection.range[0];
   let end = selection.range[1];
-  if (record) createRecord(start, end);
+  createRecord(start, end);
   modifyInlineDecorate(start, end, style, data);
 };
 

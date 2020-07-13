@@ -5,11 +5,11 @@ import { getBlockById } from "../components/util";
 import focusAt from "../rich-util/focus-at";
 
 // 修改选中组件的缩进
-const modifyIndent = (isOutdent: boolean = false, record: boolean = true) => {
+const modifyIndent = (isOutdent: boolean = false) => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
-  if (record) createRecord(start, end);
+  createRecord(start, end);
   let idList = getSelectedIdList(start.id, end.id);
   let newStartId: string = "";
   let newEndId: string = "";

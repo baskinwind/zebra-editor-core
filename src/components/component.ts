@@ -14,7 +14,7 @@ import { getContentBuilder } from "../content";
 export type operatorType = [Block, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function };
 export interface IRawType {
-  type: ComponentType;
+  type: ComponentType | string;
   children?: IRawType[];
   style?: storeData;
   data?: storeData;
@@ -50,7 +50,8 @@ abstract class Component {
   decorate: Decorate;
   record: Record;
   // 类型，用于保存和恢复数据
-  abstract type: ComponentType;
+  // 方便外部扩展组件
+  abstract type: ComponentType | string;
   // 结构上的作用
   abstract structureType: StructureType;
   // 默认的数据和样式

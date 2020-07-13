@@ -1,8 +1,3 @@
-import Paragraph from "../components/paragraph";
-import Title from "../components/title";
-import Code from "../components/code";
-import List from "../components/list";
-import exchangeComponent from "../selection-operator/exchange-component";
 import modifySelectionDecorate from "../selection-operator/modify-selection-decorate";
 
 // 一些便捷操作

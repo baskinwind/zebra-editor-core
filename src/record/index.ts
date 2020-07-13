@@ -5,7 +5,7 @@ import { getRecordStepId, recordSnapshoot } from "./util";
 
 class Record {
   component: Component;
-  recordMap: { [key: number]: ISnapshoot } = {};
+  recordMap: ISnapshoot[] = [];
   stepId: number = -2;
 
   constructor(component: Component) {
@@ -32,6 +32,10 @@ class Record {
     } else {
       delayUpdate([this.component.parent!.id]);
     }
+  }
+
+  clear(index: number) {
+    this.recordMap.splice(index);
   }
 }
 

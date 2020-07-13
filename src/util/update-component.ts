@@ -1,9 +1,6 @@
-import { throttle } from "lodash-es";
 import Block from "../components/block";
 import { getBlockById, nextTicket } from "../components/util";
 import { getContainDocument } from "../selection-operator/util";
-import StructureType from "../const/structure-type";
-import Component from "../components/component";
 import ComponentType from "../const/component-type";
 
 let canUpdate = false;
@@ -22,12 +19,12 @@ const delayUpdate = (idList: string[]) => {
   idList.forEach((id) => delayUpdateQueue.add(id));
 };
 
-// 混合输入后需要根据该方法判断是否有延迟更新的组件
+// 判断是否需要延迟更新
 const needUpdate = () => {
   return delayUpdateQueue.size !== 0;
 };
 
-let lock = false;
+let dispatchEditorChangeLock = false;
 
 // 更新组件
 const updateComponent = (
@@ -41,12 +38,13 @@ const updateComponent = (
     delayUpdateQueue.clear();
   }
 
-  if (!lock) {
-    lock = true;
+  // 避免过度触发 editorchange 事件
+  if (!dispatchEditorChangeLock) {
+    dispatchEditorChangeLock = true;
     nextTicket(() => {
       document.dispatchEvent(new Event("editorchange"));
     });
-    setTimeout(() => (lock = false), 100);
+    setTimeout(() => (dispatchEditorChangeLock = false), 100);
   }
 
   // 无内容，不更新

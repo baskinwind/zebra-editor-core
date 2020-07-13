@@ -6,13 +6,9 @@ import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 
 // 在光标处插入一个内容块
-
-const insertBlock = (
-  component: Component | Component[],
-  record: boolean = true
-) => {
+const insertBlock = (component: Component | Component[]) => {
   let selection = getSelection();
-  if (record) createRecord(selection.range[0], selection.range[1]);
+  createRecord(selection.range[0], selection.range[1]);
   if (!selection.isCollapsed) {
     deleteSelection(selection.range[0], selection.range[1]);
     selection = getSelection();

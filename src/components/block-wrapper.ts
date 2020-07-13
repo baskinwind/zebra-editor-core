@@ -80,6 +80,11 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     return parent.add(block, index, customerUpdate);
   }
 
+  addEmptyParagraph(bottom: boolean): operatorType {
+    let parent = this.getParent();
+    return parent.addEmptyParagraph(bottom);
+  }
+
   removeChildren(
     indexOrBlock: Block | number,
     removeNumber: number = 1,

@@ -41,7 +41,7 @@ export const getBlockById = <T extends Block = Block>(id: string): T => {
 export const createError = (message: string, info?: any) => {
   let error = new Error(message);
   // @ts-ignore
-  error.draftInfo = info;
+  error.editorInfo = info;
   return error;
 };
 

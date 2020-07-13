@@ -188,7 +188,9 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     let componentIndex = parent.findChildrenIndex(this);
     if (index !== 0) {
       let newCollection = this.splitChild(index, customerUpdate);
-      parent.add(newCollection, componentIndex + 1, customerUpdate);
+      if (newCollection.getSize() !== 0) {
+        parent.add(newCollection, componentIndex + 1, customerUpdate);
+      }
     } else {
       componentIndex -= 1;
     }
