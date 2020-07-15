@@ -1,6 +1,6 @@
 import Block from "../components/block";
 import getSelection from "./get-selection";
-import focusAt from "../operator-character/focus-at";
+import focusAt from "./focus-at";
 import { getBlockById } from "../components/util";
 import { getSelectedIdList } from "./util";
 import { classType } from "../components/component";

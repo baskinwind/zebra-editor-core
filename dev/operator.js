@@ -6,7 +6,7 @@ import {
   modifyTable,
   insertBlock,
   insertInline,
-  exchangeComponent,
+  exchange,
   getHtml,
   undo,
   redo,
@@ -18,12 +18,11 @@ import {
   itailc,
   underline,
   code,
-  color,
-  bgColor,
-  clearAllStyle,
+  clearAll,
   link,
   unlink,
-  modifyIndent
+  modifyIndent,
+  focusAt
 } from "../src";
 
 let factory = ComponentFactory.getInstance();
@@ -69,13 +68,13 @@ new Vue({
 
     modifyType(tag) {
       if (tag === "normal") {
-        exchangeComponent(factory.typeMap.PARAGRAPH);
+        exchange(factory.typeMap.PARAGRAPH);
       } else if (tag === "code") {
-        exchangeComponent(factory.typeMap.CODE);
+        exchange(factory.typeMap.CODE);
       } else if (tag === "ul" || tag === "ol" || tag === "nl") {
-        exchangeComponent(factory.typeMap.LIST, tag);
+        exchange(factory.typeMap.LIST, tag);
       } else {
-        exchangeComponent(factory.typeMap.TITLE, tag);
+        exchange(factory.typeMap.TITLE, tag);
       }
     },
 
@@ -94,14 +93,8 @@ new Vue({
     code() {
       code();
     },
-    red() {
-      color("red");
-    },
-    bgRed() {
-      bgColor("red");
-    },
     clearStyle() {
-      clearAllStyle();
+      clearAll();
     },
     customerInlineStyle() {
       if (this.inlineStyle && this.inlineStyleValue) {
@@ -130,7 +123,9 @@ new Vue({
     },
 
     addTable() {
-      insertBlock(factory.buildTable(3, 3));
+      let table = factory.buildTable(3, 3);
+      insertBlock(table);
+      focusAt([table.getChild(0).getChild(0).getChild(0), 0, 0]);
     },
     modifyTable() {
       modifyTable({

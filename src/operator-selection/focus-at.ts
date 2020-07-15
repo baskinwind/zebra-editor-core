@@ -3,8 +3,8 @@ import {
   cursorType,
   getCursorPosition,
   getContainDocument
-} from "../operator-selection/util";
-import { getBeforeSelection } from "../operator-selection/get-selection";
+} from "./util";
+import { getBeforeSelection } from "./get-selection";
 import { nextTicket } from "../components/util";
 
 type focusAtType = cursorType | [Component, number, number];
@@ -78,8 +78,8 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
       range.setEndAfter(end.node);
     }
   } else {
-    let sureList = [...(start.node.textContent || "")];
-    range.setEnd(end.node, sureList.slice(0, start.index).join("").length);
+    let sureList = [...(end.node.textContent || "")];
+    range.setEnd(end.node, sureList.slice(0, end.index).join("").length);
   }
   section?.addRange(range);
   if (doc.body.dataset.focus === "false") {

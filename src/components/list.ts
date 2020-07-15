@@ -252,7 +252,15 @@ class List extends StructureCollection<ListItemWrapper> {
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     if (!block) return;
     block.removeSelf();
-    return this.add(block, undefined, customerUpdate);
+    if (block instanceof List) {
+      return this.add(
+        block.removeChildren(0, block.getSize()),
+        undefined,
+        customerUpdate
+      );
+    } else {
+      return this.add(block, undefined, customerUpdate);
+    }
   }
 
   snapshoot(): IListSnapshoot {

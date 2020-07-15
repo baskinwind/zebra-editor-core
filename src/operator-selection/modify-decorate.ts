@@ -3,7 +3,7 @@ import { storeData } from "../decorate";
 import { getSelectedIdList } from "./util";
 import { createRecord } from "../record/util";
 import { getBlockById } from "../components/util";
-import focusAt from "../operator-character/focus-at";
+import focusAt from "./focus-at";
 
 // 修改选中组件的样式
 const modifyDecorate = (

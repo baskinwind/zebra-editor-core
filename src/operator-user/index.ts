@@ -10,7 +10,7 @@ import onPaste from "./on-paste";
 import { getBlockById, nextTicket } from "../components/util";
 import { createDurationRecord } from "../record/util";
 import { getContainWindow } from "../operator-selection/util";
-import focusAt from "../operator-character/focus-at";
+import focusAt from "../operator-selection/focus-at";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;

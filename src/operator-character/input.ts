@@ -1,7 +1,7 @@
 import Inline from "../components/inline";
 import Character from "../components/character";
 import InlineImage from "../components/inline-image";
-import focusAt, { focusNode } from "./focus-at";
+import focusAt, { focusNode } from "../operator-selection/focus-at";
 import { getBlockById } from "../components/util";
 import {
   getCursorPosition,
@@ -37,6 +37,7 @@ const input = (
       component.add(charOrInline, offset, true);
       let container = getContainer(node);
       let newInline = charOrInline.render();
+      debugger
       if (node.nodeName === "IMG") {
         container.replaceWith(container, newInline);
       } else {
@@ -55,7 +56,7 @@ const input = (
           return;
         }
       }
-      return focusNode({ node: newInline, index: 1 });
+      return focusNode({ node: newInline.children[0], index: 1 });
     }
 
     // 强制更新

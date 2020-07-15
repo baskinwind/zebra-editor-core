@@ -2,7 +2,7 @@ import { getComponentFactory } from "../components";
 import getSelection from "../operator-selection/get-selection";
 import deleteSelection from "../operator-character/delete-selection";
 import StructureType from "../const/structure-type";
-import focusAt from "../operator-character/focus-at";
+import focusAt from "../operator-selection/focus-at";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 

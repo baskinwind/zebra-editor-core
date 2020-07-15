@@ -1,6 +1,6 @@
 import Component from "../components/component";
 import Collection from "../components/collection";
-import focusAt from "../operator-character/focus-at";
+import focusAt from "../operator-selection/focus-at";
 import getSelection, {
   getBeforeSelection
 } from "../operator-selection/get-selection";

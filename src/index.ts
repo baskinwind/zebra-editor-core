@@ -9,7 +9,7 @@ import { getBlockById } from "./components/util";
 import UserOperator from "./operator-user";
 
 // 选区相关操作
-import focusAt from "./operator-character/focus-at";
+import focusAt from "./operator-selection/focus-at";
 import getSelection from "./operator-selection/get-selection";
 import insertBlock from "./operator-selection/insert-block";
 import insertInline from "./operator-selection/insert-inline";
@@ -24,6 +24,7 @@ import mount from "./util/mount";
 import getHtml from "./util/get-html";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
+import updateComponent from "./util/update-component";
 
 // 文章历史相关
 import { createRecord, undo, redo } from "./record/util";
@@ -49,6 +50,7 @@ export {
   getHtml,
   getRawData,
   createByRaw,
+  updateComponent,
   createRecord,
   undo,
   redo

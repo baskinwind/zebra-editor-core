@@ -181,10 +181,10 @@ abstract class ContentCollection extends Collection<Inline> {
     let splitBlock = this.splitChild(index, customerUpdate);
     let blockIndex = parent.findChildrenIndex(this);
     let focus;
-    if (!block) {
+    if (!block || splitBlock.getSize() !== 0) {
       focus = parent.add(splitBlock, blockIndex + 1);
-      blockIndex += 1;
-    } else {
+    }
+    if (block) {
       if (!Array.isArray(block)) block = [block];
       focus = parent.add(block, blockIndex + 1, customerUpdate);
       if (this.isEmpty()) {

@@ -7,7 +7,6 @@ import {
   getOffset,
   getContainDocument
 } from "./util";
-import { nextTicket } from "../components/util";
 import { cloneDeep } from "lodash-es";
 
 export interface selectionType {
