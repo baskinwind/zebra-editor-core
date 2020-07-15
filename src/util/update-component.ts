@@ -24,8 +24,6 @@ const needUpdate = () => {
   return delayUpdateQueue.size !== 0;
 };
 
-let dispatchEditorChangeLock = false;
-
 // 更新组件
 const updateComponent = (
   component?: Block | Block[],
@@ -39,13 +37,9 @@ const updateComponent = (
   }
 
   // 避免过度触发 editorchange 事件
-  if (!dispatchEditorChangeLock) {
-    dispatchEditorChangeLock = true;
-    nextTicket(() => {
-      document.dispatchEvent(new Event("editorchange"));
-    });
-    setTimeout(() => (dispatchEditorChangeLock = false), 100);
-  }
+  nextTicket(() => {
+    document.dispatchEvent(new Event("editorchange"));
+  });
 
   // 无内容，不更新
   if (!canUpdate || customerUpdate || !component) return;

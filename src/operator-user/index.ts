@@ -8,7 +8,7 @@ import input from "../operator-character/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById, nextTicket } from "../components/util";
-import { createDurationRecord } from "../record/util";
+import { createDurationRecord, undo, redo } from "../record/util";
 import { getContainWindow } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
 
@@ -134,13 +134,29 @@ class UserOperator extends BaseOperator {
     });
   }
 
+  // 仅处理 enter c v z 的逻辑，继承时，需先调用 super
   handleFunctionKey(event: KeyboardEvent) {
     let selection = getSelection();
-    if (event.metaKey && event.key === "Enter") {
+    let isCtrl = event.ctrlKey || event.metaKey;
+    let key = event.key.toLowerCase();
+    if (isCtrl && event.key === "Enter") {
       let component = getBlockById(selection.range[1].id);
       focusAt(component.addEmptyParagraph(!event.shiftKey));
       return;
     }
+    // 复制、黏贴不控制
+    if (isCtrl && ["c", "v"].includes(key)) {
+      return;
+    }
+    if (isCtrl && "z" === key) {
+      if (event.shiftKey) {
+        redo();
+      } else {
+        undo();
+      }
+      return;
+    }
+    event.preventDefault();
   }
 
   onTab(event: KeyboardEvent) {

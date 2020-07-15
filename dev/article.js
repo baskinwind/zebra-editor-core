@@ -29,8 +29,8 @@ let pledgeCn = [
   "我将生命与荣耀献给守夜人，今夜如此，夜夜皆然。"
 ];
 
-article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
-article.add(factory.buildTitle("h2", "冰与火之歌"));
+// article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
+// article.add(factory.buildTitle("h2", "冰与火之歌"));
 
 // article.add(factory.buildTitle("h3", "图片"));
 // article.add(
@@ -74,9 +74,9 @@ article.add(factory.buildTitle("h2", "冰与火之歌"));
 //   article.add(factory.buildParagraph(item));
 // });
 
-// pledgeCn.forEach((item) => {
-//   article.add(factory.buildParagraph(item));
-// });
+pledgeCn.forEach((item) => {
+  article.add(factory.buildParagraph(item));
+});
 
 // article.add(factory.buildTitle("h3", "图文混排"));
 // let para = factory.buildParagraph("");

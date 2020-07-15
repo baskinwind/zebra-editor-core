@@ -10,6 +10,7 @@ import {
   setContainWindow
 } from "../operator-selection/util";
 import defaultStyle from "./default-style";
+import { nextTicket } from "../components/util";
 
 export interface IOption {
   placeholder?: string;
@@ -71,7 +72,9 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
       }
     });
     iframe.contentDocument.body.appendChild(placeholder);
-    document.dispatchEvent(new Event("editorchange"));
+    nextTicket(() => {
+      document.dispatchEvent(new Event("editorchange"));
+    });
 
     // 监听事件
     editor.addEventListener("input", (event: any) => {
