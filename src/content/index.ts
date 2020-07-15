@@ -1,5 +1,6 @@
 import ContentBulider from "./content-builder";
 import BaseBuilder from "./base-builder";
+import { nextTicket } from "../components/util";
 
 let nowContentBuiler: any;
 
@@ -12,7 +13,7 @@ export const setContentBuilder = (builder?: BaseBuilder) => {
 
 export const changeContentBuiler = (builder: BaseBuilder) => {
   nowContentBuiler = builder;
-  Promise.resolve().then(() => {
+  nextTicket(() => {
     nowContentBuiler = ContentBulider.getInstance();
   });
 };

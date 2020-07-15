@@ -4,7 +4,7 @@ import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import ComponentMap from "../const/component-map";
+import ComponentMap from "../const/component-create";
 import { getContentBuilder } from "../content/index";
 import { storeData } from "../decorate";
 import { saveBlock } from "./util";

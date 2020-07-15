@@ -6,31 +6,30 @@ import ContentBuilder from "./content/content-builder";
 import { getBlockById } from "./components/util";
 
 // 用户操作处理
-import UserOperator from "./user-operator";
+import UserOperator from "./operator-user";
 
 // 选区相关操作
-import focusAt from "./rich-util/focus-at";
-import getSelection from "./selection-operator/get-selection";
-import insertBlock from "./selection-operator/insert-block";
-import insertInline from "./selection-operator/insert-inline";
-import modifyDecorate from "./selection-operator/modify-decorate";
-import modifySelectionDecorate from "./selection-operator/modify-selection-decorate";
-import modifyTable from "./selection-operator/modify-table";
-import modifyIndent from "./selection-operator/modify-indent";
-import exchangeComponent from "./selection-operator/exchange-component";
+import focusAt from "./operator-character/focus-at";
+import getSelection from "./operator-selection/get-selection";
+import insertBlock from "./operator-selection/insert-block";
+import insertInline from "./operator-selection/insert-inline";
+import modifyDecorate from "./operator-selection/modify-decorate";
+import modifySelectionDecorate from "./operator-selection/modify-selection-decorate";
+import modifyTable from "./operator-selection/modify-table";
+import modifyIndent from "./operator-selection/modify-indent";
+import exchange from "./operator-selection/exchange";
 
 // 操作内容
 import mount from "./util/mount";
 import getHtml from "./util/get-html";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
-import updateComponent from "./util/update-component";
 
 // 文章历史相关
 import { createRecord, undo, redo } from "./record/util";
 
 // 一些快捷操作
-export * from "./quick-util";
+export * from "./util/quick";
 
 export {
   ComponentFactory,
@@ -45,8 +44,7 @@ export {
   modifySelectionDecorate,
   modifyTable,
   modifyIndent,
-  exchangeComponent,
-  updateComponent,
+  exchange,
   mount,
   getHtml,
   getRawData,

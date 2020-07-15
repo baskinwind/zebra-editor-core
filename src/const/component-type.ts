@@ -7,14 +7,13 @@ enum ComponentType {
   title = "TITLE",
   code = "CODE",
   list = "LIST",
-  listItem = "LISTITEM",
   table = "TABLE",
   tableRow = "TABLEROW",
   tableCell = "TABLECELL",
   tableItem = "TABLECELLITEM",
-  article = "ARTICLE",
   blockWrapper = "BLOCKWRAPPER",
-  customerCollection = "CUSTOMERCOLLECTION"
+  customerCollection = "CUSTOMERCOLLECTION",
+  article = "ARTICLE"
 }
 
 export default ComponentType;

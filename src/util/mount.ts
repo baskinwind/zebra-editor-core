@@ -1,6 +1,8 @@
 import Article from "../components/article";
-import createDraft, { IOption } from "./create-draft";
+import createDraft, { IOption } from "./create-editor";
 import createEmptyArticle from "./create-empty-article";
+import { setContentBuilder } from "../content";
+import { setComponentFactory } from "../components";
 
 // 将组件挂载到某个节点上
 const mount = (
@@ -8,6 +10,10 @@ const mount = (
   article?: Article,
   option?: IOption
 ) => {
+  // 设置内容生成器以及组件工厂
+  setContentBuilder(option?.contentBuilder);
+  setComponentFactory(option?.componentFactory);
+
   if (!article) article = createEmptyArticle();
   let root;
   if (typeof idOrDom === "string") {

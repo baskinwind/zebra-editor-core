@@ -1,6 +1,6 @@
-import ComponentFactory from "../components";
+import { getComponentFactory } from "../components";
 
-let factory = ComponentFactory.getInstance();
+let factory = getComponentFactory();
 
 const createEmptyArticle = () => {
   let article = factory.buildArticle();

@@ -2,15 +2,15 @@ import BaseOperator from "./base-operator";
 import DirectionType from "../const/direction-type";
 import getSelection, {
   flushSelection
-} from "../selection-operator/get-selection";
-import backspace from "../rich-util/backspace";
-import input from "../rich-util/input";
+} from "../operator-selection/get-selection";
+import backspace from "../operator-character/backspace";
+import input from "../operator-character/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById, nextTicket } from "../components/util";
 import { createDurationRecord } from "../record/util";
-import { getContainWindow } from "../selection-operator/util";
-import focusAt from "../rich-util/focus-at";
+import { getContainWindow } from "../operator-selection/util";
+import focusAt from "../operator-character/focus-at";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;

@@ -3,8 +3,8 @@ import {
   cursorType,
   getCursorPosition,
   getContainDocument
-} from "../selection-operator/util";
-import { getBeforeSelection } from "../selection-operator/get-selection";
+} from "../operator-selection/util";
+import { getBeforeSelection } from "../operator-selection/get-selection";
 import { nextTicket } from "../components/util";
 
 type focusAtType = cursorType | [Component, number, number];

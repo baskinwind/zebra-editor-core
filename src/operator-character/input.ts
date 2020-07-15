@@ -7,7 +7,7 @@ import {
   getCursorPosition,
   cursorType,
   getContainer
-} from "../selection-operator/util";
+} from "../operator-selection/util";
 import updateComponent, { needUpdate } from "../util/update-component";
 
 const input = (

@@ -1,11 +1,11 @@
 import Component from "../components/component";
 import Collection from "../components/collection";
-import focusAt from "../rich-util/focus-at";
+import focusAt from "../operator-character/focus-at";
 import getSelection, {
   getBeforeSelection
-} from "../selection-operator/get-selection";
+} from "../operator-selection/get-selection";
 import updateComponent from "../util/update-component";
-import { cursorType } from "../selection-operator/util";
+import { cursorType } from "../operator-selection/util";
 import { nextTicket } from "../components/util";
 
 interface recoreType {

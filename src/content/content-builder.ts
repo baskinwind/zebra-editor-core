@@ -1,7 +1,7 @@
 import BaseBuilder, { mapData } from "./base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getContainDocument } from "../selection-operator/util";
+import { getContainDocument } from "../operator-selection/util";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
   static bulider: ContentBuilder;

@@ -1,4 +1,4 @@
-import modifySelectionDecorate from "../selection-operator/modify-selection-decorate";
+import modifySelectionDecorate from "../operator-selection/modify-selection-decorate";
 
 // 一些便捷操作
 const bold = () => {

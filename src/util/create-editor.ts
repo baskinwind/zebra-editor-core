@@ -1,19 +1,15 @@
 import Block from "../components/block";
 import BaseBuilder from "../content/base-builder";
-import UserOperator from "../user-operator";
-import BaseOperator from "../user-operator/base-operator";
-import ComponentFactory, { setComponentFactory } from "../components";
-import { initRecord, createDurationRecord } from "../record/util";
+import UserOperator from "../operator-user";
+import BaseOperator from "../operator-user/base-operator";
+import ComponentFactory from "../components";
+import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
-import { setContentBuilder } from "../content";
 import {
   setContainDocument,
   setContainWindow
-} from "../selection-operator/util";
+} from "../operator-selection/util";
 import defaultStyle from "./default-style";
-import getSelection from "../selection-operator/get-selection";
-import backspace from "../rich-util/backspace";
-import input from "../rich-util/input";
 
 export interface IOption {
   placeholder?: string;
@@ -29,8 +25,6 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   block.active = true;
   startUpdate();
   initRecord(block);
-  setContentBuilder(option?.contentBuilder);
-  setComponentFactory(option?.componentFactory);
   let operator = option?.userOperator || UserOperator.getInstance();
 
   // 生成 iframe 并获取 document 与 window 对象
@@ -105,10 +99,12 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         console.warn(e);
       }
     });
+
     editor.addEventListener("mousedown", (event) => {
       // @ts-ignore
       iframe.contentDocument.body.dataset.focus = "true";
     });
+
     editor.addEventListener("click", (event) => {
       try {
         operator.onClick(event);
@@ -116,6 +112,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         console.warn(e);
       }
     });
+
     editor.addEventListener("keydown", (event) => {
       try {
         operator.onKeyDown(event);
@@ -123,6 +120,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         console.warn(e);
       }
     });
+
     editor.addEventListener("compositionstart", (event) => {
       try {
         operator.onCompositionStart(event as CompositionEvent);
@@ -130,6 +128,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         console.warn(e);
       }
     });
+
     editor.addEventListener("compositionend", (event) => {
       try {
         operator.onCompositionEnd(event as CompositionEvent);
@@ -137,6 +136,7 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         console.warn(e);
       }
     });
+
     editor.addEventListener("paste", (event) => {
       console.info("仅可复制文本内容");
       try {
@@ -145,9 +145,11 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
         console.warn(e);
       }
     });
+
     editor.addEventListener("dragstart", (event) => {
       event.preventDefault();
     });
+
     editor.addEventListener("drop", (event) => {
       event.preventDefault();
     });

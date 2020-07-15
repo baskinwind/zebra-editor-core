@@ -1,11 +1,12 @@
 import getSelection from "./get-selection";
-import modifyDecorate from "../rich-util/modify-decorate";
 import { storeData } from "../decorate";
 import { getSelectedIdList } from "./util";
 import { createRecord } from "../record/util";
+import { getBlockById } from "../components/util";
+import focusAt from "../operator-character/focus-at";
 
 // 修改选中组件的样式
-const modifyBlockDecorate = (
+const modifyDecorate = (
   style?: storeData,
   data?: storeData,
   focus: boolean = true
@@ -15,7 +16,13 @@ const modifyBlockDecorate = (
   let end = selection.range[1];
   createRecord(start, end);
   let idList = getSelectedIdList(start.id, end.id);
-  modifyDecorate(idList, style, data, focus);
+  idList.forEach((id) => {
+    let block = getBlockById(id);
+    block.modifyDecorate(style, data);
+  });
+  if (focus) {
+    focusAt();
+  }
 };
 
-export default modifyBlockDecorate;
+export default modifyDecorate;

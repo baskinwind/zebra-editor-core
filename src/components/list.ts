@@ -4,7 +4,7 @@ import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import BlockWrapper from "./block-wrapper";
-import ComponentMap from "../const/component-map";
+import ComponentMap from "../const/component-create";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";

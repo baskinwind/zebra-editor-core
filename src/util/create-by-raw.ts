@@ -1,6 +1,6 @@
 import { getComponentFactory } from "../components";
 import { IRawType } from "../components/component";
-import ComponentMap from "../const/component-map";
+import ComponentMap from "../const/component-create";
 import Block from "../components/block";
 
 // 将 getRaw 生成的转换为表示文章的结构

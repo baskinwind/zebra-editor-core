@@ -1,7 +1,7 @@
-import getSelection from "../selection-operator/get-selection";
-import input from "../rich-util/input";
-import enter from "../rich-util/enter";
-import backspace from "../rich-util/backspace";
+import getSelection from "../operator-selection/get-selection";
+import input from "../operator-character/input";
+import enter from "../operator-character/enter";
+import backspace from "../operator-character/backspace";
 import { createRecord } from "../record/util";
 
 // keydown 主要处理一些特殊表现的按键

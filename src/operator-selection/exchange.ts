@@ -1,13 +1,13 @@
 import Block from "../components/block";
 import getSelection from "./get-selection";
-import focusAt from "../rich-util/focus-at";
+import focusAt from "../operator-character/focus-at";
 import { getBlockById } from "../components/util";
 import { getSelectedIdList } from "./util";
 import { classType } from "../components/component";
 import { createRecord } from "../record/util";
 
 // 修改选区中整块内容的呈现
-const exchangeComponent = (newClass: classType, ...args: any[]) => {
+const exchange = (newClass: classType, ...args: any[]) => {
   let selection = getSelection();
   let start = selection.range[0];
   let end = selection.range[1];
@@ -15,6 +15,7 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
   let idList = getSelectedIdList(start.id, end.id);
   let endToTailSize =
     getBlockById(idList[idList.length - 1]).getSize() - end.offset;
+
   let exchangeList: Block[] = [];
   let idMap: { [key: string]: any } = {};
 
@@ -29,6 +30,7 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
         }
       });
   });
+
   let nowStart = { id: "", offset: start.offset };
   let nowEnd = { id: "", offset: endToTailSize };
 
@@ -61,4 +63,4 @@ const exchangeComponent = (newClass: classType, ...args: any[]) => {
   focusAt(nowStart, nowEnd);
 };
 
-export default exchangeComponent;
+export default exchange;

@@ -1,7 +1,7 @@
 import Inline from "../components/inline";
 import getSelection from "./get-selection";
-import deleteSelection from "../rich-util/delete-selection";
-import input from "../rich-util/input";
+import deleteSelection from "../operator-character/delete-selection";
+import input from "../operator-character/input";
 import { createRecord } from "../record/util";
 
 // 在光标处插入一个内容块

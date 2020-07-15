@@ -1,7 +1,7 @@
 import Component from "../components/component";
 import getSelection from "./get-selection";
-import deleteSelection from "../rich-util/delete-selection";
-import focusAt from "../rich-util/focus-at";
+import deleteSelection from "../operator-character/delete-selection";
+import focusAt from "../operator-character/focus-at";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";
 

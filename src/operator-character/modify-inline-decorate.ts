@@ -1,7 +1,7 @@
 import focusAt from "./focus-at";
 import { getBlockById } from "../components/util";
 import { storeData } from "../decorate";
-import { cursorType, getSelectedIdList } from "../selection-operator/util";
+import { cursorType, getSelectedIdList } from "../operator-selection/util";
 
 // 修改选中文字的样式
 const modifyInlineDecorate = (
@@ -11,7 +11,7 @@ const modifyInlineDecorate = (
   data?: storeData
 ) => {
   let idList = getSelectedIdList(start.id, end.id);
-  // 为选中内容，不需要处理
+  // 未选中内容，不需要处理
   if (idList.length === 0) return;
   // 选中一行
   if (idList.length === 1) {

@@ -1,6 +1,6 @@
 import Block from "../components/block";
 import { getBlockById, nextTicket } from "../components/util";
-import { getContainDocument } from "../selection-operator/util";
+import { getContainDocument } from "../operator-selection/util";
 import ComponentType from "../const/component-type";
 
 let canUpdate = false;

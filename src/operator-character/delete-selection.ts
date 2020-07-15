@@ -1,5 +1,5 @@
 import focusAt from "./focus-at";
-import { cursorType, getSelectedIdList } from "../selection-operator/util";
+import { cursorType, getSelectedIdList } from "../operator-selection/util";
 import { getBlockById } from "../components/util";
 
 // 删除 start - end 的内容
