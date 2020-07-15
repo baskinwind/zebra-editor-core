@@ -172,8 +172,11 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   ): StructureCollection<T> {
     if (index > this.getSize()) throw createError("分割点不在列表内");
 
-    let tail = this.children.slice(index).toArray();
-    this.removeChildren(index, this.getSize() - index, customerUpdate);
+    let tail = this.removeChildren(
+      index,
+      this.getSize() - index,
+      customerUpdate
+    );
     let newCollection = this.createEmpty();
     newCollection.add(tail, 0, true);
     return newCollection;

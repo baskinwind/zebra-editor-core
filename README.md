@@ -2,7 +2,7 @@
 
 zebra-editor-core.js 富文本编辑器功能核心。
 
-[demo](https://acohome.cn/demo/x-editor/index.html)
+[demo](https://acohome.cn/demo/zebra-editor/index.html)
 
 ## 使用
 

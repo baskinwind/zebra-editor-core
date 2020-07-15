@@ -9,6 +9,7 @@ import { getContentBuilder } from "../content/index";
 import { storeData } from "../decorate";
 import { saveBlock } from "./util";
 import { initRecordState } from "../record/decorators";
+import focusAt from "../operator-selection/focus-at";
 
 @initRecordState
 class Article extends StructureCollection<Block> {
@@ -41,6 +42,18 @@ class Article extends StructureCollection<Block> {
     let prev = this.getPrev(block);
     if (!prev) return;
     return block.sendTo(prev, customerUpdate);
+  }
+
+  remove(
+    start: number,
+    end?: number,
+    customerUpdate: boolean = false
+  ): operatorType {
+    let focus = super.remove(start, end, customerUpdate);
+    if (this.getSize() === 0) {
+      return this.add(getComponentFactory().buildParagraph());
+    }
+    return focus;
   }
 
   render() {

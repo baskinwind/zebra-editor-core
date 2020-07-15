@@ -90,7 +90,7 @@ class Table extends StructureCollection<TableRow> {
       }
       this.addChildren(list);
     } else {
-      this.removeChildren(row, size - row);
+      this.remove(row, size - row);
     }
   }
 
@@ -104,9 +104,9 @@ class Table extends StructureCollection<TableRow> {
     if (needHead === undefined) return;
     if (needHead === this.needHead) return;
     if (needHead) {
-      this.addChildren([new TableRow(this.col, [], "th")], 0);
+      this.add(new TableRow(this.col, [], "th"), 0);
     } else {
-      this.removeChildren(0, 1);
+      this.remove(0, 1);
     }
     this.needHead = needHead;
   }
@@ -194,9 +194,9 @@ class TableRow extends StructureCollection<TableCell> {
         let item = new TableCell("", this.cellType);
         list.push(item);
       }
-      this.addChildren(list);
+      this.add(list);
     } else {
-      this.removeChildren(size, oldSize - size);
+      this.remove(size, oldSize - size);
     }
   }
 
@@ -367,7 +367,11 @@ class TableItem extends ContentCollection {
   }
 
   createEmpty() {
-    return new TableItem("", this.decorate.copyStyle(), this.decorate.copyData());
+    return new TableItem(
+      "",
+      this.decorate.copyStyle(),
+      this.decorate.copyData()
+    );
   }
 
   // 监控：当表格内容一行全被删除时，把一整行移除

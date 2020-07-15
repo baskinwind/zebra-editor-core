@@ -201,6 +201,7 @@ class List extends StructureCollection<ListItemWrapper> {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
       nextTicket(() => {
+        if (this.getSize() !== 0) return;
         this.removeSelf(customerUpdate);
       });
     }
