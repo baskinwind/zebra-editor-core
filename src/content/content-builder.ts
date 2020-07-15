@@ -79,7 +79,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       figure.id = id;
       figure.dataset.structure = StructureType.structure;
       figure.contentEditable = "false";
-      figure.style.overflowX = "auto";
       const table = containDocument.createElement("table");
       table.style.minWidth = "100%";
       table.style.borderCollapse = "collapse";

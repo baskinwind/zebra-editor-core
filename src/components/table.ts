@@ -22,7 +22,8 @@ class Table extends StructureCollection<TableRow> {
   col: number;
   needHead: boolean;
   style: storeData = {
-    margin: "auto"
+    margin: "auto",
+    overflowX: "auto"
   };
 
   static getTable(component: Block): Table | undefined {

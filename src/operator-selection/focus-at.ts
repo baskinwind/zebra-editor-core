@@ -1,9 +1,5 @@
 import Component from "../components/component";
-import {
-  cursorType,
-  getCursorPosition,
-  getContainDocument
-} from "./util";
+import { cursorType, getCursorPosition, getContainDocument } from "./util";
 import { getBeforeSelection } from "./get-selection";
 import { nextTicket } from "../components/util";
 
