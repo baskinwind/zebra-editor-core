@@ -1,22 +1,24 @@
 // @ts-nocheck
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getBlockById } from "../components/util";
+import { getBlockById, createError } from "../components/util";
 
 export interface cursorType {
   id: string;
   offset: number;
 }
 
-let containDocument: Document = document;
-let containWindow: Window = window;
+let containDocument: Document;
+let containWindow: Window;
 
-export const setContainDocument = (content: Document | null) => {
-  containDocument = content || document;
+export const setContainDocument = (doc: Document | null) => {
+  if (!doc) throw createError("document 设置失败");
+  containDocument = doc;
 };
 
-export const setContainWindow = (content: Window | null) => {
-  containWindow = content || window;
+export const setContainWindow = (win: Window | null) => {
+  if (!win) throw createError("window 设置失败");
+  containWindow = win;
 };
 
 export const getContainDocument = () => containDocument;

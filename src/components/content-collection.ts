@@ -206,6 +206,9 @@ abstract class ContentCollection extends Collection<Inline> {
 
   addEmptyParagraph(bottom: boolean): operatorType {
     let parent = this.getParent();
+    if (parent.type === ComponentType.article) {
+      return super.addEmptyParagraph(bottom);
+    }
     return parent.addEmptyParagraph(bottom);
   }
 
