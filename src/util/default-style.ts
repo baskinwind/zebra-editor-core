@@ -15,7 +15,7 @@ h1,h2,h3,h4,h5,h6,figure,p,ul,ol{
   margin: 10px 0;
   padding: 0;
 }
-li>h1,li>h2,li>h3,li>h4,li>h5,li>h6,li>p,li>figure,li>pre,li>ul,li>ol{
+li>h1,li>h2,li>h3,li>h4,li>h5,li>h6,li>p,li>ul,li>ol{
   margin: 0;
 }
 table p,pre{

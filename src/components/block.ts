@@ -10,6 +10,7 @@ import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
 import ComponentType from "../const/component-type";
 import ComponentFactory, { getComponentFactory } from ".";
+import StructureType from "../const/structure-type";
 
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;
@@ -131,37 +132,53 @@ abstract class Block extends Component {
   }
 
   indent(customerUpdate: boolean = false): operatorType {
-    let parent = this.getParent();
-    let prev = parent.getPrev(this);
-    let next = parent.getNext(this);
+    let listItem: Block = this;
+    while (
+      listItem.parent?.type !== ComponentType.listItem &&
+      listItem.parent?.type !== ComponentType.article
+    ) {
+      listItem = listItem.getParent();
+    }
+
+    let parent = listItem.getParent();
+    let prev = parent.getPrev(listItem);
+    let next = parent.getNext(listItem);
     if (prev?.type === ComponentType.list) {
-      this.sendTo(prev, customerUpdate);
+      listItem.sendTo(prev, customerUpdate);
       if (next?.type === ComponentType.list) {
         next.sendTo(prev, customerUpdate);
       }
     } else if (next?.type === ComponentType.list) {
-      this.removeSelf(customerUpdate);
-      next.add(this, 0, customerUpdate);
+      listItem.removeSelf(customerUpdate);
+      next.add(listItem, 0, customerUpdate);
     } else {
       let newList = getComponentFactory().buildList("ol");
-      this.replaceSelf(newList, customerUpdate);
-      newList.add(this, undefined, customerUpdate);
+      listItem.replaceSelf(newList, customerUpdate);
+      newList.add(listItem, undefined, customerUpdate);
     }
     return;
   }
 
   outdent(customerUpdate: boolean = false): operatorType {
-    let parent = this.getParent();
+    let listItem: Block = this;
+    while (
+      listItem.parent?.type !== ComponentType.listItem &&
+      listItem.parent?.type !== ComponentType.article
+    ) {
+      listItem = listItem.getParent();
+    }
+
+    let parent = listItem.getParent();
     if (parent.type === ComponentType.article) {
       return;
     }
     let realParent = parent;
-    if (parent.type === ComponentType.blockWrapper) {
+    if (parent.type === ComponentType.listItem) {
       realParent = parent.getParent();
     }
-    let index = parent.findChildrenIndex(this);
-    this.removeSelf(customerUpdate);
-    realParent.split(index, this, customerUpdate);
+    let index = parent.findChildrenIndex(listItem);
+    listItem.removeSelf(customerUpdate);
+    realParent.split(index, listItem, customerUpdate);
     return;
   }
 

@@ -11,6 +11,8 @@ import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState, recordMethod } from "../record/decorators";
 import { nextTicket } from "./util";
+import StructureType from "../const/structure-type";
+import ContentCollection from "./content-collection";
 
 export type listType = "ol" | "ul" | "nl";
 export interface IListSnapshoot extends ICollectionSnapshoot<ListItemWrapper> {
@@ -18,6 +20,7 @@ export interface IListSnapshoot extends ICollectionSnapshoot<ListItemWrapper> {
 }
 
 class ListItemWrapper extends BlockWrapper {
+  type = ComponentType.listItem;
   static create(raw: IRawType): ListItemWrapper {
     let children = raw.children
       ? raw.children.map((item: IRawType) => ComponentMap[item.type](item))
@@ -28,7 +31,7 @@ class ListItemWrapper extends BlockWrapper {
   render() {
     let style: any = {};
     let block = this.getChild();
-    if (block instanceof List) {
+    if (!(block instanceof ContentCollection)) {
       style.display = "block";
     }
     return getContentBuilder().buildListItem(
