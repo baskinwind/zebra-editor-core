@@ -38,7 +38,7 @@ let article = factory.buildArticle();
 // article.add(factory.buildTitle("h3", "代码块"));
 // let code = factory.buildCode(
 //   `function greeter(user) {
-//     return \`Hello, \${user}. welcome to zebra-draft.\`;
+//     return \`Hello, \${user}. welcome to zebra-editor.\`;
 // }
 
 // let user = "Night's Watch";

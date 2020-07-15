@@ -1,5 +1,5 @@
 import Article from "../components/article";
-import createDraft, { IOption } from "./create-editor";
+import createEditor, { IOption } from "./create-editor";
 import createEmptyArticle from "./create-empty-article";
 import { setContentBuilder } from "../content";
 import { setComponentFactory } from "../components";
@@ -22,7 +22,7 @@ const mount = (
     root = idOrDom;
   }
   if (!root) throw Error("请传入正确的节点或节点 id");
-  return createDraft(root, article, option);
+  return createEditor(root, article, option);
 };
 
 export default mount;

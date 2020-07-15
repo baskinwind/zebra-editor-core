@@ -29,7 +29,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    let className = "zebra-draft-article";
+    let className = "zebra-editor-article";
     return `<article class="${className}" ${this.getStyle(
       style
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</article>`;
@@ -42,7 +42,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    let className = "zebra-draft-article";
+    let className = "zebra-editor-article";
     return `<article class="${className}" ${this.getStyle(
       style
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</article>`;
@@ -54,7 +54,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ) {
-    let className = "zebra-draft-table";
+    let className = "zebra-editor-table";
     return `<figure class="${className}" ${this.getStyle(
       style
     )}><table style="width:100%;border-collapse:collapse;">${getChildren().reduce(
@@ -69,7 +69,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ) {
-    let className = "zebra-draft-tr";
+    let className = "zebra-editor-tr";
     return `<tr class="${className}" ${this.getStyle(
       style
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</tr>`;
@@ -82,7 +82,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ) {
-    let className = `zebra-draft-${cellType}`;
+    let className = `zebra-editor-${cellType}`;
     return `<${cellType} class="${className}" ${this.getStyle(
       style
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</${cellType}>`;
@@ -94,7 +94,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    let className = "zebra-draft-list";
+    let className = "zebra-editor-list";
     let tag: string = data.tag || "ul";
     return `<${tag} class="${className}" ${this.getStyle(
       style
@@ -107,7 +107,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    let className = "zebra-draft-list";
+    let className = "zebra-editor-list";
     let tag: string = data.tag || "ul";
     return `<${tag} class="${className}" ${this.getStyle(
       style
@@ -121,7 +121,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     data: mapData
   ): string {
     let tag = data.tag || "p";
-    let className = `zebra-draft-${tag}`;
+    let className = `zebra-editor-${tag}`;
     return `<${tag} class="${className}" ${this.getStyle(
       style
     )}>${getChildren().reduce((acc, item) => acc + item, "")}</${tag}>`;
@@ -134,7 +134,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    let className = `zebra-draft-code`;
+    let className = `zebra-editor-code`;
     return `<pre class="${className}" ${this.getStyle(
       style
     )}><code>${content}</code></pre>`;
@@ -145,7 +145,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     if (data.link) {
       image = `<a href="${data.link}">${image}</a>`;
     }
-    let className = `zebra-draft-image`;
+    let className = `zebra-editor-image`;
     return `<figure class="${className}" ${this.getStyle(
       style
     )}>${image}</figure>`;
@@ -153,7 +153,7 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildeAudio(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<audio src="${src}" alt="${data.alt}" />`;
-    let className = `zebra-draft-image`;
+    let className = `zebra-editor-image`;
     return `<figure class="${className}" ${this.getStyle(
       style
     )}>${image}</figure>`;
@@ -161,7 +161,7 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildeVideo(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<video src="${src}" alt="${data.alt}" />`;
-    let className = `zebra-draft-image`;
+    let className = `zebra-editor-image`;
     return `<figure class="${className}" ${this.getStyle(
       style
     )}>${image}</figure>`;
@@ -186,7 +186,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     if (data.link) {
       image = `<a href="${data.link}">${image}</a>`;
     }
-    let className = `zebra-draft-inline-image`;
+    let className = `zebra-editor-inline-image`;
     return `<span class="${className}" ${this.getStyle(style)}>${image}</span>`;
   }
 }

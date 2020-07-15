@@ -21,7 +21,7 @@ export interface IOption {
 }
 
 // 将组件挂载到某个节点上
-const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
+const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
   block.active = true;
   startUpdate();
   initRecord(block);
@@ -162,4 +162,4 @@ const createDraft = (root: HTMLElement, block: Block, option?: IOption) => {
   return root;
 };
 
-export default createDraft;
+export default createEditor;
