@@ -17,8 +17,8 @@ const backspace = (
       (component.structureType === StructureType.content ||
         component.structureType === StructureType.plainText)
     ) {
-      if (start.offset <= 1) {
-        // 当删除发生在首位（或第一位）时，需要强制更新
+      if (start.offset <= 1 || start.offset >= component.getSize() - 1) {
+        // 当删除发生在首位（或第一位）或最后一位时时，需要强制更新
         event?.preventDefault();
         return focusAt(component.remove(start.offset - 1, start.offset));
       }
@@ -40,19 +40,20 @@ const backspace = (
     return focusAt(focus);
   }
 
-  let firstComponent = getBlockById(idList[0]);
-  let lastComponent = getBlockById(idList[idList.length - 1]);
+  let headBlock = getBlockById(idList[0]);
+  let tailBlock = getBlockById(idList[idList.length - 1]);
   // 为了避免 send 时，组件不更新，此处需要开启更新
-  firstComponent.remove(start.offset);
-  lastComponent.remove(0, end.offset);
+  let headFocus = headBlock.remove(start.offset);
+  let tailFocus = tailBlock.remove(0, end.offset);
 
   // 其他情况，删除中间行，首尾行合并
-  lastComponent.sendTo(firstComponent);
+  tailBlock.sendTo(headBlock);
   for (let i = 1; i < idList.length - 1; i++) {
     getBlockById(idList[i]).removeSelf();
   }
+
   return focusAt({
-    id: firstComponent.id,
+    id: headFocus ? headFocus[0].id : "",
     offset: start.offset
   });
 };

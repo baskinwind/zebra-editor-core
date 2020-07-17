@@ -18,28 +18,22 @@ export interface ITitleSnapshoot extends ICollectionSnapshoot<Inline> {
 
 const styleMap = {
   h1: {
-    fontSize: "32px",
-    fontWeight: "bold"
+    fontSize: "32px"
   },
   h2: {
-    fontSize: "24px",
-    fontWeight: "bold"
+    fontSize: "24px"
   },
   h3: {
-    fontSize: "20px",
-    fontWeight: "bold"
+    fontSize: "20px"
   },
   h4: {
-    fontSize: "16px",
-    fontWeight: "bold"
+    fontSize: "16px"
   },
   h5: {
-    fontSize: "14px",
-    fontWeight: "bold"
+    fontSize: "14px"
   },
   h6: {
-    fontSize: "12px",
-    fontWeight: "bold"
+    fontSize: "12px"
   }
 };
 
@@ -69,7 +63,12 @@ class Title extends ContentCollection {
     if (block instanceof Title && block.titleType === titleType) {
       list.push(block);
     } else if (block instanceof ContentCollection) {
-      let newTitle = getComponentFactory().buildTitle(titleType);
+      let newTitle = getComponentFactory().buildTitle(
+        titleType,
+        "",
+        block.decorate.copyStyle(),
+        block.decorate.copyData()
+      );
       newTitle.style = styleMap[newTitle.titleType];
       newTitle.addChildren(block.children.toArray(), 0);
       list.push(newTitle);

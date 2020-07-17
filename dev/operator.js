@@ -22,7 +22,8 @@ import {
   link,
   unlink,
   modifyIndent,
-  focusAt
+  focusAt,
+  createNewArticle
 } from "../src";
 
 let factory = ComponentFactory.getInstance();
@@ -64,6 +65,9 @@ new Vue({
     },
     logRawData() {
       console.log(JSON.stringify(article.getRaw()));
+    },
+    newArticle() {
+      createNewArticle();
     },
 
     modifyType(tag) {

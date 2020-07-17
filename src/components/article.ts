@@ -4,12 +4,12 @@ import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import ComponentMap from "../const/component-create";
 import { getContentBuilder } from "../content/index";
 import { storeData } from "../decorate";
 import { saveBlock } from "./util";
 import { initRecordState } from "../record/decorators";
-import focusAt from "../operator-selection/focus-at";
+import updateComponent from "../util/update-component";
+import exchange from "../operator-selection/exchange";
 
 @initRecordState
 class Article extends StructureCollection<Block> {
@@ -17,9 +17,15 @@ class Article extends StructureCollection<Block> {
   structureType = StructureType.structure;
 
   static create(raw: IRawType): Article {
-    let article = getComponentFactory().buildArticle(raw.style, raw.data);
+    let factory = getComponentFactory();
+    let article = factory.buildArticle(raw.style, raw.data);
+    if (raw.id) {
+      article.id = raw.id;
+    }
     let children = raw.children
-      ? raw.children.map((item) => ComponentMap[item.type](item))
+      ? raw.children.map((item) => {
+          return factory.typeMap[item.type].create(item);
+        })
       : [];
     article.add(children, 0, true);
     return article;
@@ -40,7 +46,22 @@ class Article extends StructureCollection<Block> {
     customerUpdate: boolean = false
   ): operatorType {
     let prev = this.getPrev(block);
-    if (!prev) return;
+    if (!prev) {
+      if (!block.decorate.isEmpty() || block.type !== ComponentType.paragraph) {
+        block.decorate.clear();
+        let exchanged = block.exchangeTo(
+          getComponentFactory().typeMap.PARAGRAPH,
+          []
+        );
+        return [exchanged[0], 1, 1];
+      }
+      // 若不是仅有一行，则删除该行
+      if (this.getSize() !== 1) {
+        block.removeSelf();
+        return;
+      }
+      return;
+    }
     return block.sendTo(prev, customerUpdate);
   }
 
@@ -54,6 +75,12 @@ class Article extends StructureCollection<Block> {
       return this.add(getComponentFactory().buildParagraph());
     }
     return focus;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.id = this.id;
+    return raw;
   }
 
   render() {

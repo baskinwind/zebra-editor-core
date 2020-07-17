@@ -33,7 +33,7 @@ const onPaste = (event: ClipboardEvent) => {
   rowData = rowData.filter((item) => {
     return item.trim().length !== 0;
   });
-  let focus = nowComponent.add(rowData[0], index, rowData.length !== 1);
+  let focus = nowComponent.add(rowData[0], index);
   if (rowData.length === 1) {
     return focusAt(focus);
   }

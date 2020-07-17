@@ -14,6 +14,7 @@ import { getContentBuilder } from "../content";
 export type operatorType = [Block, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function };
 export interface IRawType {
+  id?: string;
   type: ComponentType | string;
   children?: IRawType[];
   style?: storeData;
@@ -67,7 +68,7 @@ abstract class Component {
   // 获取用于存储的内容
   getRaw(): IRawType {
     let raw: IRawType = {
-      type: this.type
+      type: this.type,
     };
     if (!this.decorate.styleIsEmpty()) {
       raw.style = this.decorate.copyStyle();

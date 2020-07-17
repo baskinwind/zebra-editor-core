@@ -4,7 +4,6 @@ import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import BlockWrapper from "./block-wrapper";
-import ComponentMap from "../const/component-create";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
@@ -22,8 +21,9 @@ export interface IListSnapshoot extends ICollectionSnapshoot<ListItemWrapper> {
 class ListItemWrapper extends BlockWrapper {
   type = ComponentType.listItem;
   static create(raw: IRawType): ListItemWrapper {
+    let factory = getComponentFactory();
     let children = raw.children
-      ? raw.children.map((item: IRawType) => ComponentMap[item.type](item))
+      ? raw.children.map((item) => factory.typeMap[item.type].create(item))
       : [];
     return new ListItemWrapper(children[0]);
   }
@@ -263,6 +263,12 @@ class List extends StructureCollection<ListItemWrapper> {
         customerUpdate
       );
     } else {
+      if (block.isEmpty()) {
+        block.removeSelf();
+        let last = this.getChild(this.getSize() - 1);
+        let lastSize = last.getSize();
+        return [last, lastSize, lastSize];
+      }
       return this.add(block, undefined, customerUpdate);
     }
   }

@@ -7,10 +7,12 @@ import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 import {
   setContainDocument,
-  setContainWindow
+  setContainWindow,
+  getContainDocument
 } from "../operator-selection/util";
 import defaultStyle from "./default-style";
-import { nextTicket } from "../components/util";
+import { nextTicket, getBlockById } from "../components/util";
+import focusAt from "../operator-selection/focus-at";
 
 export interface IOption {
   placeholder?: string;
@@ -65,7 +67,8 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
     placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
 
     document.addEventListener("editorchange", (e) => {
-      if (!block.isEmpty()) {
+      let article = getBlockById("article");
+      if (!article.isEmpty()) {
         placeholder.style.display = "none";
       } else {
         placeholder.style.display = "block";
@@ -94,8 +97,6 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
     });
 
     editor.addEventListener("blur", (event) => {
-      // @ts-ignore
-      iframe.contentDocument.body.dataset.focus = "false";
       try {
         operator.onBlur(event);
       } catch (e) {
@@ -104,8 +105,18 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
     });
 
     editor.addEventListener("mousedown", (event) => {
-      // @ts-ignore
-      iframe.contentDocument.body.dataset.focus = "true";
+      let focus = iframe.contentDocument?.hasFocus();
+      let selection = iframe.contentWindow?.getSelection();
+      if (!focus && selection?.anchorNode) {
+        let contentEdit = selection.anchorNode.parentElement;
+        while (contentEdit && contentEdit?.contentEditable !== "true") {
+          contentEdit = contentEdit.parentElement;
+        }
+        if (contentEdit) {
+          event.preventDefault();
+          contentEdit.focus();
+        }
+      }
     });
 
     editor.addEventListener("click", (event) => {
@@ -144,6 +155,14 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
       console.info("仅可复制文本内容");
       try {
         operator.onPaste(event);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+
+    editor.addEventListener("cut", (event) => {
+      try {
+        operator.onCut(event);
       } catch (e) {
         console.warn(e);
       }

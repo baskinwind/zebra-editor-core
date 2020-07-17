@@ -7,7 +7,9 @@ import {
   getOffset,
   getContainDocument
 } from "./util";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, throttle } from "lodash-es";
+import { getBlockById } from "../components/util";
+import Article from "../components/article";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -30,18 +32,24 @@ let selectionStore: selectionType = {
   ]
 };
 
-let flushTimer: number;
-
-// 至少隔 300 毫秒后，才能保存当前选取的内容，避免过度触发该 API
-const flushSelection = () => {
-  if (flushTimer) return;
-  getSelection();
-  flushTimer = setTimeout(() => {
-    flushTimer = 0;
-  }, 300);
+const initSelection = () => {
+  selectionStore = {
+    isCollapsed: true,
+    selectStructure: false,
+    range: [
+      {
+        id: "",
+        offset: 0
+      },
+      {
+        id: "",
+        offset: 0
+      }
+    ]
+  };
 };
 
-// 获得之前选区的内容
+// 获取之前选区的内容
 const getBeforeSelection = () => {
   return cloneDeep<selectionType>(selectionStore);
 };
@@ -58,11 +66,30 @@ const getSelection = () => {
   ) {
     return selectionStore;
   }
-
   let anchorNode = section?.anchorNode;
+
   // 当选区不在生成的文章中时，直接返回之前的选区对象
   let rootDom = getContainDocument().getElementById("zebra-editor-contain");
   if (!rootDom?.contains(anchorNode)) {
+    return cloneDeep<selectionType>(selectionStore);
+  }
+
+  if (rootDom === anchorNode) {
+    let block = rootDom.children[0].children[0];
+    selectionStore = {
+      isCollapsed: true,
+      selectStructure: false,
+      range: [
+        {
+          id: block.id,
+          offset: 0
+        },
+        {
+          id: block.id,
+          offset: 0
+        }
+      ]
+    };
     return cloneDeep<selectionType>(selectionStore);
   }
 
@@ -175,6 +202,9 @@ const getSelection = () => {
   return cloneDeep<selectionType>(selectionStore);
 };
 
+// 至少隔 300 毫秒后，才能保存当前选取的内容，避免过度触发该 API
+const flushSelection = throttle(getSelection, 300);
+
 export default getSelection;
 
-export { flushSelection, getBeforeSelection };
+export { initSelection, flushSelection, getBeforeSelection };

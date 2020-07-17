@@ -52,10 +52,10 @@ abstract class PlainText extends Block {
   ) {
     super(style, data);
     // 纯文本最后必须有一个换行
-    if (content[content.length - 1] !== "\n") {
-      content += "\n";
-    }
     this.content = [...content];
+    if (this.content[this.content.length - 1] !== "\n") {
+      this.content.push("\n");
+    }
   }
 
   getSize() {

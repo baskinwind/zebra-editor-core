@@ -3,6 +3,7 @@ import ComponentFactory from "./components";
 
 // 内容生成器
 import ContentBuilder from "./content/content-builder";
+import HtmlBuilder from "./content/html-builder";
 import { getBlockById } from "./components/util";
 
 // 用户操作处理
@@ -21,6 +22,7 @@ import exchange from "./operator-selection/exchange";
 
 // 操作内容
 import mount from "./util/mount";
+import createNewArticle from "./util/create-new-article";
 import getHtml from "./util/get-html";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
@@ -36,6 +38,7 @@ export {
   ComponentFactory,
   getBlockById,
   ContentBuilder,
+  HtmlBuilder,
   UserOperator,
   focusAt,
   getSelection,
@@ -47,6 +50,7 @@ export {
   modifyIndent,
   exchange,
   mount,
+  createNewArticle,
   getHtml,
   getRawData,
   createByRaw,

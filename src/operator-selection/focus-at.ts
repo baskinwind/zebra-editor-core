@@ -7,32 +7,40 @@ type focusAtType = cursorType | [Component, number, number];
 
 // 选中 start 到 end 的内容
 const focusAt = (start?: focusAtType, end?: cursorType) => {
-  // 若无选区，则使用前一步的选区内容
-  if (!start) {
-    let selection = getBeforeSelection();
-    start = selection.range[0];
-    end = selection.range[1];
-  }
-  // 选区参数为数组形式
-  if (Array.isArray(start)) {
-    end = { id: start[0].id, offset: start[2] };
-    start = { id: start[0].id, offset: start[1] };
-  }
-  if (!end) {
-    end = { id: start.id, offset: start.offset };
-  }
-  start.offset = start.offset === -1 ? 0 : start.offset;
-  end.offset = end.offset === -1 ? 0 : end.offset;
-  let startPosition = getCursorPosition(start);
-  if (!startPosition) return;
-  let endPosition = startPosition;
-  if (end) {
-    let temp = getCursorPosition(end);
-    if (temp) {
-      endPosition = temp;
+  try {
+    if (!start) {
+      // 若无选区，则使用前一步的选区内容
+      let selection = getBeforeSelection();
+      start = selection.range[0];
+      end = selection.range[1];
     }
+    // 选区参数为数组形式
+    if (Array.isArray(start)) {
+      end = { id: start[0].id, offset: start[2] };
+      start = { id: start[0].id, offset: start[1] };
+    }
+    // id 为空字符，说明刚初始化，不进行 focus
+    if (start.id === "") return;
+    if (!end) {
+      end = { id: start.id, offset: start.offset };
+    }
+    start.offset = start.offset === -1 ? 0 : start.offset;
+    end.offset = end.offset === -1 ? 0 : end.offset;
+    let startPosition = getCursorPosition(start);
+    if (!startPosition) return;
+    let endPosition = startPosition;
+    if (end) {
+      let temp = getCursorPosition(end);
+      if (temp) {
+        endPosition = temp;
+      }
+    }
+    focusNode(startPosition, endPosition);
+  } catch (e) {
+    console.warn(e);
+    let rootDom = getContainDocument().getElementById("zebra-editor-contain");
+    rootDom?.blur();
   }
-  focusNode(startPosition, endPosition);
 };
 
 type focusNodeType = {
@@ -78,7 +86,7 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
     range.setEnd(end.node, sureList.slice(0, end.index).join("").length);
   }
   section?.addRange(range);
-  if (doc.body.dataset.focus === "false") {
+  if (!doc.hasFocus()) {
     let contentEdit = start.node.parentElement;
     while (contentEdit && contentEdit?.contentEditable !== "true") {
       contentEdit = contentEdit?.parentElement;

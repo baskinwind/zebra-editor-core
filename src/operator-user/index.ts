@@ -1,16 +1,18 @@
 import BaseOperator from "./base-operator";
 import DirectionType from "../const/direction-type";
 import getSelection, {
-  flushSelection
+  flushSelection,
+  getBeforeSelection
 } from "../operator-selection/get-selection";
 import backspace from "../operator-character/backspace";
 import input from "../operator-character/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById, nextTicket } from "../components/util";
-import { createDurationRecord, undo, redo } from "../record/util";
-import { getContainWindow } from "../operator-selection/util";
+import { createDurationRecord, undo, redo, createRecord } from "../record/util";
+import { getContainDocument } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
+import { throttle } from "lodash-es";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
@@ -27,9 +29,10 @@ class UserOperator extends BaseOperator {
 
   onClick(event: MouseEvent) {
     // 修复点击图片未选中图片的问题
+    let doc = getContainDocument();
+    let section = doc.getSelection();
     let target = event.target as any;
     if (target.nodeName === "IMG") {
-      let section = getContainWindow().getSelection();
       try {
         section?.removeAllRanges();
       } catch {}
@@ -46,6 +49,14 @@ class UserOperator extends BaseOperator {
     onPaste(event);
   }
 
+  onCut() {
+    let selection = getSelection();
+    setTimeout(() => {
+      createRecord();
+      backspace(selection.range[0], selection.range[1]);
+    }, 30);
+  }
+
   onCompositionStart(event: CompositionEvent) {
     let selection = getSelection();
     createDurationRecord(selection.range[0], selection.range[1]);
@@ -55,13 +66,13 @@ class UserOperator extends BaseOperator {
   }
 
   onCompositionEnd(event: CompositionEvent) {
-    let selection = getSelection();
+    let selection = getBeforeSelection();
     // 混合输入会导致获取选区在输入文字的后方
     input(
       event.data,
       {
         id: selection.range[0].id,
-        offset: selection.range[0].offset - [...event.data].length
+        offset: selection.range[0].offset
       },
       event
     );
@@ -96,9 +107,8 @@ class UserOperator extends BaseOperator {
     )
       return;
     let data = event.data;
-    let selection = getSelection();
+    let selection = getBeforeSelection();
     let start = selection.range[0];
-    start.offset = start.offset - [...data].length;
     input(data, start, event);
   }
 
@@ -144,24 +154,47 @@ class UserOperator extends BaseOperator {
       focusAt(component.addEmptyParagraph(!event.shiftKey));
       return;
     }
-    // 复制、黏贴不控制
-    if (isCtrl && ["c", "v"].includes(key)) {
-      return;
-    }
-    if (isCtrl && "z" === key) {
-      if (event.shiftKey) {
-        redo();
-      } else {
-        undo();
+    // 一些不需要控制的按键
+    if (isCtrl) {
+      if (["c", "v", "x"].includes(key)) {
+        return;
       }
-      return;
+      if ("s" === key) {
+        saveArticle();
+        event.preventDefault();
+        return;
+      }
+      if ("z" === key) {
+        if (event.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+        return;
+      }
+      event.preventDefault();
     }
-    event.preventDefault();
   }
 
   onTab(event: KeyboardEvent) {
     event.preventDefault();
   }
 }
+
+const saveArticle = throttle(() => {
+  let beforeArticle = getBlockById("article");
+  // 空文章不做存储
+  if (beforeArticle.isEmpty()) return;
+  localStorage.setItem(
+    "zebra-editor-article-" + beforeArticle.id,
+    JSON.stringify(beforeArticle.getRaw())
+  );
+  let saveArticleList =
+    localStorage.getItem("zebra-editor-article-list")?.split("|") || [];
+  if (!saveArticleList.includes(beforeArticle.id)) {
+    saveArticleList.push(beforeArticle.id);
+  }
+  localStorage.setItem("zebra-editor-article-list", saveArticleList.join("|"));
+}, 100);
 
 export default UserOperator;

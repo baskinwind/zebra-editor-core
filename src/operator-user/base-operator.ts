@@ -6,6 +6,7 @@ abstract class BaseOperator {
   abstract onInput(event: InputEvent): void;
   abstract onBeforeInput(event: InputEvent): void;
   abstract onPaste(event: ClipboardEvent): void;
+  abstract onCut(event: ClipboardEvent): void;
   abstract onCompositionStart(event: CompositionEvent): void;
   abstract onCompositionEnd(event: CompositionEvent): void;
 }

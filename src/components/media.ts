@@ -22,7 +22,7 @@ class Media extends Block {
   type = ComponentType.media;
   structureType = StructureType.content;
   style: storeData = {
-    margin: "auto"
+    margin: "10px auto"
   };
 
   static create(raw: IRawType): Media {
@@ -74,14 +74,14 @@ class Media extends Block {
   }
 
   exchangeTo(builder: classType, args: any[]): Block[] {
-    return [];
+    return [this];
   }
 
-  removeSelf(customerUpdate: boolean = false): operatorType {
-    let paragraph = getComponentFactory().buildParagraph();
-    this.replaceSelf(paragraph, customerUpdate);
-    return [paragraph, 0, 0];
-  }
+  // removeSelf(customerUpdate: boolean = false): operatorType {
+  //   let paragraph = getComponentFactory().buildParagraph();
+  //   this.replaceSelf(paragraph, customerUpdate);
+  //   return [paragraph, 0, 0];
+  // }
 
   modifyContentDecorate(
     start: number,

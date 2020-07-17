@@ -11,6 +11,7 @@ import updateComponent from "../util/update-component";
 import { createError } from "./util";
 import { getContentBuilder } from "../content";
 import { recordMethod } from "../record/decorators";
+import { getComponentFactory } from ".";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
@@ -161,15 +162,17 @@ abstract class ContentCollection extends Collection<Inline> {
     customerUpdate: boolean = false
   ): ContentCollection {
     let isTail = index === this.getSize();
-    let tail = isTail ? [] : this.children.slice(index).toArray();
+    // 如果是从中间分段，则保持段落类型
     if (!isTail) {
+      let tail = this.children.slice(index).toArray();
       this.removeChildren(index, this.getSize() - index, customerUpdate);
-    }
-    let newCollection = this.createEmpty();
-    if (!isTail) {
+      let newCollection = this.createEmpty();
       newCollection.add(tail, 0, true);
+      return newCollection;
     }
-    return newCollection;
+    // 如果是从尾部分段，则直接添加一个普通段落
+    let newParagraph = getComponentFactory().buildParagraph();
+    return newParagraph;
   }
 
   split(

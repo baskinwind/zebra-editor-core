@@ -8,7 +8,6 @@ import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState } from "../record/decorators";
 import { nextTicket } from "./util";
-import ComponentMap from "../const/component-create";
 
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   tag: string;
@@ -20,10 +19,11 @@ class CustomerCollection extends StructureCollection<Block> {
   tag: string;
 
   static create(raw: IRawType): CustomerCollection {
+    let factory = getComponentFactory();
     let children = raw.children
-      ? raw.children.map((item: IRawType) => ComponentMap[item.type](item))
+      ? raw.children.map((item) => factory.typeMap[item.type].create(item))
       : [];
-    let collection = getComponentFactory().buildCustomerCollection(raw.tag);
+    let collection = factory.buildCustomerCollection(raw.tag);
     collection.add(children);
     return collection;
   }

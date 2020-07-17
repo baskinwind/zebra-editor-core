@@ -9,6 +9,7 @@ import {
   getContainer
 } from "../operator-selection/util";
 import updateComponent, { needUpdate } from "../util/update-component";
+import ContentCollection from "../components/content-collection";
 
 const input = (
   charOrInline: string | Inline,
@@ -23,9 +24,10 @@ const input = (
     let startNode = startPosition.node;
     // 样式边缘的空格，逃脱默认样式，优化体验
     if (
+      component instanceof ContentCollection &&
       charOrInline === " " &&
       (startPosition.index === 0 ||
-        startPosition.index === startNode.nodeValue?.length)
+        startPosition.index === [...(startNode.nodeValue || "")].length - 1)
     ) {
       charOrInline = new Character(charOrInline);
     }
@@ -37,7 +39,6 @@ const input = (
       component.add(charOrInline, offset, true);
       let container = getContainer(node);
       let newInline = charOrInline.render();
-      debugger
       if (node.nodeName === "IMG") {
         container.replaceWith(container, newInline);
       } else {

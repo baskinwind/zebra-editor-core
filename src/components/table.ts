@@ -133,6 +133,7 @@ class Table extends StructureCollection<TableRow> {
 
   getRaw() {
     let raw = super.getRaw();
+    raw.col = this.col;
     raw.needHead = this.needHead;
     return raw;
   }

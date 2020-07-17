@@ -7,18 +7,19 @@ body{
   padding:10px;
   box-sizing: border-box;
   font-family: -apple-system;
+  line-height: 1.4;
 }
 *{
   box-sizing: border-box;
 }
-h1,h2,h3,h4,h5,h6,figure,p,ul,ol{
+h1,h2,h3,h4,h5,h6,figure,p,ul,ol,blockquote{
   margin: 10px 0;
   padding: 0;
 }
 li>h1,li>h2,li>h3,li>h4,li>h5,li>h6,li>p,li>ul,li>ol{
   margin: 0;
 }
-table p,pre{
+table p{
   margin: 0;
 }
 a{
@@ -35,7 +36,6 @@ pre::before{
   top: 10px;
   text-transform: uppercase;
   color: #ccc;
-  font-weight: bold;
 }
 table td,table th{
   min-width: 2em;
@@ -44,9 +44,6 @@ table td,table th{
 }
 [contenteditable=true]{
   outline:none
-}
-#zebra-editor-contain span,#zebra-editor-contain strong,#zebra-editor-contain code,#zebra-editor-contain a{
-  line-height: 1.3em;
 }
 .zebra-editor-image-loading{
   position: relative;
@@ -68,16 +65,15 @@ table td,table th{
   text-align: center;
   color: #ccc;
 }
-.zebra-editor-page{
-  min-height:100%;
-  white-space:pre-wrap;
-  overflow:auto;
-}
 .zebra-editor-placeholder{
   position: absolute;
   top: 20px;
   left: 10px;
   z-index: -1;
   color: #ccc;
+}
+#zebra-editor-contain{
+  min-height:100%;
+  white-space:pre-wrap;
 }
 `;

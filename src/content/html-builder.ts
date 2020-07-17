@@ -164,9 +164,16 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    return this.buildHtml("pre", `zebra-editor-code`, style, content, {
-      language
-    });
+    return `<pre class="zebra-editor-code" ${this.getStyle({
+      ...style,
+      position: "relative"
+    })}${this.getData(data)}><span ${this.getStyle({
+      position: "absolute",
+      right: "10px",
+      top: "10px",
+      textTransform: "uppercase",
+      color: "#ccc"
+    })}>${language}</span><code>${content}</code></pre>`;
   }
 
   buildeImage(id: string, src: string, style: mapData, data: mapData): string {
@@ -204,7 +211,7 @@ class HtmlBuilder extends BaseBuilder<string> {
   ): string {
     let content = charList;
     if (data.link) {
-      content = `<a href=${data.link}>${content}</strong>`;
+      content = `<a href=${data.link}>${content}</a>`;
     }
     if (data.bold) {
       content = `<strong>${content}</strong>`;

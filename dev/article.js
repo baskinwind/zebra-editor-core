@@ -39,27 +39,20 @@ let pledgeCn = [
 
 // article.add(factory.buildTitle("h3", "代码块"));
 // let code = factory.buildCode(
-//   `function greeter(user) {
-//     return \`Hello, \${user}. welcome to zebra-editor.\`;
-// }
-
-// let user = "Night's Watch";
-
-// document.body.innerHTML = greeter(user);
-// `,
+//   `document.body.innerHTML = greeter(user);`,
 //   "javascript"
 // );
 // code.addInto(article);
 
-// article.add(factory.buildTitle("h3", "列表"));
-// let ol = factory.buildList("ol", [
-//   "权力的游戏",
-//   "列王的纷争",
-//   "冰雨的风暴",
-//   "群鸦的盛宴",
-//   "魔龙的狂舞"
-// ]);
-// ol.addInto(article);
+article.add(factory.buildTitle("h3", ""));
+let ol = factory.buildList("ol", [
+  "权力的游戏",
+  "列王的纷争",
+  "冰雨的风暴",
+  "群鸦的盛宴",
+  "魔龙的狂舞"
+]);
+ol.addInto(article);
 
 // let ul = factory.buildList("ul", [
 //   "琼恩·雪诺",
@@ -74,9 +67,9 @@ let pledgeCn = [
 //   article.add(factory.buildParagraph(item));
 // });
 
-pledgeCn.forEach((item) => {
-  article.add(factory.buildParagraph(item));
-});
+// pledgeCn.forEach((item) => {
+//   article.add(factory.buildParagraph(item));
+// });
 
 // article.add(factory.buildTitle("h3", "图文混排"));
 // let para = factory.buildParagraph("");

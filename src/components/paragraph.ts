@@ -31,7 +31,11 @@ class Paragraph extends ContentCollection {
     if (block instanceof Paragraph) {
       list.push(block);
     } else if (block instanceof ContentCollection) {
-      let newParagraph = getComponentFactory().buildParagraph();
+      let newParagraph = getComponentFactory().buildParagraph(
+        "",
+        block.decorate.copyStyle(),
+        block.decorate.copyData()
+      );
       newParagraph.addChildren(block.children.toArray(), 0);
       list.push(newParagraph);
     } else if (block instanceof PlainText) {

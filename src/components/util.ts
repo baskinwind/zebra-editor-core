@@ -1,6 +1,6 @@
 import { generate } from "shortid";
 import Block from "./block";
-const store: { [key: string]: any } = {};
+let store: { [key: string]: any } = {};
 
 export interface IStatistic {
   word: number;
@@ -36,6 +36,10 @@ export const getBlockById = <T extends Block = Block>(id: string): T => {
     return store["article"].getChild(0);
   }
   return store[id];
+};
+
+export const clearBlock = () => {
+  store = {};
 };
 
 export const createError = (message: string, info?: any) => {
