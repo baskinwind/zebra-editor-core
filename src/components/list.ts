@@ -9,9 +9,8 @@ import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState, recordMethod } from "../record/decorators";
-import { nextTicket } from "./util";
-import StructureType from "../const/structure-type";
 import ContentCollection from "./content-collection";
+import nextTicket from "../util/next-ticket";
 
 export type listType = "ol" | "ul" | "nl";
 export interface IListSnapshoot extends ICollectionSnapshoot<ListItemWrapper> {

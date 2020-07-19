@@ -1,4 +1,4 @@
-import { nextTicket } from "../components/util";
+import nextTicket from "../util/next-ticket";
 
 export interface mapData {
   [key: string]: any;

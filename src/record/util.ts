@@ -6,7 +6,7 @@ import getSelection, {
 } from "../operator-selection/get-selection";
 import updateComponent from "../util/update-component";
 import { cursorType } from "../operator-selection/util";
-import { nextTicket } from "../components/util";
+import nextTicket from "../util/next-ticket";
 
 interface recoreType {
   undoSelection: {

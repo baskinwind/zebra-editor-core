@@ -8,10 +8,10 @@ import Character from "./character";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { createError } from "./util";
 import { getContentBuilder } from "../content";
 import { recordMethod } from "../record/decorators";
 import { getComponentFactory } from ".";
+import { createError } from "../util/handle-error";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;

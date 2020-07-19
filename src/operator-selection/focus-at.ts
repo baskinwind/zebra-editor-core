@@ -1,7 +1,7 @@
 import Component from "../components/component";
 import { cursorType, getCursorPosition, getContainDocument } from "./util";
 import { getBeforeSelection } from "./get-selection";
-import { nextTicket } from "../components/util";
+import nextTicket from "../util/next-ticket";
 
 type focusAtType = cursorType | [Component, number, number];
 

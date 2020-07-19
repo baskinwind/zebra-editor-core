@@ -1,8 +1,9 @@
 import { getContainDocument } from "../operator-selection/util";
 import createEmptyArticle from "./create-empty-article";
-import { createError, clearBlock, getBlockById } from "../components/util";
+import { clearBlock, getBlockById } from "../components/util";
 import { initRecord } from "../record/util";
 import { initSelection } from "../operator-selection/get-selection";
+import { createError } from "./handle-error";
 
 const createNewArticle = () => {
   let doc = getContainDocument();

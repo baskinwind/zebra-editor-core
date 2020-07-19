@@ -1,6 +1,6 @@
 import ContentBulider from "./content-builder";
 import BaseBuilder from "./base-builder";
-import { nextTicket } from "../components/util";
+import nextTicket from "../util/next-ticket";
 
 let nowContentBuiler: any;
 

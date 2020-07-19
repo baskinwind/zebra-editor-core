@@ -1,17 +1,12 @@
 import { getComponentFactory } from ".";
-import Component, {
-  operatorType,
-  classType,
-  IRawType,
-  ISnapshoot
-} from "./component";
+import Component, { operatorType, IRawType } from "./component";
 import Block, { IBlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { createError } from "./util";
 import { storeData } from "../decorate";
 import { recordMethod } from "../record/decorators";
+import { createError } from "../util/handle-error";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
   content: string;

@@ -1,7 +1,8 @@
 // @ts-nocheck
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getBlockById, createError } from "../components/util";
+import { getBlockById } from "../components/util";
+import { createError } from "../util/handle-error";
 
 export interface cursorType {
   id: string;

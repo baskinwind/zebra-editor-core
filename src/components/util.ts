@@ -42,13 +42,6 @@ export const clearBlock = () => {
   store = {};
 };
 
-export const createError = (message: string, info?: any) => {
-  let error = new Error(message);
-  // @ts-ignore
-  error.editorInfo = info;
-  return error;
-};
-
 export const mergerStatistic = (oldS: IStatistic, newS: IStatistic) => {
   return {
     word: oldS.word + newS.word,
@@ -60,8 +53,4 @@ export const mergerStatistic = (oldS: IStatistic, newS: IStatistic) => {
     code: oldS.code + newS.code,
     block: oldS.block + newS.block
   };
-};
-
-export const nextTicket = (func: () => void) => {
-  Promise.resolve().then(func);
 };

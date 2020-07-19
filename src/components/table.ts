@@ -6,9 +6,9 @@ import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import { storeData } from "../decorate";
 import { getContentBuilder } from "../content";
-import { createError } from "./util";
 import { initRecordState } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
+import { createError } from "../util/handle-error";
 
 type tableCellChildType = string | TableItem | undefined;
 

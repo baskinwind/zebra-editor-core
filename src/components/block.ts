@@ -5,12 +5,13 @@ import Component, {
   ISnapshoot
 } from "./component";
 import StructureCollection from "./structure-collection";
-import { saveBlock, createError, nextTicket } from "./util";
+import { saveBlock } from "./util";
 import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
 import ComponentType from "../const/component-type";
-import ComponentFactory, { getComponentFactory } from ".";
-import StructureType from "../const/structure-type";
+import { getComponentFactory } from ".";
+import { createError } from "../util/handle-error";
+import nextTicket from "../util/next-ticket";
 
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;

@@ -7,24 +7,28 @@ import { initRecord } from "../record/util";
 import { startUpdate } from "./update-component";
 import {
   setContainDocument,
-  setContainWindow,
-  getContainDocument
+  setContainWindow
 } from "../operator-selection/util";
 import defaultStyle from "./default-style";
-import { nextTicket, getBlockById } from "../components/util";
-import focusAt from "../operator-selection/focus-at";
+import { getBlockById } from "../components/util";
+import { addErrorHandle } from "./handle-error";
+import nextTicket from "./next-ticket";
 
 export interface IOption {
   placeholder?: string;
   userOperator?: BaseOperator;
   contentBuilder?: BaseBuilder;
   componentFactory?: ComponentFactory;
+  onError?: (error: Error) => void;
   beforeCreate?: (document: Document, window: Window | null) => void;
   afterCreate?: (document: Document, window: Window | null) => void;
 }
 
 // 将组件挂载到某个节点上
 const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
+  if (option?.onError) {
+    addErrorHandle(option.onError);
+  }
   block.active = true;
   startUpdate();
   initRecord(block);
@@ -68,10 +72,11 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
 
     document.addEventListener("editorchange", (e) => {
       let article = getBlockById("article");
-      if (!article.isEmpty()) {
-        placeholder.style.display = "none";
-      } else {
+      // @ts-ignore
+      if (article.isEmpty() && article.getChild(0).decorate.isEmpty()) {
         placeholder.style.display = "block";
+      } else {
+        placeholder.style.display = "none";
       }
     });
     iframe.contentDocument.body.appendChild(placeholder);

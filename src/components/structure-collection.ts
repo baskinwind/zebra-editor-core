@@ -3,8 +3,9 @@ import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { createError, mergerStatistic } from "./util";
+import { mergerStatistic } from "./util";
 import { recordMethod } from "../record/decorators";
+import { createError } from "../util/handle-error";
 
 abstract class StructureCollection<T extends Block = Block> extends Collection<
   T

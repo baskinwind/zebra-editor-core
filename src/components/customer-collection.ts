@@ -7,7 +7,7 @@ import ComponentType from "../const/component-type";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState } from "../record/decorators";
-import { nextTicket } from "./util";
+import nextTicket from "../util/next-ticket";
 
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   tag: string;

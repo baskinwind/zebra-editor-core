@@ -1,7 +1,8 @@
 import Block from "../components/block";
-import { getBlockById, nextTicket } from "../components/util";
+import { getBlockById } from "../components/util";
 import { getContainDocument } from "../operator-selection/util";
 import ComponentType from "../const/component-type";
+import nextTicket from "./next-ticket";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();

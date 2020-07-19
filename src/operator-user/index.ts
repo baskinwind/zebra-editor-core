@@ -8,11 +8,12 @@ import backspace from "../operator-character/backspace";
 import input from "../operator-character/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
-import { getBlockById, nextTicket } from "../components/util";
+import { getBlockById } from "../components/util";
 import { createDurationRecord, undo, redo, createRecord } from "../record/util";
 import { getContainDocument } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
 import { throttle } from "lodash-es";
+import nextTicket from "../util/next-ticket";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;

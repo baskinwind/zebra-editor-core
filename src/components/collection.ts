@@ -1,8 +1,8 @@
 import { List } from "immutable";
 import Component from "./component";
 import Block, { IBlockSnapshoot } from "./block";
-import { createError } from "./util";
 import { recordMethod } from "../record/decorators";
+import { createError } from "../util/handle-error";
 
 export interface ICollectionSnapshoot<T> extends IBlockSnapshoot {
   children: List<T>;

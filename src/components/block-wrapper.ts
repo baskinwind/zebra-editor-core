@@ -4,8 +4,8 @@ import StructureCollection from "./structure-collection";
 import Block from "./block";
 import ComponentBlockype from "../const/component-type";
 import { storeData } from "../decorate";
-import { createError } from "./util";
 import { getContentBuilder } from "../content";
+import { createError } from "../util/handle-error";
 
 abstract class BlockWrapper extends StructureCollection<Block> {
   type = ComponentBlockype.blockWrapper;
