@@ -2,6 +2,7 @@ import StructureType from "../const/structure-type";
 import focusAt from "../operator-selection/focus-at";
 import { cursorType, getSelectedIdList } from "../operator-selection/util";
 import { getBlockById } from "../components/util";
+import updateComponent from "../util/update-component";
 
 // 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
 const backspace = (
@@ -43,14 +44,15 @@ const backspace = (
   let headBlock = getBlockById(idList[0]);
   let tailBlock = getBlockById(idList[idList.length - 1]);
   // 为了避免 send 时，组件不更新，此处需要开启更新
-  let headFocus = headBlock.remove(start.offset);
-  let tailFocus = tailBlock.remove(0, end.offset);
+  let headFocus = headBlock.remove(start.offset, undefined, true);
 
   // 其他情况，删除中间行，首尾行合并
-  tailBlock.sendTo(headBlock);
   for (let i = 1; i < idList.length - 1; i++) {
-    getBlockById(idList[i]).removeSelf();
+    getBlockById(idList[i]).removeSelf(true);
   }
+  tailBlock.remove(0, end.offset, true);
+  tailBlock.sendTo(headBlock, true);
+  updateComponent(idList.map((item) => getBlockById(item)));
 
   return focusAt({
     id: headFocus ? headFocus[0].id : "",

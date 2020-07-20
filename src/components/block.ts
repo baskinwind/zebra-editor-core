@@ -99,10 +99,14 @@ abstract class Block extends Component {
 
   // 将当前组件转换为 builder 类型的组件
   @recordMethod
-  exchangeTo(builder: classType, args: any[]): Block[] {
+  exchangeTo(
+    builder: classType,
+    args: any[],
+    customerUpdate: boolean = false
+  ): Block[] {
     // @ts-ignore
     if (builder === this.constructor) return [this];
-    return builder.exchange(this, args);
+    return builder.exchange(this, args, customerUpdate);
   }
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型

@@ -265,7 +265,7 @@ class List extends StructureCollection<ListItemWrapper> {
       if (block.isEmpty()) {
         block.removeSelf();
         let last = this.getChild(this.getSize() - 1);
-        let lastSize = last.getSize();
+        let lastSize = last.getChild().getSize();
         return [last, lastSize, lastSize];
       }
       return this.add(block, undefined, customerUpdate);

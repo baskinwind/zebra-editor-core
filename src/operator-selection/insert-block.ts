@@ -1,6 +1,6 @@
 import Block from "../components/block";
 import getSelection from "./get-selection";
-import deleteSelection from "../operator-character/delete-selection";
+import deleteSelection from "../operator/delete-selection";
 import focusAt from "./focus-at";
 import { getBlockById } from "../components/util";
 import { createRecord } from "../record/util";

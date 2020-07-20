@@ -4,8 +4,8 @@ import getSelection, {
   flushSelection,
   getBeforeSelection
 } from "../operator-selection/get-selection";
-import backspace from "../operator-character/backspace";
-import input from "../operator-character/input";
+import backspace from "../operator/backspace";
+import input from "../operator/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";

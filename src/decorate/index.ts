@@ -20,9 +20,6 @@ class Decorate {
     this.data = Map(data);
   }
 
-  getStyle() {
-    return { ...this.component.style, ...this.style.toObject() };
-  }
   copyStyle() {
     return this.style.toObject();
   }
@@ -31,6 +28,16 @@ class Decorate {
     for (let key in style) {
       this.setStyle(key, style[key]);
     }
+  }
+  getStyle() {
+    return { ...this.component.style, ...this.style.toObject() };
+  }
+  getStyleByName(name: string) {
+    let data = this.style.get(name);
+    if (data) {
+      return data;
+    }
+    return this.component.style[name];
   }
   setStyle(name: string, value: any) {
     if (name === "remove") {
@@ -55,9 +62,6 @@ class Decorate {
     return this.style.size === 0;
   }
 
-  getData() {
-    return { ...this.component.data, ...this.data.toObject() };
-  }
   copyData() {
     return this.data.toObject();
   }
@@ -66,6 +70,16 @@ class Decorate {
     for (let key in data) {
       this.setData(key, data[key]);
     }
+  }
+  getData() {
+    return { ...this.component.data, ...this.data.toObject() };
+  }
+  getDataByName(name: string) {
+    let data = this.data.get(name);
+    if (data) {
+      return data;
+    }
+    return this.component.data[name];
   }
   setData(name: string, value: any) {
     if (name === "remove") {

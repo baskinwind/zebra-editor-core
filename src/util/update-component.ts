@@ -15,9 +15,13 @@ const stopUpdate = () => {
   canUpdate = false;
 };
 
-// 添加延迟更新的组件 id，通常发生在混合输入后
-const delayUpdate = (idList: string[]) => {
-  idList.forEach((id) => delayUpdateQueue.add(id));
+// 添加延迟更新的组件 id，通常发生在大批量删除或历史回退时
+const delayUpdate = (id: string | string[]) => {
+  if (Array.isArray(id)) {
+    id.forEach((item) => delayUpdateQueue.add(item));
+  } else {
+    delayUpdateQueue.add(id);
+  }
 };
 
 // 判断是否需要延迟更新
@@ -27,7 +31,7 @@ const needUpdate = () => {
 
 // 更新组件
 const updateComponent = (
-  component?: Block | Block[],
+  block?: Block | Block[],
   customerUpdate: boolean = false
 ) => {
   // 清空延迟更新队列
@@ -35,30 +39,34 @@ const updateComponent = (
     // console.info("delay update");
     delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
+    nextTicket(() => {
+      document.dispatchEvent(new Event("editorchange"));
+    });
+  }
+
+  // 无内容，不更新
+  if (!canUpdate || customerUpdate || !block) return;
+  // console.info("update");
+  if (Array.isArray(block)) {
+    block.forEach((item) => update(item));
+  } else {
+    update(block);
   }
 
   // 避免过度触发 editorchange 事件
   nextTicket(() => {
     document.dispatchEvent(new Event("editorchange"));
   });
-
-  // 无内容，不更新
-  if (!canUpdate || customerUpdate || !component) return;
-  // console.info("update");
-  if (Array.isArray(component)) {
-    component.forEach((item) => update(item));
-  } else {
-    update(component);
-  }
 };
 
-const update = (component: Block) => {
+const update = (block: Block) => {
+  if (!block) return;
   let containDocument = getContainDocument();
-  let dom = containDocument.getElementById(component.id);
+  let dom = containDocument.getElementById(block.id);
   if (dom) {
     // console.info(component.id);
-    if (component.active) {
-      let newRender = component.render();
+    if (block.active) {
+      let newRender = block.render();
       // 当仅发生样式变化时，render 返回节点不会变化
       if (newRender === dom) return;
       dom?.replaceWith(newRender);
@@ -68,8 +76,8 @@ const update = (component: Block) => {
   } else {
     // 没有对应元素
     // 组件失效，或是组件没有父节点时，不需更新
-    if (!component.active || !component.parent) return;
-    let parentComponent = component.parent;
+    if (!block.active || !block.parent) return;
+    let parentComponent = block.parent;
     let parentDom = containDocument.getElementById(parentComponent.id);
 
     // 未找到父组件对应的元素时，更新父组件
@@ -79,17 +87,21 @@ const update = (component: Block) => {
     }
     // console.info(component.id);
     // 将该组件插入到合适的位置
-    let index = parentComponent.findChildrenIndex(component);
+    let index = parentComponent.findChildrenIndex(block);
     if (parentComponent.type === ComponentType.table) {
       parentDom = parentDom?.children[0] as HTMLElement;
     }
     if (index === parentComponent.getSize() - 1) {
-      parentDom.appendChild(component.render());
+      parentDom.appendChild(block.render());
     } else {
       let afterComId = parentComponent.getChild(index + 1)?.id;
       if (afterComId) {
         let afterDom = containDocument.getElementById(afterComId);
-        parentDom.insertBefore(component.render(), afterDom);
+        if (afterDom) {
+          parentDom.insertBefore(block.render(), afterDom);
+        } else {
+          delayUpdateQueue.add(block.id);
+        }
       }
     }
   }

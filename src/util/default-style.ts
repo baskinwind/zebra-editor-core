@@ -45,6 +45,7 @@ table td,table th{
 [contenteditable=true]{
   outline:none
 }
+
 .zebra-editor-image-loading{
   position: relative;
   background: #f8f8f8;

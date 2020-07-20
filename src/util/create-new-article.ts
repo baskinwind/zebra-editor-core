@@ -20,6 +20,11 @@ const createNewArticle = () => {
   let saveArticleList =
     localStorage.getItem("zebra-editor-article-list")?.split("|") || [];
   saveArticleList.push(beforeArticle.id);
+  // 最多存储 30 篇文章
+  if (saveArticleList.length > 30) {
+    localStorage.removeItem("zebra-editor-article-" + saveArticleList[0]);
+    saveArticleList.shift();
+  }
   localStorage.setItem("zebra-editor-article-list", saveArticleList.join("|"));
 
   let newArticle = createEmptyArticle();

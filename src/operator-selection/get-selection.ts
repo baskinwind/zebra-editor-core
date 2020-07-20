@@ -8,8 +8,6 @@ import {
   getContainDocument
 } from "./util";
 import { cloneDeep, throttle } from "lodash-es";
-import { getBlockById } from "../components/util";
-import Article from "../components/article";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -74,7 +72,11 @@ const getSelection = () => {
     return cloneDeep<selectionType>(selectionStore);
   }
 
-  if (rootDom === anchorNode) {
+  if (
+    rootDom === anchorNode ||
+    // @ts-ignore
+    (anchorNode.dataset && anchorNode.dataset.type === "ARTICLE")
+  ) {
     let block = rootDom.children[0].children[0];
     selectionStore = {
       isCollapsed: true,

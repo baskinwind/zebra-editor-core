@@ -138,6 +138,7 @@ const undo = () => {
     const item = nowRecord.componentList[i];
     item.record.restore(nowIndex - 1);
   }
+  // 将延迟更新的组件一起更新
   updateComponent();
   nowIndex -= 1;
   focusAt(nowRecord.undoSelection.start, nowRecord.undoSelection.end);
@@ -158,6 +159,7 @@ const redo = () => {
     const item = nowRecord.componentList[i];
     item.record.restore(nowIndex + 1);
   }
+  // 将延迟更新的组件一起更新
   updateComponent();
   nowIndex += 1;
   focusAt(nowRecord.redoSelection.start, nowRecord.redoSelection.end);

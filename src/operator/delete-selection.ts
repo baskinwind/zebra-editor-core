@@ -1,6 +1,7 @@
 import focusAt from "../operator-selection/focus-at";
 import { cursorType, getSelectedIdList } from "../operator-selection/util";
 import { getBlockById } from "../components/util";
+import updateComponent from "../util/update-component";
 
 // 删除 start - end 的内容
 const deleteSelection = (start: cursorType, end?: cursorType) => {
@@ -11,23 +12,26 @@ const deleteSelection = (start: cursorType, end?: cursorType) => {
   // 选中多行
   if (idList.length === 0) return;
   if (idList.length === 1) {
-    let component = getBlockById(idList[0]);
-    let focus = component.remove(start.offset, end.offset);
+    let block = getBlockById(idList[0]);
+    let focus = block.remove(start.offset, end.offset);
     return focusAt(focus);
   }
 
-  let firstComponent = getBlockById(idList[0]);
-  let lastComponent = getBlockById(idList[idList.length - 1]);
-  firstComponent.remove(start.offset);
-  lastComponent.remove(0, end.offset);
+  let headBlock = getBlockById(idList[0]);
+  let tailBlock = getBlockById(idList[idList.length - 1]);
+  headBlock.remove(start.offset, undefined, true);
 
   // 其他情况，删除中间行，首尾行合并
-  lastComponent.sendTo(firstComponent);
   for (let i = 1; i < idList.length - 1; i++) {
-    getBlockById(idList[i]).removeSelf();
+    getBlockById(idList[i]).removeSelf(true);
   }
+
+  tailBlock.remove(0, end.offset, true);
+  tailBlock.sendTo(headBlock, true);
+  updateComponent(idList.map((item) => getBlockById(item)));
+
   return focusAt({
-    id: firstComponent.id,
+    id: headBlock.id,
     offset: start.offset
   });
 };

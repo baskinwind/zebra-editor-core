@@ -1,5 +1,5 @@
 import getSelection from "./get-selection";
-import modifyInlineDecorate from "../operator-character/modify-inline-decorate";
+import modifyInlineDecorate from "../operator/modify-inline-decorate";
 import { storeData } from "../decorate";
 import { createRecord } from "../record/util";
 

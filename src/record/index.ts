@@ -1,6 +1,6 @@
 import Component, { ISnapshoot } from "../components/component";
 import Block from "../components/block";
-import updateComponent, { delayUpdate } from "../util/update-component";
+import { delayUpdate } from "../util/update-component";
 import { getRecordStepId, recordSnapshoot } from "./util";
 
 class Record {
@@ -28,9 +28,9 @@ class Record {
     if (!this.recordMap[step]) return;
     this.component.restore(this.recordMap[step]);
     if (this.component instanceof Block) {
-      updateComponent(this.component);
+      delayUpdate(this.component.id);
     } else {
-      delayUpdate([this.component.parent!.id]);
+      delayUpdate(this.component.parent!.id);
     }
   }
 

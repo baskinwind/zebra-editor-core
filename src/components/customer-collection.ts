@@ -147,6 +147,12 @@ class CustomerCollection extends StructureCollection<Block> {
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     if (!block) return;
     block.removeSelf();
+    if (block.isEmpty()) {
+      block.removeSelf();
+      let last = this.getChild(this.getSize() - 1);
+      let lastSize = last.getSize();
+      return [last, lastSize, lastSize];
+    }
     return this.add(block, undefined, customerUpdate);
   }
 
