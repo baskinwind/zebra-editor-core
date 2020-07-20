@@ -149,7 +149,8 @@ new Vue({
     insertInlineImage() {
       let index = Math.floor(Math.random() * 3 + 1);
       insertInline(
-        factory.buildInlineImage(`https://acohome.cn/image/emjoy-${index}.png`)
+        // factory.buildInlineImage(`http://cdn.acohome.cn/emoji-${index}.png`)
+        "😀"
       );
     },
     customerInlineImage() {
@@ -161,7 +162,7 @@ new Vue({
       insertBlock(
         factory.buildMedia(
           "image",
-          `https://acohome.cn/image/block-${index}.jpg`
+          `http://cdn.acohome.cn/demo-img-${index}.jpg`
         )
       );
     },

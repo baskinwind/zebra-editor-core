@@ -6,6 +6,7 @@ import ComponentFactory, {
   setComponentFactory,
   getComponentFactory
 } from "../components";
+import { createError } from "./handle-error";
 
 // 将组件挂载到某个节点上
 const mount = (
@@ -27,7 +28,8 @@ const mount = (
   } else {
     root = idOrDom;
   }
-  if (!root) throw Error("请传入正确的节点或节点 id");
+  if (!root)
+    throw createError("请传入正确的节点或节点 id", undefined, "create");
   return createEditor(root, article, option);
 };
 

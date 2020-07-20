@@ -13,6 +13,8 @@ import defaultStyle from "./default-style";
 import { getBlockById } from "../components/util";
 import { addErrorHandle } from "./handle-error";
 import nextTicket from "./next-ticket";
+import { initSelection } from "../operator-selection/get-selection";
+import Article from "../components/article";
 
 export interface IOption {
   placeholder?: string;
@@ -25,13 +27,18 @@ export interface IOption {
 }
 
 // 将组件挂载到某个节点上
-const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
+const createEditor = (
+  root: HTMLElement,
+  article: Article,
+  option?: IOption
+) => {
   if (option?.onError) {
     addErrorHandle(option.onError);
   }
-  block.active = true;
+  article.active = true;
   startUpdate();
-  initRecord(block);
+  initRecord(article);
+  initSelection(article);
   let operator = option?.userOperator || UserOperator.getInstance();
 
   // 生成 iframe 并获取 document 与 window 对象
@@ -62,7 +69,7 @@ const createEditor = (root: HTMLElement, block: Block, option?: IOption) => {
     let editor = iframe.contentDocument.createElement("div");
     editor.id = "zebra-editor-contain";
     editor.contentEditable = "true";
-    editor.appendChild(block.render());
+    editor.appendChild(article.render());
     iframe.contentDocument.body.appendChild(editor);
     iframe.contentDocument.body.dataset.focus = "false";
 

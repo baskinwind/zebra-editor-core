@@ -13,12 +13,12 @@ let containDocument: Document;
 let containWindow: Window;
 
 export const setContainDocument = (doc: Document | null) => {
-  if (!doc) throw createError("document 设置失败");
+  if (!doc) throw createError("document 设置失败", undefined, "setting");
   containDocument = doc;
 };
 
 export const setContainWindow = (win: Window | null) => {
-  if (!win) throw createError("window 设置失败");
+  if (!win) throw createError("window 设置失败", undefined, "setting");
   containWindow = win;
 };
 
@@ -31,7 +31,7 @@ export const getParent = (
   element: HTMLElement | Node | null | undefined
 ): HTMLElement => {
   if (element === null || element === undefined)
-    throw Error("获取光标所在节点失败");
+    throw createError("获取光标所在节点失败", undefined, "selection");
   // 文本节点处理
   if (element.nodeType === 3) {
     return getParent(element.parentElement);
@@ -52,7 +52,7 @@ export const getContainer = (
   element: Element | Node | null | undefined
 ): HTMLElement => {
   if (element === null || element === undefined)
-    throw Error("容器节点获取失败");
+    throw createError("容器节点获取失败", undefined, "selection");
   // 文本节点处理
   if (
     element.nodeType === 3 ||
@@ -140,7 +140,7 @@ export const getCursorPosition = (
   index: number;
 } => {
   let dom = containDocument.getElementById(cursor.id);
-  if (!dom) throw Error("该节点已失效");
+  if (!dom) throw createError("该节点已失效", undefined, "selection");
   if (dom.dataset && dom.dataset.type === ComponentType.media) {
     return {
       node: dom,

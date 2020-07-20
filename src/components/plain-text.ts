@@ -76,7 +76,7 @@ abstract class PlainText extends Block {
     customerUpdate: boolean = false
   ): operatorType {
     if (typeof string !== "string") {
-      throw createError("纯文本组件仅能输入文字");
+      throw createError("纯文本组件仅能输入文字", this);
     }
     index = index === undefined ? this.content.length : index;
     let saveString = [...string];
@@ -109,7 +109,7 @@ abstract class PlainText extends Block {
     customerUpdate: boolean = false
   ): operatorType {
     if (block) {
-      throw createError("纯文本组件仅能输入文字");
+      throw createError("纯文本组件仅能输入文字", this);
     }
     return this.add("\n", index, customerUpdate);
   }

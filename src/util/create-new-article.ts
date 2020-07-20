@@ -8,7 +8,7 @@ import { createError } from "./handle-error";
 const createNewArticle = () => {
   let doc = getContainDocument();
   let editor = doc.getElementById("zebra-editor-contain");
-  if (!editor) throw createError("文章节点获取失败");
+  if (!editor) throw createError("文章节点获取失败", undefined, "create");
   editor.innerHTML = "";
   let beforeArticle = getBlockById("article");
   localStorage.setItem(
@@ -29,7 +29,7 @@ const createNewArticle = () => {
 
   let newArticle = createEmptyArticle();
   initRecord(newArticle);
-  initSelection();
+  initSelection(newArticle);
   editor.appendChild(newArticle.render());
 };
 

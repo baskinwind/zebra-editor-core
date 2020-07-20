@@ -8,16 +8,15 @@ import {
   getContainDocument
 } from "./util";
 import { cloneDeep, throttle } from "lodash-es";
+import Article from "../components/article";
 
 export interface selectionType {
   isCollapsed: boolean;
-  selectStructure?: boolean;
   range: [cursorType, cursorType];
 }
 
 let selectionStore: selectionType = {
   isCollapsed: true,
-  selectStructure: false,
   range: [
     {
       id: "",
@@ -30,17 +29,17 @@ let selectionStore: selectionType = {
   ]
 };
 
-const initSelection = () => {
+const initSelection = (article: Article) => {
+  let block = article.getChild(0);
   selectionStore = {
     isCollapsed: true,
-    selectStructure: false,
     range: [
       {
-        id: "",
+        id: block.id,
         offset: 0
       },
       {
-        id: "",
+        id: block.id,
         offset: 0
       }
     ]
@@ -62,7 +61,7 @@ const getSelection = () => {
     !section.focusNode ||
     section?.type === "None"
   ) {
-    return selectionStore;
+    return cloneDeep<selectionType>(selectionStore);
   }
   let anchorNode = section?.anchorNode;
 
@@ -80,7 +79,6 @@ const getSelection = () => {
     let block = rootDom.children[0].children[0];
     selectionStore = {
       isCollapsed: true,
-      selectStructure: false,
       range: [
         {
           id: block.id,
@@ -109,7 +107,6 @@ const getSelection = () => {
   //   let child = component.getChild(section.anchorOffset - 1);
   //   return {
   //     isCollapsed: true,
-  //     selectStructure: true,
   //     range: [
   //       {
   //         id: child?.id || "",

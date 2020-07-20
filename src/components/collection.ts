@@ -59,7 +59,7 @@ abstract class Collection<T extends Component> extends Block {
         (item) => item.id === indexOrComponent.id
       );
       if (temp === -1) {
-        throw createError("移除组件不在列表内。");
+        throw createError("移除组件不在列表内。", this);
       }
       removeIndex = temp;
     }

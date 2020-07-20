@@ -2,7 +2,11 @@ import "./operator";
 import article from "./article";
 import { mount, createByRaw, getBlockById, getSelectionInfo } from "../src";
 
-mount("root", article);
+mount("root", article, {
+  onError(err) {
+    console.dir(err);
+  }
+});
 
 window.article = article;
 

@@ -13,7 +13,7 @@ abstract class BlockWrapper extends StructureCollection<Block> {
   constructor(block: Block, style?: storeData, data?: storeData) {
     super(style, data);
     if (!block) {
-      throw createError("BlockWrapper 组件必须拥有一个子组件");
+      throw createError("BlockWrapper 组件必须拥有一个子组件", block);
     }
     this.children = List([block]);
     block.parent = this;
@@ -31,7 +31,7 @@ abstract class BlockWrapper extends StructureCollection<Block> {
 
   getChild(index?: number): Block {
     let child = this.children.get(0);
-    if (!child) throw createError("子组件获取失败");
+    if (!child) throw createError("子组件获取失败", this);
     return child;
   }
 

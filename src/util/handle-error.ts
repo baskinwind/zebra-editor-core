@@ -11,10 +11,12 @@ export const removeErrorHandle = (func: (error: Error) => void) => {
   }
 };
 
-export const createError = (message: string, info?: any) => {
+export const createError = (message: string, block?: any, type?: string) => {
   let error = new Error(message);
   // @ts-ignore
-  error.editorInfo = info;
+  error.type = type || "component";
+  // @ts-ignore
+  error.blockInfo = block;
   errorHandleQueue.forEach((item) => item(error));
   return error;
 };

@@ -19,7 +19,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   findChildrenIndex(idOrBlock: string | Block): number {
     let id = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
     let index = this.children.findIndex((item) => item.id === id);
-    if (index < 0) throw createError("该组件不在子组件列表中");
+    if (index < 0) throw createError("该组件不在子组件列表中", this);
     return index;
   }
 
@@ -171,7 +171,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     index: number,
     customerUpdate: boolean = false
   ): StructureCollection<T> {
-    if (index > this.getSize()) throw createError("分割点不在列表内");
+    if (index > this.getSize()) throw createError("分割点不在列表内", this);
 
     let tail = this.removeChildren(
       index,

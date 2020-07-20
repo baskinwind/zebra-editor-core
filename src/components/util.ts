@@ -1,5 +1,6 @@
 import { generate } from "shortid";
 import Block from "./block";
+import { createError } from "../util/handle-error";
 let store: { [key: string]: any } = {};
 
 export interface IStatistic {
@@ -32,7 +33,7 @@ export const saveBlock = <T extends Block = Block>(
 export const getBlockById = <T extends Block = Block>(id: string): T => {
   if (!id) {
     let article = store["article"];
-    if (!article) throw Error("生成文章后调用。");
+    if (!article) throw createError("生成文章后调用。", undefined, "create");
     return store["article"].getChild(0);
   }
   return store[id];
