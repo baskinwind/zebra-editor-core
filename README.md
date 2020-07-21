@@ -2,8 +2,6 @@
 
 zebra-editor-core.js 富文本编辑器功能核心。
 
-[demo](https://acohome.cn/demo/zebra-editor/index.html)
-
 ## 使用
 
 ```
@@ -19,3 +17,9 @@ import { mount } from "zebra-editor-core"
 
 mount('root');
 ```
+
+## DEMO
+
+[demo](https://acohome.cn/demo/zebra-editor-core/index.html)
+
+[code](https://github.com/acccco/zebra-editor-core/tree/master/dev)

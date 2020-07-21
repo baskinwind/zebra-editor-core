@@ -2,7 +2,7 @@ import "./index.scss";
 import article from "./article";
 
 import {
-  ComponentFactory,
+  getComponentFactory,
   modifyTable,
   insertBlock,
   insertInline,
@@ -26,7 +26,7 @@ import {
   createNewArticle
 } from "../src";
 
-let factory = ComponentFactory.getInstance();
+let factory = getComponentFactory();
 
 new Vue({
   el: "#operator",
@@ -149,8 +149,7 @@ new Vue({
     insertInlineImage() {
       let index = Math.floor(Math.random() * 3 + 1);
       insertInline(
-        // factory.buildInlineImage(`http://cdn.acohome.cn/emoji-${index}.png`)
-        "😀"
+        factory.buildInlineImage(`http://cdn.acohome.cn/emoji-${index}.png`)
       );
     },
     customerInlineImage() {

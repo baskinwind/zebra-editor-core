@@ -1,8 +1,6 @@
-import { ComponentFactory } from "../src";
-import { setComponentFactory } from "../src/components";
+import { getComponentFactory } from "../src";
 
-let factory = ComponentFactory.getInstance();
-setComponentFactory(factory);
+let factory = getComponentFactory();
 let article = factory.buildArticle();
 
 let pledge = [

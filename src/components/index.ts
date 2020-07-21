@@ -107,7 +107,7 @@ let nowFactory: any;
 
 const getComponentFactory = <
   T extends ComponentFactory = ComponentFactory
->(): T => nowFactory;
+>(): T => nowFactory || ComponentFactory.getInstance();
 
 const setComponentFactory = (factory?: ComponentFactory) => {
   nowFactory = factory || ComponentFactory.getInstance();

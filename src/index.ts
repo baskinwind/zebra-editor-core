@@ -1,10 +1,10 @@
-// 组件工厂
-import ComponentFactory from "./components";
+// 组件相关
+import ComponentFactory, { getComponentFactory } from "./components";
+import { getBlockById } from "./components/util";
 
 // 内容生成器
 import ContentBuilder from "./content/content-builder";
 import HtmlBuilder from "./content/html-builder";
-import { getBlockById } from "./components/util";
 
 // 用户操作处理
 import UserOperator from "./operator-user";
@@ -36,6 +36,7 @@ export * from "./util/quick";
 
 export {
   ComponentFactory,
+  getComponentFactory,
   getBlockById,
   ContentBuilder,
   HtmlBuilder,
