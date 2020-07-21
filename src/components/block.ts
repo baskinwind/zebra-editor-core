@@ -247,17 +247,6 @@ abstract class Block extends Component {
   ): operatorType {
     return;
   }
-
-  snapshoot(): IBlockSnapshoot {
-    let snap = super.snapshoot() as IBlockSnapshoot;
-    snap.active = this.active;
-    return snap;
-  }
-
-  restore(state: IBlockSnapshoot) {
-    this.active = state.active;
-    super.restore(state);
-  }
 }
 
 export default Block;

@@ -6,6 +6,7 @@ import nextTicket from "./next-ticket";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
+let inLoop = false;
 
 const startUpdate = () => {
   canUpdate = true;
@@ -54,9 +55,13 @@ const updateComponent = (
   }
 
   // 避免过度触发 editorchange 事件
-  nextTicket(() => {
-    document.dispatchEvent(new Event("editorchange"));
-  });
+  if (!inLoop) {
+    inLoop = true;
+    nextTicket(() => {
+      inLoop = false;
+      document.dispatchEvent(new Event("editorchange"));
+    });
+  }
 };
 
 const update = (block: Block) => {

@@ -14,6 +14,7 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
       start = selection.range[0];
       end = selection.range[1];
     }
+
     // 选区参数为数组形式
     if (Array.isArray(start)) {
       end = { id: start[0].id, offset: start[2] };
@@ -24,6 +25,17 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
     if (!end) {
       end = { id: start.id, offset: start.offset };
     }
+
+    // 让 focus 的节点移入视口内
+    nextTicket(() => {
+      let doc = getContainDocument();
+      // @ts-ignore
+      doc.getElementById(start.id)?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    });
+
     start.offset = start.offset === -1 ? 0 : start.offset;
     end.offset = end.offset === -1 ? 0 : end.offset;
     let startPosition = getCursorPosition(start);
