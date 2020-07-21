@@ -280,16 +280,11 @@ class List extends StructureCollection<ListItemWrapper> {
 
   restore(state: IListSnapshoot) {
     this.listType = state.listType;
-    this.children.forEach((item) => {
-      let innerItem = item.getChild();
-      innerItem.active = false;
-    });
     state.children.forEach((item) => {
-      let innerItem = item.getChild();
-      innerItem.active = true;
+      let child = item.getChild();
+      child.parent = item;
+      child.active = true;
     });
-    console.log(state);
-    
     super.restore(state);
   }
 

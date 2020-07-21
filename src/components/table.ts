@@ -9,6 +9,7 @@ import { getContentBuilder } from "../content";
 import { initRecordState } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 import { createError } from "../util/handle-error";
+import nextTicket from "../util/next-ticket";
 
 type tableCellChildType = string | TableItem | undefined;
 
@@ -78,6 +79,21 @@ class Table extends StructureCollection<TableRow> {
     }
     this.col = col;
     this.addChildren(list, 0, true);
+  }
+
+  removeChildren(
+    indexOrComponent: TableRow | number,
+    removeNumber: number = 1,
+    customerUpdate: boolean = false
+  ): TableRow[] {
+    // 若子元素全部删除，将自己也删除
+    if (removeNumber === this.getSize()) {
+      nextTicket(() => {
+        if (this.getSize() !== 0) return;
+        this.removeSelf(customerUpdate);
+      });
+    }
+    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
   setTableRow(row?: number) {

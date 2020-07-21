@@ -149,6 +149,15 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     return this.getChild().receive(block, customerUpdate);
   }
 
+  destory() {
+    let child = this.getChild();
+    child.active = false;
+    child.parent = undefined;
+    this.active = false;
+    this.children = this.children.remove(0);
+    this.parent = undefined;
+  }
+
   render() {
     return getContentBuilder().buildListItem(
       this.id,

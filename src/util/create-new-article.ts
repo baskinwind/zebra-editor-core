@@ -11,6 +11,7 @@ const createNewArticle = () => {
   if (!editor) throw createError("文章节点获取失败", undefined, "create");
   editor.innerHTML = "";
   let beforeArticle = getBlockById("article");
+  beforeArticle.active = false;
   localStorage.setItem(
     "zebra-editor-article-" + beforeArticle.id,
     JSON.stringify(beforeArticle.getRaw())
@@ -28,6 +29,7 @@ const createNewArticle = () => {
   localStorage.setItem("zebra-editor-article-list", saveArticleList.join("|"));
 
   let newArticle = createEmptyArticle();
+  newArticle.active = true;
   initRecord(newArticle);
   initSelection(newArticle);
   editor.appendChild(newArticle.render());

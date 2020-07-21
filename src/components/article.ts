@@ -9,7 +9,6 @@ import { storeData } from "../decorate";
 import { saveBlock } from "./util";
 import { initRecordState } from "../record/decorators";
 import updateComponent from "../util/update-component";
-import exchange from "../operator-selection/exchange";
 
 @initRecordState
 class Article extends StructureCollection<Block> {
@@ -21,6 +20,7 @@ class Article extends StructureCollection<Block> {
     let article = factory.buildArticle(raw.style, raw.data);
     if (raw.id) {
       article.id = raw.id;
+      saveBlock(article, raw.id);
     }
     let children = raw.children
       ? raw.children.map((item) => {
