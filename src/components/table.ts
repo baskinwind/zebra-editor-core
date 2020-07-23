@@ -96,8 +96,9 @@ class Table extends StructureCollection<TableRow> {
     return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
   }
 
-  setTableRow(row?: number) {
-    let size = this.getSize() - (this.needHead ? 1 : 0);
+  setTableRow(row: number) {
+    row = row + (this.needHead ? 1 : 0);
+    let size = this.getSize();
     if (!row || row === size) return;
     if (row > size) {
       let list = [];
@@ -107,12 +108,12 @@ class Table extends StructureCollection<TableRow> {
       }
       this.addChildren(list);
     } else {
-      this.remove(row, size - row);
+      this.remove(row, size);
     }
   }
 
-  setTableCol(col?: number) {
-    if (!col || col === this.col) return;
+  setTableCol(col: number) {
+    if (col === this.col) return;
     this.children.forEach((item) => item.setSize(col));
     this.col = col;
   }
@@ -203,9 +204,9 @@ class TableRow extends StructureCollection<TableCell> {
     super.addChildren(list, 0, true);
   }
 
-  setSize(size?: number) {
+  setSize(size: number) {
     let oldSize = this.getSize();
-    if (!size || size === oldSize) return;
+    if (size === oldSize) return;
     if (size > oldSize) {
       let list = [];
       for (let i = oldSize; i < size; i++) {
@@ -214,7 +215,7 @@ class TableRow extends StructureCollection<TableCell> {
       }
       this.add(list);
     } else {
-      this.remove(size, oldSize - size);
+      this.remove(size, oldSize);
     }
   }
 

@@ -20,11 +20,11 @@ const underline = () => {
 const code = () => {
   modifySelectionDecorate(
     {
-      backgroundColor: "#f8f8f8",
+      backgroundColor: "rgba(248, 248, 248, 1)",
       padding: "2px 4px",
       borderRadius: "2px"
     },
-    { code: true, bgcolor: { color: "#f8f8f8" } }
+    { code: true }
   );
 };
 

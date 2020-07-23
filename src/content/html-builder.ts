@@ -238,7 +238,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData
   ): string {
-    let image = `<img src="${src}" alt="${data.alt}" />`;
+    let image = `<img src="${src}" alt="${data.alt || ""}" />`;
     if (data.link) {
       image = `<a href="${data.link}">${image}</a>`;
     }

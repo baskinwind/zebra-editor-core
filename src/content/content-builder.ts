@@ -361,7 +361,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     let image = containDocument.createElement("img");
     image.src = src;
     image.alt = data.alt || "";
-    image.style.minWidth = "1em";
     if (data.link) {
       const link = containDocument.createElement("a");
       link.href = data.link;

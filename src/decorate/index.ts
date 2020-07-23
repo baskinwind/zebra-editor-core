@@ -46,6 +46,7 @@ class Decorate {
         return;
       }
       this.removeStyle(value as string);
+      return;
     }
     this.style = this.style.set(name, value);
   }
@@ -88,6 +89,7 @@ class Decorate {
         return;
       }
       this.removeData(value as string);
+      return;
     }
     this.data = this.data.set(name, value);
   }

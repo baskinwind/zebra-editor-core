@@ -37,7 +37,6 @@ const updateComponent = (
 ) => {
   // 清空延迟更新队列
   if (delayUpdateQueue.size) {
-    debugger
     // console.info("delay update");
     delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
