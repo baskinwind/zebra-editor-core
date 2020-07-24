@@ -12,6 +12,11 @@ class Record {
     this.component = component;
   }
 
+  init() {
+    this.recordMap = [];
+    this.stepId = -2;
+  }
+
   store(isInit?: boolean) {
     let stepId = getRecordStepId() - (isInit ? 1 : 0);
     if (stepId === -2) return;

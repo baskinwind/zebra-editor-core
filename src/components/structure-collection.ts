@@ -153,12 +153,12 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     if (index === -1) {
       throw createError("替换组件不在子组件列表内", block);
     }
+    oldComponent.active = false;
+    oldComponent.parent = undefined;
     block.forEach((item) => {
       item.parent = this;
       item.active = true;
     });
-    oldComponent.active = false;
-    oldComponent.parent = undefined;
     this.children = this.children.splice(index, 1, ...block);
     updateComponent([oldComponent, ...[...block].reverse()], customerUpdate);
     return block;

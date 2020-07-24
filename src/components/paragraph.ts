@@ -11,9 +11,6 @@ import { storeData } from "../decorate";
 @initRecordState
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
-  style: storeData = {
-    fontSize: "16px"
-  };
 
   static create(raw: IRawType): Paragraph {
     let paragraph = getComponentFactory().buildParagraph(

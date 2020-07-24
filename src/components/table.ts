@@ -81,6 +81,16 @@ class Table extends StructureCollection<TableRow> {
     this.addChildren(list, 0, true);
   }
 
+  addRow(index: number, customerUpdate: boolean = false) {
+    let newTableRow = new TableRow(this.col);
+    this.add(newTableRow, index, customerUpdate);
+  }
+
+  addCol(index: number, customerUpdate: boolean = false) {
+    this.col += 1;
+    this.children.forEach((item) => item.addCol(index, customerUpdate));
+  }
+
   removeChildren(
     indexOrComponent: TableRow | number,
     removeNumber: number = 1,
@@ -94,6 +104,15 @@ class Table extends StructureCollection<TableRow> {
       });
     }
     return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+  }
+
+  removeRow(index: number, customerUpdate: boolean = false) {
+    this.remove(index, index + 1, customerUpdate);
+  }
+
+  removeCol(index: number, customerUpdate: boolean = false) {
+    this.col -= 1;
+    this.children.forEach((item) => item.remove(index, index + 1));
   }
 
   setTableRow(row: number) {
@@ -204,6 +223,12 @@ class TableRow extends StructureCollection<TableCell> {
     super.addChildren(list, 0, true);
   }
 
+  addCol(index?: number, customerUpdate: boolean = false): operatorType {
+    let newTableCell = new TableCell("", this.cellType);
+    this.add(newTableCell, index, customerUpdate);
+    return;
+  }
+
   setSize(size: number) {
     let oldSize = this.getSize();
     if (size === oldSize) return;
@@ -240,6 +265,8 @@ class TableRow extends StructureCollection<TableCell> {
 
   getRaw() {
     let raw = super.getRaw();
+    // tableRow 只能作为 table 的子元素，无须保存类型
+    delete raw.type;
     raw.cellType = this.cellType;
     return raw;
   }
@@ -334,6 +361,8 @@ class TableCell extends StructureCollection<TableItem> {
 
   getRaw() {
     let raw = super.getRaw();
+    // tableCell 只能作为 tableRow 的子元素，无须保存类型
+    delete raw.type;
     raw.cellType = this.cellType;
     return raw;
   }
@@ -354,7 +383,6 @@ class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
   style: storeData = {
-    fontSize: "16px",
     textAlign: "center"
   };
 

@@ -20,17 +20,15 @@ abstract class ContentCollection extends Collection<Inline> {
     if (!raw.children) return [];
     let children: Inline[] = [];
     raw.children.forEach((item: IRawType) => {
-      if (item.type === ComponentType.characterList) {
-        if (!item.content) return;
-        for (let char of item.content) {
-          children.push(new Character(char, item.style, item.data));
-        }
-        return;
-      }
       if (item.type === ComponentType.inlineImage) {
         children.push(InlineImage.create(item));
         return;
       }
+      if (!item.content) return;
+      for (let char of item.content) {
+        children.push(new Character(char, item.style, item.data));
+      }
+      return;
     });
     return children;
   }
@@ -270,8 +268,9 @@ abstract class ContentCollection extends Collection<Inline> {
       if (item.getRaw) {
         return item.getRaw();
       }
+      // @ts-ignore
+      // 字符无需特定的 type 生成 JSON 时，这段重复出现，占据比例极大，优化
       let raw: IRawType = {
-        type: ComponentType.characterList,
         content: item[0]
       };
       if (item[1]) {

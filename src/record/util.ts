@@ -45,6 +45,7 @@ const initRecord = (component: Component) => {
   nowIndex = -1;
   nowComponentList = [];
   nowIdList = [];
+  component.record.init();
   component.record.store();
   if (component instanceof Collection) {
     component.children.forEach((item) => initRecord(item));

@@ -3,7 +3,7 @@ import BaseBuilder from "../content/base-builder";
 import UserOperator from "../operator-user";
 import BaseOperator from "../operator-user/base-operator";
 import ComponentFactory from "../components";
-import { initRecord } from "../record/util";
+import { initRecord, redo, undo } from "../record/util";
 import { startUpdate } from "./update-component";
 import {
   setContainDocument,
@@ -92,42 +92,11 @@ const createEditor = (
     });
 
     // 监听事件
-    editor.addEventListener("input", (event: any) => {
-      try {
-        operator.onInput(event);
-      } catch (e) {
-        console.warn(e);
-      }
-    });
-
-    editor.addEventListener("beforeinput", (event: any) => {
-      try {
-        operator.onBeforeInput(event);
-      } catch (e) {
-        console.warn(e);
-      }
-    });
-
     editor.addEventListener("blur", (event) => {
       try {
         operator.onBlur(event);
       } catch (e) {
         console.warn(e);
-      }
-    });
-
-    editor.addEventListener("mousedown", (event) => {
-      let focus = iframe.contentDocument?.hasFocus();
-      let selection = iframe.contentWindow?.getSelection();
-      if (!focus && selection?.anchorNode) {
-        let contentEdit = selection.anchorNode.parentElement;
-        while (contentEdit && contentEdit?.contentEditable !== "true") {
-          contentEdit = contentEdit.parentElement;
-        }
-        if (contentEdit) {
-          event.preventDefault();
-          contentEdit.focus();
-        }
       }
     });
 
@@ -139,9 +108,18 @@ const createEditor = (
       }
     });
 
-    editor.addEventListener("keydown", (event) => {
+    editor.addEventListener("paste", (event) => {
+      console.info("仅可复制文本内容");
       try {
-        operator.onKeyDown(event);
+        operator.onPaste(event);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+
+    editor.addEventListener("cut", (event) => {
+      try {
+        operator.onCut(event);
       } catch (e) {
         console.warn(e);
       }
@@ -163,20 +141,59 @@ const createEditor = (
       }
     });
 
-    editor.addEventListener("paste", (event) => {
-      console.info("仅可复制文本内容");
+    editor.addEventListener("beforeinput", (event: any) => {
       try {
-        operator.onPaste(event);
+        operator.onBeforeInput(event);
       } catch (e) {
         console.warn(e);
       }
     });
 
-    editor.addEventListener("cut", (event) => {
+    editor.addEventListener("input", (event: any) => {
       try {
-        operator.onCut(event);
+        operator.onInput(event);
       } catch (e) {
         console.warn(e);
+      }
+    });
+
+    editor.addEventListener("keydown", (event) => {
+      try {
+        operator.onKeyDown(event);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+
+    iframe.contentDocument.addEventListener("keydown", (event) => {
+      try {
+        let key = event.key.toLowerCase();
+        if ("z" === key) {
+          if (event.shiftKey) {
+            redo();
+          } else {
+            undo();
+          }
+          return;
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+
+    editor.addEventListener("mousedown", (event) => {
+      let focus = iframe.contentDocument?.hasFocus();
+      let selection = iframe.contentWindow?.getSelection();
+
+      if (!focus && !selection?.isCollapsed && selection?.anchorNode) {
+        let contentEdit = selection.anchorNode.parentElement;
+        while (contentEdit && contentEdit?.contentEditable !== "true") {
+          contentEdit = contentEdit.parentElement;
+        }
+        if (contentEdit) {
+          event.preventDefault();
+          contentEdit.focus();
+        }
       }
     });
 

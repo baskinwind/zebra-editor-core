@@ -50,7 +50,7 @@ class UserOperator extends BaseOperator {
     onPaste(event);
   }
 
-  onCut() {
+  onCut(event: ClipboardEvent) {
     let selection = getSelection();
     setTimeout(() => {
       createRecord();
@@ -157,20 +157,12 @@ class UserOperator extends BaseOperator {
     }
     // 一些不需要控制的按键
     if (isCtrl) {
-      if (["c", "v", "x"].includes(key)) {
+      if (["c", "v", "x", "z"].includes(key)) {
         return;
       }
       if ("s" === key) {
         saveArticle();
         event.preventDefault();
-        return;
-      }
-      if ("z" === key) {
-        if (event.shiftKey) {
-          redo();
-        } else {
-          undo();
-        }
         return;
       }
       event.preventDefault();
@@ -184,8 +176,8 @@ class UserOperator extends BaseOperator {
 
 const saveArticle = throttle(() => {
   let beforeArticle = getBlockById("article");
-  // 空文章不做存储
-  if (beforeArticle.isEmpty()) return;
+  // 空文章不做存储，示例文章不做存储
+  if (beforeArticle.isEmpty() || /^demo/.test(beforeArticle.id)) return;
   localStorage.setItem(
     "zebra-editor-article-" + beforeArticle.id,
     JSON.stringify(beforeArticle.getRaw())

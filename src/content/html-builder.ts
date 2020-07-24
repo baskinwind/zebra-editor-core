@@ -153,7 +153,7 @@ class HtmlBuilder extends BaseBuilder<string> {
       tag,
       `zebra-editor-${tag}`,
       style,
-      getChildren().join("")
+      getChildren().join("") || "<br />"
     );
   }
 

@@ -90,7 +90,8 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     removeNumber: number = 1,
     customerUpdate: boolean = false
   ) {
-    let parent = this.getParent();
+    let parent = this.parent;
+    if (!parent) return [];
     if (typeof indexOrBlock !== "number") {
       indexOrBlock = indexOrBlock.getParent().findChildrenIndex(indexOrBlock);
     }
@@ -102,7 +103,8 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     end?: number,
     customerUpdate: boolean = false
   ): operatorType {
-    let parent = this.getParent();
+    let parent = this.parent;
+    if (!parent) return;
     return parent.remove(start, end, customerUpdate);
   }
 
