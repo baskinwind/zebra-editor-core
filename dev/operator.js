@@ -78,7 +78,7 @@ new Vue({
       } else if (tag === "ul" || tag === "ol" || tag === "nl") {
         exchange(factory.typeMap.LIST, tag);
       } else {
-        exchange(factory.typeMap.TITLE, tag);
+        exchange(factory.typeMap.HEADER, tag);
       }
     },
 

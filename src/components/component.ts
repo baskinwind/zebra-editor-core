@@ -25,8 +25,8 @@ export interface IRawType {
   src?: string;
   // for Media
   mediaType?: string;
-  // fro Title
-  titleType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  // fro Header
+  headerType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   // for List
   listType?: "ul" | "ol" | "nl";
   // for Table

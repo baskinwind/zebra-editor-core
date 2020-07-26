@@ -2,7 +2,7 @@ import { storeData } from "../decorate";
 import Article from "./article";
 import List, { listType } from "./list";
 import Table from "./table";
-import Title, { titleType } from "./title";
+import Header, { headerType } from "./header";
 import Paragraph from "./paragraph";
 import Media, { mediaType } from "./media";
 import Code from "./code";
@@ -26,7 +26,7 @@ class ComponentFactory {
       [ComponentType.article]: Article,
       [ComponentType.list]: List,
       [ComponentType.table]: Table,
-      [ComponentType.title]: Title,
+      [ComponentType.header]: Header,
       [ComponentType.paragraph]: Paragraph,
       [ComponentType.media]: Media,
       [ComponentType.code]: Code,
@@ -67,13 +67,13 @@ class ComponentFactory {
     return new Table(row, col, children, needHead, style, data);
   }
 
-  buildTitle(
-    type: titleType,
+  buildHeader(
+    type: headerType,
     text?: string,
     style: storeData = {},
     data: storeData = {}
   ) {
-    return new Title(type, text, style, data);
+    return new Header(type, text, style, data);
   }
 
   buildParagraph(text?: string, style: storeData = {}, data: storeData = {}) {

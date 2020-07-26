@@ -11,9 +11,9 @@ import { storeData } from "../decorate";
 import { initRecordState, recordMethod } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 
-export type titleType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-export interface ITitleSnapshoot extends ICollectionSnapshoot<Inline> {
-  titleType: titleType;
+export type headerType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export interface IHeaderSnapshoot extends ICollectionSnapshoot<Inline> {
+  headerType: headerType;
 }
 
 const styleMap = {
@@ -38,81 +38,81 @@ const styleMap = {
 };
 
 @initRecordState
-class Title extends ContentCollection {
-  type = ComponentType.title;
-  titleType: titleType;
+class Header extends ContentCollection {
+  type = ComponentType.header;
+  headerType: headerType;
   data = {
     bold: true
   };
 
-  static create(raw: IRawType): Title {
-    let title = getComponentFactory().buildTitle(
-      raw.titleType || "h1",
+  static create(raw: IRawType): Header {
+    let header = getComponentFactory().buildHeader(
+      raw.headerType || "h1",
       "",
       raw.style,
       raw.data
     );
     let children = super.getChildren(raw);
-    title.addChildren(children, 0, true);
-    return title;
+    header.addChildren(children, 0, true);
+    return header;
   }
 
-  static exchangeOnly(block: Block, args: any[] = []): Title[] {
+  static exchangeOnly(block: Block, args: any[] = []): Header[] {
     let list = [];
-    let titleType = args[0] || "h1";
-    if (block instanceof Title && block.titleType === titleType) {
+    let headerType = args[0] || "h1";
+    if (block instanceof Header && block.headerType === headerType) {
       list.push(block);
     } else if (block instanceof ContentCollection) {
-      let newTitle = getComponentFactory().buildTitle(
-        titleType,
+      let newHeader = getComponentFactory().buildHeader(
+        headerType,
         "",
         block.decorate.copyStyle(),
         block.decorate.copyData()
       );
-      newTitle.style = styleMap[newTitle.titleType];
-      newTitle.addChildren(block.children.toArray(), 0);
-      list.push(newTitle);
+      newHeader.style = styleMap[newHeader.headerType];
+      newHeader.addChildren(block.children.toArray(), 0);
+      list.push(newHeader);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");
       stringList.pop();
       [...stringList].forEach((item) => {
-        list.push(getComponentFactory().buildTitle(titleType, item));
+        list.push(getComponentFactory().buildHeader(headerType, item));
       });
     }
     return list;
   }
 
   constructor(
-    type: titleType,
+    type: headerType,
     text?: string,
     style?: storeData,
     data?: storeData
   ) {
     super(text, style, data);
-    this.titleType = type;
+    this.headerType = type;
     this.style = styleMap[type];
   }
 
-  setTitle(type: titleType = "h1") {
-    if (this.titleType === type) return;
-    this.titleType = type;
+  setHeader(type: headerType = "h1") {
+    if (this.headerType === type) return;
+    this.headerType = type;
     this.style = styleMap[type];
     updateComponent(this);
   }
 
   getType(): string {
-    return `${this.type}>${this.titleType}`;
+    return `${this.type}>${this.headerType}`;
   }
 
   getRaw(): IRawType {
     let raw = super.getRaw();
-    raw.titleType = this.titleType;
+    raw.headerType = this.headerType;
     return raw;
   }
 
   createEmpty() {
-    return getComponentFactory().buildTitle(
-      this.titleType,
+    return getComponentFactory().buildHeader(
+      this.headerType,
       "",
       this.decorate.copyStyle(),
       this.decorate.copyData()
@@ -123,8 +123,8 @@ class Title extends ContentCollection {
   exchangeTo(builder: classType, args: any[]): Block[] {
     // @ts-ignore
     if (builder === this.constructor && args[0]) {
-      if (args[0] !== this.titleType) {
-        this.setTitle(args[0]);
+      if (args[0] !== this.headerType) {
+        this.setHeader(args[0]);
         return [this];
       }
       return [this];
@@ -132,15 +132,15 @@ class Title extends ContentCollection {
     return builder.exchange(this, args);
   }
 
-  snapshoot(): ITitleSnapshoot {
-    let snap = super.snapshoot() as ITitleSnapshoot;
-    snap.titleType = this.titleType;
+  snapshoot(): IHeaderSnapshoot {
+    let snap = super.snapshoot() as IHeaderSnapshoot;
+    snap.headerType = this.headerType;
     return snap;
   }
 
-  restore(state: ITitleSnapshoot) {
-    this.titleType = state.titleType;
-    this.style = styleMap[state.titleType];
+  restore(state: IHeaderSnapshoot) {
+    this.headerType = state.headerType;
+    this.style = styleMap[state.headerType];
     super.restore(state);
   }
 
@@ -149,9 +149,9 @@ class Title extends ContentCollection {
       this.id,
       () => this.getContent(),
       this.decorate.getStyle(),
-      { ...this.decorate.getData(), tag: this.titleType }
+      { ...this.decorate.getData(), tag: this.headerType }
     );
   }
 }
 
-export default Title;
+export default Header;

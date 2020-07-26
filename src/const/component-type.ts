@@ -4,7 +4,7 @@ enum ComponentType {
   character = "CHARACTER",
   characterList = "CHARACTERLIST",
   paragraph = "PARAGRAPH",
-  title = "TITLE",
+  header = "HEADER",
   code = "CODE",
   list = "LIST",
   listItem = "LISTITEM",
