@@ -12,8 +12,8 @@ import { getBlockById } from "../components/util";
 import { createDurationRecord, undo, redo, createRecord } from "../record/util";
 import { getContainDocument } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
-import { throttle } from "lodash-es";
 import nextTicket from "../util/next-ticket";
+import saveArticle from "../util/save-article";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
@@ -173,21 +173,5 @@ class UserOperator extends BaseOperator {
     event.preventDefault();
   }
 }
-
-const saveArticle = throttle(() => {
-  let beforeArticle = getBlockById("article");
-  // 空文章不做存储，示例文章不做存储
-  if (beforeArticle.isEmpty() || /^demo/.test(beforeArticle.id)) return;
-  localStorage.setItem(
-    "zebra-editor-article-" + beforeArticle.id,
-    JSON.stringify(beforeArticle.getRaw())
-  );
-  let saveArticleList =
-    localStorage.getItem("zebra-editor-article-list")?.split("|") || [];
-  if (!saveArticleList.includes(beforeArticle.id)) {
-    saveArticleList.push(beforeArticle.id);
-  }
-  localStorage.setItem("zebra-editor-article-list", saveArticleList.join("|"));
-}, 100);
 
 export default UserOperator;

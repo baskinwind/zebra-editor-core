@@ -328,6 +328,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     if (data.link) {
       let link = containDocument.createElement("a");
       link.href = data.link;
+      link.title = data.title || "";
       link.appendChild(wrap);
       wrap = link;
       link.addEventListener("click", (event: MouseEvent) => {

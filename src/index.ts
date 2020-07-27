@@ -23,6 +23,7 @@ import exchange from "./operator-selection/exchange";
 // 操作内容
 import mount from "./util/mount";
 import createNewArticle from "./util/create-new-article";
+import clearArticle from "./util/clear-article";
 import getHtml from "./util/get-html";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
@@ -52,6 +53,7 @@ export {
   exchange,
   mount,
   createNewArticle,
+  clearArticle,
   getHtml,
   getRawData,
   createByRaw,
