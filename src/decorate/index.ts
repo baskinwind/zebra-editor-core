@@ -29,7 +29,8 @@ class Decorate {
       this.setStyle(key, style[key]);
     }
   }
-  getStyle() {
+  getStyle(onlyDecorate: boolean = false) {
+    if (onlyDecorate) return this.style.toObject();
     return { ...this.component.style, ...this.style.toObject() };
   }
   getStyleByName(name: string) {
@@ -72,7 +73,8 @@ class Decorate {
       this.setData(key, data[key]);
     }
   }
-  getData() {
+  getData(onlyDecorate: boolean = false) {
+    if (onlyDecorate) return this.data.toObject();
     return { ...this.component.data, ...this.data.toObject() };
   }
   getDataByName(name: string) {

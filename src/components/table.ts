@@ -180,12 +180,12 @@ class Table extends StructureCollection<TableRow> {
     return res;
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildTable(
       this.id,
-      () => this.children.map((item) => item.render()).toArray(),
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      this.decorate.getStyle(onlyDecorate),
+      this.decorate.getData(onlyDecorate)
     );
   }
 }
@@ -276,12 +276,12 @@ class TableRow extends StructureCollection<TableCell> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildTableRow(
       this.id,
-      () => this.children.map((item) => item.render()).toArray(),
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      this.decorate.getStyle(onlyDecorate),
+      this.decorate.getData(onlyDecorate)
     );
   }
 }
@@ -367,13 +367,13 @@ class TableCell extends StructureCollection<TableItem> {
     return raw;
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildTableCell(
       this.id,
       this.cellType,
-      () => this.children.map((item) => item.render()).toArray(),
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      this.decorate.getStyle(onlyDecorate),
+      this.decorate.getData(onlyDecorate)
     );
   }
 }
@@ -485,12 +485,12 @@ class TableItem extends ContentCollection {
     }
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildParagraph(
       this.id,
       () => this.getContent(),
-      this.decorate.getStyle(),
-      { ...this.decorate.getData(), tag: "p" }
+      this.decorate.getStyle(onlyDecorate),
+      { ...this.decorate.getData(onlyDecorate), tag: "p" }
     );
   }
 }

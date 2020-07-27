@@ -147,7 +147,7 @@ class Media extends Block {
     super.restore(state);
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     let builder = getContentBuilder();
     let map = {
       image: "buildeImage",
@@ -158,8 +158,8 @@ class Media extends Block {
     return builder[map[this.mediaType]](
       this.id,
       this.src,
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      this.decorate.getStyle(onlyDecorate),
+      this.decorate.getData(onlyDecorate)
     );
   }
 }

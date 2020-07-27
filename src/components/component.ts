@@ -68,7 +68,7 @@ abstract class Component {
   // 获取用于存储的内容
   getRaw(): IRawType {
     let raw: IRawType = {
-      type: this.type,
+      type: this.type
     };
     if (!this.decorate.styleIsEmpty()) {
       raw.style = this.decorate.copyStyle();
@@ -115,7 +115,7 @@ abstract class Component {
   }
 
   // 渲染该组件
-  abstract render(): any;
+  abstract render(onlyDecorate: boolean): any;
 }
 
 export default Component;

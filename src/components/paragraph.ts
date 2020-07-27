@@ -53,12 +53,12 @@ class Paragraph extends ContentCollection {
     );
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildParagraph(
       this.id,
       () => this.getContent(),
-      this.decorate.getStyle(),
-      { ...this.decorate.getData(), tag: "p" }
+      this.decorate.getStyle(onlyDecorate),
+      { ...this.decorate.getData(onlyDecorate), tag: "p" }
     );
   }
 }

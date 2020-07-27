@@ -160,12 +160,12 @@ abstract class BlockWrapper extends StructureCollection<Block> {
     this.parent = undefined;
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildListItem(
       this.id,
-      () => this.getChild().render(),
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      () => this.getChild().render(onlyDecorate),
+      this.decorate.getStyle(onlyDecorate),
+      this.decorate.getData(onlyDecorate)
     );
   }
 }

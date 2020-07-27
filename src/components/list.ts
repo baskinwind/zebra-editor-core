@@ -27,7 +27,7 @@ class ListItemWrapper extends BlockWrapper {
     return new ListItemWrapper(children[0]);
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     let style: any = {};
     let block = this.getChild();
     if (!(block instanceof ContentCollection)) {
@@ -35,9 +35,9 @@ class ListItemWrapper extends BlockWrapper {
     }
     return getContentBuilder().buildListItem(
       this.id,
-      () => this.getChild().render(),
-      { ...this.decorate.getStyle(), ...style },
-      this.decorate.getData()
+      () => this.getChild().render(onlyDecorate),
+      { ...this.decorate.getStyle(onlyDecorate), ...style },
+      this.decorate.getData(onlyDecorate)
     );
   }
 }
@@ -288,7 +288,7 @@ class List extends StructureCollection<ListItemWrapper> {
     super.restore(state);
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     let build = getContentBuilder();
     let content = build.buildList(
       this.id,

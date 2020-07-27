@@ -20,7 +20,7 @@ class Character extends Inline {
     };
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return this.content;
   }
 }

@@ -68,18 +68,18 @@ class Code extends PlainText {
     return getComponentFactory().buildCode(
       "\n",
       this.language,
-      this.decorate.style.toObject(),
-      this.decorate.data.toObject()
+      this.decorate.copyStyle(),
+      this.decorate.copyData()
     );
   }
 
-  render() {
+  render(onlyDecorate: boolean = false) {
     return getContentBuilder().buildCode(
       this.id,
       this.content.join(""),
       this.language,
-      this.decorate.getStyle(),
-      this.decorate.getData()
+      this.decorate.getStyle(onlyDecorate),
+      this.decorate.getData(onlyDecorate)
     );
   }
 }
