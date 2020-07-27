@@ -24,7 +24,7 @@ import exchange from "./operator-selection/exchange";
 import mount from "./util/mount";
 import createNewArticle from "./util/create-new-article";
 import clearArticle from "./util/clear-article";
-import getHtml from "./util/get-html";
+import getContentByBuilder from "./util/get-content-by-builder";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
 import updateComponent from "./util/update-component";
@@ -54,7 +54,7 @@ export {
   mount,
   createNewArticle,
   clearArticle,
-  getHtml,
+  getContentByBuilder,
   getRawData,
   createByRaw,
   updateComponent,

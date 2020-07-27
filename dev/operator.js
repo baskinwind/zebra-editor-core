@@ -7,7 +7,7 @@ import {
   insertBlock,
   insertInline,
   exchange,
-  getHtml,
+  getContentByBuilder,
   undo,
   redo,
   updateComponent,
@@ -61,7 +61,7 @@ new Vue({
       updateComponent(article);
     },
     logHtml() {
-      console.log(getHtml(article));
+      console.log(getContentByBuilder(article));
     },
     logRawData() {
       console.log(JSON.stringify(article.getRaw()));
