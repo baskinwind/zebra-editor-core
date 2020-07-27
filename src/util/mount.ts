@@ -9,9 +9,9 @@ import ComponentFactory, {
 import { createError } from "./handle-error";
 
 // 将组件挂载到某个节点上
-const mount = (
+const mount = async (
   idOrDom: string | HTMLElement,
-  article?: Article | ((factory: ComponentFactory) => Article),
+  article?: Article | ((factory: ComponentFactory) => Promise<Article>),
   option?: IOption
 ) => {
   // 设置内容生成器以及组件工厂
@@ -20,7 +20,7 @@ const mount = (
 
   if (!article) article = createEmptyArticle();
   if (article instanceof Function) {
-    article = article(getComponentFactory());
+    article = await article(getComponentFactory());
   }
   let root;
   if (typeof idOrDom === "string") {
