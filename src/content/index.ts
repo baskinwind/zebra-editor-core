@@ -3,6 +3,7 @@ import BaseBuilder from "./base-builder";
 import nextTicket from "../util/next-ticket";
 
 let nowContentBuiler: any;
+let prevContentBuiler: any;
 
 export const getContentBuilder = <T extends BaseBuilder = BaseBuilder>(): T =>
   nowContentBuiler;
@@ -12,8 +13,9 @@ export const setContentBuilder = (builder?: BaseBuilder) => {
 };
 
 export const changeContentBuiler = (builder: BaseBuilder) => {
+  prevContentBuiler = nowContentBuiler;
   nowContentBuiler = builder;
   nextTicket(() => {
-    nowContentBuiler = ContentBulider.getInstance();
+    nowContentBuiler = prevContentBuiler;
   });
 };

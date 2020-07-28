@@ -145,10 +145,11 @@ class UserOperator extends BaseOperator {
     });
   }
 
-  // 仅处理 enter c v z 的逻辑，继承时，需先调用 super
+  // 仅处理 enter c v x z s 的逻辑，继承时，需先调用 super
   handleFunctionKey(event: KeyboardEvent) {
     let selection = getSelection();
     let isCtrl = event.ctrlKey || event.metaKey;
+    let isShift = event.shiftKey;
     let key = event.key.toLowerCase();
     if (isCtrl && event.key === "Enter") {
       let component = getBlockById(selection.range[1].id);
@@ -156,7 +157,7 @@ class UserOperator extends BaseOperator {
       return;
     }
     // 一些不需要控制的按键
-    if (isCtrl) {
+    if (isCtrl && !isShift) {
       if (["c", "v", "x", "z"].includes(key)) {
         return;
       }

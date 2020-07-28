@@ -292,10 +292,10 @@ class List extends StructureCollection<ListItemWrapper> {
     let build = getContentBuilder();
     let content = build.buildList(
       this.id,
-      () => this.children.map((item) => item.render()).toArray(),
-      this.decorate.getStyle(),
+      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      this.decorate.getStyle(onlyDecorate),
       {
-        ...this.decorate.getData(),
+        ...this.decorate.getData(onlyDecorate),
         tag: this.listType === "nl" ? "ul" : this.listType
       }
     );

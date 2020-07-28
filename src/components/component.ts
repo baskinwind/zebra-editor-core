@@ -10,6 +10,7 @@ import { getId } from "./util";
 import { storeData } from "../decorate/index";
 import { recordMethod } from "../record/decorators";
 import { getContentBuilder } from "../content";
+import { createError } from "../util/handle-error";
 
 export type operatorType = [Block, number, number] | undefined;
 export type classType = { exchangeOnly: Function; exchange: Function };
@@ -115,7 +116,9 @@ abstract class Component {
   }
 
   // 渲染该组件
-  abstract render(onlyDecorate: boolean): any;
+  render(onlyDecorate: boolean = false): any {
+    throw createError("请为组件添加 render 函数");
+  }
 }
 
 export default Component;
