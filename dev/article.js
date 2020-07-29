@@ -27,22 +27,22 @@ let pledgeCn = [
   "我将生命与荣耀献给守夜人，今夜如此，夜夜皆然。"
 ];
 
-article.add(factory.buildTitle("h1", "A Song of Ice and Fire"));
-article.add(factory.buildTitle("h2", "冰与火之歌"));
+article.add(factory.buildHeader("h1", "A Song of Ice and Fire"));
+article.add(factory.buildHeader("h2", "冰与火之歌"));
 
-article.add(factory.buildTitle("h3", "图片"));
+article.add(factory.buildHeader("h3", "图片"));
 article.add(
   factory.buildMedia("image", "http://cdn.acohome.cn/demo-img-1.jpg")
 );
 
-article.add(factory.buildTitle("h3", "代码块"));
+article.add(factory.buildHeader("h3", "代码块"));
 let code = factory.buildCode(
   `document.body.innerHTML = greeter(user);`,
   "javascript"
 );
 code.addInto(article);
 
-article.add(factory.buildTitle("h3", "列表"));
+article.add(factory.buildHeader("h3", "列表"));
 let ol = factory.buildList("ol", [
   "权力的游戏",
   "列王的纷争",
@@ -60,7 +60,7 @@ let ul = factory.buildList("ul", [
 ]);
 ul.addInto(article);
 
-article.add(factory.buildTitle("h3", "段落"));
+article.add(factory.buildHeader("h3", "段落"));
 pledge.forEach((item) => {
   article.add(factory.buildParagraph(item));
 });
@@ -69,7 +69,7 @@ pledgeCn.forEach((item) => {
   article.add(factory.buildParagraph(item));
 });
 
-article.add(factory.buildTitle("h3", "图文混排"));
+article.add(factory.buildHeader("h3", "图文混排"));
 let para = factory.buildParagraph("");
 para.add(factory.buildInlineImage("http://cdn.acohome.cn/emoji-1.png"));
 para.addText(" Valar Morghulis ");
@@ -78,7 +78,7 @@ para.addText(" 凡人皆有一死 ");
 para.add(factory.buildInlineImage("http://cdn.acohome.cn/emoji-3.png"));
 para.addInto(article);
 
-article.add(factory.buildTitle("h3", "表格"));
+article.add(factory.buildHeader("h3", "表格"));
 let table = factory.buildTable(3, 3, [
   ["表头一", "表头二", "表头三"],
   ["1-1", "1-2", "1-3"],

@@ -1,6 +1,6 @@
 {
   "name": "zebra-editor-core",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "license": "MIT",
   "description": "ZebraEditorCore - modern rich text editor.",
   "keywords": [
@@ -47,7 +47,7 @@
     "build": "npm run build:umd && npm run build:mjs",
     "build:example": "webpack --config build/dev.config.js",
     "build:umd": "webpack --config build/prod.config.js",
-    "build:mjs": "tsc --sourceMap false"
+    "build:mjs": "tsc --sourceMap false --target esnext"
   },
   "browserslist": [
     "last 1 chrome version",
