@@ -1,4 +1,4 @@
-import { throttle } from "lodash-es";
+import { throttle } from "lodash";
 import { getBlockById } from "..";
 import Article from "../components/article";
 

@@ -7,7 +7,7 @@ import {
   getOffset,
   getContainDocument
 } from "./util";
-import { cloneDeep, throttle } from "lodash-es";
+import { cloneDeep, throttle } from "lodash";
 import Article from "../components/article";
 
 export interface selectionType {
