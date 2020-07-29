@@ -4,6 +4,9 @@ import { initRecord } from "../record/util";
 import { initSelection } from "../operator-selection/get-selection";
 import { createError } from "./handle-error";
 import Article from "../components/article";
+import { startUpdate } from "./update-component";
+import nextTicket from "./next-ticket";
+import { saveBlock } from "../components/util";
 
 const createNewArticle = (article?: Article) => {
   let doc = getContainDocument();
@@ -13,9 +16,14 @@ const createNewArticle = (article?: Article) => {
 
   let newArticle = article || createEmptyArticle();
   newArticle.active = true;
+  editor.appendChild(newArticle.render());
   initRecord(newArticle);
   initSelection(newArticle);
-  editor.appendChild(newArticle.render());
+  startUpdate();
+  editor.focus();
+  nextTicket(() => {
+    document.dispatchEvent(new Event("editorchange"));
+  });
 };
 
 export default createNewArticle;

@@ -78,8 +78,8 @@ const createEditor = (
     placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
 
     document.addEventListener("editorchange", (e) => {
-      let article = getBlockById("article");
-      // @ts-ignore
+      let article = getBlockById<Article>("article");
+      if (!article) return;
       if (article.isEmpty() && article.getChild(0).decorate.isEmpty()) {
         placeholder.style.display = "block";
       } else {

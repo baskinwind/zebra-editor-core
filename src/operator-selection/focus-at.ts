@@ -26,11 +26,14 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
       end = { id: start.id, offset: start.offset };
     }
 
+    let doc = getContainDocument();
+    let block = doc.getElementById(start.id);
+    if (!block) return;
+
     // 让 focus 的节点移入视口内
     nextTicket(() => {
-      let doc = getContainDocument();
       // @ts-ignore
-      doc.getElementById(start.id)?.scrollIntoView({
+      block?.scrollIntoView({
         behavior: "smooth",
         block: "nearest"
       });

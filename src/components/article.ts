@@ -36,6 +36,11 @@ class Article extends StructureCollection<Block> {
     saveBlock(this, "article");
   }
 
+  setId(id: string) {
+    this.id = id;
+    saveBlock(this);
+  }
+
   isEmpty() {
     return this.getSize() === 1 && this.getChild(0)?.getSize() === 0;
   }

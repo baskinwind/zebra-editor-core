@@ -3,6 +3,7 @@ import { getBlockById, clearBlock } from "../components/util";
 import { createError } from "./handle-error";
 import Article from "../components/article";
 import saveArticle from "./save-article";
+import { stopUpdate } from "./update-component";
 
 const clearArticle = () => {
   let doc = getContainDocument();
@@ -13,6 +14,7 @@ const clearArticle = () => {
   beforeArticle.active = false;
   saveArticle(beforeArticle);
   clearBlock();
+  stopUpdate();
 };
 
 export default clearArticle;

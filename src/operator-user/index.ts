@@ -14,6 +14,7 @@ import { getContainDocument } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
 import nextTicket from "../util/next-ticket";
 import saveArticle from "../util/save-article";
+import { createError } from "../util/handle-error";
 
 class UserOperator extends BaseOperator {
   static bulider: UserOperator;
