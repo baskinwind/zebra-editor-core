@@ -137,53 +137,49 @@ abstract class Block extends Component {
   }
 
   indent(customerUpdate: boolean = false): operatorType {
-    let listItem: Block = this;
+    let block: Block = this;
     while (
-      listItem.parent?.type !== ComponentType.listItem &&
-      listItem.parent?.type !== ComponentType.article
+      block.parent?.type !== ComponentType.list &&
+      block.parent?.type !== ComponentType.article
     ) {
-      listItem = listItem.getParent();
+      block = block.getParent();
     }
 
-    let parent = listItem.getParent();
-    let prev = parent.getPrev(listItem);
-    let next = parent.getNext(listItem);
+    let parent = block.getParent();
+    let prev = parent.getPrev(block);
+    let next = parent.getNext(block);
     if (prev?.type === ComponentType.list) {
-      listItem.sendTo(prev, customerUpdate);
+      block.sendTo(prev, customerUpdate);
       if (next?.type === ComponentType.list) {
         next.sendTo(prev, customerUpdate);
       }
     } else if (next?.type === ComponentType.list) {
-      listItem.removeSelf(customerUpdate);
-      next.add(listItem, 0, customerUpdate);
+      block.removeSelf(customerUpdate);
+      next.add(block, 0, customerUpdate);
     } else {
       let newList = getComponentFactory().buildList("ol");
-      listItem.replaceSelf(newList, customerUpdate);
-      newList.add(listItem, undefined, customerUpdate);
+      block.replaceSelf(newList, customerUpdate);
+      newList.add(block, undefined, customerUpdate);
     }
     return;
   }
 
   outdent(customerUpdate: boolean = false): operatorType {
-    let listItem: Block = this;
+    let block: Block = this;
     while (
-      listItem.parent?.type !== ComponentType.listItem &&
-      listItem.parent?.type !== ComponentType.article
+      block.parent?.type !== ComponentType.list &&
+      block.parent?.type !== ComponentType.article
     ) {
-      listItem = listItem.getParent();
+      block = block.getParent();
     }
 
-    let parent = listItem.getParent();
+    let parent = block.getParent();
     if (parent.type === ComponentType.article) {
       return;
     }
-    let realParent = parent;
-    if (parent.type === ComponentType.listItem) {
-      realParent = parent.getParent();
-    }
-    let index = parent.findChildrenIndex(listItem);
-    listItem.removeSelf(customerUpdate);
-    realParent.split(index, listItem, customerUpdate);
+    let index = parent.findChildrenIndex(block);
+    block.removeSelf(customerUpdate);
+    parent.split(index, block, customerUpdate);
     return;
   }
 

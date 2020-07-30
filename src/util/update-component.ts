@@ -48,9 +48,8 @@ const updateComponent = (
     });
   }
 
-  // 无内容，不更新
+  // 不需要更新
   if (!canUpdate || customerUpdate || !block) return;
-  // console.info("update");
   if (Array.isArray(block)) {
     block.forEach((item) => update(item, focus));
   } else {
@@ -72,7 +71,6 @@ const update = (block: Block, focus: boolean) => {
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(block.id);
   if (dom) {
-    // console.info(component.id);
     if (block.active) {
       // 结构组件如果存在 dom 并且是有效的，不需要更新，减少更新量
       if (block.structureType === StructureType.structure && !focus) return;
@@ -106,14 +104,12 @@ const update = (block: Block, focus: boolean) => {
       return;
     }
 
-    // console.info(component.id);
-    // 渲染组件
+    // 组件渲染结果
     let newElement: HTMLElement;
 
     // 列表的子组件需要嵌套 li
     let inList = parentComponent.type === ComponentType.list;
     if (inList) {
-      // @ts-ignore
       newElement = getContentBuilder().buildListItem(block);
     } else {
       newElement = block.render();
