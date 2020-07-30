@@ -3,47 +3,21 @@ import { operatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
-import BlockWrapper from "./block-wrapper";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
 import { initRecordState, recordMethod } from "../record/decorators";
-import ContentCollection from "./content-collection";
 import nextTicket from "../util/next-ticket";
+import StructureType from "../const/structure-type";
 
 export type listType = "ol" | "ul" | "nl";
-export interface IListSnapshoot extends ICollectionSnapshoot<ListItemWrapper> {
+export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   listType: listType;
 }
 
-class ListItemWrapper extends BlockWrapper {
-  type = ComponentType.listItem;
-  static create(raw: IRawType): ListItemWrapper {
-    let factory = getComponentFactory();
-    let children = raw.children
-      ? raw.children.map((item) => factory.typeMap[item.type].create(item))
-      : [];
-    return new ListItemWrapper(children[0]);
-  }
-
-  render(onlyDecorate: boolean = false) {
-    let style: any = {};
-    let block = this.getChild();
-    if (!(block instanceof ContentCollection)) {
-      style.display = "block";
-    }
-    return getContentBuilder().buildListItem(
-      this.id,
-      () => this.getChild().render(onlyDecorate),
-      { ...this.decorate.getStyle(onlyDecorate), ...style },
-      this.decorate.getData(onlyDecorate)
-    );
-  }
-}
-
 @initRecordState
-class List extends StructureCollection<ListItemWrapper> {
+class List extends StructureCollection<Block> {
   type = ComponentType.list;
   listType: listType;
   style: storeData = {
@@ -51,8 +25,11 @@ class List extends StructureCollection<ListItemWrapper> {
   };
 
   static create(raw: IRawType): List {
+    let factory = getComponentFactory();
     let children = raw.children
-      ? raw.children.map((item: IRawType) => ListItemWrapper.create(item))
+      ? raw.children.map((item: IRawType) =>
+          factory.typeMap[item.type].create(item)
+        )
       : [];
     let list = getComponentFactory().buildList();
     list.add(children);
@@ -67,11 +44,8 @@ class List extends StructureCollection<ListItemWrapper> {
     let parent = block.getParent();
 
     // 属于列表的子元素
-    if (parent instanceof ListItemWrapper) {
-      let garend = parent.getParent();
-      if (garend instanceof List) {
-        garend.setListType(args[0]);
-      }
+    if (parent instanceof List) {
+      parent.setListType(args[0]);
       return [block];
     }
     let prev = parent.getPrev(block);
@@ -100,7 +74,7 @@ class List extends StructureCollection<ListItemWrapper> {
     this.listType = type;
     let list = children.map((item) => {
       if (typeof item === "string") {
-        item = getComponentFactory().buildParagraph(item);
+        return getComponentFactory().buildParagraph(item);
       }
       return item;
     });
@@ -119,10 +93,6 @@ class List extends StructureCollection<ListItemWrapper> {
     if (this.listType === "nl") {
       this.decorate.mergeStyle({
         paddingLeft: "0px"
-      });
-    } else {
-      this.decorate.mergeStyle({
-        paddingLeft: "40px"
       });
     }
     this.children.forEach((item) => {
@@ -162,16 +132,13 @@ class List extends StructureCollection<ListItemWrapper> {
 
   addChildren(block: Block[], index?: number, customerUpdate: boolean = false) {
     // 列表仅能添加 wrapper 包裹的组件
-    let list: ListItemWrapper[] = block.map((item) => {
-      if (!(item instanceof ListItemWrapper)) {
-        item = new ListItemWrapper(item);
-      }
+    let list: Block[] = block.map((item) => {
       if (this.listType === "nl") {
         item.decorate.mergeStyle({ display: "block" });
       } else {
         item.decorate.mergeStyle({ remove: "display" });
       }
-      return item as ListItemWrapper;
+      return item;
     });
     return super.addChildren(list, index, customerUpdate);
   }
@@ -192,14 +159,14 @@ class List extends StructureCollection<ListItemWrapper> {
     }
     if (!Array.isArray(block)) block = [block];
     let newEmpty = this.addChildren(block, index, customerUpdate);
-    return newEmpty.length ? [newEmpty[0].getChild(), 0, 0] : undefined;
+    return newEmpty.length ? [newEmpty[0], 0, 0] : undefined;
   }
 
   removeChildren(
-    indexOrComponent: ListItemWrapper | number,
+    indexOrComponent: Block | number,
     removeNumber: number = 1,
     customerUpdate: boolean = false
-  ): ListItemWrapper[] {
+  ): Block[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
       nextTicket(() => {
@@ -207,45 +174,31 @@ class List extends StructureCollection<ListItemWrapper> {
         this.removeSelf(customerUpdate);
       });
     }
-    let removed = super
-      .removeChildren(indexOrComponent, removeNumber, customerUpdate)
-      .map((item) => item.getChild());
-    // @ts-ignore
+    let removed = super.removeChildren(
+      indexOrComponent,
+      removeNumber,
+      customerUpdate
+    );
     return removed;
   }
 
-  replaceChild(
-    block: Block[],
-    oldComponent: ListItemWrapper,
-    customerUpdate: boolean = false
-  ): Block[] {
-    // 列表仅能添加 wrapper 包裹的组件
-    let list: ListItemWrapper[] = block.map((item) => {
-      if (item instanceof ListItemWrapper) {
-        return item;
-      }
-      return new ListItemWrapper(item);
-    });
-    return super.replaceChild(list, oldComponent, customerUpdate);
-  }
-
   childHeadDelete(
-    empty: ListItemWrapper,
+    block: Block,
     index: number,
     customerUpdate: boolean = false
   ): operatorType {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
-      let prev = this.getPrev(empty);
+      let prev = this.getPrev(block);
       if (!prev) return;
-      return empty.sendTo(prev, customerUpdate);
+      return block.sendTo(prev, customerUpdate);
     }
 
     // 第一项时，直接将该列表项添加到父元素上
     let parent = this.getParent();
     index = parent.findChildrenIndex(this);
-    empty.removeSelf(customerUpdate);
-    return parent.add(empty.children.toArray(), index);
+    block.removeSelf(customerUpdate);
+    return parent.add(block, index);
   }
 
   sendTo(block: Block, customerUpdate: boolean = false): operatorType {
@@ -265,7 +218,7 @@ class List extends StructureCollection<ListItemWrapper> {
       if (block.isEmpty()) {
         block.removeSelf();
         let last = this.getChild(this.getSize() - 1);
-        let lastSize = last.getChild().getSize();
+        let lastSize = last.getSize();
         return [last, lastSize, lastSize];
       }
       return this.add(block, undefined, customerUpdate);
@@ -280,11 +233,6 @@ class List extends StructureCollection<ListItemWrapper> {
 
   restore(state: IListSnapshoot) {
     this.listType = state.listType;
-    state.children.forEach((item) => {
-      let child = item.getChild();
-      child.parent = item;
-      child.active = true;
-    });
     super.restore(state);
   }
 
@@ -292,7 +240,10 @@ class List extends StructureCollection<ListItemWrapper> {
     let build = getContentBuilder();
     let content = build.buildList(
       this.id,
-      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      () =>
+        this.children
+          .map((item) => build.buildListItem(item, onlyDecorate))
+          .toArray(),
       this.decorate.getStyle(onlyDecorate),
       {
         ...this.decorate.getData(onlyDecorate),

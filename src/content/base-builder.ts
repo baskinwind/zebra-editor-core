@@ -1,4 +1,5 @@
 import nextTicket from "../util/next-ticket";
+import Block from "../components/block";
 
 export interface mapData {
   [key: string]: any;
@@ -58,12 +59,7 @@ abstract class BaseBuilder<T = any> {
     data: mapData
   ): T;
 
-  abstract buildListItem(
-    id: string,
-    getChildren: () => T,
-    style: mapData,
-    data: mapData
-  ): T;
+  abstract buildListItem(block: Block, onlyDecorate?: boolean): T;
 
   abstract buildParagraph(
     id: string,

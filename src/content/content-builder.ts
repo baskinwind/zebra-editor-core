@@ -2,6 +2,7 @@ import BaseBuilder, { mapData } from "./base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getContainDocument } from "../operator-selection/util";
+import Block from "../components/block";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
   static bulider: ContentBuilder;
@@ -150,17 +151,15 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return list;
   }
 
-  buildListItem(
-    id: string,
-    getChildren: () => HTMLElement,
-    style: mapData,
-    data: mapData
-  ): HTMLElement {
+  buildListItem(block: Block, onlyDecorate: boolean = false): HTMLElement {
     let containDocument = getContainDocument();
     let li = containDocument.createElement("li");
-    li.id = id;
-    li.appendChild(getChildren());
-    this.addStyle(li, style, data);
+    li.appendChild(block.render(onlyDecorate));
+    let style: any = {};
+    if (block.structureType !== StructureType.content) {
+      style.display = "block";
+    }
+    this.addStyle(li, style);
     return li;
   }
 
@@ -179,11 +178,13 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       parapraph.classList.add(`zebra-editor-${tag}`);
       parapraph.dataset.type = ComponentType.paragraph;
       parapraph.dataset.structure = StructureType.content;
+      let span = containDocument.createElement("span");
       let children = getChildren();
       if (children.length) {
         children.forEach((component) => {
-          parapraph?.appendChild(component);
+          span?.appendChild(component);
         });
+        parapraph.appendChild(span);
       } else {
         parapraph.appendChild(containDocument.createElement("br"));
       }
@@ -297,40 +298,43 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
-    let wrap = containDocument.createElement("span");
+    let charWrap;
+    let root = containDocument.createElement("span");
+    charWrap = root;
+
     if (data.bold) {
-      wrap = containDocument.createElement("strong");
+      let strong = containDocument.createElement("strong");
+      charWrap.appendChild(strong);
+      charWrap = strong;
     } else if (data.bold === false) {
       style.fontWeight = "normal";
     }
-    wrap.innerText = charList;
-    this.addStyle(wrap, style, data);
     if (data.italic) {
       let em = containDocument.createElement("em");
-      em.appendChild(wrap);
-      wrap = em;
+      charWrap.appendChild(em);
+      charWrap = em;
     }
     if (data.deleteText) {
-      let s = containDocument.createElement("s");
-      s.appendChild(wrap);
-      wrap = s;
+      let del = containDocument.createElement("del");
+      charWrap.appendChild(del);
+      charWrap = del;
     }
     if (data.underline) {
       let u = containDocument.createElement("u");
-      u.appendChild(wrap);
-      wrap = u;
+      charWrap.appendChild(u);
+      charWrap = u;
     }
     if (data.code) {
       let code = containDocument.createElement("code");
-      code.appendChild(wrap);
-      wrap = code;
+      charWrap.appendChild(code);
+      charWrap = code;
     }
     if (data.link) {
       let link = containDocument.createElement("a");
       link.href = data.link;
       link.title = data.title || "";
-      link.appendChild(wrap);
-      wrap = link;
+      charWrap.appendChild(link);
+      charWrap = link;
       link.addEventListener("click", (event: MouseEvent) => {
         if (event.metaKey || event.ctrlKey) {
           window.open(link.href);
@@ -339,10 +343,13 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
         }
       });
     }
-    wrap.id = id;
-    wrap.dataset.type = ComponentType.characterList;
-    wrap.dataset.structure = StructureType.partialContent;
-    return wrap;
+
+    charWrap.innerText = charList;
+    this.addStyle(root, style, data);
+    root.id = id;
+    root.dataset.type = ComponentType.characterList;
+    root.dataset.structure = StructureType.partialContent;
+    return root;
   }
 
   buildInlineImage(

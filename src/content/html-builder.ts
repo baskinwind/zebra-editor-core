@@ -1,4 +1,6 @@
 import BaseBuilder, { mapData } from "./base-builder";
+import Block from "../components/block";
+import StructureType from "../const/structure-type";
 
 class HtmlBuilder extends BaseBuilder<string> {
   static bulider: HtmlBuilder;
@@ -133,13 +135,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     );
   }
 
-  buildListItem(
-    id: string,
-    getChildren: () => string,
-    style: mapData,
-    data: mapData
-  ): string {
-    return this.buildHtml("li", "zebra-editor-list-item", style, getChildren());
+  buildListItem(block: Block, onlyDecorate: boolean = false): string {
+    let children = block.render(onlyDecorate);
+    let style: any = {};
+    if (block.structureType === StructureType.content) {
+      style.display = "block";
+    }
+    return this.buildHtml("li", "zebra-editor-list-item", style, children);
   }
 
   buildParagraph(
@@ -153,7 +155,7 @@ class HtmlBuilder extends BaseBuilder<string> {
       tag,
       `zebra-editor-${tag}`,
       style,
-      getChildren().join("") || "<br />"
+      `<span>${getChildren().join("") || "<br />"}</span>`
     );
   }
 
