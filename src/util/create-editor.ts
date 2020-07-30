@@ -49,8 +49,7 @@ const createEditor = (
   iframe.frameBorder = "0";
   root.appendChild(iframe);
 
-  // firefox 下必须异步才能获取 contentDocument 与 contentWindow
-  setTimeout(() => {
+  const loadIframe = () => {
     if (!iframe.contentDocument) {
       return;
     }
@@ -208,7 +207,14 @@ const createEditor = (
     if (option && option.afterCreate) {
       option.afterCreate(iframe.contentDocument, iframe.contentWindow);
     }
-  });
+  };
+
+  // firefox 下必须通过 load 才能正确加载
+  if (navigator.userAgent.indexOf("Firefox") > -1) {
+    iframe.addEventListener("load", loadIframe);
+  } else {
+    loadIframe();
+  }
 
   return root;
 };
