@@ -95,6 +95,7 @@ const findFocusNode = (
   index: number
 ): [boolean, Node, number] => {
   if (
+    index === 0 ||
     element.nodeName === "IMG" ||
     element.nodeName === "AUDIO" ||
     element.nodeName === "VIDEO" ||

@@ -96,6 +96,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     component.forEach((item) => {
       item.parent = this;
       item.active = true;
+      item.recordSnapshoot();
     });
     let newBlock = super.addChildren(component, index);
     updateComponent([...component].reverse(), customerUpdate);
@@ -124,6 +125,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
       if (item.parent === this) {
         item.active = false;
         item.parent = undefined;
+        item.recordSnapshoot();
       }
     });
     updateComponent(removed, customerUpdate);

@@ -27,7 +27,7 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
   for (let i = 1; i < idList.length - 1; i++) {
     getBlockById(idList[i]).removeSelf();
   }
-  return focusAt({
+  focusAt({
     id: lastComponent.id,
     offset: 0
   });

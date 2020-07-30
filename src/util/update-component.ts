@@ -3,6 +3,7 @@ import { getBlockById } from "../components/util";
 import { getContainDocument } from "../operator-selection/util";
 import ComponentType from "../const/component-type";
 import nextTicket from "./next-ticket";
+import StructureType from "../const/structure-type";
 
 let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
@@ -33,12 +34,13 @@ const needUpdate = () => {
 // 更新组件
 const updateComponent = (
   block?: Block | Block[],
-  customerUpdate: boolean = false
+  customerUpdate: boolean = false,
+  focus: boolean = false
 ) => {
   // 清空延迟更新队列
   if (delayUpdateQueue.size) {
     // console.info("delay update");
-    delayUpdateQueue.forEach((id) => update(getBlockById(id)));
+    delayUpdateQueue.forEach((id) => update(getBlockById(id), focus));
     delayUpdateQueue.clear();
     nextTicket(() => {
       document.dispatchEvent(new Event("editorchange"));
@@ -49,9 +51,9 @@ const updateComponent = (
   if (!canUpdate || customerUpdate || !block) return;
   // console.info("update");
   if (Array.isArray(block)) {
-    block.forEach((item) => update(item));
+    block.forEach((item) => update(item, focus));
   } else {
-    update(block);
+    update(block, focus);
   }
 
   // 避免过度触发 editorchange 事件
@@ -64,13 +66,17 @@ const updateComponent = (
   }
 };
 
-const update = (block: Block) => {
+const update = (block: Block, focus: boolean) => {
   if (!block) return;
   let containDocument = getContainDocument();
   let dom = containDocument.getElementById(block.id);
   if (dom) {
     // console.info(component.id);
     if (block.active) {
+      // 结构组件如果存在 dom 并且是有效的，不需要更新，减少更新量
+      if (block.structureType === StructureType.structure && !focus) {
+        return;
+      }
       let newRender = block.render();
       // 当仅发生样式变化时，render 返回节点不会变化
       if (newRender === dom) return;
@@ -87,7 +93,7 @@ const update = (block: Block) => {
 
     // 未找到父组件对应的元素时，更新父组件
     if (!parentDom) {
-      update(parentComponent);
+      update(parentComponent, focus);
       return;
     }
     // console.info(component.id);

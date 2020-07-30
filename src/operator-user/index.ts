@@ -25,6 +25,8 @@ class UserOperator extends BaseOperator {
     return this.bulider;
   }
 
+  isFireFox: boolean = navigator.userAgent.indexOf("Firefox") > -1;
+
   onBlur(event: FocusEvent) {
     flushSelection();
   }
@@ -104,13 +106,27 @@ class UserOperator extends BaseOperator {
     if (
       event.inputType === "insertCompositionText" ||
       event.inputType === "deleteContentBackward" ||
-      !event.data ||
-      event.data === ""
+      !event.data
     )
       return;
     let data = event.data;
     let selection = getBeforeSelection();
     let start = selection.range[0];
+
+    /**
+     * 注：由于 firefox 不支持 beforeinput 时间，需要对 firefox 进行兼容处理
+     */
+    if (this.isFireFox) {
+      let selection = getSelection();
+      start = {
+        id: start.id,
+        offset: selection.range[0].offset - [...event.data].length
+      };
+      console.log(start);
+      
+      createDurationRecord(start, start);
+    }
+
     input(data, start, event);
   }
 

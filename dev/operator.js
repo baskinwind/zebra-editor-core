@@ -58,7 +58,7 @@ new Vue({
     },
 
     showArticle() {
-      updateComponent(article);
+      updateComponent(article, false, true);
     },
     logHtml() {
       console.log(getContentByBuilder(article));

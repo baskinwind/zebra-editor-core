@@ -1,4 +1,3 @@
-import Block from "../components/block";
 import BaseBuilder from "../content/base-builder";
 import UserOperator from "../operator-user";
 import BaseOperator from "../operator-user/base-operator";
@@ -169,6 +168,7 @@ const createEditor = (
       try {
         let key = event.key.toLowerCase();
         if ("z" === key) {
+          event.preventDefault();
           if (event.shiftKey) {
             redo();
           } else {
