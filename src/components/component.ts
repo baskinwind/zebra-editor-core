@@ -91,7 +91,7 @@ abstract class Component {
     this.decorate.mergeData(data);
     if (this instanceof Block) {
       getContentBuilder().setUpdateDecorate();
-      updateComponent(this, customerUpdate, true);
+      updateComponent(this, customerUpdate);
     }
     return;
   }

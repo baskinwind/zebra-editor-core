@@ -63,7 +63,6 @@ pre::before {
 a {
   color: #1890ff;
 }
-
 p {
   font-size: 16px;
 }
@@ -75,13 +74,16 @@ h5,
 h6,
 figure,
 p,
-ul,
-ol,
 blockquote,
 pre {
   margin: 10px 0;
   padding: 0;
   line-height: 1.5;
+}
+ul,
+ol {
+  margin: 10px 0;
+  padding: 0 0 0 2em;
 }
 figure > pre {
   margin: 0;

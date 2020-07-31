@@ -35,13 +35,12 @@ const needUpdate = () => {
 // 更新组件
 const updateComponent = (
   block?: Block | Block[],
-  customerUpdate: boolean = false,
-  focus: boolean = false
+  customerUpdate: boolean = false
 ) => {
   // 清空延迟更新队列
   if (delayUpdateQueue.size) {
     // console.info("delay update");
-    delayUpdateQueue.forEach((id) => update(getBlockById(id), focus));
+    delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
     nextTicket(() => {
       document.dispatchEvent(new Event("editorchange"));
@@ -51,9 +50,9 @@ const updateComponent = (
   // 不需要更新
   if (!canUpdate || customerUpdate || !block) return;
   if (Array.isArray(block)) {
-    block.forEach((item) => update(item, focus));
+    block.forEach((item) => update(item));
   } else {
-    update(block, focus);
+    update(block);
   }
 
   // 避免过度触发 editorchange 事件
@@ -66,24 +65,30 @@ const updateComponent = (
   }
 };
 
-const update = (block: Block, focus: boolean) => {
+const update = (block: Block) => {
   if (!block) return;
   let containDocument = getContainDocument();
-  let dom = containDocument.getElementById(block.id);
-  if (dom) {
+  let oldDom = containDocument.getElementById(block.id);
+
+  if (oldDom) {
+    let inList = oldDom.parentElement?.tagName.toLowerCase() === "li";
     if (block.active) {
-      // 结构组件如果存在 dom 并且是有效的，不需要更新，减少更新量
-      if (block.structureType === StructureType.structure && !focus) return;
-      let newRender = block.render();
+      let newDom: HTMLElement;
+      if (inList) {
+        newDom = getContentBuilder().buildListItem(block);
+        oldDom = oldDom.parentElement;
+      } else {
+        newDom = block.render();
+      }
       // 当仅发生样式变化时，render 返回节点不会变化
-      if (newRender === dom) return;
-      dom?.replaceWith(newRender);
+      if (newDom === oldDom) return;
+      oldDom?.replaceWith(newDom);
     } else {
       // li 需要做特殊处理
-      if (dom.parentElement?.tagName.toLowerCase() === "li") {
-        dom.parentElement.remove();
+      if (inList) {
+        oldDom.parentElement?.remove();
       } else {
-        dom?.remove();
+        oldDom?.remove();
       }
     }
   } else {
@@ -100,25 +105,25 @@ const update = (block: Block, focus: boolean) => {
 
     // 未找到父组件对应的元素时，更新父组件
     if (!parentDom) {
-      update(parentComponent, focus);
+      update(parentComponent);
       return;
     }
 
     // 组件渲染结果
-    let newElement: HTMLElement;
+    let newDom: HTMLElement;
 
     // 列表的子组件需要嵌套 li
     let inList = parentComponent.type === ComponentType.list;
     if (inList) {
-      newElement = getContentBuilder().buildListItem(block);
+      newDom = getContentBuilder().buildListItem(block);
     } else {
-      newElement = block.render();
+      newDom = block.render();
     }
 
     // 将该组件插入到合适的位置
     let index = parentComponent.findChildrenIndex(block);
     if (index === parentComponent.getSize() - 1) {
-      parentDom.appendChild(newElement);
+      parentDom.appendChild(newDom);
     } else {
       let afterComId = parentComponent.getChild(index + 1).id;
       let afterDom = containDocument.getElementById(afterComId);
@@ -126,7 +131,7 @@ const update = (block: Block, focus: boolean) => {
         afterDom = afterDom?.parentElement as HTMLElement;
       }
       if (afterDom) {
-        parentDom.insertBefore(newElement, afterDom);
+        parentDom.insertBefore(newDom, afterDom);
       } else {
         delayUpdateQueue.add(block.id);
       }

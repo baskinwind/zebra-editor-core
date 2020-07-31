@@ -30,7 +30,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = getContainDocument();
     let article = containDocument.getElementById(id);
-    if (!article || !this.updateDecorate) {
+    if (!article) {
       article = containDocument.createElement("article");
       article.id = id;
       article.classList.add("zebra-editor-article");
@@ -53,7 +53,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = getContainDocument();
     let collection = containDocument.getElementById(id);
-    if (!collection || !this.updateDecorate) {
+    if (!collection || tag !== collection.tagName.toLowerCase()) {
       collection = containDocument.createElement(tag);
       collection.id = id;
       collection.classList.add("zebra-editor-customer");
@@ -75,7 +75,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ) {
     let containDocument = getContainDocument();
     let figure = containDocument.getElementById(id);
-    if (!figure || !this.updateDecorate) {
+    if (!figure) {
       figure = containDocument.createElement("figure");
       figure.id = id;
       figure.dataset.structure = StructureType.structure;
@@ -136,8 +136,8 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = getContainDocument();
     let list = containDocument.getElementById(id);
-    if (!list || !this.updateDecorate) {
-      let tag: string = data.tag || "ul";
+    let tag: string = data.tag || "ul";
+    if (!list || list.tagName.toLowerCase() !== tag) {
       list = containDocument.createElement(tag);
       list.id = id;
       list.classList.add("zebra-editor-list");
@@ -158,6 +158,11 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     let style: any = {};
     if (block.structureType !== StructureType.content) {
       style.display = "block";
+    }
+    let parent = block.getParent();
+    // @ts-ignore
+    if (parent.listType === "nl") {
+      style.listStyle = "none";
     }
     this.addStyle(li, style);
     return li;

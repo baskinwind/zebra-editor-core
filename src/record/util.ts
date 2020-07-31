@@ -135,7 +135,7 @@ const undo = () => {
   }
   if (nowIndex === -1) return;
   let nowRecord = recoreQueue[nowIndex];
-  for (let i = nowRecord.componentList.length - 1; i >= 0; i--) {
+  for (let i = 0; i < nowRecord.componentList.length; i++) {
     const item = nowRecord.componentList[i];
     item.record.restore(nowIndex - 1);
   }
@@ -156,7 +156,7 @@ const redo = () => {
   }
   if (nowIndex === recoreQueue.length - 1) return;
   let nowRecord = recoreQueue[nowIndex + 1];
-  for (let i = nowRecord.componentList.length - 1; i >= 0; i--) {
+  for (let i = 0; i < nowRecord.componentList.length; i++) {
     const item = nowRecord.componentList[i];
     item.record.restore(nowIndex + 1);
   }

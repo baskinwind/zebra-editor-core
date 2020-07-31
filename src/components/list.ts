@@ -20,9 +20,6 @@ export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
 class List extends StructureCollection<Block> {
   type = ComponentType.list;
   listType: listType;
-  style: storeData = {
-    paddingLeft: "40px"
-  };
 
   static create(raw: IRawType): List {
     let factory = getComponentFactory();
@@ -42,7 +39,6 @@ class List extends StructureCollection<Block> {
     customerUpdate: boolean = false
   ): Block[] {
     let parent = block.getParent();
-    debugger;
     // 属于列表的子元素
     if (parent instanceof List) {
       parent.setListType(args[0]);
@@ -94,15 +90,10 @@ class List extends StructureCollection<Block> {
       this.decorate.mergeStyle({
         paddingLeft: "0px"
       });
+    } else {
+      this.decorate.mergeStyle({ remove: "paddingLeft" });
     }
-    this.children.forEach((item) => {
-      if (this.listType === "nl") {
-        item.decorate.mergeStyle({ display: "block" });
-      } else {
-        item.decorate.mergeStyle({ remove: "display" });
-      }
-    });
-    updateComponent(this, undefined, true);
+    updateComponent(this);
   }
 
   getType(): string {
