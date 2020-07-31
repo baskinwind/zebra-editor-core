@@ -7,7 +7,6 @@ enum ComponentType {
   header = "HEADER",
   code = "CODE",
   list = "LIST",
-  listItem = "LISTITEM",
   table = "TABLE",
   tableRow = "TABLEROW",
   tableCell = "TABLECELL",
