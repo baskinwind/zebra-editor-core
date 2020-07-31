@@ -138,7 +138,7 @@ class HtmlBuilder extends BaseBuilder<string> {
   buildListItem(block: Block, onlyDecorate: boolean = false): string {
     let children = block.render(onlyDecorate);
     let style: any = {};
-    if (block.structureType === StructureType.content) {
+    if (block.structureType !== StructureType.content) {
       style.display = "block";
     }
     return this.buildHtml("li", "zebra-editor-list-item", style, children);
