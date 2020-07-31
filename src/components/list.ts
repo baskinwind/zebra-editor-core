@@ -42,7 +42,7 @@ class List extends StructureCollection<Block> {
     customerUpdate: boolean = false
   ): Block[] {
     let parent = block.getParent();
-
+    debugger;
     // 属于列表的子元素
     if (parent instanceof List) {
       parent.setListType(args[0]);
@@ -102,7 +102,7 @@ class List extends StructureCollection<Block> {
         item.decorate.mergeStyle({ remove: "display" });
       }
     });
-    updateComponent(this);
+    updateComponent(this, undefined, true);
   }
 
   getType(): string {
