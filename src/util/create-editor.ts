@@ -166,7 +166,7 @@ const createEditor = (
     iframe.contentDocument.addEventListener("keydown", (event) => {
       try {
         let key = event.key.toLowerCase();
-        if ("z" === key) {
+        if ("z" === key && (event.ctrlKey || event.metaKey)) {
           event.preventDefault();
           if (event.shiftKey) {
             redo();

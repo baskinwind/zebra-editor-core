@@ -70,16 +70,13 @@ class UserOperator extends BaseOperator {
   }
 
   onCompositionEnd(event: CompositionEvent) {
-    let selection = getBeforeSelection();
+    let selection = getSelection();
+    let start = {
+      id: selection.range[0].id,
+      offset: selection.range[0].offset - [...event.data].length
+    };
     // 混合输入会导致获取选区在输入文字的后方
-    input(
-      event.data,
-      {
-        id: selection.range[0].id,
-        offset: selection.range[0].offset
-      },
-      event
-    );
+    input(event.data, start, event);
   }
 
   onBeforeInput(event: InputEvent) {
@@ -122,8 +119,6 @@ class UserOperator extends BaseOperator {
         id: start.id,
         offset: selection.range[0].offset - [...event.data].length
       };
-      console.log(start);
-      
       createDurationRecord(start, start);
     }
 

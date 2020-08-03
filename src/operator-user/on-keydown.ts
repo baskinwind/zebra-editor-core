@@ -1,5 +1,4 @@
 import getSelection from "../operator-selection/get-selection";
-import input from "../operator/input";
 import enter from "../operator/enter";
 import backspace from "../operator/backspace";
 import { createRecord } from "../record/util";

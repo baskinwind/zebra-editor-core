@@ -27,6 +27,7 @@ import clearArticle from "./util/clear-article";
 import getContentByBuilder from "./util/get-content-by-builder";
 import getRawData from "./util/get-raw-data";
 import createByRaw from "./util/create-by-raw";
+import saveArticle from "./util/save-article";
 import updateComponent from "./util/update-component";
 
 // 文章历史相关
@@ -57,6 +58,7 @@ export {
   getContentByBuilder,
   getRawData,
   createByRaw,
+  saveArticle,
   updateComponent,
   createRecord,
   undo,

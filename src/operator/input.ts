@@ -27,7 +27,7 @@ const input = (
       component instanceof ContentCollection &&
       charOrInline === " " &&
       (startPosition.index === 0 ||
-        startPosition.index === [...(startNode.nodeValue || "")].length - 1)
+        startPosition.index >= [...(startNode.nodeValue || "")].length)
     ) {
       charOrInline = new Character(charOrInline);
     }
@@ -68,6 +68,8 @@ const input = (
       startNode.nodeName === "IMG" ||
       charOrInline instanceof Character ||
       (!event && typeof charOrInline === "string") ||
+      startPosition.index === 0 ||
+      startPosition.index >= [...(startNode.nodeValue || "")].length ||
       event?.defaultPrevented
     ) {
       event?.preventDefault();

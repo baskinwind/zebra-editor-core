@@ -28,7 +28,7 @@ class List extends StructureCollection<Block> {
           factory.typeMap[item.type].create(item)
         )
       : [];
-    let list = getComponentFactory().buildList();
+    let list = getComponentFactory().buildList(raw.listType);
     list.add(children);
     return list;
   }

@@ -1,7 +1,6 @@
 import focusAt from "../operator-selection/focus-at";
 import { cursorType, getSelectedIdList } from "../operator-selection/util";
 import { getBlockById } from "../components/util";
-import updateComponent from "../util/update-component";
 
 // 删除 start - end 的内容
 const deleteSelection = (start: cursorType, end?: cursorType) => {

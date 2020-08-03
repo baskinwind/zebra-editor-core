@@ -25,6 +25,7 @@ import {
   focusAt,
   createNewArticle
 } from "../src";
+import { getContainDocument } from "../src/operator-selection/util";
 
 let factory = getComponentFactory();
 
@@ -58,7 +59,9 @@ new Vue({
     },
 
     showArticle() {
-      updateComponent(article, false);
+      // updateComponent(article, false);
+      let oldDom = getContainDocument().getElementById(article.id);
+      oldDom.replaceWith(article.render());
     },
     logHtml() {
       console.log(getContentByBuilder(article));

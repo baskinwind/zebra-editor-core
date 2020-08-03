@@ -132,7 +132,7 @@ class Decorate {
   }
 
   isEmpty(): boolean {
-    return this.style.size === 0 && this.data.size === 0;
+    return this.styleIsEmpty() && this.dataIsEmpty();
   }
 
   clear() {
