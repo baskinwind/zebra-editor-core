@@ -1,4 +1,4 @@
-import { generate } from "shortid";
+import { characters, generate } from "shortid";
 import Block from "./block";
 import { createError } from "../util/handle-error";
 let store: { [key: string]: any } = {};
@@ -14,6 +14,7 @@ export interface IStatistic {
   block: number;
 }
 
+characters("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@");
 export const getId = () => {
   return generate();
 };
