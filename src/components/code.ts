@@ -14,7 +14,6 @@ class Code extends PlainText {
   style: storeData = {
     overflow: "auto",
     fontSize: "14px",
-    padding: "10px",
     borderRadius: "4px",
     backgroundColor: "rgba(248, 248, 248, 1)"
   };

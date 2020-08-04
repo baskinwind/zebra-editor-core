@@ -21,9 +21,6 @@ class Media extends Block {
   mediaType: mediaType;
   type = ComponentType.media;
   structureType = StructureType.media;
-  style: storeData = {
-    margin: "10px auto"
-  };
 
   static create(raw: IRawType): Media {
     return getComponentFactory().buildMedia(
