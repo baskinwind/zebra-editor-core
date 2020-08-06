@@ -2,7 +2,6 @@ import StructureType from "../const/structure-type";
 import focusAt from "../operator-selection/focus-at";
 import { cursorType, getSelectedIdList } from "../operator-selection/util";
 import { getBlockById } from "../components/util";
-import updateComponent from "../util/update-component";
 
 // 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
 const backspace = (

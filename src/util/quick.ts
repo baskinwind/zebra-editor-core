@@ -18,14 +18,7 @@ const underline = () => {
 };
 
 const code = () => {
-  modifySelectionDecorate(
-    {
-      backgroundColor: "rgba(248, 248, 248, 1)",
-      padding: "2px 4px",
-      borderRadius: "2px"
-    },
-    { code: true }
-  );
+  modifySelectionDecorate({}, { code: true });
 };
 
 const clearAll = () => {

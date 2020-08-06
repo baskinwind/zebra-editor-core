@@ -6,7 +6,6 @@ import { createError } from "./handle-error";
 import Article from "../components/article";
 import { startUpdate } from "./update-component";
 import nextTicket from "./next-ticket";
-import { saveBlock } from "../components/util";
 
 const createNewArticle = (article?: Article) => {
   let doc = getContainDocument();
