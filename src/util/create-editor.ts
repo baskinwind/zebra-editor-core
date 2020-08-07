@@ -85,7 +85,6 @@ const createEditor = (
         placeholder.style.display = "none";
       }
       let lastTyle = article.getChild(article.getSize() - 1).structureType;
-      console.log(lastTyle);
       if (
         lastTyle !== StructureType.content &&
         lastTyle !== StructureType.plainText

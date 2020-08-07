@@ -32,6 +32,7 @@ import updateComponent from "./util/update-component";
 
 // 文章历史相关
 import { createRecord, undo, redo } from "./record/util";
+import nextTicket from "./util/next-ticket";
 
 // 一些快捷操作
 export * from "./util/quick";
@@ -59,6 +60,7 @@ export {
   getRawData,
   createByRaw,
   saveArticle,
+  nextTicket,
   updateComponent,
   createRecord,
   undo,
