@@ -1,7 +1,7 @@
 import BaseBuilder from "../content/base-builder";
 import UserOperator from "../operator-user";
 import BaseOperator from "../operator-user/base-operator";
-import ComponentFactory from "../components";
+import ComponentFactory, { getComponentFactory } from "../components";
 import { initRecord, redo, undo } from "../record/util";
 import { startUpdate } from "./update-component";
 import {
@@ -14,6 +14,7 @@ import { addErrorHandle } from "./handle-error";
 import nextTicket from "./next-ticket";
 import { initSelection } from "../operator-selection/get-selection";
 import Article from "../components/article";
+import StructureType from "../const/structure-type";
 
 export interface IOption {
   placeholder?: string;
@@ -82,6 +83,14 @@ const createEditor = (
         placeholder.style.display = "block";
       } else {
         placeholder.style.display = "none";
+      }
+      let lastTyle = article.getChild(article.getSize() - 1).structureType;
+      console.log(lastTyle);
+      if (
+        lastTyle !== StructureType.content &&
+        lastTyle !== StructureType.plainText
+      ) {
+        article.add(getComponentFactory().buildParagraph());
       }
     });
     iframe.contentDocument.body.appendChild(placeholder);
