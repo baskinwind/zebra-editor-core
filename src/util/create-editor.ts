@@ -85,10 +85,7 @@ const createEditor = (
         placeholder.style.display = "none";
       }
       let lastTyle = article.getChild(article.getSize() - 1).structureType;
-      if (
-        lastTyle !== StructureType.content &&
-        lastTyle !== StructureType.plainText
-      ) {
+      if (lastTyle !== StructureType.content) {
         article.add(getComponentFactory().buildParagraph());
       }
     });
