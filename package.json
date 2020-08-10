@@ -19,12 +19,12 @@
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
-    "@types/lodash": "^4.14.158",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.19",
     "shortid": "^2.2.15"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.158",
     "@types/shortid": "^0.0.29",
     "autoprefixer": "^9.8.5",
     "clean-webpack-plugin": "^3.0.0",
