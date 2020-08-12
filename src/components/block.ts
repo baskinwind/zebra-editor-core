@@ -20,6 +20,7 @@ export interface IBlockSnapshoot extends ISnapshoot {
 abstract class Block extends Component {
   // 否是有效的
   active: boolean = false;
+  // 父组件
   parent?: StructureCollection<Block>;
 
   // 定义如何将别的组件转换为当前组件，不会触发更新
@@ -57,11 +58,6 @@ abstract class Block extends Component {
     return false;
   }
 
-  // 获取类型
-  getType(): string {
-    return this.type;
-  }
-
   // 获取统计数据
   getStatistic() {
     return {
@@ -81,10 +77,6 @@ abstract class Block extends Component {
     let parent = this.parent;
     if (!parent) throw createError("该节点已失效", this);
     return parent;
-  }
-
-  getRealParent() {
-    return this.getParent();
   }
 
   // 获取子组件的长度
@@ -136,6 +128,7 @@ abstract class Block extends Component {
     return [replaceBlock[0], 0, 0];
   }
 
+  // 触发缩进
   indent(customerUpdate: boolean = false): operatorType {
     let block: Block = this;
     while (
@@ -164,6 +157,7 @@ abstract class Block extends Component {
     return;
   }
 
+  // 取消缩进
   outdent(customerUpdate: boolean = false): operatorType {
     let block: Block = this;
     while (
@@ -222,7 +216,7 @@ abstract class Block extends Component {
     return;
   }
 
-  // 在 index 处切分
+  // 在 index 处切分组件
   split(
     index: number,
     component?: Component | Component[],

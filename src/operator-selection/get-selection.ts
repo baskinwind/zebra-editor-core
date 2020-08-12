@@ -96,33 +96,6 @@ const getSelection = () => {
     return cloneDeep<selectionType>(selectionStore);
   }
 
-  // Chrome 的光标会在表格之后
-  // 选中了结构组件的直接子节点：返回该直接子节点
-  // FIXED: 目前 Table 不可以被选中
-  // if (
-  //   // @ts-ignore
-  //   anchorNode.dataset &&
-  //   // @ts-ignore
-  //   anchorNode.dataset.structure === StructureType.structure
-  // ) {
-  //   // @ts-ignore
-  //   let component = getBlockById<StructureCollection>(anchorNode.id);
-  //   let child = component.getChild(section.anchorOffset - 1);
-  //   return {
-  //     isCollapsed: true,
-  //     range: [
-  //       {
-  //         id: child?.id || "",
-  //         offset: section.anchorOffset
-  //       },
-  //       {
-  //         id: child?.id || "",
-  //         offset: section.anchorOffset
-  //       }
-  //     ]
-  //   };
-  // }
-
   // 判断开始节点和结束节点的位置关系，
   // 0：同一节点
   // 2：focusNode 在 anchorNode 节点前

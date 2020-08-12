@@ -66,6 +66,11 @@ abstract class Component {
     this.record = new Record(this);
   }
 
+  // 获取类型
+  getType(): string {
+    return this.type;
+  }
+
   // 获取用于存储的内容
   getRaw(): IRawType {
     let raw: IRawType = {

@@ -185,19 +185,25 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData
   ): HTMLElement {
     let containDocument = getContainDocument();
+    // FIXED: Chrome 下，如果代码块的下一个内容块不是 p 标签时，
+    // 下一行在首字母进行中文输入后按下删除键，那一行会被删除，
+    // 这个行为阻止不了，但在代码块外加上 p 标签即可修复这个问题。
+    // magic code
+    let wrap = containDocument.createElement("p");
+    wrap.classList.add("zebra-editor-warp-fixed", "zebra-editor-code");
+    wrap.id = id;
+    wrap.dataset.type = ComponentType.code;
+    wrap.dataset.structure = StructureType.plainText;
     let pre = containDocument.createElement("pre");
-    pre.id = id;
-    pre.classList.add(`zebra-editor-code`);
-    pre.dataset.type = ComponentType.code;
-    pre.dataset.structure = StructureType.plainText;
+    wrap.appendChild(pre);
     const code = containDocument.createElement("code");
-    code.append(content);
+    code.textContent = content;
     code.dataset.type = ComponentType.characterList;
     code.dataset.structure = StructureType.partialContent;
     pre.appendChild(code);
     pre.dataset.language = language;
     this.addStyle(pre, style, data);
-    return pre;
+    return wrap;
   }
 
   buildeImage(

@@ -76,7 +76,12 @@ const input = (
       focusAt(component.add(charOrInline, offset));
       return;
     }
+
     // 普通的文字输入，不需要强制更新，默认行为不会破坏文档结构
+    charOrInline =
+      typeof charOrInline === "string"
+        ? charOrInline.replace(/\n/g, "")
+        : charOrInline;
     component.add(charOrInline, offset, true);
   } catch (e) {
     console.warn(e);
