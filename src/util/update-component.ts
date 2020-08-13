@@ -74,14 +74,15 @@ const update = (block: Block) => {
     let inList = oldDom.parentElement?.tagName.toLowerCase() === "li";
     if (block.active) {
       let newDom: HTMLElement;
+      newDom = block.render();
+      // 当仅发生样式变化时，render 返回节点不会变化
+      if (newDom === oldDom) return;
+
       if (inList) {
         newDom = getContentBuilder().buildListItem(block);
         oldDom = oldDom.parentElement;
-      } else {
-        newDom = block.render();
       }
-      // 当仅发生样式变化时，render 返回节点不会变化
-      if (newDom === oldDom) return;
+
       oldDom?.replaceWith(newDom);
     } else {
       // li 需要做特殊处理
