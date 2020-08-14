@@ -1,4 +1,4 @@
-import "./index.scss";
+import "./index.styl";
 import article from "./article";
 
 import {

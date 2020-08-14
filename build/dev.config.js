@@ -28,8 +28,8 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.s?css$/,
-        use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"]
+        test: /\.styl(us)?$/,
+        use: ["style-loader", "css-loader", "postcss-loader", "stylus-loader"]
       }
     ]
   },

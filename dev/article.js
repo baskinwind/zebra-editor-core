@@ -2,7 +2,7 @@ import { getComponentFactory } from "../src";
 
 let factory = getComponentFactory();
 let article = factory.buildArticle();
-
+ 
 let pledge = [
   "Night gathers, and now my watch begins.",
   "It shall not end until my death.",
