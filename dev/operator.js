@@ -10,7 +10,6 @@ import {
   getContentByBuilder,
   undo,
   redo,
-  updateComponent,
   modifySelectionDecorate,
   modifyDecorate,
   bold,
@@ -23,7 +22,8 @@ import {
   unlink,
   modifyIndent,
   focusAt,
-  createNewArticle
+  createNewArticle,
+  MarkdownBuilder
 } from "../src";
 import { getContainDocument } from "../src/operator-selection/util";
 
@@ -38,9 +38,9 @@ new Vue({
       inlineStyleValue: "20px",
       blockStyle: "line-height",
       blockStyleValue: "2em",
-      inlineImage: "http://cdn.acohome.cn/emoji-1.png",
-      image: "http://cdn.acohome.cn/demo-img-1.jpg",
-      link: "http://acohome.cn",
+      inlineImage: "https://zebrastudio.tech/img/demo/emoji-1.png",
+      image: "https://zebrastudio.tech/img/demo/img-1.jpg",
+      link: "https://zebrastudio.tech",
       tableRow: 5,
       tableCol: 4,
       tableHead: true
@@ -59,12 +59,14 @@ new Vue({
     },
 
     showArticle() {
-      // updateComponent(article, false);
       let oldDom = getContainDocument().getElementById(article.id);
       oldDom.replaceWith(article.render());
     },
     logHtml() {
       console.log(getContentByBuilder(article));
+    },
+    logMD() {
+      console.log(getContentByBuilder(article, MarkdownBuilder.getInstance()));
     },
     logRawData() {
       console.log(JSON.stringify(article.getRaw()));

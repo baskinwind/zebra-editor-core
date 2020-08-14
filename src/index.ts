@@ -4,6 +4,7 @@ import { getBlockById } from "./components/util";
 
 // 内容生成器
 import ContentBuilder from "./content/content-builder";
+import MarkdownBuilder from "./content/markdown-builder";
 import HtmlBuilder from "./content/html-builder";
 
 // 用户操作处理
@@ -43,6 +44,7 @@ export {
   getBlockById,
   ContentBuilder,
   HtmlBuilder,
+  MarkdownBuilder,
   UserOperator,
   focusAt,
   getSelection,
