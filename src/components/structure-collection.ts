@@ -122,11 +122,9 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   ) {
     let removed = super.removeChildren(indexOrBlock, removeNumber);
     removed.forEach((item) => {
-      if (item.parent === this) {
-        item.active = false;
-        item.parent = undefined;
-        item.recordSnapshoot();
-      }
+      item.active = false;
+      item.parent = undefined;
+      item.recordSnapshoot();
     });
     updateComponent(removed, customerUpdate);
     return removed;
