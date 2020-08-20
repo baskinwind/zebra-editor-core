@@ -152,14 +152,6 @@ const getSelection = () => {
   startOffset = getOffset(startParent, startContainer, startOffset);
   endOffset = getOffset(endParent, endContainer, endOffset);
 
-  // 修复：当全选中某个段落时，focusNode 有可能是下一行的第 0 个位置
-  // TODO: 仅发生在选中一个段落时，若有问题，可以查看此处
-  // 注释原因：导致中间行中
-  // if (startParent.id !== endParent.id && startOffset === 0 && endOffset === 0) {
-  //   endOffset = getElememtSize(startParent);
-  //   endParent = startParent;
-  // }
-
   // 保存选区信息
   selectionStore = {
     isCollapsed:
