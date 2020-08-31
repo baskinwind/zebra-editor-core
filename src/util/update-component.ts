@@ -43,7 +43,7 @@ const updateComponent = (
     delayUpdateQueue.forEach((id) => update(getBlockById(id)));
     delayUpdateQueue.clear();
     nextTicket(() => {
-      document.dispatchEvent(new Event("editorchange"));
+      document.dispatchEvent(new Event("editorChange"));
     });
   }
 
@@ -55,12 +55,12 @@ const updateComponent = (
     update(block);
   }
 
-  // 避免过度触发 editorchange 事件
+  // 避免过度触发 editorChange 事件
   if (!inLoop) {
     inLoop = true;
     nextTicket(() => {
       inLoop = false;
-      document.dispatchEvent(new Event("editorchange"));
+      document.dispatchEvent(new Event("editorChange"));
     });
   }
 };

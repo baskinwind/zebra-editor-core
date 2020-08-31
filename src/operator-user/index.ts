@@ -2,7 +2,7 @@ import BaseOperator from "./base-operator";
 import DirectionType from "../const/direction-type";
 import getSelection, {
   flushSelection,
-  getBeforeSelection
+  getBeforeSelection,
 } from "../operator-selection/get-selection";
 import backspace from "../operator/backspace";
 import input from "../operator/input";
@@ -44,7 +44,7 @@ class UserOperator extends BaseOperator {
       section?.addRange(range);
     }
     nextTicket(() => {
-      document.dispatchEvent(new Event("editorchange"));
+      document.dispatchEvent(new Event("editorChange"));
     });
   }
 
@@ -72,7 +72,7 @@ class UserOperator extends BaseOperator {
     let selection = getSelection();
     let start = {
       id: selection.range[0].id,
-      offset: selection.range[0].offset - [...event.data].length
+      offset: selection.range[0].offset - [...event.data].length,
     };
     // 混合输入会导致获取选区在输入文字的后方
     input(event.data, start, event);
@@ -116,7 +116,7 @@ class UserOperator extends BaseOperator {
       let selection = getSelection();
       start = {
         id: start.id,
-        offset: selection.range[0].offset - [...event.data].length
+        offset: selection.range[0].offset - [...event.data].length,
       };
       createDurationRecord(start, start);
     }
@@ -141,7 +141,7 @@ class UserOperator extends BaseOperator {
         ArrowUp: DirectionType.up,
         ArrowDown: DirectionType.down,
         ArrowLeft: DirectionType.left,
-        ArrowRight: DirectionType.right
+        ArrowRight: DirectionType.right,
       };
       this.handleArrawKey(map[event.key]);
       return;
@@ -152,7 +152,7 @@ class UserOperator extends BaseOperator {
 
   handleArrawKey(direction: DirectionType) {
     nextTicket(() => {
-      document.dispatchEvent(new Event("editorchange"));
+      document.dispatchEvent(new Event("editorChange"));
     });
   }
 
@@ -173,12 +173,16 @@ class UserOperator extends BaseOperator {
         return;
       }
       if ("s" === key) {
-        saveArticle();
+        this.onSave();
         event.preventDefault();
         return;
       }
       event.preventDefault();
     }
+  }
+
+  onSave() {
+    saveArticle();
   }
 
   onTab(event: KeyboardEvent) {

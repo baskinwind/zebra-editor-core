@@ -21,7 +21,7 @@ const createNewArticle = (article?: Article) => {
   startUpdate();
   editor.focus();
   nextTicket(() => {
-    document.dispatchEvent(new Event("editorchange"));
+    document.dispatchEvent(new Event("editorChange"));
   });
 };
 

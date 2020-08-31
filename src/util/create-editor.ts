@@ -76,7 +76,7 @@ const createEditor = (
     placeholder.classList.add("zebra-editor-placeholder");
     placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
 
-    document.addEventListener("editorchange", (e) => {
+    document.addEventListener("editorChange", (e) => {
       let article = getBlockById<Article>("article");
       if (!article) return;
       if (article.isEmpty() && article.getChild(0).decorate.isEmpty()) {
@@ -91,7 +91,7 @@ const createEditor = (
     });
     iframe.contentDocument.body.appendChild(placeholder);
     nextTicket(() => {
-      document.dispatchEvent(new Event("editorchange"));
+      document.dispatchEvent(new Event("editorChange"));
     });
 
     // 监听事件

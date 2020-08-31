@@ -111,7 +111,7 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
     }
   }
   nextTicket(() => {
-    document.dispatchEvent(new Event("editorchange"));
+    document.dispatchEvent(new Event("editorChange"));
   });
 };
 

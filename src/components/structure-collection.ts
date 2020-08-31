@@ -155,6 +155,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     }
     oldComponent.active = false;
     oldComponent.parent = undefined;
+    oldComponent.recordSnapshoot();
     block.forEach((item) => {
       item.parent = this;
       item.active = true;
