@@ -6,7 +6,7 @@ mount("root", article, {
   beforeCreate(doc) {
     let defaultArticleTheme = doc.createElement("link");
     defaultArticleTheme.href =
-      "https://zebrastudio.tech/article-theme/default.css";
+      "https://zebrastudio.tech/theme/article/default.css";
     defaultArticleTheme.rel = "stylesheet";
     defaultArticleTheme.type = "text/css";
     doc.head.appendChild(defaultArticleTheme);

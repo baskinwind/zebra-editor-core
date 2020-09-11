@@ -265,8 +265,6 @@ class TableRow extends StructureCollection<TableCell> {
 
   getRaw() {
     let raw = super.getRaw();
-    // tableRow 只能作为 table 的子元素，无须保存类型
-    delete raw.type;
     raw.cellType = this.cellType;
     return raw;
   }
@@ -361,8 +359,6 @@ class TableCell extends StructureCollection<TableItem> {
 
   getRaw() {
     let raw = super.getRaw();
-    // tableCell 只能作为 tableRow 的子元素，无须保存类型
-    delete raw.type;
     raw.cellType = this.cellType;
     return raw;
   }

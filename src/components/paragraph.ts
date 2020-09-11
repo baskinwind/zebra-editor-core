@@ -16,7 +16,7 @@ class Paragraph extends ContentCollection {
     let paragraph = getComponentFactory().buildParagraph(
       "",
       raw.style,
-      raw.data
+      raw.data,
     );
     let children = super.getChildren(raw);
     paragraph.addChildren(children, 0, true);
@@ -31,7 +31,7 @@ class Paragraph extends ContentCollection {
       let newParagraph = getComponentFactory().buildParagraph(
         "",
         block.decorate.copyStyle(),
-        block.decorate.copyData()
+        block.decorate.copyData(),
       );
       newParagraph.addChildren(block.children.toArray(), 0);
       list.push(newParagraph);
@@ -45,11 +45,19 @@ class Paragraph extends ContentCollection {
     return list;
   }
 
+  constructor(
+    text: string = "",
+    style?: storeData,
+    data: storeData = { tag: "p" },
+  ) {
+    super(text, style, data);
+  }
+
   createEmpty() {
     return getComponentFactory().buildParagraph(
       "",
       this.decorate.copyStyle(),
-      this.decorate.copyData()
+      this.decorate.copyData(),
     );
   }
 
@@ -58,7 +66,7 @@ class Paragraph extends ContentCollection {
       this.id,
       () => this.getContent(),
       this.decorate.getStyle(onlyDecorate),
-      { ...this.decorate.getData(onlyDecorate), tag: "p" }
+      this.decorate.getData(onlyDecorate),
     );
   }
 }

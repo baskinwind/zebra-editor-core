@@ -28,7 +28,7 @@ export const getContainWindow = () => containWindow;
 
 // 获取光标所在的组件
 export const getParent = (
-  element: HTMLElement | Node | null | undefined
+  element: HTMLElement | Node | null | undefined,
 ): HTMLElement => {
   if (element === null || element === undefined)
     throw createError("获取光标所在节点失败", undefined, "selection");
@@ -49,7 +49,7 @@ export const getParent = (
 
 // 获取光标所在的文本节点
 export const getContainer = (
-  element: Element | Node | null | undefined
+  element: Element | Node | null | undefined,
 ): HTMLElement => {
   if (element === null || element === undefined)
     throw createError("容器节点获取失败", undefined, "selection");
@@ -92,7 +92,7 @@ export const getElememtSize = (element?: Element): number => {
 
 const findFocusNode = (
   element: Node,
-  index: number
+  index: number,
 ): [boolean, Node, number] => {
   if (
     index === 0 ||
@@ -129,13 +129,13 @@ const findFocusNode = (
   return [
     true,
     element.childNodes.length ? element.childNodes[0] : element,
-    index
+    index,
   ];
 };
 
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
 export const getCursorPosition = (
-  cursor: cursorType
+  cursor: cursorType,
 ): {
   node: Node;
   index: number;
@@ -144,14 +144,14 @@ export const getCursorPosition = (
   if (!dom) throw createError("该节点已失效", undefined, "selection");
   if (dom.dataset && dom.dataset.type === ComponentType.media) {
     return {
-      node: dom,
-      index: cursor.offset === 0 ? 0 : 1
+      node: dom.children[0],
+      index: cursor.offset === 0 ? 0 : 1,
     };
   }
   let focusInfo = findFocusNode(dom, cursor.offset);
   return {
     node: focusInfo[1],
-    index: focusInfo[2]
+    index: focusInfo[2],
   };
 };
 
@@ -159,7 +159,7 @@ export const getCursorPosition = (
 export const getOffset = (
   parent: Element,
   wrap: Element,
-  offset: number
+  offset: number,
 ): number => {
   const countSize = (parent, node) => {
     if (parent === node) return 0;
@@ -184,7 +184,7 @@ export const getOffset = (
 // 获取所有选中的叶节点，不包括结构性的组件
 export const getSelectedIdList = (
   startId: string,
-  endId: string = startId
+  endId: string = startId,
 ): string[] => {
   if (startId === "") return [];
   if (startId === endId) return [startId];
