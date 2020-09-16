@@ -14,7 +14,7 @@ class Code extends PlainText {
   style: storeData = {
     fontSize: "14px",
     borderRadius: "4px",
-    backgroundColor: "rgba(248, 248, 248, 1)"
+    backgroundColor: "rgba(248, 248, 248, 1)",
   };
   language: string;
 
@@ -23,7 +23,7 @@ class Code extends PlainText {
       raw.content,
       raw.language,
       raw.style,
-      raw.data
+      raw.data,
     );
   }
 
@@ -39,7 +39,7 @@ class Code extends PlainText {
     content: string = "",
     language: string = "",
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     super(content, style, data);
     this.language = language;
@@ -67,7 +67,7 @@ class Code extends PlainText {
       "\n",
       this.language,
       this.decorate.copyStyle(),
-      this.decorate.copyData()
+      this.decorate.copyData(),
     );
   }
 
@@ -77,7 +77,7 @@ class Code extends PlainText {
       this.content.join(""),
       this.language,
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }

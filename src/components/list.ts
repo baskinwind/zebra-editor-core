@@ -25,7 +25,7 @@ class List extends StructureCollection<Block> {
     let factory = getComponentFactory();
     let children = raw.children
       ? raw.children.map((item: IRawType) =>
-          factory.typeMap[item.type].create(item)
+          factory.typeMap[item.type].create(item),
         )
       : [];
     let list = getComponentFactory().buildList(raw.listType);
@@ -36,7 +36,7 @@ class List extends StructureCollection<Block> {
   static exchange(
     block: Block,
     args: any[] = [],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Block[] {
     let parent = block.getParent();
     // 属于列表的子元素
@@ -64,7 +64,7 @@ class List extends StructureCollection<Block> {
     type: listType = "ul",
     children: (string | Block)[] = [],
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(style, data);
     this.listType = type;
@@ -77,7 +77,7 @@ class List extends StructureCollection<Block> {
     this.addChildren(list, 0, true);
     if (this.listType === "nl") {
       this.decorate.mergeStyle({
-        paddingLeft: "0px"
+        paddingLeft: "0px",
       });
     }
   }
@@ -88,7 +88,7 @@ class List extends StructureCollection<Block> {
     this.listType = type;
     if (this.listType === "nl") {
       this.decorate.mergeStyle({
-        paddingLeft: "0px"
+        paddingLeft: "0px",
       });
     } else {
       this.decorate.mergeStyle({ remove: "paddingLeft" });
@@ -117,7 +117,7 @@ class List extends StructureCollection<Block> {
       this.listType,
       [],
       this.decorate.copyStyle(),
-      this.decorate.copyData()
+      this.decorate.copyData(),
     );
   }
 
@@ -137,7 +137,7 @@ class List extends StructureCollection<Block> {
   add(
     block: Block | Block[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
@@ -156,7 +156,7 @@ class List extends StructureCollection<Block> {
   removeChildren(
     indexOrComponent: Block | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Block[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
@@ -168,7 +168,7 @@ class List extends StructureCollection<Block> {
     let removed = super.removeChildren(
       indexOrComponent,
       removeNumber,
-      customerUpdate
+      customerUpdate,
     );
     return removed;
   }
@@ -176,7 +176,7 @@ class List extends StructureCollection<Block> {
   childHeadDelete(
     block: Block,
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
@@ -203,7 +203,7 @@ class List extends StructureCollection<Block> {
       return this.add(
         block.removeChildren(0, block.getSize()),
         undefined,
-        customerUpdate
+        customerUpdate,
       );
     } else {
       if (block.isEmpty()) {
@@ -238,8 +238,8 @@ class List extends StructureCollection<Block> {
       this.decorate.getStyle(onlyDecorate),
       {
         ...this.decorate.getData(onlyDecorate),
-        tag: this.listType === "nl" ? "ul" : this.listType
-      }
+        tag: this.listType === "nl" ? "ul" : this.listType,
+      },
     );
     return content;
   }

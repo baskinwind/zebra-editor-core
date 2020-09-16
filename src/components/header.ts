@@ -18,23 +18,23 @@ export interface IHeaderSnapshoot extends ICollectionSnapshoot<Inline> {
 
 const styleMap = {
   h1: {
-    fontSize: "32px"
+    fontSize: "32px",
   },
   h2: {
-    fontSize: "24px"
+    fontSize: "24px",
   },
   h3: {
-    fontSize: "20px"
+    fontSize: "20px",
   },
   h4: {
-    fontSize: "16px"
+    fontSize: "16px",
   },
   h5: {
-    fontSize: "14px"
+    fontSize: "14px",
   },
   h6: {
-    fontSize: "12px"
-  }
+    fontSize: "12px",
+  },
 };
 
 @initRecordState
@@ -42,7 +42,7 @@ class Header extends ContentCollection {
   type = ComponentType.header;
   headerType: headerType;
   data = {
-    bold: true
+    bold: true,
   };
 
   static create(raw: IRawType): Header {
@@ -50,7 +50,7 @@ class Header extends ContentCollection {
       raw.headerType || "h1",
       "",
       raw.style,
-      raw.data
+      raw.data,
     );
     let children = super.getChildren(raw);
     header.addChildren(children, 0, true);
@@ -67,7 +67,7 @@ class Header extends ContentCollection {
         headerType,
         "",
         block.decorate.copyStyle(),
-        block.decorate.copyData()
+        block.decorate.copyData(),
       );
       newHeader.style = styleMap[newHeader.headerType];
       newHeader.addChildren(block.children.toArray(), 0);
@@ -86,7 +86,7 @@ class Header extends ContentCollection {
     type: headerType,
     text?: string,
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(text, style, data);
     this.headerType = type;
@@ -115,7 +115,7 @@ class Header extends ContentCollection {
       this.headerType,
       "",
       this.decorate.copyStyle(),
-      this.decorate.copyData()
+      this.decorate.copyData(),
     );
   }
 
@@ -149,7 +149,7 @@ class Header extends ContentCollection {
       this.id,
       () => this.getContent(),
       this.decorate.getStyle(onlyDecorate),
-      { ...this.decorate.getData(onlyDecorate), tag: this.headerType }
+      { ...this.decorate.getData(onlyDecorate), tag: this.headerType },
     );
   }
 }

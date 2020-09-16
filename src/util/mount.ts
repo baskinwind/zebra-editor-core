@@ -4,7 +4,7 @@ import createEmptyArticle from "./create-empty-article";
 import { setContentBuilder } from "../content";
 import ComponentFactory, {
   setComponentFactory,
-  getComponentFactory
+  getComponentFactory,
 } from "../components";
 import { createError } from "./handle-error";
 
@@ -12,7 +12,7 @@ import { createError } from "./handle-error";
 const mount = async (
   idOrDom: string | HTMLElement,
   article?: Article | ((factory: ComponentFactory) => Promise<Article>),
-  option?: IOption
+  option?: IOption,
 ) => {
   // 设置内容生成器以及组件工厂
   setContentBuilder(option?.contentBuilder);

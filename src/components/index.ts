@@ -30,7 +30,7 @@ class ComponentFactory {
       [ComponentType.paragraph]: Paragraph,
       [ComponentType.media]: Media,
       [ComponentType.code]: Code,
-      [ComponentType.inlineImage]: InlineImage
+      [ComponentType.inlineImage]: InlineImage,
     };
   }
 
@@ -42,7 +42,7 @@ class ComponentFactory {
     tag: string = "div",
     children: string[] = [],
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     return new CustomerCollection(tag, children, style, data);
   }
@@ -51,7 +51,7 @@ class ComponentFactory {
     type: listType = "ul",
     children: string[] = [],
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     return new List(type, children, style, data);
   }
@@ -62,7 +62,7 @@ class ComponentFactory {
     children: (string[] | string)[][] = [],
     needHead: boolean = true,
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     return new Table(row, col, children, needHead, style, data);
   }
@@ -71,7 +71,7 @@ class ComponentFactory {
     type: headerType,
     text?: string,
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     return new Header(type, text, style, data);
   }
@@ -84,7 +84,7 @@ class ComponentFactory {
     mediaType: mediaType,
     src: string,
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     return new Media(mediaType, src, style, data);
   }
@@ -93,7 +93,7 @@ class ComponentFactory {
     content: string = "",
     language: string = "",
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     return new Code(content, language, style, data);
   }

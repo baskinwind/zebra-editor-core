@@ -91,7 +91,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   addChildren(
     component: T[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): T[] {
     component.forEach((item) => {
       item.parent = this;
@@ -106,7 +106,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   add(
     block: T | T[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     if (!Array.isArray(block)) {
       block = [block];
@@ -118,7 +118,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   removeChildren(
     indexOrBlock: T | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     let removed = super.removeChildren(indexOrBlock, removeNumber);
     removed.forEach((item) => {
@@ -133,7 +133,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   remove(
     start: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     if (end === undefined) end = this.getSize();
     if (start < 0 || start > end) {
@@ -147,7 +147,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   replaceChild(
     block: T[],
     oldComponent: T,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Block[] {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
@@ -159,6 +159,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     block.forEach((item) => {
       item.parent = this;
       item.active = true;
+      item.recordSnapshoot();
     });
     this.children = this.children.splice(index, 1, ...block);
     updateComponent([oldComponent, ...[...block].reverse()], customerUpdate);
@@ -167,14 +168,14 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
 
   splitChild(
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): StructureCollection<T> {
     if (index > this.getSize()) throw createError("分割点不在列表内", this);
 
     let tail = this.removeChildren(
       index,
       this.getSize() - index,
-      customerUpdate
+      customerUpdate,
     );
     let newCollection = this.createEmpty();
     newCollection.add(tail, 0, true);
@@ -184,7 +185,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   split(
     index: number,
     block?: Block | Block[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
@@ -208,15 +209,17 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
   childHeadDelete(
     component: T,
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     return;
   }
 
   restore(state: ICollectionSnapshoot<T>) {
     this.children.forEach((item) => {
-      item.active = false;
-      item.parent = undefined;
+      if (item.parent === this) {
+        item.active = false;
+        item.parent = undefined;
+      }
     });
     state.children.forEach((item) => {
       item.active = true;

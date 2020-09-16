@@ -6,7 +6,7 @@ import { getBlockById } from "../components/util";
 import {
   getCursorPosition,
   cursorType,
-  getContainer
+  getContainer,
 } from "../operator-selection/util";
 import updateComponent, { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
@@ -14,7 +14,7 @@ import ContentCollection from "../components/content-collection";
 const input = (
   charOrInline: string | Inline,
   start: cursorType,
-  event?: KeyboardEvent | CompositionEvent | InputEvent
+  event?: KeyboardEvent | CompositionEvent | InputEvent,
 ) => {
   try {
     let component = getBlockById(start.id);
@@ -52,7 +52,7 @@ const input = (
           updateComponent(component);
           focusAt({
             id: component.id,
-            offset: offset + 1
+            offset: offset + 1,
           });
           return;
         }

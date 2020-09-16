@@ -17,7 +17,7 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   getStyle(style: mapData) {
     let styleFormat = Object.keys(style).map(
-      (key) => `${this.formatStyle(key)}:${style[key]};`
+      (key) => `${this.formatStyle(key)}:${style[key]};`,
     );
     if (styleFormat.length) {
       return ` style="${styleFormat.join("")}"`;
@@ -38,10 +38,10 @@ class HtmlBuilder extends BaseBuilder<string> {
     className: string,
     style: mapData,
     children: string,
-    data: mapData = {}
+    data: mapData = {},
   ): string {
     return `<${tag}${className ? ` class=${className}` : ""}${this.getStyle(
-      style
+      style,
     )}${this.getData(data)}>${children}</${tag}>`;
   }
 
@@ -49,13 +49,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     return this.buildHtml(
       "article",
       "zebra-editor-article",
       style,
-      getChildren().join("")
+      getChildren().join(""),
     );
   }
 
@@ -64,13 +64,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     tag: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     return this.buildHtml(
       "div",
       "zebra-editor-customer-collection",
       style,
-      getChildren().join("")
+      getChildren().join(""),
     );
   }
 
@@ -78,16 +78,16 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let table = this.buildHtml(
       "table",
       "",
       {
         minWidth: "100%",
-        borderCollapse: "collapse"
+        borderCollapse: "collapse",
       },
-      getChildren().join("")
+      getChildren().join(""),
     );
     return this.buildHtml("figure", "zebra-editor-table", style, table);
   }
@@ -96,13 +96,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     return this.buildHtml(
       "tr",
       "zebra-editor-tr",
       style,
-      getChildren().join("")
+      getChildren().join(""),
     );
   }
 
@@ -111,13 +111,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     cellType: "th" | "td",
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     return this.buildHtml(
       cellType,
       `zebra-editor-${cellType}`,
       style,
-      getChildren().join("")
+      getChildren().join(""),
     );
   }
 
@@ -125,13 +125,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     return this.buildHtml(
       data.tag || "ul",
       "zebra-editor-list",
       style,
-      getChildren().join("")
+      getChildren().join(""),
     );
   }
 
@@ -148,14 +148,14 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     let tag = data.tag || "p";
     return this.buildHtml(
       tag,
       `zebra-editor-${tag}`,
       style,
-      `<span>${getChildren().join("") || "<br />"}</span>`
+      `<span>${getChildren().join("") || "<br />"}</span>`,
     );
   }
 
@@ -164,17 +164,17 @@ class HtmlBuilder extends BaseBuilder<string> {
     content: string,
     language: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     return `<pre class="zebra-editor-code" ${this.getStyle({
       ...style,
-      position: "relative"
+      position: "relative",
     })}${this.getData(data)}><span ${this.getStyle({
       position: "absolute",
       right: "10px",
       top: "10px",
       textTransform: "uppercase",
-      color: "#ccc"
+      color: "#ccc",
     })}>${language}</span><code>${content}</code></pre>`;
   }
 
@@ -185,7 +185,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     }
     let className = `zebra-editor-image`;
     return `<figure class="${className}"${this.getStyle(
-      style
+      style,
     )}>${image}</figure>`;
   }
 
@@ -193,7 +193,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     let image = `<audio src="${src}" alt="${data.alt}" />`;
     let className = `zebra-editor-image`;
     return `<figure class="${className}"${this.getStyle(
-      style
+      style,
     )}>${image}</figure>`;
   }
 
@@ -201,7 +201,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     let image = `<video src="${src}" alt="${data.alt}" />`;
     let className = `zebra-editor-image`;
     return `<figure class="${className}"${this.getStyle(
-      style
+      style,
     )}>${image}</figure>`;
   }
 
@@ -209,7 +209,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     charList: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     let content = charList;
     if (data.link) {
@@ -238,7 +238,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): string {
     let image = `<img src="${src}" alt="${data.alt || ""}" />`;
     if (data.link) {

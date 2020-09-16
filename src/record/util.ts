@@ -2,7 +2,7 @@ import Component from "../components/component";
 import Collection from "../components/collection";
 import focusAt from "../operator-selection/focus-at";
 import getSelection, {
-  getBeforeSelection
+  getBeforeSelection,
 } from "../operator-selection/get-selection";
 import updateComponent from "../util/update-component";
 import { cursorType } from "../operator-selection/util";
@@ -72,7 +72,7 @@ const startRecord = (start: cursorType, end: cursorType) => {
     undoSelection: { start, end },
     redoSelection: { start, end },
     componentList: nowComponentList,
-    idList: nowIdList
+    idList: nowIdList,
   };
   recoreQueue.push(newRecord);
   nowIndex = recoreQueue.length - 1;
@@ -84,7 +84,7 @@ const createRecord = (start?: cursorType, end?: cursorType) => {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
-      end: selection.range[1]
+      end: selection.range[1],
     };
     isDurationRecord = false;
   }
@@ -97,7 +97,7 @@ const createRecord = (start?: cursorType, end?: cursorType) => {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
-      end: selection.range[1]
+      end: selection.range[1],
     };
     isDurationRecord = false;
   }
@@ -106,7 +106,7 @@ const createRecord = (start?: cursorType, end?: cursorType) => {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
-      end: selection.range[1]
+      end: selection.range[1],
     };
   });
 };
@@ -129,7 +129,7 @@ const undo = () => {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
-      end: selection.range[1]
+      end: selection.range[1],
     };
     isDurationRecord = false;
   }
@@ -150,7 +150,7 @@ const redo = () => {
     let selection = getSelection();
     newRecord.redoSelection = {
       start: selection.range[0],
-      end: selection.range[1]
+      end: selection.range[1],
     };
     isDurationRecord = false;
   }
@@ -173,5 +173,5 @@ export {
   createDurationRecord,
   recordSnapshoot,
   undo,
-  redo
+  redo,
 };

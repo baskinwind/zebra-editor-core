@@ -30,7 +30,7 @@ const modifyIndent = (isOutdent: boolean = false) => {
   });
   focusAt(
     { id: newStartId, offset: start.offset },
-    { id: newEndId, offset: end.offset }
+    { id: newEndId, offset: end.offset },
   );
 };
 

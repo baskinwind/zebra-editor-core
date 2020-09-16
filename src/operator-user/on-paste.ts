@@ -45,7 +45,7 @@ const onPaste = (event: ClipboardEvent) => {
   let endId = focus![0].id;
   focusAt({
     id: endId,
-    offset: rowData[rowData.length - 1].length
+    offset: rowData[rowData.length - 1].length,
   });
   return;
 };

@@ -66,5 +66,5 @@ export {
   updateComponent,
   createRecord,
   undo,
-  redo
+  redo,
 };

@@ -7,7 +7,7 @@ import { getBlockById } from "../components/util";
 const backspace = (
   start: cursorType,
   end?: cursorType,
-  event?: KeyboardEvent | CompositionEvent
+  event?: KeyboardEvent | CompositionEvent,
 ) => {
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     let component = getBlockById(start.id);
@@ -54,7 +54,7 @@ const backspace = (
 
   return focusAt({
     id: headFocus ? headFocus[0].id : "",
-    offset: start.offset
+    offset: start.offset,
   });
 };
 

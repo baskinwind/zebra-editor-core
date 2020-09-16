@@ -26,7 +26,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let article = containDocument.createElement("article");
@@ -46,7 +46,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     tag: string,
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let collection = containDocument.createElement(tag);
@@ -65,7 +65,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let figure = containDocument.createElement("figure");
@@ -85,7 +85,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let tr = containDocument.createElement("tr");
@@ -101,7 +101,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     cellType: "th" | "td",
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let cell = containDocument.createElement(cellType);
@@ -117,7 +117,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let tag: string = data.tag || "ul";
@@ -154,7 +154,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     getChildren: () => HTMLElement[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     const tag: string = data.tag || "p";
@@ -182,7 +182,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     content: string,
     language: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     // FIXED: Chrome 下，如果代码块的下一个内容块不是 p 标签时，
@@ -210,7 +210,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let figure = containDocument.createElement("figure");
@@ -246,7 +246,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let figure = containDocument.createElement("figure");
@@ -265,7 +265,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let figure = containDocument.createElement("figure");
@@ -284,7 +284,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     charList: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     let charWrap;
@@ -345,7 +345,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
     const span = containDocument.createElement("span");

@@ -5,7 +5,7 @@ import {
   getParent,
   getContainWindow,
   getOffset,
-  getContainDocument
+  getContainDocument,
 } from "./util";
 import { cloneDeep, throttle } from "lodash";
 import Article from "../components/article";
@@ -20,13 +20,13 @@ let selectionStore: selectionType = {
   range: [
     {
       id: "",
-      offset: 0
+      offset: 0,
     },
     {
       id: "",
-      offset: 0
-    }
-  ]
+      offset: 0,
+    },
+  ],
 };
 
 const initSelection = (article: Article) => {
@@ -36,13 +36,13 @@ const initSelection = (article: Article) => {
     range: [
       {
         id: block.id,
-        offset: 0
+        offset: 0,
       },
       {
         id: block.id,
-        offset: 0
-      }
-    ]
+        offset: 0,
+      },
+    ],
   };
 };
 
@@ -85,13 +85,13 @@ const getSelection = () => {
       range: [
         {
           id: block.id,
-          offset: 0
+          offset: 0,
         },
         {
           id: block.id,
-          offset: 0
-        }
-      ]
+          offset: 0,
+        },
+      ],
     };
     return cloneDeep<selectionType>(selectionStore);
   }
@@ -107,12 +107,12 @@ const getSelection = () => {
   // EMOJI 标签会导致获取的光标的位置错误
   if (section.anchorNode.nodeType === 3) {
     anchorOffect = [
-      ...(section.anchorNode.textContent?.substr(0, anchorOffect) || "")
+      ...(section.anchorNode.textContent?.substr(0, anchorOffect) || ""),
     ].length;
   }
   if (section.focusNode.nodeType === 3) {
     focusOffset = [
-      ...(section.focusNode.textContent?.substr(0, focusOffset) || "")
+      ...(section.focusNode.textContent?.substr(0, focusOffset) || ""),
     ].length;
   }
   let startOffset;
@@ -159,13 +159,13 @@ const getSelection = () => {
     range: [
       {
         id: startParent.id,
-        offset: startOffset
+        offset: startOffset,
       },
       {
         id: endParent.id,
-        offset: endOffset
-      }
-    ]
+        offset: endOffset,
+      },
+    ],
   };
   return cloneDeep<selectionType>(selectionStore);
 };

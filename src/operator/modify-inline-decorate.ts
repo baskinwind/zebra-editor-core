@@ -8,7 +8,7 @@ const modifyInlineDecorate = (
   start: cursorType,
   end: cursorType,
   style?: storeData,
-  data?: storeData
+  data?: storeData,
 ) => {
   let idList = getSelectedIdList(start.id, end.id);
   // 未选中内容，不需要处理

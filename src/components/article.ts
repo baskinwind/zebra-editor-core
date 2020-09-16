@@ -48,7 +48,7 @@ class Article extends StructureCollection<Block> {
   childHeadDelete(
     block: Block,
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let prev = this.getPrev(block);
     if (!prev) {
@@ -56,7 +56,7 @@ class Article extends StructureCollection<Block> {
         block.decorate.clear();
         let exchanged = block.exchangeTo(
           getComponentFactory().typeMap.PARAGRAPH,
-          []
+          [],
         );
         updateComponent(block);
         return [exchanged[0], 1, 1];
@@ -74,7 +74,7 @@ class Article extends StructureCollection<Block> {
   remove(
     start: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let focus = super.remove(start, end, customerUpdate);
     if (this.getSize() === 0) {
@@ -94,7 +94,7 @@ class Article extends StructureCollection<Block> {
       this.id,
       () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }

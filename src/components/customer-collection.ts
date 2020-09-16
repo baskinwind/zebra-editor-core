@@ -31,7 +31,7 @@ class CustomerCollection extends StructureCollection<Block> {
   static exchange(
     block: Block,
     args: any[] = [],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Block[] {
     let parent = block.getParent();
 
@@ -55,7 +55,7 @@ class CustomerCollection extends StructureCollection<Block> {
     tag: string = "div",
     children: (string | Block)[] = [],
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(style, data);
     this.tag = tag;
@@ -83,14 +83,14 @@ class CustomerCollection extends StructureCollection<Block> {
       this.tag,
       [],
       this.decorate.copyStyle(),
-      this.decorate.copyData()
+      this.decorate.copyData(),
     );
   }
 
   add(
     block: Block | Block[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
@@ -109,7 +109,7 @@ class CustomerCollection extends StructureCollection<Block> {
   removeChildren(
     indexOrComponent: Block | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Block[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
@@ -124,7 +124,7 @@ class CustomerCollection extends StructureCollection<Block> {
   childHeadDelete(
     block: Block,
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
@@ -174,7 +174,7 @@ class CustomerCollection extends StructureCollection<Block> {
       this.tag,
       () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
     return content;
   }

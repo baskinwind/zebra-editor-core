@@ -35,7 +35,7 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
       // @ts-ignore
       block?.scrollIntoView({
         behavior: "smooth",
-        block: "nearest"
+        block: "nearest",
       });
     });
 

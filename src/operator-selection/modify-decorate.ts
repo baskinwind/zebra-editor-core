@@ -9,7 +9,7 @@ import focusAt from "./focus-at";
 const modifyDecorate = (
   style?: storeData,
   data?: storeData,
-  focus: boolean = true
+  focus: boolean = true,
 ) => {
   let selection = getSelection();
   let start = selection.range[0];

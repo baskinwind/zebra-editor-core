@@ -30,7 +30,7 @@ const deleteSelection = (start: cursorType, end?: cursorType) => {
 
   return focusAt({
     id: headBlock.id,
-    offset: start.offset
+    offset: start.offset,
   });
 };
 

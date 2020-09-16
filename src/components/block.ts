@@ -2,7 +2,7 @@ import Component, {
   classType,
   operatorType,
   IRawType,
-  ISnapshoot
+  ISnapshoot,
 } from "./component";
 import StructureCollection from "./structure-collection";
 import { saveBlock } from "./util";
@@ -32,7 +32,7 @@ abstract class Block extends Component {
   static exchange(
     component: Component,
     args?: any[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Component[] {
     throw createError("组件未实现 exchange 静态方法", this);
   }
@@ -68,7 +68,7 @@ abstract class Block extends Component {
       table: 0,
       list: 0,
       code: 0,
-      block: 0
+      block: 0,
     };
   }
 
@@ -94,7 +94,7 @@ abstract class Block extends Component {
   exchangeTo(
     builder: classType,
     args: any[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): Block[] {
     // @ts-ignore
     if (builder === this.constructor) return [this];
@@ -105,7 +105,7 @@ abstract class Block extends Component {
   addInto(
     collection: StructureCollection<Block>,
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let newBlock = collection.addChildren([this], index, customerUpdate);
     return [newBlock[0], 0, 0];
@@ -120,7 +120,7 @@ abstract class Block extends Component {
   // 替换为另一个组件
   replaceSelf(
     block: Block | Block[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     if (!Array.isArray(block)) block = [block];
     let parent = this.getParent();
@@ -183,7 +183,7 @@ abstract class Block extends Component {
     end: number,
     style?: storeData,
     data?: storeData,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     return;
   }
@@ -192,7 +192,7 @@ abstract class Block extends Component {
   add(
     component: string | Component | Component[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     return;
   }
@@ -211,7 +211,7 @@ abstract class Block extends Component {
   remove(
     start?: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     return;
   }
@@ -220,7 +220,7 @@ abstract class Block extends Component {
   split(
     index: number,
     component?: Component | Component[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     return;
   }
@@ -233,7 +233,7 @@ abstract class Block extends Component {
   // 接收另一组件
   receive(
     component?: Component,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     return;
   }

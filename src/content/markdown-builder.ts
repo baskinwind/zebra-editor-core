@@ -17,7 +17,7 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     getChildren: () => any[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     return getChildren()
       .map((item) => item[0])
@@ -29,13 +29,13 @@ class MarkdownBuilder extends BaseBuilder {
     tag: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     return [
       getChildren()
         .map((item) => item[0])
         .join("\n"),
-      "customer-collection"
+      "customer-collection",
     ];
   }
 
@@ -43,7 +43,7 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     getChildren: () => [string, string][],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     this.blockIndent += 1;
     let res = getChildren()
@@ -74,7 +74,7 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     getChildren: () => [string, string, number][],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let children = getChildren();
     let firstRowType = children[0][1];
@@ -95,14 +95,14 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     getChildren: () => [string, string][],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let children = getChildren();
     let cellType = children[0][1];
     return [
       `| ${children.map((item) => item[0]).join(" | ")} |`,
       cellType,
-      children.length
+      children.length,
     ];
   }
 
@@ -111,13 +111,13 @@ class MarkdownBuilder extends BaseBuilder {
     cellType: "th" | "td",
     getChildren: () => any[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     return [
       getChildren()
         .map((item) => item[0])
         .join("\n"),
-      cellType
+      cellType,
     ];
   }
 
@@ -125,7 +125,7 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     getChildren: () => [string, string][],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let ordered = data.tag === "ol";
     this.listIndent += 1;
@@ -160,7 +160,7 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     getChildren: () => string[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let res = getChildren().join("");
     if (/^h[1-6]$/.test(data.tag)) {
@@ -177,7 +177,7 @@ class MarkdownBuilder extends BaseBuilder {
     content: string,
     language: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let code = `\`\`\`${language}\n${content}\`\`\``;
     return [code, "code"];
@@ -202,7 +202,7 @@ class MarkdownBuilder extends BaseBuilder {
     id: string,
     charList: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ) {
     let res = charList;
     if (data.code) {

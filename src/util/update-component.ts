@@ -35,7 +35,7 @@ const needUpdate = () => {
 // 更新组件
 const updateComponent = (
   block?: Block | Block[],
-  customerUpdate: boolean = false
+  customerUpdate: boolean = false,
 ) => {
   // 清空延迟更新队列
   if (delayUpdateQueue.size) {

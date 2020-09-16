@@ -7,7 +7,7 @@ import { changeContentBuiler } from "../content";
 const getContentByBuilder = (
   component: Block,
   builder?: BaseBuilder,
-  onlyDecorate: boolean = false
+  onlyDecorate: boolean = false,
 ) => {
   changeContentBuiler(builder || HtmlBuilder.getInstance());
   return component.render(onlyDecorate);

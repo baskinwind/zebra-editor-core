@@ -40,7 +40,7 @@ abstract class ContentCollection extends Collection<Inline> {
   static exchange(
     block: Block,
     args: any[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): ContentCollection[] {
     let newContent = this.exchangeOnly(block, args);
     block.replaceSelf(newContent, customerUpdate);
@@ -76,7 +76,7 @@ abstract class ContentCollection extends Collection<Inline> {
     end: number = -1,
     style?: storeData,
     data?: storeData,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     end = end < 0 ? this.getSize() + end : end;
     if (start > end) return;
@@ -91,7 +91,7 @@ abstract class ContentCollection extends Collection<Inline> {
   addChildren(
     inline: Inline[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     inline
       .filter((item) => item instanceof Inline)
@@ -106,7 +106,7 @@ abstract class ContentCollection extends Collection<Inline> {
   add(
     inline: Inline[] | Inline | string,
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     index = index !== undefined ? index : this.getSize();
     if (typeof inline === "string") {
@@ -114,7 +114,7 @@ abstract class ContentCollection extends Collection<Inline> {
       let list = [];
       for (let char of inline) {
         list.push(
-          new Character(char, decorate?.copyStyle(), decorate?.copyData())
+          new Character(char, decorate?.copyStyle(), decorate?.copyData()),
         );
       }
       inline = list;
@@ -129,7 +129,7 @@ abstract class ContentCollection extends Collection<Inline> {
   removeChildren(
     inline: Inline | number,
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     let removed = super.removeChildren(inline, index);
     updateComponent(this, customerUpdate);
@@ -139,7 +139,7 @@ abstract class ContentCollection extends Collection<Inline> {
   remove(
     start: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let parent = this.getParent();
     if (end === undefined) end = this.getSize();
@@ -157,7 +157,7 @@ abstract class ContentCollection extends Collection<Inline> {
 
   splitChild(
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): ContentCollection {
     let isTail = index === this.getSize();
     // 如果是从中间分段，则保持段落类型
@@ -176,7 +176,7 @@ abstract class ContentCollection extends Collection<Inline> {
   split(
     index: number,
     block?: Block | Block[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let parent = this.getParent();
     let splitBlock = this.splitChild(index, customerUpdate);
@@ -240,7 +240,7 @@ abstract class ContentCollection extends Collection<Inline> {
       content.push([
         acc.map((character) => character.render()).join(""),
         prevDecorate.styleIsEmpty() ? undefined : prevDecorate.copyStyle(),
-        prevDecorate.dataIsEmpty() ? undefined : prevDecorate.copyData()
+        prevDecorate.dataIsEmpty() ? undefined : prevDecorate.copyData(),
       ]);
       acc = [];
     };
@@ -271,7 +271,7 @@ abstract class ContentCollection extends Collection<Inline> {
       // @ts-ignore
       // 字符无需特定的 type 生成 JSON 时，这段重复出现，占据比例极大，优化
       let raw: IRawType = {
-        content: item[0]
+        content: item[0],
       };
       if (item[1]) {
         raw.style = item[1];
@@ -283,7 +283,7 @@ abstract class ContentCollection extends Collection<Inline> {
     });
     let raw: IRawType = {
       type: this.type,
-      children: children
+      children: children,
     };
     if (!this.decorate.styleIsEmpty()) {
       raw.style = this.decorate.copyStyle();
@@ -304,7 +304,7 @@ abstract class ContentCollection extends Collection<Inline> {
         `${this.id}__${index}`,
         item[0],
         item[1] || {},
-        item[2] || {}
+        item[2] || {},
       );
     });
   }

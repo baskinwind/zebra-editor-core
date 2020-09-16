@@ -16,7 +16,7 @@ abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
   style: storeData = {
-    overflow: "auto"
+    overflow: "auto",
   };
 
   static exchangeOnly(component: Component, args: any[] = []): PlainText[] {
@@ -26,7 +26,7 @@ abstract class PlainText extends Block {
   static exchange(
     block: Block,
     args: any[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): PlainText[] {
     let parent = block.getParent();
     let prev = parent.getPrev(block);
@@ -43,7 +43,7 @@ abstract class PlainText extends Block {
   constructor(
     content: string = "",
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     super(style, data);
     // 纯文本最后必须有一个换行
@@ -73,7 +73,7 @@ abstract class PlainText extends Block {
   add(
     string: string,
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     if (typeof string !== "string") {
       throw createError("纯文本组件仅能输入文字", this);
@@ -89,7 +89,7 @@ abstract class PlainText extends Block {
   remove(
     start: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     if (end === undefined) end = this.content.length;
     if (start < 0 && end === 0) {
@@ -106,7 +106,7 @@ abstract class PlainText extends Block {
   split(
     index: number,
     block?: Block | Block[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     if (block) {
       throw createError("纯文本组件仅能输入文字", this);

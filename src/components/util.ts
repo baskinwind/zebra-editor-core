@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import Block from "./block";
 import { createError } from "../util/handle-error";
 let store: { [key: string]: any } = {};
@@ -20,7 +20,7 @@ export const getId = () => {
 
 export const saveBlock = <T extends Block = Block>(
   component: T,
-  key?: string
+  key?: string,
 ) => {
   if (key) {
     store[key] = component;
@@ -52,6 +52,6 @@ export const mergerStatistic = (oldS: IStatistic, newS: IStatistic) => {
     table: oldS.table + newS.table,
     list: oldS.list + newS.list,
     code: oldS.code + newS.code,
-    block: oldS.block + newS.block
+    block: oldS.block + newS.block,
   };
 };

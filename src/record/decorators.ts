@@ -1,7 +1,7 @@
 import Component from "../components/component";
 
 const initRecordState = <T extends { new (...args: any[]): Component }>(
-  constructor: T
+  constructor: T,
 ) => {
   abstract class RecordComponent extends constructor {
     constructor(...args: any[]) {
@@ -15,7 +15,7 @@ const initRecordState = <T extends { new (...args: any[]): Component }>(
 const recordMethod = (
   target: any,
   propertyKey: string,
-  descriptor: PropertyDescriptor
+  descriptor: PropertyDescriptor,
 ) => {
   let oldFunc = descriptor.value;
   descriptor.value = function (...args: any[]) {

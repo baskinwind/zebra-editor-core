@@ -13,7 +13,7 @@ class Decorate {
   constructor(
     component: Component,
     style: storeData = {},
-    data: storeData = {}
+    data: storeData = {},
   ) {
     this.component = component;
     this.style = Map(style);

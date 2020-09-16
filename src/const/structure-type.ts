@@ -12,7 +12,7 @@ enum StructureType {
   // 部分内容组件，用于在 html 上标识
   partialContent = "PARTIALCONTENT",
   // 不可编辑的组件
-  canNotEdit = "CANNOTEDIT"
+  canNotEdit = "CANNOTEDIT",
 }
 
 export default StructureType;

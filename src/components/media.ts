@@ -27,7 +27,7 @@ class Media extends Block {
       raw.mediaType as mediaType,
       raw.src || "",
       raw.style,
-      raw.data
+      raw.data,
     );
   }
 
@@ -35,7 +35,7 @@ class Media extends Block {
     mediaType: mediaType,
     src: string,
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(style, data);
     this.mediaType = mediaType;
@@ -85,7 +85,7 @@ class Media extends Block {
     end: number,
     style?: storeData,
     data?: storeData,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     this.modifyDecorate(style, data, customerUpdate);
     return [this, 0, 1];
@@ -94,18 +94,18 @@ class Media extends Block {
   remove(
     start?: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     return this.replaceSelf(
       getComponentFactory().buildParagraph(),
-      customerUpdate
+      customerUpdate,
     );
   }
 
   split(
     index: number,
     block?: Block,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let parent = this.getParent();
     if (!block) {
@@ -149,14 +149,14 @@ class Media extends Block {
     let map = {
       image: "buildeImage",
       audio: "buildeAudio",
-      video: "buildeVideo"
+      video: "buildeVideo",
     };
 
     return builder[map[this.mediaType]](
       this.id,
       this.src,
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }

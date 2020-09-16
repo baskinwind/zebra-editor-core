@@ -16,7 +16,7 @@ class InlineImage extends Inline {
     return getComponentFactory().buildInlineImage(
       raw.src || "",
       raw.style,
-      raw.data
+      raw.data,
     );
   }
 
@@ -36,7 +36,7 @@ class InlineImage extends Inline {
       this.id,
       this.src,
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }

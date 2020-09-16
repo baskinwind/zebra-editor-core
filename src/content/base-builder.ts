@@ -19,7 +19,7 @@ abstract class BaseBuilder<T = any> {
     id: string,
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildCustomerCollection(
@@ -27,21 +27,21 @@ abstract class BaseBuilder<T = any> {
     tag: string,
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildTable(
     id: string,
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildTableRow(
     id: string,
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildTableCell(
@@ -49,14 +49,14 @@ abstract class BaseBuilder<T = any> {
     cellType: "th" | "td",
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildList(
     id: string,
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildListItem(block: Block, onlyDecorate?: boolean): T;
@@ -65,7 +65,7 @@ abstract class BaseBuilder<T = any> {
     id: string,
     getChildren: () => T[],
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildCode(
@@ -73,42 +73,42 @@ abstract class BaseBuilder<T = any> {
     content: string,
     language: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildeImage(
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildeAudio(
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildeVideo(
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildCharacterList(
     id: string,
     charList: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 
   abstract buildInlineImage(
     id: string,
     src: string,
     style: mapData,
-    data: mapData
+    data: mapData,
   ): T;
 }
 

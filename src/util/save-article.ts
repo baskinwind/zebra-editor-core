@@ -10,7 +10,7 @@ const saveArticle = throttle((article?: Article) => {
   if (article.isEmpty() || /^demo/.test(article.id)) return;
   localStorage.setItem(
     "zebra-editor-article-" + article.id,
-    JSON.stringify(article.getRaw())
+    JSON.stringify(article.getRaw()),
   );
   let saveArticleList =
     localStorage.getItem("zebra-editor-article-list")?.split("|") || [];

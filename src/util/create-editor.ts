@@ -6,7 +6,7 @@ import { initRecord, redo, undo } from "../record/util";
 import { startUpdate } from "./update-component";
 import {
   setContainDocument,
-  setContainWindow
+  setContainWindow,
 } from "../operator-selection/util";
 import defaultStyle from "./default-style";
 import { getBlockById } from "../components/util";
@@ -30,7 +30,7 @@ export interface IOption {
 const createEditor = (
   root: HTMLElement,
   article: Article,
-  option?: IOption
+  option?: IOption,
 ) => {
   if (option?.onError) {
     addErrorHandle(option.onError);

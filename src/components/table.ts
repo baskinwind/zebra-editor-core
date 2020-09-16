@@ -24,7 +24,7 @@ class Table extends StructureCollection<TableRow> {
   needHead: boolean;
   style: storeData = {
     margin: "auto",
-    overflowX: "auto"
+    overflowX: "auto",
   };
 
   static getTable(component: Block): Table | undefined {
@@ -48,7 +48,7 @@ class Table extends StructureCollection<TableRow> {
       [],
       false,
       raw.style,
-      raw.data
+      raw.data,
     );
     let children = raw.children
       ? raw.children.map((item) => TableRow.create(item))
@@ -65,7 +65,7 @@ class Table extends StructureCollection<TableRow> {
     children: (tableCellChildType[] | tableCellChildType)[][] = [],
     needHead: boolean = true,
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(style, data);
     this.needHead = needHead;
@@ -94,7 +94,7 @@ class Table extends StructureCollection<TableRow> {
   removeChildren(
     indexOrComponent: TableRow | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): TableRow[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
@@ -185,7 +185,7 @@ class Table extends StructureCollection<TableRow> {
       this.id,
       () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }
@@ -211,7 +211,7 @@ class TableRow extends StructureCollection<TableCell> {
     children: (tableCellChildType[] | tableCellChildType)[] = [],
     cellType: "th" | "td" = "td",
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(style, data);
     this.cellType = cellType;
@@ -279,7 +279,7 @@ class TableRow extends StructureCollection<TableCell> {
       this.id,
       () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }
@@ -305,7 +305,7 @@ class TableCell extends StructureCollection<TableItem> {
     children: tableCellChildType[] | tableCellChildType = "",
     cellType: "th" | "td" = "td",
     style?: storeData,
-    data?: storeData
+    data?: storeData,
   ) {
     super(style, data);
     this.cellType = cellType;
@@ -321,7 +321,7 @@ class TableCell extends StructureCollection<TableItem> {
         return item;
       }),
       0,
-      true
+      true,
     );
   }
 
@@ -332,7 +332,7 @@ class TableCell extends StructureCollection<TableItem> {
   removeChildren(
     indexOrTableItem: TableItem | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ) {
     if (this.getSize() === 1 && removeNumber === 1) {
       let tableItem = this.getChild(0) as TableItem;
@@ -345,7 +345,7 @@ class TableCell extends StructureCollection<TableItem> {
   childHeadDelete(
     tableItem: TableItem,
     index: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let prev = this.getPrev(tableItem);
     if (!prev) return;
@@ -369,7 +369,7 @@ class TableCell extends StructureCollection<TableItem> {
       this.cellType,
       () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
       this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate)
+      this.decorate.getData(onlyDecorate),
     );
   }
 }
@@ -379,7 +379,7 @@ class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
   style: storeData = {
-    textAlign: "center"
+    textAlign: "center",
   };
 
   static create(raw: IRawType): TableItem {
@@ -400,7 +400,7 @@ class TableItem extends ContentCollection {
   static exchange(
     block: Block,
     args: any[] = [],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): TableItem[] {
     throw createError("不允许切换表格内段落");
   }
@@ -413,7 +413,7 @@ class TableItem extends ContentCollection {
     return new TableItem(
       "",
       this.decorate.copyStyle(),
-      this.decorate.copyData()
+      this.decorate.copyData(),
     );
   }
 
@@ -421,7 +421,7 @@ class TableItem extends ContentCollection {
   remove(
     start: number,
     end?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     let parent = this.getParent() as TableCell;
     let focus = super.remove(start, end, customerUpdate);
@@ -444,7 +444,7 @@ class TableItem extends ContentCollection {
   split(
     index: number,
     tableItem?: TableItem | TableItem[],
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): operatorType {
     // 不允许非内容组件添加
     let hasComponent: boolean = tableItem !== undefined;
@@ -486,7 +486,7 @@ class TableItem extends ContentCollection {
       this.id,
       () => this.getContent(),
       this.decorate.getStyle(onlyDecorate),
-      { ...this.decorate.getData(onlyDecorate), tag: "p" }
+      { ...this.decorate.getData(onlyDecorate), tag: "p" },
     );
   }
 }

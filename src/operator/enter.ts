@@ -29,7 +29,7 @@ const enter = (start: cursorType, end?: cursorType, event?: KeyboardEvent) => {
   }
   focusAt({
     id: lastComponent.id,
-    offset: 0
+    offset: 0,
   });
   return;
 };

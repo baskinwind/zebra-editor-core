@@ -30,7 +30,7 @@ abstract class Collection<T extends Component> extends Block {
   addChildren(
     components: T[],
     index?: number,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): T[] {
     let addIndex = typeof index === "number" ? index : this.getSize();
     this.children = this.children.splice(addIndex, 0, ...components);
@@ -42,7 +42,7 @@ abstract class Collection<T extends Component> extends Block {
   removeChildren(
     indexOrComponent: T | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false
+    customerUpdate: boolean = false,
   ): T[] {
     let removeIndex: number;
     if (removeNumber < 0) {
@@ -56,7 +56,7 @@ abstract class Collection<T extends Component> extends Block {
       removeIndex = indexOrComponent;
     } else {
       let temp = this.children.findIndex(
-        (item) => item.id === indexOrComponent.id
+        (item) => item.id === indexOrComponent.id,
       );
       if (temp === -1) {
         throw createError("移除组件不在列表内。", this);
