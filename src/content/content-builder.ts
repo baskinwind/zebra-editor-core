@@ -288,7 +288,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = getContainDocument();
     let charWrap;
-    let root = containDocument.createElement("span");
+    let root = containDocument.createElement(data.code ? "code" : "span");
     charWrap = root;
 
     if (data.bold) {
@@ -312,11 +312,6 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       let u = containDocument.createElement("u");
       charWrap.appendChild(u);
       charWrap = u;
-    }
-    if (data.code) {
-      let code = containDocument.createElement("code");
-      charWrap.appendChild(code);
-      charWrap = code;
     }
     if (data.link) {
       let link = containDocument.createElement("a");
