@@ -73,7 +73,8 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
   if (
     start.node.nodeName === "IMG" ||
     start.node.nodeName === "AUDIO" ||
-    start.node.nodeName === "VIDEO"
+    start.node.nodeName === "VIDEO" ||
+    (start.node as HTMLElement).contentEditable === "false"
   ) {
     if (start.index === 0) {
       range.setStartBefore(start.node);
@@ -88,7 +89,8 @@ const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
   if (
     end.node.nodeName === "IMG" ||
     end.node.nodeName === "AUDIO" ||
-    end.node.nodeName === "VIDEO"
+    end.node.nodeName === "VIDEO" ||
+    (end.node as HTMLElement).contentEditable === "false"
   ) {
     if (end.index === 0) {
       range.setEndBefore(end.node);

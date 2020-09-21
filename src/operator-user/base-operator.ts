@@ -1,6 +1,7 @@
 abstract class BaseOperator {
   protected constructor() {}
   abstract onBlur(event: FocusEvent): void;
+  abstract onDbclick(event: MouseEvent): void;
   abstract onClick(event: MouseEvent): void;
   abstract onPaste(event: ClipboardEvent): void;
   abstract onCut(event: ClipboardEvent): void;

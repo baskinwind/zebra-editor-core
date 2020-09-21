@@ -30,6 +30,8 @@ class UserOperator extends BaseOperator {
     flushSelection();
   }
 
+  onDbclick(event: MouseEvent) {}
+
   onClick(event: MouseEvent) {
     // 修复点击图片未选中图片的问题
     let doc = getContainDocument();

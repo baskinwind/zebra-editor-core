@@ -19,9 +19,10 @@ abstract class ContentCollection extends Collection<Inline> {
   static getChildren(raw: IRawType): Inline[] {
     if (!raw.children) return [];
     let children: Inline[] = [];
+    let factory = getComponentFactory();
     raw.children.forEach((item: IRawType) => {
-      if (item.type === ComponentType.inlineImage) {
-        children.push(InlineImage.create(item));
+      if (factory.typeMap[item.type]) {
+        children.push(factory.typeMap[item.type].create(item));
         return;
       }
       if (!item.content) return;

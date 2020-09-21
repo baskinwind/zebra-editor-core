@@ -73,7 +73,7 @@ export const getElememtSize = (element?: Element): number => {
     element.nodeName === "IMG" ||
     element.nodeName === "AUDIO" ||
     element.nodeName === "VIDEO" ||
-    element.contentEditable === "true" ||
+    element.contentEditable === "false" ||
     (element.dataset && element.dataset.type === ComponentType.inlineImage)
   ) {
     return 1;
@@ -99,7 +99,7 @@ const findFocusNode = (
     element.nodeName === "IMG" ||
     element.nodeName === "AUDIO" ||
     element.nodeName === "VIDEO" ||
-    element.contentEditable === "true"
+    element.contentEditable === "false"
   ) {
     if (index <= 1) {
       return [true, element, index];
@@ -145,6 +145,12 @@ export const getCursorPosition = (
   if (dom.dataset && dom.dataset.type === ComponentType.media) {
     return {
       node: dom.children[0],
+      index: cursor.offset === 0 ? 0 : 1,
+    };
+  }
+  if (dom.contentEditable === "false") {
+    return {
+      node: dom,
       index: cursor.offset === 0 ? 0 : 1,
     };
   }

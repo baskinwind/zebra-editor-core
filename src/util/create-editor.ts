@@ -47,7 +47,7 @@ const createEditor = (
   iframe.id = "iframe";
   iframe.width = "100%";
   iframe.height = "100%";
-  iframe.frameBorder = "0";
+  iframe.style.border = "none";
   root.appendChild(iframe);
 
   const loadIframe = () => {
@@ -106,6 +106,14 @@ const createEditor = (
     editor.addEventListener("click", (event) => {
       try {
         operator.onClick(event);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+
+    editor.addEventListener("dblclick", (event) => {
+      try {
+        operator.onDbclick(event);
       } catch (e) {
         console.warn(e);
       }

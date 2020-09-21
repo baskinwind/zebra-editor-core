@@ -66,7 +66,7 @@ const input = (
       needUpdate() ||
       startNode.nodeName === "BR" ||
       startNode.nodeName === "IMG" ||
-      charOrInline instanceof Character ||
+      typeof charOrInline !== "string" ||
       (!event && typeof charOrInline === "string") ||
       startPosition.index === 0 ||
       startPosition.index >= [...(startNode.nodeValue || "")].length - 1 ||
