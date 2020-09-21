@@ -15,7 +15,7 @@ export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
 
 @initRecordState
 class CustomerCollection extends StructureCollection<Block> {
-  type = ComponentType.customerCollection;
+  type: string = ComponentType.customerCollection;
   tag: string;
 
   static create(raw: IRawType): CustomerCollection {

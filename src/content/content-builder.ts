@@ -137,7 +137,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     let containDocument = getContainDocument();
     let li = containDocument.createElement("li");
     li.appendChild(block.render(onlyDecorate));
-    let style: any = {};
+    let style: mapData = {};
     if (block.structureType !== StructureType.content) {
       style.display = "block";
     }

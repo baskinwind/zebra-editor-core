@@ -34,7 +34,7 @@ class UserOperator extends BaseOperator {
     // 修复点击图片未选中图片的问题
     let doc = getContainDocument();
     let section = doc.getSelection();
-    let target = event.target as any;
+    let target = event.target as HTMLElement;
     if (target.nodeName === "IMG") {
       try {
         section?.removeAllRanges();

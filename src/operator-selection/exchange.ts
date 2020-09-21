@@ -18,7 +18,7 @@ const exchange = (newClass: classType, ...args: any[]) => {
       getBlockById(idList[idList.length - 1]).getSize() - end.offset;
 
     let exchangeList: Block[] = [];
-    let idMap: { [key: string]: any } = {};
+    let idMap: { [key: string]: number } = {};
 
     // 获取转换后的组件
     idList.forEach((id) => {

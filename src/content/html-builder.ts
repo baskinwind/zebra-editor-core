@@ -137,7 +137,7 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildListItem(block: Block, onlyDecorate: boolean = false): string {
     let children = block.render(onlyDecorate);
-    let style: any = {};
+    let style: mapData = {};
     if (block.structureType !== StructureType.content) {
       style.display = "block";
     }

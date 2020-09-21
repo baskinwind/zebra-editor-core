@@ -15,7 +15,7 @@ class MarkdownBuilder extends BaseBuilder {
 
   buildArticle(
     id: string,
-    getChildren: () => any[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData,
   ) {
@@ -109,7 +109,7 @@ class MarkdownBuilder extends BaseBuilder {
   buildTableCell(
     id: string,
     cellType: "th" | "td",
-    getChildren: () => any[],
+    getChildren: () => string[],
     style: mapData,
     data: mapData,
   ) {
