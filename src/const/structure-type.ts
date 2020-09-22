@@ -3,6 +3,8 @@ enum StructureType {
   structure = "STRUCTURE",
   // 内容组件，比如 Paragraph Header 等
   content = "CONTENT",
+  // 内容组件，比如 Paragraph Header 等
+  contentWrap = "CONTENTWRAP",
   // 多媒体组件
   media = "MEDIA",
   // 单元组件，内容组件由单元组件组成，比如 Character InlineImage 等

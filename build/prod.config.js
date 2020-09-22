@@ -9,7 +9,7 @@ module.exports = {
     filename: "index.js",
     path: path.resolve(__dirname, "../dist"),
     library: "ZebraEditorCore",
-    libraryTarget: "umd"
+    libraryTarget: "umd",
   },
   plugins: [new CleanWebpackPlugin()],
   module: {
@@ -20,17 +20,17 @@ module.exports = {
         enforce: "pre",
         include: [path.resolve(__dirname, "src")],
         options: {
-          formatter: require("eslint-friendly-formatter")
-        }
+          formatter: require("eslint-friendly-formatter"),
+        },
       },
       {
         test: /\.tsx?$/,
         use: "ts-loader",
-        exclude: /node_modules/
-      }
-    ]
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
-  }
+    extensions: [".tsx", ".ts", ".js"],
+  },
 };

@@ -96,6 +96,33 @@ const getSelection = () => {
     return cloneDeep<selectionType>(selectionStore);
   }
 
+  let anchorEle = anchorNode as HTMLElement;
+  if (
+    anchorEle.dataset &&
+    (anchorEle.dataset.structure === "CONTENT" ||
+      anchorEle.dataset.structure === "CONTENTWRAP")
+  ) {
+    let startParent: HTMLElement = getParent(anchorEle);
+    let offset = 0;
+    for (let i = 0; i < section.anchorOffset; i++) {
+      offset += getElememtSize(anchorEle.children[i]);
+    }
+    selectionStore = {
+      isCollapsed: true,
+      range: [
+        {
+          id: startParent.id,
+          offset: offset,
+        },
+        {
+          id: startParent.id,
+          offset: offset,
+        },
+      ],
+    };
+    return cloneDeep<selectionType>(selectionStore);
+  }
+
   // 判断开始节点和结束节点的位置关系，
   // 0：同一节点
   // 2：focusNode 在 anchorNode 节点前

@@ -8,46 +8,37 @@ module.exports = {
   stats: "errors-only",
   output: {
     filename: "index.js",
-    path: path.resolve(__dirname, "../example")
+    path: path.resolve(__dirname, "../example"),
   },
   devtool: "source-map",
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        loader: "eslint-loader",
-        enforce: "pre",
-        include: [path.resolve(__dirname, "src")],
-        options: {
-          formatter: require("eslint-friendly-formatter")
-        }
-      },
-      {
         test: /\.ts?$/,
         use: "ts-loader",
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.styl(us)?$/,
-        use: ["style-loader", "css-loader", "postcss-loader", "stylus-loader"]
-      }
-    ]
+        use: ["style-loader", "css-loader", "stylus-loader"],
+      },
+    ],
   },
   devServer: {
     clientLogLevel: "silent",
     contentBase: path.join(__dirname, "static"),
     hot: true,
-    compress: true
+    compress: true,
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "dev/index.html",
-      inject: true
-    })
+      inject: true,
+    }),
   ],
   resolve: {
-    extensions: [".ts", ".js"]
-  }
+    extensions: [".ts", ".js"],
+  },
 };

@@ -32,34 +32,6 @@ const input = (
       charOrInline = new Character(charOrInline);
     }
 
-    // 插入图片时，不强制更新，但要生成符合要求的文档，并手动更正光标位置
-    let node = startPosition?.node;
-    if (charOrInline instanceof InlineImage) {
-      event?.preventDefault();
-      component.add(charOrInline, offset, true);
-      let container = getContainer(node);
-      let newInline = charOrInline.render();
-      if (node.nodeName === "IMG") {
-        container.replaceWith(container, newInline);
-      } else {
-        let nodeParent = node.parentElement;
-        if (!nodeParent) return;
-        if (startPosition?.index === 0) {
-          container.replaceWith(newInline, container);
-        } else if (startPosition?.index === node.nodeValue?.length) {
-          container.replaceWith(container, newInline);
-        } else {
-          updateComponent(component);
-          focusAt({
-            id: component.id,
-            offset: offset + 1,
-          });
-          return;
-        }
-      }
-      return focusNode({ node: newInline.children[0], index: 1 });
-    }
-
     // 强制更新
     if (
       start.offset === 0 ||

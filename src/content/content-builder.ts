@@ -164,6 +164,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     parapraph.dataset.type = ComponentType.paragraph;
     parapraph.dataset.structure = StructureType.content;
     let span = containDocument.createElement("span");
+    span.dataset.structure = StructureType.contentWrap;
     let children = getChildren();
     if (children.length) {
       children.forEach((component) => {
@@ -343,25 +344,35 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = getContainDocument();
-    const span = containDocument.createElement("span");
-    span.id = id;
-    span.classList.add("zebra-editor-inline-image");
-    span.dataset.type = ComponentType.inlineImage;
-    span.dataset.structure = StructureType.partialContent;
-    this.addStyle(span, style, data);
-    let child;
-    let image = containDocument.createElement("img");
-    image.src = src;
-    image.alt = data.alt || "";
-    if (data.link) {
-      const link = containDocument.createElement("a");
-      link.href = data.link;
-      link.appendChild(image);
-      child = link;
-    } else {
-      child = image;
+    let span = containDocument.getElementById(id);
+    if (
+      !span ||
+      span.dataset.src !== src ||
+      (data.link && span.dataset.link !== data.link)
+    ) {
+      span = containDocument.createElement("span");
+      span.contentEditable = "false";
+      span.id = id;
+      span.dataset.src = src;
+      span.dataset.link = data.link || "";
+      span.dataset.type = ComponentType.inlineImage;
+      span.dataset.structure = StructureType.partialContent;
+      span.classList.add("zebra-editor-inline-image");
+      let child;
+      let image = containDocument.createElement("img");
+      image.src = src;
+      image.alt = data.alt || "";
+      if (data.link) {
+        const link = containDocument.createElement("a");
+        link.href = data.link;
+        link.appendChild(image);
+        child = link;
+      } else {
+        child = image;
+      }
+      span.appendChild(child);
     }
-    span.appendChild(child);
+    this.addStyle(span, style, data);
     return span;
   }
 }
