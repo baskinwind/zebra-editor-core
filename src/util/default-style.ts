@@ -37,16 +37,21 @@ body {
   text-align: center;
   color: #ccc;
 }
-.zebra-editor-placeholder {
-  position: absolute;
-  top: 20px;
-  left: 10px;
-  z-index: -1;
-  color: #ccc;
-}
 #zebra-editor-contain {
   min-height: 100%;
   white-space: pre-wrap;
+}
+.zebra-editor-article > :first-child {
+  position: relative;
+}
+.zebra-editor-article > :first-child.zebra-editor-empty::before {
+  content: '开始你的故事 ...';
+  color: #ccc;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 pre {
   position: relative;

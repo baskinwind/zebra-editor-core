@@ -9,7 +9,7 @@ import input from "../operator/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import { getBlockById } from "../components/util";
-import { createDurationRecord, undo, redo, createRecord } from "../record/util";
+import { createDurationRecord, createRecord } from "../record/util";
 import { getContainDocument } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
 import nextTicket from "../util/next-ticket";
@@ -30,8 +30,6 @@ class UserOperator extends BaseOperator {
     flushSelection();
   }
 
-  onDbclick(event: MouseEvent) {}
-
   onClick(event: MouseEvent) {
     // 修复点击图片未选中图片的问题
     let doc = getContainDocument();
@@ -49,6 +47,8 @@ class UserOperator extends BaseOperator {
       document.dispatchEvent(new Event("editorChange"));
     });
   }
+
+  onDbclick(event: MouseEvent) {}
 
   onPaste(event: ClipboardEvent) {
     onPaste(event);
@@ -111,9 +111,7 @@ class UserOperator extends BaseOperator {
     let selection = getBeforeSelection();
     let start = selection.range[0];
 
-    /**
-     * 注：由于 firefox 不支持 beforeinput 时间，需要对 firefox 进行兼容处理
-     */
+    // 注：由于 firefox 不支持 beforeinput 事件，需要对 firefox 进行兼容处理
     if (this.isFireFox) {
       let selection = getSelection();
       start = {
@@ -127,18 +125,26 @@ class UserOperator extends BaseOperator {
   }
 
   onKeyDown(event: KeyboardEvent) {
+    const key = event.key.toLowerCase();
+    // 混合输入
     if (event.isComposing || event.keyCode === 229) {
       return;
     }
-    if (event.key.toLowerCase() === "tab") {
+    if (key === "tab") {
+      event.preventDefault();
       this.onTab(event);
       return;
     }
     if (event.shiftKey || event.ctrlKey || event.metaKey) {
-      this.handleFunctionKey(event);
+      this.handleFunctionKey(
+        event.ctrlKey || event.metaKey,
+        event.shiftKey,
+        key,
+        event,
+      );
       return;
     }
-    if (/^Arrow/.test(event.key)) {
+    if (/^arrow/i.test(event.key)) {
       let map = {
         ArrowUp: DirectionType.up,
         ArrowDown: DirectionType.down,
@@ -149,7 +155,6 @@ class UserOperator extends BaseOperator {
       return;
     }
     onKeyDown(event);
-    return;
   }
 
   handleArrawKey(direction: DirectionType) {
@@ -158,38 +163,46 @@ class UserOperator extends BaseOperator {
     });
   }
 
-  // 仅处理 enter c v x z s 的逻辑，继承时，需先调用 super
-  handleFunctionKey(event: KeyboardEvent) {
+  // 保留一些无需控制的行为，其他的都禁止掉，继承时，需先调用 super
+  handleFunctionKey(
+    ctrl: boolean,
+    shift: boolean,
+    key: string,
+    event: KeyboardEvent,
+  ) {
     let selection = getSelection();
-    let isCtrl = event.ctrlKey || event.metaKey;
-    let isShift = event.shiftKey;
-    let key = event.key.toLowerCase();
-    if (isCtrl && event.key === "Enter") {
+    if (ctrl && key === "enter") {
       let component = getBlockById(selection.range[1].id);
-      focusAt(component.addEmptyParagraph(!event.shiftKey));
+      focusAt(component.addEmptyParagraph(!shift));
       return;
     }
-    // 一些不需要控制的按键
-    if (isCtrl && !isShift) {
-      if (["c", "v", "x", "z"].includes(key)) {
+
+    if (ctrl) {
+      // 撤销与取消撤销代理到 iframe 上
+      if (key === "z") {
         return;
       }
-      if ("s" === key) {
+      // 全选、复制、剪切、黏贴无需控制
+      if (!shift && ["a", "c", "x", "v"].includes(key)) {
+        return;
+      }
+      // 保存
+      if (key === "s") {
         this.onSave();
         event.preventDefault();
         return;
       }
-      event.preventDefault();
     }
+
+    // 屏蔽浏览器的默认行为，比如 ctrl + b 设置加粗等
+    event.preventDefault();
   }
 
   onSave() {
     saveArticle();
   }
 
-  onTab(event: KeyboardEvent) {
-    event.preventDefault();
-  }
+  onTab(event: KeyboardEvent) {}
 }
 
 export default UserOperator;

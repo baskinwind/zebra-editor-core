@@ -30,7 +30,7 @@ export const saveBlock = <T extends Block = Block>(
   store[component.id] = component;
 };
 
-export const getBlockById = <T extends Block = Block>(id: string): T => {
+export const getBlockById = <T extends Block = Block>(id?: string): T => {
   if (!id) {
     let article = store["article"];
     if (!article) throw createError("生成文章后调用。", undefined, "create");

@@ -59,7 +59,7 @@ class Article extends StructureCollection<Block> {
           [],
         );
         updateComponent(block);
-        return [exchanged[0], 1, 1];
+        return [exchanged[0], 0, 0];
       }
       // 若不是仅有一行，则删除该行
       if (this.getSize() !== 1) {

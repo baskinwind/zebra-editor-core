@@ -10,7 +10,12 @@ abstract class BaseOperator {
   abstract onBeforeInput(event: InputEvent): void;
   abstract onInput(event: InputEvent): void;
   abstract onKeyDown(event: KeyboardEvent): void;
-  abstract handleFunctionKey(event: KeyboardEvent): void;
+  abstract handleFunctionKey(
+    ctrl: boolean,
+    shift: boolean,
+    key: string,
+    event: KeyboardEvent,
+  ): void;
 }
 
 export default BaseOperator;

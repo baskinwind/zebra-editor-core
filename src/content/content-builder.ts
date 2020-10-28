@@ -172,6 +172,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       });
       parapraph.appendChild(span);
     } else {
+      parapraph.classList.add(`zebra-editor-empty`);
       parapraph.appendChild(containDocument.createElement("br"));
     }
     this.addStyle(parapraph, style, data);

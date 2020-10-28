@@ -72,24 +72,21 @@ const createEditor = (
     iframe.contentDocument.body.appendChild(editor);
     iframe.contentDocument.body.dataset.focus = "false";
 
-    let placeholder = iframe.contentDocument.createElement("div");
-    placeholder.classList.add("zebra-editor-placeholder");
-    placeholder.textContent = option?.placeholder || "开始你的故事 ... ";
+    if (option?.placeholder) {
+      const placeholderStyle = iframe.contentDocument.createElement("style");
+      placeholderStyle.textContent = `.zebra-editor-article > :first-child.zebra-editor-empty::before {content:'${option?.placeholder}';}`;
+      iframe.contentDocument.head.appendChild(placeholderStyle);
+    }
 
     document.addEventListener("editorChange", (e) => {
       let article = getBlockById<Article>("article");
       if (!article) return;
-      if (article.isEmpty() && article.getChild(0).decorate.isEmpty()) {
-        placeholder.style.display = "block";
-      } else {
-        placeholder.style.display = "none";
-      }
       let lastTyle = article.getChild(article.getSize() - 1).structureType;
       if (lastTyle !== StructureType.content) {
         article.add(getComponentFactory().buildParagraph());
       }
     });
-    iframe.contentDocument.body.appendChild(placeholder);
+
     nextTicket(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
@@ -176,9 +173,10 @@ const createEditor = (
       }
     });
 
+    // 撤回和取消撤回，单独设置，设置在 iframe 上。
     iframe.contentDocument.addEventListener("keydown", (event) => {
       try {
-        let key = event.key.toLowerCase();
+        const key = event.key.toLowerCase();
         if ("z" === key && (event.ctrlKey || event.metaKey)) {
           event.preventDefault();
           if (event.shiftKey) {
@@ -186,7 +184,6 @@ const createEditor = (
           } else {
             undo();
           }
-          return;
         }
       } catch (e) {
         console.warn(e);
