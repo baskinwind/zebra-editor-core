@@ -130,7 +130,7 @@ class Header extends ContentCollection {
       }
       return [this];
     }
-    return builder.exchange(this, args);
+    return builder.exchange(this.getComponentFactory(), this, args);
   }
 
   snapshoot(): IHeaderSnapshoot {

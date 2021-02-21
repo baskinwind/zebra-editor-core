@@ -3,7 +3,7 @@ import modifyInlineDecorate from "../operator/modify-inline-decorate";
 import { storeData } from "../decorate";
 import Editor from "../editor/editor";
 
-// 修改选内内的文字
+// 修改选区内的文字
 const modifySelectionDecorate = (
   editor: Editor,
   style?: storeData,

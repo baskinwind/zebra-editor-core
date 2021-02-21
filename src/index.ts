@@ -1,5 +1,5 @@
 // 组件相关
-import ComponentFactory, { getComponentFactory } from "./components";
+import ComponentFactory, { getDefaultComponentFactory } from "./components";
 
 // 内容生成器
 import ContentBuilder from "./content/content-builder";
@@ -21,11 +21,7 @@ import modifyIndent from "./operator-selection/modify-indent";
 import exchange from "./operator-selection/exchange";
 
 // 操作内容
-import createNewArticle from "./editor/util/create-new-article";
-import clearArticle from "./editor/util/clear-article";
 import getRawData from "./util/get-raw-data";
-import createByRaw from "./editor/util/create-by-raw";
-import saveArticle from "./editor/util/save-article";
 import updateComponent from "./util/update-component";
 
 import nextTicket from "./util/next-ticket";
@@ -35,7 +31,7 @@ export * from "./util/quick";
 
 export {
   ComponentFactory,
-  getComponentFactory,
+  getDefaultComponentFactory,
   ContentBuilder,
   HtmlBuilder,
   MarkdownBuilder,
@@ -49,11 +45,7 @@ export {
   modifyTable,
   modifyIndent,
   exchange,
-  createNewArticle,
-  clearArticle,
   getRawData,
-  createByRaw,
-  saveArticle,
   nextTicket,
   updateComponent,
 };

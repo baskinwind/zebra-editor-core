@@ -5,6 +5,7 @@ import StructureCollection from "../components/structure-collection";
 import ContentBuilder from "../content/content-builder";
 import UserOperator from "../operator-user";
 import { createError } from "../util/handle-error";
+import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
 import createEditor from "./util/create-editor";
@@ -27,6 +28,7 @@ class Editor {
   mountedWindow!: Window;
   mountedDocument!: Document;
 
+  articleManage: ArticleManage;
   historyManage: HistoryManage;
   storeManage: StoreManage;
 
@@ -57,6 +59,7 @@ class Editor {
     this.contentBuilder = new option.contentBuilder(this);
     this.componentFactory = new option.componentFactory(this);
 
+    this.articleManage = new ArticleManage(this);
     this.historyManage = new HistoryManage(this);
     this.storeManage = new StoreManage(this);
 

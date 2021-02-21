@@ -1,6 +1,6 @@
-import { getComponentFactory } from "../src";
+import { getDefaultComponentFactory } from "../src";
 
-let factory = getComponentFactory();
+let factory = getDefaultComponentFactory();
 let article = factory.buildArticle();
 
 let pledge = [
@@ -71,11 +71,17 @@ pledgeCn.forEach((item) => {
 
 article.add(factory.buildHeader("h3", "图文混排"));
 let para = factory.buildParagraph("");
-para.add(factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-1.png"));
+para.add(
+  factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-1.png"),
+);
 para.addText(" Valar Morghulis ");
-para.add(factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-2.png"));
+para.add(
+  factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-2.png"),
+);
 para.addText(" 凡人皆有一死 ");
-para.add(factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-3.png"));
+para.add(
+  factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-3.png"),
+);
 para.addInto(article);
 
 article.add(factory.buildHeader("h3", "表格"));

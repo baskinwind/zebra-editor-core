@@ -1,14 +1,8 @@
 import Inline from "../components/inline";
 import Character from "../components/character";
-import InlineImage from "../components/inline-image";
-import focusAt, { focusNode } from "../operator-selection/focus-at";
-import { getBlockById } from "../components/util";
-import {
-  getCursorPosition,
-  cursorType,
-  getContainer,
-} from "../operator-selection/util";
-import updateComponent, { needUpdate } from "../util/update-component";
+import focusAt from "../operator-selection/focus-at";
+import { getCursorPosition, cursorType } from "../operator-selection/util";
+import { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
 import Editor from "../editor/editor";
 

@@ -2,7 +2,7 @@ import "./index.styl";
 import article from "./article";
 
 import {
-  getComponentFactory,
+  getDefaultComponentFactory,
   modifyTable,
   insertBlock,
   insertInline,
@@ -23,11 +23,11 @@ import {
   modifyIndent,
   focusAt,
   createNewArticle,
-  MarkdownBuilder
+  MarkdownBuilder,
 } from "../src";
 import { getContainDocument } from "../src/operator-selection/util";
 
-let factory = getComponentFactory();
+let factory = getDefaultComponentFactory();
 
 new Vue({
   el: "#operator",
@@ -43,7 +43,7 @@ new Vue({
       link: "https://zebrastudio.tech",
       tableRow: 5,
       tableCol: 4,
-      tableHead: true
+      tableHead: true,
     };
   },
   methods: {
@@ -140,7 +140,7 @@ new Vue({
       modifyTable({
         row: Number(this.tableRow),
         col: Number(this.tableCol),
-        head: this.tableHead
+        head: this.tableHead,
       });
     },
 
@@ -154,7 +154,9 @@ new Vue({
     insertInlineImage() {
       let index = Math.floor(Math.random() * 3 + 1);
       insertInline(
-        factory.buildInlineImage(`https://zebrastudio.tech/img/demo/emoji-${index}.png`)
+        factory.buildInlineImage(
+          `https://zebrastudio.tech/img/demo/emoji-${index}.png`,
+        ),
       );
     },
     customerInlineImage() {
@@ -166,12 +168,12 @@ new Vue({
       insertBlock(
         factory.buildMedia(
           "image",
-          `https://zebrastudio.tech/img/demo/img-${index}.jpg`
-        )
+          `https://zebrastudio.tech/img/demo/img-${index}.jpg`,
+        ),
       );
     },
     customerImage() {
       insertBlock(factory.buildMedia("image", this.image));
-    }
-  }
+    },
+  },
 });

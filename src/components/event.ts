@@ -13,9 +13,9 @@ export default class Event {
     return this;
   }
 
-  $off(eventName: string, fn: Function) {
+  $off(eventName?: string, fn?: Function) {
     // 清空所有事件
-    if (!arguments.length) {
+    if (!eventName) {
       this._events = {};
       return this;
     }

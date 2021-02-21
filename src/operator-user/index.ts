@@ -9,7 +9,6 @@ import input from "../operator/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import focusAt from "../operator-selection/focus-at";
-import saveArticle from "../editor/util/save-article";
 import nextTicket from "../util/next-ticket";
 
 class UserOperator {
@@ -195,7 +194,7 @@ class UserOperator {
   }
 
   onSave() {
-    saveArticle();
+    this.editor.articleManage.save();
   }
 
   onTab(event: KeyboardEvent) {}
