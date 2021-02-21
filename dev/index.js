@@ -8,6 +8,12 @@ import {
   UserOperator,
   exchange,
   modifySelectionDecorate,
+  modifyDecorate,
+  insertBlock,
+  insertInline,
+  modifyTable,
+  modifyIndent,
+  focusAt,
 } from "../src";
 import Editor from "../src/editor/editor";
 
@@ -96,41 +102,45 @@ new Vue({
       modifySelectionDecorate(editor, {}, { code: true });
     },
     clearStyle() {
-      clearAll();
+      modifySelectionDecorate(editor, { remove: "all" }, { remove: "all" });
     },
     customerInlineStyle() {
       if (this.inlineStyle && this.inlineStyleValue) {
         let key = this.toHump(this.inlineStyle);
-        modifySelectionDecorate({ [key]: this.inlineStyleValue });
+        modifySelectionDecorate(editor, { [key]: this.inlineStyleValue });
       }
     },
 
     addLink() {
       if (this.link) {
-        link(this.link);
+        modifySelectionDecorate(editor, {}, { link: this.link });
       }
     },
     unLink() {
-      unlink();
+      modifySelectionDecorate(editor, {}, { remove: "link" });
     },
 
     modifyStyle(name, value) {
-      modifyDecorate({ [name]: value });
+      modifyDecorate(editor, { [name]: value });
     },
     customerBlockStyle() {
       if (this.blockStyle && this.blockStyleValue) {
         let key = this.toHump(this.blockStyle);
-        modifyDecorate({ [key]: this.blockStyleValue });
+        modifyDecorate(editor, { [key]: this.blockStyleValue });
       }
     },
 
     addTable() {
-      let table = factory.buildTable(3, 3);
-      insertBlock(table);
-      focusAt([table.getChild(0).getChild(0).getChild(0), 0, 0]);
+      let table = editor.componentFactory.buildTable(3, 3);
+      insertBlock(editor, table);
+      focusAt(editor.mountedWindow, [
+        table.getChild(0).getChild(0).getChild(0),
+        0,
+        0,
+      ]);
     },
     modifyTable() {
-      modifyTable({
+      modifyTable(editor, {
         row: Number(this.tableRow),
         col: Number(this.tableCol),
         head: this.tableHead,
@@ -138,35 +148,43 @@ new Vue({
     },
 
     indent() {
-      modifyIndent();
+      modifyIndent(editor);
     },
     outdent() {
-      modifyIndent(true);
+      modifyIndent(editor, true);
     },
 
     insertInlineImage() {
       let index = Math.floor(Math.random() * 3 + 1);
       insertInline(
-        factory.buildInlineImage(
+        editor,
+        editor.componentFactory.buildInlineImage(
           `https://zebrastudio.tech/img/demo/emoji-${index}.png`,
         ),
       );
     },
     customerInlineImage() {
-      insertInline(factory.buildInlineImage(this.inlineImage));
+      insertInline(
+        editor,
+        editor.componentFactory.buildInlineImage(this.inlineImage),
+      );
     },
 
     insertImage() {
       let index = Math.floor(Math.random() * 3 + 1);
       insertBlock(
-        factory.buildMedia(
+        editor,
+        editor.componentFactory.buildMedia(
           "image",
           `https://zebrastudio.tech/img/demo/img-${index}.jpg`,
         ),
       );
     },
     customerImage() {
-      insertBlock(factory.buildMedia("image", this.image));
+      insertBlock(
+        editor,
+        editor.componentFactory.buildMedia("image", this.image),
+      );
     },
   },
 });
