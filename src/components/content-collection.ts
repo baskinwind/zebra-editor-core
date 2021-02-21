@@ -3,26 +3,26 @@ import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
-import InlineImage from "./inline-image";
 import Character from "./character";
+import ComponentFactory from ".";
 import ComponentType from "../const/component-type";
+import BaseBuilder from "../content/base-builder";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { getContentBuilder } from "../content";
-import { recordMethod } from "../record/decorators";
-import { getComponentFactory } from ".";
 import { createError } from "../util/handle-error";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
-  static getChildren(raw: IRawType): Inline[] {
+  static getChildren(
+    componentFactory: ComponentFactory,
+    raw: IRawType,
+  ): Inline[] {
     if (!raw.children) return [];
     let children: Inline[] = [];
-    let factory = getComponentFactory();
     raw.children.forEach((item: IRawType) => {
-      if (factory.typeMap[item.type]) {
-        children.push(factory.typeMap[item.type].create(item));
+      if (componentFactory.typeMap[item.type]) {
+        children.push(componentFactory.typeMap[item.type].create(item));
         return;
       }
       if (!item.content) return;
@@ -34,16 +34,21 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
-  static exchangeOnly(block: Block, args?: any[]): ContentCollection[] {
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    block: Block,
+    args?: any[],
+  ): ContentCollection[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
   static exchange(
+    componentFactory: ComponentFactory,
     block: Block,
     args: any[],
     customerUpdate: boolean = false,
   ): ContentCollection[] {
-    let newContent = this.exchangeOnly(block, args);
+    let newContent = this.exchangeOnly(componentFactory, block, args);
     block.replaceSelf(newContent, customerUpdate);
     return newContent;
   }
@@ -85,7 +90,7 @@ abstract class ContentCollection extends Collection<Inline> {
     for (let i = start; i <= end; i++) {
       this.getChild(i)?.modifyDecorate(style, data);
     }
-    updateComponent(this, customerUpdate);
+    updateComponent(this.editor, this, customerUpdate);
     return [this, start, end];
   }
 
@@ -100,7 +105,7 @@ abstract class ContentCollection extends Collection<Inline> {
         item.parent = this;
       });
     let res = super.addChildren(inline, index);
-    updateComponent(this, customerUpdate);
+    updateComponent(this.editor, this, customerUpdate);
     return res;
   }
 
@@ -133,7 +138,7 @@ abstract class ContentCollection extends Collection<Inline> {
     customerUpdate: boolean = false,
   ) {
     let removed = super.removeChildren(inline, index);
-    updateComponent(this, customerUpdate);
+    updateComponent(this.editor, this, customerUpdate);
     return removed;
   }
 
@@ -170,7 +175,7 @@ abstract class ContentCollection extends Collection<Inline> {
       return newCollection;
     }
     // 如果是从尾部分段，则直接添加一个普通段落
-    let newParagraph = getComponentFactory().buildParagraph();
+    let newParagraph = this.getComponentFactory().buildParagraph();
     return newParagraph;
   }
 
@@ -218,14 +223,13 @@ abstract class ContentCollection extends Collection<Inline> {
     return block.receive(this, customerUpdate);
   }
 
-  @recordMethod
   receive(block?: Block, customerUpdate: boolean = false): operatorType {
     let size = this.getSize();
     if (!block) return [this, size, size];
     block.removeSelf(customerUpdate);
     if (block instanceof ContentCollection) {
       this.children = this.children.push(...block.children);
-      updateComponent(this, customerUpdate);
+      updateComponent(this.editor, this, customerUpdate);
       return [this, size, size];
     }
     return;
@@ -239,7 +243,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let createCharacterList = () => {
       if (!acc.length) return;
       content.push([
-        acc.map((character) => character.render()).join(""),
+        acc.map((character) => character.content).join(""),
         prevDecorate.styleIsEmpty() ? undefined : prevDecorate.copyStyle(),
         prevDecorate.dataIsEmpty() ? undefined : prevDecorate.copyData(),
       ]);
@@ -295,13 +299,12 @@ abstract class ContentCollection extends Collection<Inline> {
     return raw;
   }
 
-  getContent() {
-    const builder = getContentBuilder();
+  getContent(contentBuilder: BaseBuilder) {
     return this.fromatChildren().map((item, index) => {
       if (item.render) {
-        return item.render();
+        return item.render(contentBuilder);
       }
-      return builder.buildCharacterList(
+      return contentBuilder.buildCharacterList(
         `${this.id}__${index}`,
         item[0],
         item[1] || {},

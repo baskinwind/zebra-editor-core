@@ -1,39 +1,36 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import { operatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
-import { initRecordState, recordMethod } from "../record/decorators";
 import nextTicket from "../util/next-ticket";
-import StructureType from "../const/structure-type";
 
 export type listType = "ol" | "ul" | "nl";
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   listType: listType;
 }
 
-@initRecordState
 class List extends StructureCollection<Block> {
   type = ComponentType.list;
   listType: listType;
 
-  static create(raw: IRawType): List {
-    let factory = getComponentFactory();
+  static create(componentFactory: ComponentFactory, raw: IRawType): List {
     let children = raw.children
       ? raw.children.map((item: IRawType) =>
-          factory.typeMap[item.type].create(item),
+          componentFactory.typeMap[item.type].create(item),
         )
       : [];
-    let list = getComponentFactory().buildList(raw.listType);
+    let list = componentFactory.buildList(raw.listType);
     list.add(children);
     return list;
   }
 
   static exchange(
+    componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
     customerUpdate: boolean = false,
@@ -53,7 +50,7 @@ class List extends StructureCollection<Block> {
       prev.add(block, undefined, customerUpdate);
     } else {
       // 否则新生成一个 List
-      let newList = getComponentFactory().buildList(args[0]);
+      let newList = componentFactory.buildList(args[0]);
       newList.add(block, 0, true);
       parent.add(newList, index, customerUpdate);
     }
@@ -70,7 +67,7 @@ class List extends StructureCollection<Block> {
     this.listType = type;
     let list = children.map((item) => {
       if (typeof item === "string") {
-        return getComponentFactory().buildParagraph(item);
+        return this.getComponentFactory().buildParagraph(item);
       }
       return item;
     });
@@ -82,7 +79,6 @@ class List extends StructureCollection<Block> {
     }
   }
 
-  @recordMethod
   setListType(type: listType = "ol") {
     if (type === this.listType) return;
     this.listType = type;
@@ -93,7 +89,7 @@ class List extends StructureCollection<Block> {
     } else {
       this.decorate.mergeStyle({ remove: "paddingLeft" });
     }
-    updateComponent(this);
+    updateComponent(this.editor, this);
   }
 
   getType(): string {
@@ -113,7 +109,7 @@ class List extends StructureCollection<Block> {
   }
 
   createEmpty(): List {
-    return getComponentFactory().buildList(
+    return this.getComponentFactory().buildList(
       this.listType,
       [],
       this.decorate.copyStyle(),
@@ -227,13 +223,12 @@ class List extends StructureCollection<Block> {
     super.restore(state);
   }
 
-  render(onlyDecorate: boolean = false) {
-    let build = getContentBuilder();
-    let content = build.buildList(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    let content = contentBuilder.buildList(
       this.id,
       () =>
         this.children
-          .map((item) => build.buildListItem(item, onlyDecorate))
+          .map((item) => contentBuilder.buildListItem(item, onlyDecorate))
           .toArray(),
       this.decorate.getStyle(onlyDecorate),
       {

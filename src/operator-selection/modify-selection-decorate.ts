@@ -1,19 +1,22 @@
 import getSelection from "./get-selection";
 import modifyInlineDecorate from "../operator/modify-inline-decorate";
 import { storeData } from "../decorate";
-import { createRecord } from "../record/util";
+import Editor from "../editor/editor";
 
 // 修改选内内的文字
-const modifySelectionDecorate = (style?: storeData, data?: storeData) => {
-  let selection = getSelection();
+const modifySelectionDecorate = (
+  editor: Editor,
+  style?: storeData,
+  data?: storeData,
+) => {
+  let selection = getSelection(editor.mountedWindow);
   // 为光标时，不需要处理
   if (selection.isCollapsed) {
     return;
   }
   let start = selection.range[0];
   let end = selection.range[1];
-  createRecord(start, end);
-  modifyInlineDecorate(start, end, style, data);
+  modifyInlineDecorate(editor, start, end, style, data);
 };
 
 export default modifySelectionDecorate;

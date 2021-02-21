@@ -1,22 +1,11 @@
+import Component from "../components/component";
 import Block from "../components/block";
-import { getBlockById } from "../components/util";
-import { getContainDocument } from "../operator-selection/util";
+import Editor from "../editor/editor";
 import ComponentType from "../const/component-type";
 import nextTicket from "./next-ticket";
-import { getContentBuilder } from "../content";
-import Component from "../components/component";
 
-let canUpdate = false;
 let delayUpdateQueue: Set<string> = new Set();
 let inLoop = false;
-
-const startUpdate = () => {
-  canUpdate = true;
-};
-
-const stopUpdate = () => {
-  canUpdate = false;
-};
 
 // 添加延迟更新的组件 id，通常发生在大批量删除或历史回退时
 const delayUpdate = (id: string | string[]) => {
@@ -34,13 +23,20 @@ const needUpdate = () => {
 
 // 更新组件
 const updateComponent = (
+  editor?: Editor,
   component?: Component | Component[],
   customerUpdate: boolean = false,
 ) => {
+  if (!editor) {
+    return;
+  }
+
   // 清空延迟更新队列
   if (delayUpdateQueue.size) {
     // console.info("delay update");
-    delayUpdateQueue.forEach((id) => update(getBlockById(id)));
+    delayUpdateQueue.forEach((id) =>
+      update(editor, editor.storeManage.getBlockById(id)),
+    );
     delayUpdateQueue.clear();
     nextTicket(() => {
       document.dispatchEvent(new Event("editorChange"));
@@ -48,11 +44,11 @@ const updateComponent = (
   }
 
   // 不需要更新
-  if (!canUpdate || customerUpdate || !component) return;
+  if (customerUpdate || !component) return;
   if (Array.isArray(component)) {
-    component.forEach((item) => update(item));
+    component.forEach((item) => update(editor, item));
   } else {
-    update(component);
+    update(editor, component);
   }
 
   // 避免过度触发 editorChange 事件
@@ -65,17 +61,17 @@ const updateComponent = (
   }
 };
 
-const update = (component: Component) => {
+const update = (editor: Editor, component: Component) => {
   if (!component) return;
-  let containDocument = getContainDocument();
+  let containDocument = editor.mountedDocument;
   let oldDom = containDocument.getElementById(component.id);
 
   if (component.structureType === "UNIT") {
-    let newDom = component.render();
+    let newDom = component.render(editor.contentBuilder);
     if (oldDom) {
       oldDom.replaceWith(newDom);
     } else if (component.parent) {
-      update(component.parent);
+      update(editor, component.parent);
     }
   }
 
@@ -84,12 +80,12 @@ const update = (component: Component) => {
       let inList = oldDom.parentElement?.tagName.toLowerCase() === "li";
       if (component.active) {
         let newDom: HTMLElement;
-        newDom = component.render();
+        newDom = component.render(editor.contentBuilder);
         // 当仅发生样式变化时，render 返回节点不会变化
         if (newDom === oldDom) return;
 
         if (inList) {
-          newDom = getContentBuilder().buildListItem(component);
+          newDom = editor.contentBuilder.buildListItem(component);
           oldDom = oldDom.parentElement;
         }
 
@@ -116,7 +112,7 @@ const update = (component: Component) => {
 
       // 未找到父组件对应的元素时，更新父组件
       if (!parentDom) {
-        update(parentComponent);
+        update(editor, parentComponent);
         return;
       }
 
@@ -126,9 +122,9 @@ const update = (component: Component) => {
       // 列表的子组件需要嵌套 li
       let inList = parentComponent.type === ComponentType.list;
       if (inList) {
-        newDom = getContentBuilder().buildListItem(component);
+        newDom = editor.contentBuilder.buildListItem(component);
       } else {
-        newDom = component.render();
+        newDom = component.render(editor.contentBuilder);
       }
 
       // 将该组件插入到合适的位置
@@ -153,4 +149,4 @@ const update = (component: Component) => {
 
 export default updateComponent;
 
-export { startUpdate, stopUpdate, delayUpdate, needUpdate };
+export { delayUpdate, needUpdate };

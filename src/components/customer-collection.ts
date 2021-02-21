@@ -1,34 +1,37 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import { operatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
-import { initRecordState } from "../record/decorators";
 import nextTicket from "../util/next-ticket";
 
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   tag: string;
 }
 
-@initRecordState
 class CustomerCollection extends StructureCollection<Block> {
   type: string = ComponentType.customerCollection;
   tag: string;
 
-  static create(raw: IRawType): CustomerCollection {
-    let factory = getComponentFactory();
+  static create(
+    componentFactory: ComponentFactory,
+    raw: IRawType,
+  ): CustomerCollection {
     let children = raw.children
-      ? raw.children.map((item) => factory.typeMap[item.type].create(item))
+      ? raw.children.map((item) =>
+          componentFactory.typeMap[item.type].create(item),
+        )
       : [];
-    let collection = factory.buildCustomerCollection(raw.tag);
+    let collection = componentFactory.buildCustomerCollection(raw.tag);
     collection.add(children);
     return collection;
   }
 
   static exchange(
+    componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
     customerUpdate: boolean = false,
@@ -44,7 +47,7 @@ class CustomerCollection extends StructureCollection<Block> {
       prev.add(block, undefined, customerUpdate);
     } else {
       // 否则新生成一个 CustomerCollection
-      let newList = getComponentFactory().buildCustomerCollection(args[0]);
+      let newList = componentFactory.buildCustomerCollection(args[0]);
       newList.add(block, 0, true);
       parent.add(newList, index, customerUpdate);
     }
@@ -61,7 +64,7 @@ class CustomerCollection extends StructureCollection<Block> {
     this.tag = tag;
     let block = children.map((item) => {
       if (typeof item === "string") {
-        item = getComponentFactory().buildParagraph(item);
+        item = this.getComponentFactory().buildParagraph(item);
       }
       return item;
     });
@@ -79,7 +82,7 @@ class CustomerCollection extends StructureCollection<Block> {
   }
 
   createEmpty(): CustomerCollection {
-    return getComponentFactory().buildCustomerCollection(
+    return this.getComponentFactory().buildCustomerCollection(
       this.tag,
       [],
       this.decorate.copyStyle(),
@@ -167,12 +170,14 @@ class CustomerCollection extends StructureCollection<Block> {
     super.restore(state);
   }
 
-  render(onlyDecorate: boolean = false) {
-    let build = getContentBuilder();
-    let content = build.buildCustomerCollection(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    let content = contentBuilder.buildCustomerCollection(
       this.id,
       this.tag,
-      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      () =>
+        this.children
+          .map((item) => item.render(contentBuilder, onlyDecorate))
+          .toArray(),
       this.decorate.getStyle(onlyDecorate),
       this.decorate.getData(onlyDecorate),
     );

@@ -1,4 +1,5 @@
 import Inline from "./inline";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import { storeData } from "../decorate";
 import { initRecordState } from "../record/decorators";
@@ -20,7 +21,7 @@ class Character extends Inline {
     };
   }
 
-  render(onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
     return this.content;
   }
 }

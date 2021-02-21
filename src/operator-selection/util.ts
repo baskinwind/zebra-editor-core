@@ -1,7 +1,6 @@
 // @ts-nocheck
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getBlockById } from "../components/util";
 import { createError } from "../util/handle-error";
 
 export interface cursorType {
@@ -135,12 +134,13 @@ const findFocusNode = (
 
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
 export const getCursorPosition = (
+  contentWindow: Window,
   cursor: cursorType,
 ): {
   node: Node;
   index: number;
 } => {
-  let dom = containDocument.getElementById(cursor.id);
+  let dom = contentWindow.document.getElementById(cursor.id);
   if (!dom) throw createError("该节点已失效", undefined, "selection");
   if (dom.dataset && dom.dataset.type === ComponentType.media) {
     return {
@@ -189,15 +189,11 @@ export const getOffset = (
 
 // 获取所有选中的叶节点，不包括结构性的组件
 export const getSelectedIdList = (
+  article: Article,
   startId: string,
   endId: string = startId,
 ): string[] => {
   if (startId === "") return [];
   if (startId === endId) return [startId];
-  let component = getBlockById(startId);
-  let parent = component.getParent();
-  while (parent.type !== ComponentType.article) {
-    parent = parent.getParent();
-  }
-  return parent.getIdList(startId, endId)[2];
+  return article.getIdList(startId, endId)[2];
 };

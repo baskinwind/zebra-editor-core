@@ -1,21 +1,22 @@
+import Editor from "../editor/editor";
 import Table from "../components/table";
 import getSelection from "./get-selection";
-import { getBlockById } from "../components/util";
-import { createRecord } from "../record/util";
 
 // 修改表格内容
-const modifyTable = (option: {
-  row?: number;
-  col?: number;
-  head?: boolean;
-}) => {
-  let selection = getSelection();
+const modifyTable = (
+  editor: Editor,
+  option: {
+    row?: number;
+    col?: number;
+    head?: boolean;
+  },
+) => {
+  let selection = getSelection(editor.mountedWindow);
   if (!selection.isCollapsed) return;
   let id = selection.range[0].id;
-  let component = getBlockById(id);
+  let component = editor.storeManage.getBlockById(id);
   let table = Table.getTable(component);
   if (!table) return;
-  createRecord(selection.range[0], selection.range[1]);
   if (option.row) {
     table.setTableRow(option.row);
   }

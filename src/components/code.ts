@@ -1,14 +1,12 @@
-import { getComponentFactory } from ".";
-import Component, { IRawType, operatorType } from "./component";
+import ComponentFactory from ".";
+import BaseBuilder from "../content/base-builder";
+import Component, { IRawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../content";
-import { initRecordState, recordMethod } from "../record/decorators";
-import { storeData } from "../decorate";
 import updateComponent from "../util/update-component";
+import { storeData } from "../decorate";
 
-@initRecordState
 class Code extends PlainText {
   type = ComponentType.code;
   style: storeData = {
@@ -18,8 +16,8 @@ class Code extends PlainText {
   };
   language: string;
 
-  static create(raw: IRawType): Code {
-    return getComponentFactory().buildCode(
+  static create(componentFactory: ComponentFactory, raw: IRawType): Code {
+    return componentFactory.buildCode(
       raw.content,
       raw.language,
       raw.style,
@@ -27,8 +25,12 @@ class Code extends PlainText {
     );
   }
 
-  static exchangeOnly(component: Component, args: any[] = []): Code[] {
-    let code = getComponentFactory().buildCode();
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    component: Component,
+    args: any[] = [],
+  ): Code[] {
+    let code = componentFactory.buildCode();
     if (component instanceof ContentCollection) {
       code.add(component.children.map((item) => item.content).join(""), 0);
     }
@@ -47,7 +49,7 @@ class Code extends PlainText {
 
   setLanguage(language: string) {
     this.language = language;
-    updateComponent(this);
+    updateComponent(this.editor, this);
   }
 
   getStatistic() {
@@ -63,7 +65,7 @@ class Code extends PlainText {
   }
 
   createEmpty() {
-    return getComponentFactory().buildCode(
+    return this.getComponentFactory().buildCode(
       "\n",
       this.language,
       this.decorate.copyStyle(),
@@ -71,8 +73,8 @@ class Code extends PlainText {
     );
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildCode(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildCode(
       this.id,
       this.content.join(""),
       this.language,

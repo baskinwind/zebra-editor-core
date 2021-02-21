@@ -3,14 +3,6 @@ import Block from "../components/block";
 import StructureType from "../const/structure-type";
 
 class HtmlBuilder extends BaseBuilder<string> {
-  static bulider: HtmlBuilder;
-  static getInstance() {
-    if (!this.bulider) {
-      this.bulider = new HtmlBuilder();
-    }
-    return this.bulider;
-  }
-
   formatStyle(styleName: string) {
     return styleName.replace(/([A-Z])/, "-$1").toLocaleLowerCase();
   }
@@ -136,7 +128,7 @@ class HtmlBuilder extends BaseBuilder<string> {
   }
 
   buildListItem(block: Block, onlyDecorate: boolean = false): string {
-    let children = block.render(onlyDecorate);
+    let children = block.render(this, onlyDecorate);
     let style: mapData = {};
     if (block.structureType !== StructureType.content) {
       style.display = "block";

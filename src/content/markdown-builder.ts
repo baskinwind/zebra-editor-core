@@ -2,14 +2,6 @@ import BaseBuilder, { mapData } from "./base-builder";
 import Block from "../components/block";
 
 class MarkdownBuilder extends BaseBuilder {
-  static mdbulider?: MarkdownBuilder;
-  static getInstance() {
-    if (!this.mdbulider) {
-      this.mdbulider = new MarkdownBuilder();
-    }
-    return this.mdbulider;
-  }
-
   listIndent: number = -1;
   blockIndent: number = 0;
 
@@ -152,8 +144,8 @@ class MarkdownBuilder extends BaseBuilder {
     return [res, "list"];
   }
 
-  buildListItem(block: Block) {
-    return block.render();
+  buildListItem(block: Block): string {
+    return block.render(this);
   }
 
   buildParagraph(

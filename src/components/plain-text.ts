@@ -1,11 +1,10 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import Component, { operatorType, IRawType } from "./component";
 import Block, { IBlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { storeData } from "../decorate";
-import { recordMethod } from "../record/decorators";
 import { createError } from "../util/handle-error";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
@@ -19,11 +18,16 @@ abstract class PlainText extends Block {
     overflow: "auto",
   };
 
-  static exchangeOnly(component: Component, args: any[] = []): PlainText[] {
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    component: Component,
+    args: any[] = [],
+  ): PlainText[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
   static exchange(
+    componentFactory: ComponentFactory,
     block: Block,
     args: any[],
     customerUpdate: boolean = false,
@@ -34,7 +38,7 @@ abstract class PlainText extends Block {
       prev.receive(block, customerUpdate);
       return [prev];
     } else {
-      let newItem = this.exchangeOnly(block, args);
+      let newItem = this.exchangeOnly(componentFactory, block, args);
       block.replaceSelf(newItem, customerUpdate);
       return newItem;
     }
@@ -69,7 +73,6 @@ abstract class PlainText extends Block {
     return raw;
   }
 
-  @recordMethod
   add(
     string: string,
     index?: number,
@@ -81,11 +84,10 @@ abstract class PlainText extends Block {
     index = index === undefined ? this.content.length : index;
     let saveString = [...string];
     this.content.splice(index, 0, ...saveString);
-    updateComponent(this, customerUpdate);
+    updateComponent(this.editor, this, customerUpdate);
     return [this, index + saveString.length, index + saveString.length];
   }
 
-  @recordMethod
   remove(
     start: number,
     end?: number,
@@ -94,12 +96,12 @@ abstract class PlainText extends Block {
     if (end === undefined) end = this.content.length;
     if (start < 0 && end === 0) {
       if (this.content.length <= 1) {
-        return this.replaceSelf(getComponentFactory().buildParagraph());
+        return this.replaceSelf(this.getComponentFactory().buildParagraph());
       }
       return;
     }
     this.content.splice(start, end - start);
-    updateComponent(this, customerUpdate);
+    updateComponent(this.editor, this, customerUpdate);
     return [this, start, start];
   }
 

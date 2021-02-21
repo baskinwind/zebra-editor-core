@@ -1,16 +1,15 @@
 import BaseBuilder, { mapData } from "./base-builder";
+import Editor from "../editor/editor";
+import Block from "../components/block";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getContainDocument } from "../operator-selection/util";
-import Block from "../components/block";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
-  static bulider: ContentBuilder;
-  static getInstance() {
-    if (!this.bulider) {
-      this.bulider = new ContentBuilder();
-    }
-    return this.bulider;
+  editor: Editor;
+
+  constructor(editor: Editor) {
+    super();
+    this.editor = editor;
   }
 
   addStyle(dom: HTMLElement, style?: mapData, data?: mapData) {
@@ -28,7 +27,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let article = containDocument.createElement("article");
     article.id = id;
     article.classList.add("zebra-editor-article");
@@ -48,7 +47,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let collection = containDocument.createElement(tag);
     collection.id = id;
     collection.classList.add("zebra-editor-customer");
@@ -67,7 +66,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
     figure.dataset.structure = StructureType.structure;
@@ -87,7 +86,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let tr = containDocument.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.structure;
@@ -103,7 +102,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let cell = containDocument.createElement(cellType);
     cell.id = id;
     cell.dataset.structure = StructureType.structure;
@@ -119,7 +118,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let tag: string = data.tag || "ul";
     let list = containDocument.createElement(tag);
     list.id = id;
@@ -134,9 +133,9 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   }
 
   buildListItem(block: Block, onlyDecorate: boolean = false): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let li = containDocument.createElement("li");
-    li.appendChild(block.render(onlyDecorate));
+    li.appendChild(block.render(this, onlyDecorate));
     let style: mapData = {};
     if (block.structureType !== StructureType.content) {
       style.display = "block";
@@ -156,7 +155,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     const tag: string = data.tag || "p";
     let parapraph = containDocument.createElement(tag);
     parapraph.id = id;
@@ -186,7 +185,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     // FIXED: Chrome 下，如果代码块的下一个内容块不是 p 标签时，
     // 下一行在首字母进行中文输入后按下删除键，那一行会被删除，
     // 这个行为阻止不了，但在代码块外加上 p 标签即可修复这个问题。
@@ -214,7 +213,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-editor-image", "zebra-editor-image-loading");
@@ -250,7 +249,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-editor-image");
@@ -269,7 +268,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-editor-image");
@@ -288,7 +287,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let charWrap;
     let root = containDocument.createElement(data.code ? "code" : "span");
     charWrap = root;
@@ -344,7 +343,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     style: mapData,
     data: mapData,
   ): HTMLElement {
-    let containDocument = getContainDocument();
+    let containDocument = this.editor.mountedDocument;
     let span = containDocument.getElementById(id);
     if (
       !span ||

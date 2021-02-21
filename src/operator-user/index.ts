@@ -1,4 +1,4 @@
-import BaseOperator from "./base-operator";
+import Editor from "../editor/editor";
 import DirectionType from "../const/direction-type";
 import getSelection, {
   flushSelection,
@@ -8,32 +8,26 @@ import backspace from "../operator/backspace";
 import input from "../operator/input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
-import { getBlockById } from "../components/util";
-import { createDurationRecord, createRecord } from "../record/util";
-import { getContainDocument } from "../operator-selection/util";
 import focusAt from "../operator-selection/focus-at";
+import saveArticle from "../editor/util/save-article";
 import nextTicket from "../util/next-ticket";
-import saveArticle from "../util/save-article";
 
-class UserOperator extends BaseOperator {
-  static bulider: UserOperator;
-  static getInstance() {
-    if (!this.bulider) {
-      this.bulider = new UserOperator();
-    }
-    return this.bulider;
-  }
-
+class UserOperator {
   isFireFox: boolean = navigator.userAgent.indexOf("Firefox") > -1;
 
+  editor: Editor;
+
+  constructor(editor: Editor) {
+    this.editor = editor;
+  }
+
   onBlur(event: FocusEvent) {
-    flushSelection();
+    flushSelection(this.editor.mountedWindow);
   }
 
   onClick(event: MouseEvent) {
     // 修复点击图片未选中图片的问题
-    let doc = getContainDocument();
-    let section = doc.getSelection();
+    let section = this.editor.mountedWindow.getSelection();
     let target = event.target as HTMLElement;
     if (target.nodeName === "IMG") {
       try {
@@ -51,33 +45,31 @@ class UserOperator extends BaseOperator {
   onDbclick(event: MouseEvent) {}
 
   onPaste(event: ClipboardEvent) {
-    onPaste(event);
+    onPaste(this.editor, event);
   }
 
   onCut(event: ClipboardEvent) {
-    let selection = getSelection();
+    let selection = getSelection(this.editor.mountedWindow);
     setTimeout(() => {
-      createRecord();
-      backspace(selection.range[0], selection.range[1]);
+      backspace(this.editor, selection.range[0], selection.range[1]);
     }, 30);
   }
 
   onCompositionStart(event: CompositionEvent) {
-    let selection = getSelection();
-    createDurationRecord(selection.range[0], selection.range[1]);
+    let selection = getSelection(this.editor.mountedWindow);
     if (!selection.isCollapsed) {
-      backspace(selection.range[0], selection.range[1], event);
+      backspace(this.editor, selection.range[0], selection.range[1], event);
     }
   }
 
   onCompositionEnd(event: CompositionEvent) {
-    let selection = getSelection();
+    let selection = getSelection(this.editor.mountedWindow);
     let start = {
       id: selection.range[0].id,
       offset: selection.range[0].offset - [...event.data].length,
     };
     // 混合输入会导致获取选区在输入文字的后方
-    input(event.data, start, event);
+    input(this.editor, event.data, start, event);
   }
 
   onBeforeInput(event: InputEvent) {
@@ -89,13 +81,12 @@ class UserOperator extends BaseOperator {
       event.data === ""
     )
       return;
-    let selection = getSelection();
+    let selection = getSelection(this.editor.mountedWindow);
     let start = selection.range[0];
     let end = selection.range[1];
-    createDurationRecord(start, end);
     if (!selection.isCollapsed) {
-      backspace(start, end);
-      selection = getSelection();
+      backspace(this.editor, start, end);
+      getSelection(this.editor.mountedWindow);
     }
   }
 
@@ -113,15 +104,14 @@ class UserOperator extends BaseOperator {
 
     // 注：由于 firefox 不支持 beforeinput 事件，需要对 firefox 进行兼容处理
     if (this.isFireFox) {
-      let selection = getSelection();
+      let selection = getSelection(this.editor.mountedWindow);
       start = {
         id: start.id,
         offset: selection.range[0].offset - [...event.data].length,
       };
-      createDurationRecord(start, start);
     }
 
-    input(data, start, event);
+    input(this.editor, data, start, event);
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -154,7 +144,7 @@ class UserOperator extends BaseOperator {
       this.handleArrawKey(map[event.key]);
       return;
     }
-    onKeyDown(event);
+    onKeyDown(this.editor, event);
   }
 
   handleArrawKey(direction: DirectionType) {
@@ -170,10 +160,12 @@ class UserOperator extends BaseOperator {
     key: string,
     event: KeyboardEvent,
   ) {
-    let selection = getSelection();
+    let selection = getSelection(this.editor.mountedWindow);
     if (ctrl && key === "enter") {
-      let component = getBlockById(selection.range[1].id);
-      focusAt(component.addEmptyParagraph(!shift));
+      let component = this.editor.storeManage.getBlockById(
+        selection.range[1].id,
+      );
+      focusAt(this.editor.mountedWindow, component.addEmptyParagraph(!shift));
       return;
     }
 
@@ -190,6 +182,10 @@ class UserOperator extends BaseOperator {
       if (key === "s") {
         this.onSave();
         event.preventDefault();
+        return;
+      }
+      // 刷新
+      if (key === "r") {
         return;
       }
     }

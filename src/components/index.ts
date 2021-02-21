@@ -9,19 +9,24 @@ import Code from "./code";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
 import CustomerCollection from "./customer-collection";
+import Editor from "../editor/editor";
+import Block from "./block";
 
 class ComponentFactory {
   static bulider: ComponentFactory;
-  static getInstance() {
+  static getInstance(editor?: Editor) {
     if (!this.bulider) {
-      this.bulider = new ComponentFactory();
+      this.bulider = new ComponentFactory(editor);
     }
     return this.bulider;
   }
 
   typeMap: { [key: string]: any };
 
-  protected constructor() {
+  editor?: Editor;
+
+  constructor(editor?: Editor) {
+    this.editor = editor;
     this.typeMap = {
       [ComponentType.article]: Article,
       [ComponentType.list]: List,
@@ -34,8 +39,14 @@ class ComponentFactory {
     };
   }
 
+  addEditor(block: Block) {
+    block.editor = this.editor;
+  }
+
   buildArticle(style: storeData = {}, data: storeData = {}) {
-    return new Article(style, data);
+    const block = new Article(style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildCustomerCollection(
@@ -44,7 +55,9 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    return new CustomerCollection(tag, children, style, data);
+    const block = new CustomerCollection(tag, children, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildList(
@@ -53,7 +66,9 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    return new List(type, children, style, data);
+    const block = new List(type, children, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildTable(
@@ -64,7 +79,9 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    return new Table(row, col, children, needHead, style, data);
+    const block = new Table(row, col, children, needHead, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildHeader(
@@ -73,11 +90,15 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    return new Header(type, text, style, data);
+    const block = new Header(type, text, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildParagraph(text?: string, style: storeData = {}, data: storeData = {}) {
-    return new Paragraph(text, style, data);
+    const block = new Paragraph(text, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildMedia(
@@ -86,7 +107,9 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    return new Media(mediaType, src, style, data);
+    const block = new Media(mediaType, src, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildCode(
@@ -95,7 +118,9 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    return new Code(content, language, style, data);
+    const block = new Code(content, language, style, data);
+    this.addEditor(block);
+    return block;
   }
 
   buildInlineImage(src: string, style: storeData = {}, data: storeData = {}) {
@@ -103,16 +128,9 @@ class ComponentFactory {
   }
 }
 
-let nowFactory: any;
-
-const getComponentFactory = <
-  T extends ComponentFactory = ComponentFactory
->(): T => nowFactory || ComponentFactory.getInstance();
-
-const setComponentFactory = (factory?: ComponentFactory) => {
-  nowFactory = factory || ComponentFactory.getInstance();
-};
+const getDefaultComponentFactory = (): ComponentFactory =>
+  ComponentFactory.getInstance();
 
 export default ComponentFactory;
 
-export { setComponentFactory, getComponentFactory };
+export { getDefaultComponentFactory };

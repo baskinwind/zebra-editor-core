@@ -1,34 +1,32 @@
-import { getComponentFactory } from ".";
-import { IRawType, classType } from "./component";
+import ComponentFactory from ".";
+import { IRawType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../content";
-import { initRecordState, recordMethod } from "../record/decorators";
 import { storeData } from "../decorate";
 
-@initRecordState
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
-  static create(raw: IRawType): Paragraph {
-    let paragraph = getComponentFactory().buildParagraph(
-      "",
-      raw.style,
-      raw.data,
-    );
-    let children = super.getChildren(raw);
+  static create(componentFactory: ComponentFactory, raw: IRawType): Paragraph {
+    let paragraph = componentFactory.buildParagraph("", raw.style, raw.data);
+    let children = super.getChildren(componentFactory, raw);
     paragraph.addChildren(children, 0, true);
     return paragraph;
   }
 
-  static exchangeOnly(block: Block, args: any[] = []): Paragraph[] {
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    block: Block,
+    args: any[] = [],
+  ): Paragraph[] {
     let list: Paragraph[] = [];
     if (block instanceof Paragraph) {
       list.push(block);
     } else if (block instanceof ContentCollection) {
-      let newParagraph = getComponentFactory().buildParagraph(
+      let newParagraph = componentFactory.buildParagraph(
         "",
         block.decorate.copyStyle(),
         block.decorate.copyData(),
@@ -39,7 +37,7 @@ class Paragraph extends ContentCollection {
       let stringList = block.content.join("").split("\n");
       stringList.pop();
       [...stringList].forEach((item) => {
-        list.push(getComponentFactory().buildParagraph(item));
+        list.push(componentFactory.buildParagraph(item));
       });
     }
     return list;
@@ -54,17 +52,17 @@ class Paragraph extends ContentCollection {
   }
 
   createEmpty() {
-    return getComponentFactory().buildParagraph(
+    return this.getComponentFactory().buildParagraph(
       "",
       this.decorate.copyStyle(),
       this.decorate.copyData(),
     );
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildParagraph(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildParagraph(
       this.id,
-      () => this.getContent(),
+      () => this.getContent(contentBuilder),
       this.decorate.getStyle(onlyDecorate),
       this.decorate.getData(onlyDecorate),
     );

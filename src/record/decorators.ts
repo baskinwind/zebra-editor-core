@@ -1,12 +1,10 @@
-import Component from "../components/component";
-
-const initRecordState = <T extends { new (...args: any[]): Component }>(
+const initRecordState = <T extends { new (...args: any[]): any }>(
   constructor: T,
 ) => {
   abstract class RecordComponent extends constructor {
     constructor(...args: any[]) {
       super(...args);
-      this.record.store(true);
+      this.recordSnapshoot();
     }
   }
   return RecordComponent;

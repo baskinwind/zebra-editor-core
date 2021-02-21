@@ -1,11 +1,10 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import { operatorType, IRawType, classType } from "./component";
 import Block, { IBlockSnapshoot } from "./block";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { storeData } from "../decorate/index";
-import { getContentBuilder } from "../content";
-import { initRecordState } from "../record/decorators";
 import updateComponent from "../util/update-component";
 
 export type mediaType = "image" | "audio" | "video";
@@ -15,15 +14,14 @@ export interface IMediaSnapshoot extends IBlockSnapshoot {
   src: string;
 }
 
-@initRecordState
 class Media extends Block {
   src: string;
   mediaType: mediaType;
   type = ComponentType.media;
   structureType = StructureType.media;
 
-  static create(raw: IRawType): Media {
-    return getComponentFactory().buildMedia(
+  static create(componentFactory: ComponentFactory, raw: IRawType): Media {
+    return componentFactory.buildMedia(
       raw.mediaType as mediaType,
       raw.src || "",
       raw.style,
@@ -45,7 +43,7 @@ class Media extends Block {
   setSrc(src: string) {
     if (this.src === src) return;
     this.src = src;
-    updateComponent(this);
+    updateComponent(this.editor, this);
     this.recordSnapshoot();
   }
 
@@ -97,7 +95,7 @@ class Media extends Block {
     customerUpdate: boolean = false,
   ): operatorType {
     return this.replaceSelf(
-      getComponentFactory().buildParagraph(),
+      this.getComponentFactory().buildParagraph(),
       customerUpdate,
     );
   }
@@ -109,7 +107,7 @@ class Media extends Block {
   ): operatorType {
     let parent = this.getParent();
     if (!block) {
-      block = getComponentFactory().buildParagraph();
+      block = this.getComponentFactory().buildParagraph();
     }
     let componentIndex = parent.findChildrenIndex(this);
     if (index === 0) {
@@ -144,15 +142,14 @@ class Media extends Block {
     super.restore(state);
   }
 
-  render(onlyDecorate: boolean = false) {
-    let builder = getContentBuilder();
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
     let map = {
       image: "buildeImage",
       audio: "buildeAudio",
       video: "buildeVideo",
     };
 
-    return builder[map[this.mediaType]](
+    return contentBuilder[map[this.mediaType]](
       this.id,
       this.src,
       this.decorate.getStyle(onlyDecorate),

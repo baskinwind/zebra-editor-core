@@ -1,19 +1,20 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import Inline from "./inline";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { getContentBuilder } from "../content";
 import { storeData } from "../decorate/index";
 import { IRawType } from "./component";
-import { initRecordState } from "../record/decorators";
 
-@initRecordState
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;
   content = "$$$INLINEIMAGE$$$";
   src: string;
 
-  static create(raw: IRawType): InlineImage {
-    return getComponentFactory().buildInlineImage(
+  static create(
+    componentFactory: ComponentFactory,
+    raw: IRawType,
+  ): InlineImage {
+    return componentFactory.buildInlineImage(
       raw.src || "",
       raw.style,
       raw.data,
@@ -31,8 +32,8 @@ class InlineImage extends Inline {
     return raw;
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildInlineImage(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildInlineImage(
       this.id,
       this.src,
       this.decorate.getStyle(onlyDecorate),

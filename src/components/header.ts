@@ -1,14 +1,13 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import { IRawType, classType } from "./component";
 import Inline from "./inline";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { getContentBuilder } from "../content";
 import { storeData } from "../decorate";
-import { initRecordState, recordMethod } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 
 export type headerType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -37,7 +36,6 @@ const styleMap = {
   },
 };
 
-@initRecordState
 class Header extends ContentCollection {
   type = ComponentType.header;
   headerType: headerType;
@@ -45,25 +43,29 @@ class Header extends ContentCollection {
     bold: true,
   };
 
-  static create(raw: IRawType): Header {
-    let header = getComponentFactory().buildHeader(
+  static create(componentFactory: ComponentFactory, raw: IRawType): Header {
+    let header = componentFactory.buildHeader(
       raw.headerType || "h1",
       "",
       raw.style,
       raw.data,
     );
-    let children = super.getChildren(raw);
+    let children = super.getChildren(componentFactory, raw);
     header.addChildren(children, 0, true);
     return header;
   }
 
-  static exchangeOnly(block: Block, args: any[] = []): Header[] {
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    block: Block,
+    args: any[] = [],
+  ): Header[] {
     let list = [];
     let headerType = args[0] || "h1";
     if (block instanceof Header && block.headerType === headerType) {
       list.push(block);
     } else if (block instanceof ContentCollection) {
-      let newHeader = getComponentFactory().buildHeader(
+      let newHeader = componentFactory.buildHeader(
         headerType,
         "",
         block.decorate.copyStyle(),
@@ -76,7 +78,7 @@ class Header extends ContentCollection {
       let stringList = block.content.join("").split("\n");
       stringList.pop();
       [...stringList].forEach((item) => {
-        list.push(getComponentFactory().buildHeader(headerType, item));
+        list.push(componentFactory.buildHeader(headerType, item));
       });
     }
     return list;
@@ -97,7 +99,7 @@ class Header extends ContentCollection {
     if (this.headerType === type) return;
     this.headerType = type;
     this.style = styleMap[type];
-    updateComponent(this);
+    updateComponent(this.editor, this);
   }
 
   getType(): string {
@@ -111,7 +113,7 @@ class Header extends ContentCollection {
   }
 
   createEmpty() {
-    return getComponentFactory().buildHeader(
+    return this.getComponentFactory().buildHeader(
       this.headerType,
       "",
       this.decorate.copyStyle(),
@@ -119,7 +121,6 @@ class Header extends ContentCollection {
     );
   }
 
-  @recordMethod
   exchangeTo(builder: classType, args: any[]): Block[] {
     // @ts-ignore
     if (builder === this.constructor && args[0]) {
@@ -144,10 +145,10 @@ class Header extends ContentCollection {
     super.restore(state);
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildParagraph(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildParagraph(
       this.id,
-      () => this.getContent(),
+      () => this.getContent(contentBuilder),
       this.decorate.getStyle(onlyDecorate),
       { ...this.decorate.getData(onlyDecorate), tag: this.headerType },
     );

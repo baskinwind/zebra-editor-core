@@ -1,44 +1,35 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
+import BaseBuilder from "../content/base-builder";
 import { operatorType, IRawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getContentBuilder } from "../content/index";
-import { storeData } from "../decorate";
-import { saveBlock } from "./util";
-import { initRecordState } from "../record/decorators";
 import updateComponent from "../util/update-component";
 
-@initRecordState
 class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;
 
-  static create(raw: IRawType): Article {
-    let factory = getComponentFactory();
-    let article = factory.buildArticle(raw.style, raw.data);
+  static create(componentFactory: ComponentFactory, raw: IRawType): Article {
+    let article = componentFactory.buildArticle(raw.style, raw.data);
     if (raw.id) {
       article.id = raw.id;
-      saveBlock(article, raw.id);
     }
     let children = raw.children
       ? raw.children.map((item) => {
-          return factory.typeMap[item.type].create(item);
+          return componentFactory.typeMap[item.type].create(
+            componentFactory,
+            item,
+          );
         })
       : [];
     article.add(children, 0, true);
     return article;
   }
 
-  constructor(style?: storeData, data?: storeData) {
-    super(style, data);
-    saveBlock(this, "article");
-  }
-
   setId(id: string) {
     this.id = id;
-    saveBlock(this);
   }
 
   isEmpty() {
@@ -55,10 +46,10 @@ class Article extends StructureCollection<Block> {
       if (!block.decorate.isEmpty() || block.type !== ComponentType.paragraph) {
         block.decorate.clear();
         let exchanged = block.exchangeTo(
-          getComponentFactory().typeMap.PARAGRAPH,
+          this.getComponentFactory().typeMap.PARAGRAPH,
           [],
         );
-        updateComponent(block);
+        updateComponent(this.editor, block);
         return [exchanged[0], 0, 0];
       }
       // 若不是仅有一行，则删除该行
@@ -78,7 +69,7 @@ class Article extends StructureCollection<Block> {
   ): operatorType {
     let focus = super.remove(start, end, customerUpdate);
     if (this.getSize() === 0) {
-      return this.add(getComponentFactory().buildParagraph());
+      return this.add(this.getComponentFactory().buildParagraph());
     }
     return focus;
   }
@@ -89,10 +80,13 @@ class Article extends StructureCollection<Block> {
     return raw;
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildArticle(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildArticle(
       this.id,
-      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      () =>
+        this.children
+          .map((item) => item.render(contentBuilder, onlyDecorate))
+          .toArray(),
       this.decorate.getStyle(onlyDecorate),
       this.decorate.getData(onlyDecorate),
     );

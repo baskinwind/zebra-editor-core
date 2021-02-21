@@ -1,28 +1,28 @@
+import Editor from "../editor/editor";
 import Block from "../components/block";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
-import { getBlockById } from "../components/util";
 import { getSelectedIdList } from "./util";
 import { classType } from "../components/component";
-import { createRecord } from "../record/util";
 
 // 修改选区中整块内容的呈现
-const exchange = (newClass: classType, ...args: any[]) => {
-  let selection = getSelection();
+const exchange = (editor: Editor, newClass: classType, ...args: any[]) => {
+  let selection = getSelection(editor.mountedWindow);
   let start = selection.range[0];
   let end = selection.range[1];
   try {
-    createRecord(start, end);
-    let idList = getSelectedIdList(start.id, end.id);
+    let idList = getSelectedIdList(editor.article, start.id, end.id);
     let endToTailSize =
-      getBlockById(idList[idList.length - 1]).getSize() - end.offset;
+      editor.storeManage.getBlockById(idList[idList.length - 1]).getSize() -
+      end.offset;
 
     let exchangeList: Block[] = [];
     let idMap: { [key: string]: number } = {};
 
     // 获取转换后的组件
     idList.forEach((id) => {
-      getBlockById(id)
+      editor.storeManage
+        .getBlockById(id)
         .exchangeTo(newClass, args)
         .forEach((item) => {
           if (!idMap[item.id]) {
@@ -61,7 +61,7 @@ const exchange = (newClass: classType, ...args: any[]) => {
       nowEnd.offset -= size;
       tailIndex -= 1;
     }
-    focusAt(nowStart, nowEnd);
+    focusAt(editor.mountedWindow, nowStart, nowEnd);
   } catch (err) {
     console.warn(err);
   }

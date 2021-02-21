@@ -10,16 +10,18 @@ import {
 } from "../operator-selection/util";
 import updateComponent, { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
+import Editor from "../editor/editor";
 
 const input = (
+  editor: Editor,
   charOrInline: string | Inline,
   start: cursorType,
   event?: KeyboardEvent | CompositionEvent | InputEvent,
 ) => {
   try {
-    let component = getBlockById(start.id);
+    let component = editor.storeManage.getBlockById(start.id);
     let offset = start.offset;
-    let startPosition = getCursorPosition(start);
+    let startPosition = getCursorPosition(editor.mountedWindow, start);
     if (!startPosition) return;
     let startNode = startPosition.node;
     // 样式边缘的空格，逃脱默认样式，优化体验
@@ -45,7 +47,7 @@ const input = (
       event?.defaultPrevented
     ) {
       event?.preventDefault();
-      focusAt(component.add(charOrInline, offset));
+      focusAt(editor.mountedWindow, component.add(charOrInline, offset));
       return;
     }
 

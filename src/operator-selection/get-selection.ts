@@ -3,9 +3,7 @@ import {
   getContainer,
   cursorType,
   getParent,
-  getContainWindow,
   getOffset,
-  getContainDocument,
 } from "./util";
 import { cloneDeep, throttle } from "lodash";
 import Article from "../components/article";
@@ -52,8 +50,8 @@ const getBeforeSelection = () => {
 };
 
 // 获取选区信息，从 range[0].id 组件的 offset 位置开始，到 range[1].id 的 offset 位置结束
-const getSelection = () => {
-  let section = getContainWindow().getSelection();
+const getSelection = (contentWindow: Window) => {
+  let section = contentWindow.getSelection();
   // 无选区：直接返回保存的选区内容
   if (
     !section ||
@@ -66,7 +64,7 @@ const getSelection = () => {
   let anchorNode = section?.anchorNode;
 
   // 当选区不在生成的文章中时，直接返回之前的选区对象
-  let rootDom = getContainDocument().getElementById("zebra-editor-contain");
+  let rootDom = contentWindow.document.getElementById("zebra-editor-contain");
   if (!rootDom?.contains(anchorNode)) {
     return cloneDeep<selectionType>(selectionStore);
   }

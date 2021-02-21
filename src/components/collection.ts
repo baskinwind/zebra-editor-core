@@ -1,7 +1,6 @@
 import { List } from "immutable";
 import Component from "./component";
 import Block, { IBlockSnapshoot } from "./block";
-import { recordMethod } from "../record/decorators";
 import { createError } from "../util/handle-error";
 
 export interface ICollectionSnapshoot<T> extends IBlockSnapshoot {
@@ -26,7 +25,6 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   // 内部使用，添加子元素
-  @recordMethod
   addChildren(
     components: T[],
     index?: number,
@@ -38,7 +36,6 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   // 内部使用，移除子元素
-  @recordMethod
   removeChildren(
     indexOrComponent: T | number,
     removeNumber: number = 1,

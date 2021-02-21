@@ -1,12 +1,16 @@
 import Component from "../components/component";
-import { cursorType, getCursorPosition, getContainDocument } from "./util";
+import { cursorType, getCursorPosition } from "./util";
 import { getBeforeSelection } from "./get-selection";
 import nextTicket from "../util/next-ticket";
 
 type focusAtType = cursorType | [Component, number, number];
 
 // 选中 start 到 end 的内容
-const focusAt = (start?: focusAtType, end?: cursorType) => {
+const focusAt = (
+  contentWindow: Window,
+  start?: focusAtType,
+  end?: cursorType,
+) => {
   try {
     if (!start) {
       // 若无选区，则使用前一步的选区内容
@@ -26,8 +30,7 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
       end = { id: start.id, offset: start.offset };
     }
 
-    let doc = getContainDocument();
-    let block = doc.getElementById(start.id);
+    let block = contentWindow.document.getElementById(start.id);
     if (!block) return;
 
     // 让 focus 的节点移入视口内
@@ -41,19 +44,19 @@ const focusAt = (start?: focusAtType, end?: cursorType) => {
 
     start.offset = start.offset === -1 ? 0 : start.offset;
     end.offset = end.offset === -1 ? 0 : end.offset;
-    let startPosition = getCursorPosition(start);
+    let startPosition = getCursorPosition(contentWindow, start);
     if (!startPosition) return;
     let endPosition = startPosition;
     if (end) {
-      let temp = getCursorPosition(end);
+      let temp = getCursorPosition(contentWindow, end);
       if (temp) {
         endPosition = temp;
       }
     }
-    focusNode(startPosition, endPosition);
+    focusNode(contentWindow, startPosition, endPosition);
   } catch (e) {
     console.warn(e);
-    let rootDom = getContainDocument().getElementById("zebra-editor-contain");
+    let rootDom = contentWindow.document.getElementById("zebra-editor-contain");
     rootDom?.blur();
   }
 };
@@ -64,9 +67,13 @@ type focusNodeType = {
 };
 
 // 从开始节点的某处，选到接收节点的某处
-const focusNode = (start: focusNodeType, end: focusNodeType = start) => {
-  let doc = getContainDocument();
-  let section = doc.getSelection();
+const focusNode = (
+  contentWindow: Window,
+  start: focusNodeType,
+  end: focusNodeType = start,
+) => {
+  let doc = contentWindow.document;
+  let section = contentWindow.getSelection();
   section?.removeAllRanges();
   let range = doc.createRange();
 

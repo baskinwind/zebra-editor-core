@@ -1,15 +1,15 @@
 import { Map } from "immutable";
+import Event from "./event";
 import Decorate from "../decorate";
 import Record from "../record";
 import Block from "./block";
 import Collection from "./collection";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { getId } from "./util";
 import { storeData } from "../decorate/index";
-import { recordMethod } from "../record/decorators";
-import { getContentBuilder } from "../content";
 import { createError } from "../util/handle-error";
 
 export type operatorType = [Block, number, number] | undefined;
@@ -41,18 +41,19 @@ export interface IRawType {
   language?: string;
   tag?: string;
 }
+
 export interface ISnapshoot {
   style: Map<string, string>;
   data: Map<string, string>;
 }
 
-abstract class Component {
+abstract class Component extends Event {
   id: string = getId();
   parent?: Collection<Component>;
-  // 修饰：样式，数据等
+  // 样式，额外数据
   decorate: Decorate;
+  // 记录管理，用于保存和恢复组件状态
   record: Record;
-  // 类型，用于保存和恢复数据
   // 方便外部扩展组件
   abstract type: ComponentType | string;
   // 结构上的作用
@@ -62,6 +63,7 @@ abstract class Component {
   style: storeData = {};
 
   constructor(style: storeData = {}, data: storeData = {}) {
+    super();
     this.decorate = new Decorate(this, style, data);
     this.record = new Record(this);
   }
@@ -86,7 +88,6 @@ abstract class Component {
   }
 
   // 修改组件的表现形式
-  @recordMethod
   modifyDecorate(
     style?: storeData,
     data?: storeData,
@@ -95,15 +96,14 @@ abstract class Component {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
     if (this instanceof Block) {
-      getContentBuilder().setUpdateDecorate();
-      updateComponent(this, customerUpdate);
+      updateComponent(this.editor, this, customerUpdate);
     }
     return;
   }
 
   // 记录当前状态
   recordSnapshoot() {
-    this.record.store();
+    this.$emit("componentSnapshot", this);
   }
 
   // 获得当前组件的快照，用于撤销和回退
@@ -121,8 +121,17 @@ abstract class Component {
   }
 
   // 渲染该组件
-  render(onlyDecorate: boolean = false): any {
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false): any {
     throw createError("请为组件添加 render 函数");
+  }
+
+  // 将事件进行冒泡
+  $emit<T>(eventName: string, event?: T, ...rest: any[]) {
+    super.$emit(eventName, event, ...rest);
+    if (this.parent) {
+      this.parent.$emit(eventName, event, ...rest);
+    }
+    return this;
   }
 }
 

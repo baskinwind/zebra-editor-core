@@ -1,6 +1,5 @@
 // 组件相关
 import ComponentFactory, { getComponentFactory } from "./components";
-import { getBlockById } from "./components/util";
 
 // 内容生成器
 import ContentBuilder from "./content/content-builder";
@@ -22,17 +21,13 @@ import modifyIndent from "./operator-selection/modify-indent";
 import exchange from "./operator-selection/exchange";
 
 // 操作内容
-import mount from "./util/mount";
-import createNewArticle from "./util/create-new-article";
-import clearArticle from "./util/clear-article";
-import getContentByBuilder from "./util/get-content-by-builder";
+import createNewArticle from "./editor/util/create-new-article";
+import clearArticle from "./editor/util/clear-article";
 import getRawData from "./util/get-raw-data";
-import createByRaw from "./util/create-by-raw";
-import saveArticle from "./util/save-article";
+import createByRaw from "./editor/util/create-by-raw";
+import saveArticle from "./editor/util/save-article";
 import updateComponent from "./util/update-component";
 
-// 文章历史相关
-import { createRecord, undo, redo } from "./record/util";
 import nextTicket from "./util/next-ticket";
 
 // 一些快捷操作
@@ -41,7 +36,6 @@ export * from "./util/quick";
 export {
   ComponentFactory,
   getComponentFactory,
-  getBlockById,
   ContentBuilder,
   HtmlBuilder,
   MarkdownBuilder,
@@ -55,16 +49,11 @@ export {
   modifyTable,
   modifyIndent,
   exchange,
-  mount,
   createNewArticle,
   clearArticle,
-  getContentByBuilder,
   getRawData,
   createByRaw,
   saveArticle,
   nextTicket,
   updateComponent,
-  createRecord,
-  undo,
-  redo,
 };

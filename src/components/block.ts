@@ -1,3 +1,5 @@
+import Editor from "../editor/editor";
+import ComponentFactory, { getDefaultComponentFactory } from ".";
 import Component, {
   classType,
   operatorType,
@@ -5,13 +7,10 @@ import Component, {
   ISnapshoot,
 } from "./component";
 import StructureCollection from "./structure-collection";
-import { saveBlock } from "./util";
-import { storeData } from "../decorate/index";
-import { recordMethod } from "../record/decorators";
 import ComponentType from "../const/component-type";
-import { getComponentFactory } from ".";
-import { createError } from "../util/handle-error";
 import nextTicket from "../util/next-ticket";
+import { storeData } from "../decorate/index";
+import { createError } from "../util/handle-error";
 
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;
@@ -22,14 +21,21 @@ abstract class Block extends Component {
   active: boolean = false;
   // 父组件
   parent?: StructureCollection<Block>;
+  // 组件所属的编辑器
+  editor?: Editor;
 
   // 定义如何将别的组件转换为当前组件，不会触发更新
-  static exchangeOnly(component: Component, args?: any[]): Component[] {
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    component: Component,
+    args?: any[],
+  ): Component[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
   // 将别的组件转换为当前组件，并更新组件在文档中的状态
   static exchange(
+    componentFactory: ComponentFactory,
     component: Component,
     args?: any[],
     customerUpdate: boolean = false,
@@ -38,14 +44,14 @@ abstract class Block extends Component {
   }
 
   // 根据 raw 保存的内容恢复组件
-  static create(raw: IRawType): Component {
+  static create(componentFactory: ComponentFactory, raw: IRawType): Component {
     throw createError("组件未实现 create 静态方法", this);
   }
 
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
-    saveBlock(this);
     nextTicket(() => {
+      this.$emit("blockCreate", this);
       this.init();
     });
   }
@@ -90,7 +96,6 @@ abstract class Block extends Component {
   }
 
   // 将当前组件转换为 builder 类型的组件
-  @recordMethod
   exchangeTo(
     builder: classType,
     args: any[],
@@ -150,7 +155,7 @@ abstract class Block extends Component {
       block.removeSelf(customerUpdate);
       next.add(block, 0, customerUpdate);
     } else {
-      let newList = getComponentFactory().buildList("ol");
+      let newList = this.getComponentFactory().buildList("ol");
       block.replaceSelf(newList, customerUpdate);
       newList.add(block, undefined, customerUpdate);
     }
@@ -202,7 +207,7 @@ abstract class Block extends Component {
   addEmptyParagraph(bottom: boolean): operatorType {
     let parent = this.getParent();
     let index = parent.findChildrenIndex(this);
-    let paragraph = getComponentFactory().buildParagraph();
+    let paragraph = this.getComponentFactory().buildParagraph();
     parent.add(paragraph, index + (bottom ? 1 : 0));
     return [paragraph, 0, 0];
   }
@@ -236,6 +241,12 @@ abstract class Block extends Component {
     customerUpdate: boolean = false,
   ): operatorType {
     return;
+  }
+
+  getComponentFactory() {
+    return this.editor
+      ? this.editor.componentFactory
+      : getDefaultComponentFactory();
   }
 }
 

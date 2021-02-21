@@ -1,12 +1,11 @@
-import { getComponentFactory } from ".";
+import ComponentFactory from ".";
 import { operatorType, classType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
+import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import { storeData } from "../decorate";
-import { getContentBuilder } from "../content";
-import { initRecordState } from "../record/decorators";
 import { ICollectionSnapshoot } from "./collection";
 import { createError } from "../util/handle-error";
 import nextTicket from "../util/next-ticket";
@@ -41,8 +40,8 @@ class Table extends StructureCollection<TableRow> {
     return table;
   }
 
-  static create(raw: IRawType): Table {
-    let table = getComponentFactory().buildTable(
+  static create(componentFactory: ComponentFactory, raw: IRawType): Table {
+    let table = componentFactory.buildTable(
       0,
       0,
       [],
@@ -51,7 +50,7 @@ class Table extends StructureCollection<TableRow> {
       raw.data,
     );
     let children = raw.children
-      ? raw.children.map((item) => TableRow.create(item))
+      ? raw.children.map((item) => TableRow.create(componentFactory, item))
       : [];
     table.addChildren(children, 0, true);
     table.col = raw.col || 0;
@@ -180,10 +179,13 @@ class Table extends StructureCollection<TableRow> {
     return res;
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildTable(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildTable(
       this.id,
-      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      () =>
+        this.children
+          .map((item) => item.render(contentBuilder, onlyDecorate))
+          .toArray(),
       this.decorate.getStyle(onlyDecorate),
       this.decorate.getData(onlyDecorate),
     );
@@ -197,10 +199,10 @@ class TableRow extends StructureCollection<TableCell> {
   inCountEmptyCell: boolean = false;
   cellType: "th" | "td";
 
-  static create(raw: IRawType): TableRow {
+  static create(componentFactory: ComponentFactory, raw: IRawType): TableRow {
     let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
     let children = raw.children
-      ? raw.children.map((item) => TableCell.create(item))
+      ? raw.children.map((item) => TableCell.create(componentFactory, item))
       : [];
     tableRow.addChildren(children, 0, true);
     return tableRow;
@@ -274,10 +276,13 @@ class TableRow extends StructureCollection<TableCell> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildTableRow(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildTableRow(
       this.id,
-      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      () =>
+        this.children
+          .map((item) => item.render(contentBuilder, onlyDecorate))
+          .toArray(),
       this.decorate.getStyle(onlyDecorate),
       this.decorate.getData(onlyDecorate),
     );
@@ -289,10 +294,10 @@ class TableCell extends StructureCollection<TableItem> {
   parent?: TableRow;
   cellType: "th" | "td";
 
-  static create(raw: IRawType): TableCell {
+  static create(componentFactory: ComponentFactory, raw: IRawType): TableCell {
     let tableCell = new TableCell("", raw.cellType, raw.style, raw.data);
     let children = raw.children
-      ? raw.children.map((item) => TableItem.create(item))
+      ? raw.children.map((item) => TableItem.create(componentFactory, item))
       : [];
     tableCell.addChildren(children, 0, true);
     if (children.length) {
@@ -363,18 +368,20 @@ class TableCell extends StructureCollection<TableItem> {
     return raw;
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildTableCell(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildTableCell(
       this.id,
       this.cellType,
-      () => this.children.map((item) => item.render(onlyDecorate)).toArray(),
+      () =>
+        this.children
+          .map((item) => item.render(contentBuilder, onlyDecorate))
+          .toArray(),
       this.decorate.getStyle(onlyDecorate),
       this.decorate.getData(onlyDecorate),
     );
   }
 }
 
-@initRecordState
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
@@ -382,14 +389,18 @@ class TableItem extends ContentCollection {
     textAlign: "center",
   };
 
-  static create(raw: IRawType): TableItem {
+  static create(componentFactory: ComponentFactory, raw: IRawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
-    let children = super.getChildren(raw);
+    let children = super.getChildren(componentFactory, raw);
     tableItem.addChildren(children, 0, true);
     return tableItem;
   }
 
-  static exchangeOnly(block: Block, args: any[] = []): TableItem[] {
+  static exchangeOnly(
+    componentFactory: ComponentFactory,
+    block: Block,
+    args: any[] = [],
+  ): TableItem[] {
     let newItem = new TableItem();
     if (block instanceof ContentCollection) {
       newItem.addChildren(block.children.toArray(), 0);
@@ -398,6 +409,7 @@ class TableItem extends ContentCollection {
   }
 
   static exchange(
+    componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
     customerUpdate: boolean = false,
@@ -456,12 +468,14 @@ class TableItem extends ContentCollection {
           return item instanceof ContentCollection;
         })
         .forEach((item) => {
-          newList.push(...TableItem.exchangeOnly(item));
+          newList.push(
+            ...TableItem.exchangeOnly(this.getComponentFactory(), item),
+          );
         });
       tableItem = newList;
       tableItem = tableItem.length === 0 ? undefined : tableItem;
     } else if (tableItem && tableItem instanceof ContentCollection) {
-      tableItem = TableItem.exchangeOnly(tableItem);
+      tableItem = TableItem.exchangeOnly(this.getComponentFactory(), tableItem);
     } else {
       tableItem = undefined;
     }
@@ -481,10 +495,10 @@ class TableItem extends ContentCollection {
     }
   }
 
-  render(onlyDecorate: boolean = false) {
-    return getContentBuilder().buildParagraph(
+  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+    return contentBuilder.buildParagraph(
       this.id,
-      () => this.getContent(),
+      () => this.getContent(contentBuilder),
       this.decorate.getStyle(onlyDecorate),
       { ...this.decorate.getData(onlyDecorate), tag: "p" },
     );

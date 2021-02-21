@@ -4,12 +4,11 @@ import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
 import { mergerStatistic } from "./util";
-import { recordMethod } from "../record/decorators";
 import { createError } from "../util/handle-error";
 
-abstract class StructureCollection<T extends Block = Block> extends Collection<
-  T
-> {
+abstract class StructureCollection<
+  T extends Block = Block
+> extends Collection<T> {
   structureType = StructureType.structure;
 
   createEmpty(): StructureCollection<T> {
@@ -99,7 +98,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
       item.recordSnapshoot();
     });
     let newBlock = super.addChildren(component, index);
-    updateComponent([...component].reverse(), customerUpdate);
+    updateComponent(this.editor, [...component].reverse(), customerUpdate);
     return newBlock;
   }
 
@@ -126,7 +125,7 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
       item.parent = undefined;
       item.recordSnapshoot();
     });
-    updateComponent(removed, customerUpdate);
+    updateComponent(this.editor, removed, customerUpdate);
     return removed;
   }
 
@@ -143,7 +142,6 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
     return [this, start, start];
   }
 
-  @recordMethod
   replaceChild(
     block: T[],
     oldComponent: T,
@@ -162,7 +160,11 @@ abstract class StructureCollection<T extends Block = Block> extends Collection<
       item.recordSnapshoot();
     });
     this.children = this.children.splice(index, 1, ...block);
-    updateComponent([oldComponent, ...[...block].reverse()], customerUpdate);
+    updateComponent(
+      this.editor,
+      [oldComponent, ...[...block].reverse()],
+      customerUpdate,
+    );
     return block;
   }
 
