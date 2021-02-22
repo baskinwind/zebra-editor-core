@@ -1,8 +1,8 @@
+import Editor from "../editor/editor";
 import ComponentType from "../const/component-type";
 import getSelection from "../selection/get-selection";
 import enter from "../operator/enter";
 import backspace from "../operator/backspace";
-import Editor from "../editor/editor";
 
 // keydown 主要处理一些特殊表现的按键
 // enter backspace

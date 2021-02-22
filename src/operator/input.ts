@@ -1,10 +1,10 @@
+import Editor from "../editor/editor";
 import Inline from "../components/inline";
 import Character from "../components/character";
 import focusAt from "../selection/focus-at";
 import { getCursorPosition, cursorType } from "../selection/util";
 import { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
-import Editor from "../editor/editor";
 
 const input = (
   editor: Editor,
@@ -18,6 +18,7 @@ const input = (
     let startPosition = getCursorPosition(editor.mountedWindow, start);
     if (!startPosition) return;
     let startNode = startPosition.node;
+
     // 样式边缘的空格，逃脱默认样式，优化体验
     if (
       component instanceof ContentCollection &&

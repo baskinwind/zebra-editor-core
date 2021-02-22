@@ -41,7 +41,7 @@ class UserOperator {
     });
   }
 
-  onDbclick(event: MouseEvent) {}
+  onDBClick(event: MouseEvent) {}
 
   onPaste(event: ClipboardEvent) {
     onPaste(this.editor, event);
@@ -119,12 +119,16 @@ class UserOperator {
     if (event.isComposing || event.keyCode === 229) {
       return;
     }
+
+    // tab 特殊处理
     if (key === "tab") {
       event.preventDefault();
       this.onTab(event);
       return;
     }
-    if (event.shiftKey || event.ctrlKey || event.metaKey) {
+
+    // 功能键特殊处理
+    if (event.ctrlKey || event.metaKey) {
       this.handleFunctionKey(
         event.ctrlKey || event.metaKey,
         event.shiftKey,
@@ -133,6 +137,8 @@ class UserOperator {
       );
       return;
     }
+
+    // 方向键特殊处理
     if (/^arrow/i.test(event.key)) {
       let map = {
         ArrowUp: DirectionType.up,
@@ -143,6 +149,7 @@ class UserOperator {
       this.handleArrawKey(map[event.key]);
       return;
     }
+
     onKeyDown(this.editor, event);
   }
 
@@ -160,6 +167,7 @@ class UserOperator {
     event: KeyboardEvent,
   ) {
     let selection = getSelection(this.editor.mountedWindow);
+
     if (ctrl && key === "enter") {
       let component = this.editor.storeManage.getBlockById(
         selection.range[1].id,
@@ -173,17 +181,20 @@ class UserOperator {
       if (key === "z") {
         return;
       }
+
       // 全选、复制、剪切、黏贴无需控制
       if (!shift && ["a", "c", "x", "v"].includes(key)) {
         return;
       }
+
       // 保存
       if (key === "s") {
         this.onSave();
         event.preventDefault();
         return;
       }
-      // 刷新
+
+      // 页面刷新
       if (key === "r") {
         return;
       }

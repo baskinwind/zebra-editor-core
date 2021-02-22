@@ -8,23 +8,6 @@ export interface cursorType {
   offset: number;
 }
 
-let containDocument: Document;
-let containWindow: Window;
-
-export const setContainDocument = (doc: Document | null) => {
-  if (!doc) throw createError("document 设置失败", undefined, "setting");
-  containDocument = doc;
-};
-
-export const setContainWindow = (win: Window | null) => {
-  if (!win) throw createError("window 设置失败", undefined, "setting");
-  containWindow = win;
-};
-
-export const getContainDocument = () => containDocument;
-
-export const getContainWindow = () => containWindow;
-
 // 获取光标所在的组件
 export const getParent = (
   element: HTMLElement | Node | null | undefined,

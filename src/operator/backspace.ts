@@ -1,7 +1,7 @@
+import Editor from "../editor/editor";
 import StructureType from "../const/structure-type";
 import focusAt from "../selection/focus-at";
 import { cursorType, getSelectedIdList } from "../selection/util";
-import Editor from "../editor/editor";
 
 // 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
 const backspace = (
@@ -19,7 +19,7 @@ const backspace = (
         component.structureType === StructureType.plainText)
     ) {
       if (start.offset <= 1 || start.offset >= component.getSize() - 1) {
-        // 当删除发生在首位（或第一位）或最后一位时时，需要强制更新
+        // 当删除发生在首位或第一位或最后一位时，需要强制更新
         event?.preventDefault();
         return focusAt(
           editor.mountedWindow,
@@ -28,6 +28,7 @@ const backspace = (
       }
       return component.remove(start.offset - 1, start.offset, true);
     }
+
     // 非文字组件删除需要强制更新
     event?.preventDefault();
     return focusAt(

@@ -11,6 +11,7 @@ const deleteSelection = (
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     return;
   }
+
   let idList = getSelectedIdList(editor.article, start.id, end.id);
   // 选中多行
   if (idList.length === 0) return;

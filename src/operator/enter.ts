@@ -1,7 +1,6 @@
+import Editor from "../editor/editor";
 import focusAt from "../selection/focus-at";
 import { cursorType, getSelectedIdList } from "../selection/util";
-import { getBlockById } from "../components/util";
-import Editor from "../editor/editor";
 
 // 在 start - end 处换行
 const enter = (

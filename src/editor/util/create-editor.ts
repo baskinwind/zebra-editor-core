@@ -81,7 +81,7 @@ const createEditor = (
 
     editorDom.addEventListener("dblclick", (event) => {
       try {
-        operator.onDbclick(event);
+        operator.onDBClick(event);
       } catch (e) {
         console.warn(e);
       }
