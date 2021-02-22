@@ -1,6 +1,6 @@
 import Editor from "../editor/editor";
-import focusAt from "../operator-selection/focus-at";
-import { cursorType, getSelectedIdList } from "../operator-selection/util";
+import focusAt from "../selection/focus-at";
+import { cursorType, getSelectedIdList } from "../selection/util";
 
 // 删除 start - end 的内容
 const deleteSelection = (

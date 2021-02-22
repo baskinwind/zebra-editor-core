@@ -11,7 +11,6 @@ enum ComponentType {
   tableRow = "TABLEROW",
   tableCell = "TABLECELL",
   tableItem = "TABLECELLITEM",
-  blockWrapper = "BLOCKWRAPPER",
   customerCollection = "CUSTOMERCOLLECTION",
   article = "ARTICLE",
 }

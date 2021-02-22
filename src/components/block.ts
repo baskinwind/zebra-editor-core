@@ -51,7 +51,7 @@ abstract class Block extends Component {
   constructor(style?: storeData, data?: storeData) {
     super(style, data);
     nextTicket(() => {
-      this.$emit("blockCreate", this);
+      this.$emit("blockCreated", this);
       this.init();
     });
   }
@@ -246,6 +246,14 @@ abstract class Block extends Component {
     customerUpdate: boolean = false,
   ): operatorType {
     return;
+  }
+
+  destory() {
+    super.destory();
+    this.active = false;
+    nextTicket(() => {
+      this.$emit("blockDestoryed", this);
+    });
   }
 
   getComponentFactory() {

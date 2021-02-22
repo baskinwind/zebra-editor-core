@@ -125,6 +125,10 @@ abstract class Component extends Event {
     throw createError("请为组件添加 render 函数");
   }
 
+  destory() {
+    this.$off();
+  }
+
   // 将事件进行冒泡
   $emit<T>(eventName: string, event?: T, ...rest: any[]) {
     super.$emit(eventName, event, ...rest);

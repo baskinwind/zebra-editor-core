@@ -12,8 +12,12 @@ class StoreManage {
 
   init() {
     this.blockStore = {};
-    this.editor.article.$on("blockCreate", (block: Block) => {
+    this.editor.article.$on("blockCreated", (block: Block) => {
       this.blockStore[block.id] = block;
+      block.editor = this.editor;
+    });
+    this.editor.article.$on("blockDestoryed", (block: Block) => {
+      block.editor = undefined;
     });
   }
 

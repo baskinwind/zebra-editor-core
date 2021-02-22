@@ -1,5 +1,5 @@
-import focusAt from "../operator-selection/focus-at";
-import { cursorType, getSelectedIdList } from "../operator-selection/util";
+import focusAt from "../selection/focus-at";
+import { cursorType, getSelectedIdList } from "../selection/util";
 import { getBlockById } from "../components/util";
 import Editor from "../editor/editor";
 

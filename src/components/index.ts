@@ -1,3 +1,4 @@
+import Editor from "../editor/editor";
 import { storeData } from "../decorate";
 import Article from "./article";
 import List, { listType } from "./list";
@@ -9,8 +10,6 @@ import Code from "./code";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
 import CustomerCollection from "./customer-collection";
-import Editor from "../editor/editor";
-import Block from "./block";
 
 class ComponentFactory {
   static bulider: ComponentFactory;
@@ -39,14 +38,8 @@ class ComponentFactory {
     };
   }
 
-  addEditor(block: Block) {
-    block.editor = this.editor;
-  }
-
   buildArticle(style: storeData = {}, data: storeData = {}) {
-    const block = new Article(style, data);
-    this.addEditor(block);
-    return block;
+    return new Article(style, data);
   }
 
   buildCustomerCollection(
@@ -55,9 +48,7 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    const block = new CustomerCollection(tag, children, style, data);
-    this.addEditor(block);
-    return block;
+    return new CustomerCollection(tag, children, style, data);
   }
 
   buildList(
@@ -66,9 +57,7 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    const block = new List(type, children, style, data);
-    this.addEditor(block);
-    return block;
+    return new List(type, children, style, data);
   }
 
   buildTable(
@@ -79,9 +68,7 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    const block = new Table(row, col, children, needHead, style, data);
-    this.addEditor(block);
-    return block;
+    return new Table(row, col, children, needHead, style, data);
   }
 
   buildHeader(
@@ -90,15 +77,11 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    const block = new Header(type, text, style, data);
-    this.addEditor(block);
-    return block;
+    return new Header(type, text, style, data);
   }
 
   buildParagraph(text?: string, style: storeData = {}, data: storeData = {}) {
-    const block = new Paragraph(text, style, data);
-    this.addEditor(block);
-    return block;
+    return new Paragraph(text, style, data);
   }
 
   buildMedia(
@@ -107,9 +90,7 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    const block = new Media(mediaType, src, style, data);
-    this.addEditor(block);
-    return block;
+    return new Media(mediaType, src, style, data);
   }
 
   buildCode(
@@ -118,9 +99,7 @@ class ComponentFactory {
     style: storeData = {},
     data: storeData = {},
   ) {
-    const block = new Code(content, language, style, data);
-    this.addEditor(block);
-    return block;
+    return new Code(content, language, style, data);
   }
 
   buildInlineImage(src: string, style: storeData = {}, data: storeData = {}) {

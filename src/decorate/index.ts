@@ -33,13 +33,6 @@ class Decorate {
     if (onlyDecorate) return this.style.toObject();
     return { ...this.component.style, ...this.style.toObject() };
   }
-  getStyleByName(name: string) {
-    let data = this.style.get(name);
-    if (data) {
-      return data;
-    }
-    return this.component.style[name];
-  }
   setStyle(name: string, value: any) {
     if (name === "remove") {
       if (value === "all") {
@@ -51,6 +44,7 @@ class Decorate {
     }
     this.style = this.style.set(name, value);
   }
+
   removeStyle(name: string) {
     let list = name.split(",");
     list.forEach((key) => {
@@ -77,13 +71,6 @@ class Decorate {
     if (onlyDecorate) return this.data.toObject();
     return { ...this.component.data, ...this.data.toObject() };
   }
-  getDataByName(name: string) {
-    let data = this.data.get(name);
-    if (data) {
-      return data;
-    }
-    return this.component.data[name];
-  }
   setData(name: string, value: any) {
     if (name === "remove") {
       if (value === "all") {
@@ -95,6 +82,7 @@ class Decorate {
     }
     this.data = this.data.set(name, value);
   }
+
   removeData(name: string) {
     let list = name.split(",");
     list.forEach((key) => {

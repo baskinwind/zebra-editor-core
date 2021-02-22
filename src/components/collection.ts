@@ -78,6 +78,11 @@ abstract class Collection<T extends Component> extends Block {
     this.children = state.children;
     super.restore(state);
   }
+
+  destory() {
+    super.destory();
+    this.children.forEach((item) => item.destory());
+  }
 }
 
 export default Collection;

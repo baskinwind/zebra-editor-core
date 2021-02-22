@@ -1,7 +1,7 @@
 import BaseBuilder, { mapData } from "./base-builder";
 import Editor from "../editor/editor";
-import Block from "../components/block";
 import ComponentType from "../const/component-type";
+import Block from "../components/block";
 import StructureType from "../const/structure-type";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
@@ -162,14 +162,11 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     parapraph.classList.add(`zebra-editor-${tag}`);
     parapraph.dataset.type = ComponentType.paragraph;
     parapraph.dataset.structure = StructureType.content;
-    let span = containDocument.createElement("span");
-    span.dataset.structure = StructureType.contentWrap;
     let children = getChildren();
     if (children.length) {
       children.forEach((component) => {
-        span?.appendChild(component);
+        parapraph?.appendChild(component);
       });
-      parapraph.appendChild(span);
     } else {
       parapraph.classList.add(`zebra-editor-empty`);
       parapraph.appendChild(containDocument.createElement("br"));

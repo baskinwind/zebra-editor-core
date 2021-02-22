@@ -1,7 +1,7 @@
 import Inline from "../components/inline";
 import Character from "../components/character";
-import focusAt from "../operator-selection/focus-at";
-import { getCursorPosition, cursorType } from "../operator-selection/util";
+import focusAt from "../selection/focus-at";
+import { getCursorPosition, cursorType } from "../selection/util";
 import { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
 import Editor from "../editor/editor";

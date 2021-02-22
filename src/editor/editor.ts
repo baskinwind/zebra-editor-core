@@ -3,7 +3,7 @@ import Article from "../components/article";
 import Block from "../components/block";
 import StructureCollection from "../components/structure-collection";
 import ContentBuilder from "../content/content-builder";
-import UserOperator from "../operator-user";
+import UserOperator from "../operator/user-operator";
 import { createError } from "../util/handle-error";
 import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";

@@ -1,7 +1,7 @@
 import Collection from "../../components/collection";
 import Component from "../../components/component";
-import { cursorType } from "../../operator-selection/util";
-import focusAt from "../../operator-selection/focus-at";
+import { cursorType } from "../../selection/util";
+import focusAt from "../../selection/focus-at";
 import updateComponent from "../../util/update-component";
 import Editor from "../editor";
 

@@ -30,9 +30,8 @@ class ArticleManage {
     );
     if (!editorDom) return;
     editorDom.innerHTML = "";
-    this.editor.article.active = false;
-    this.editor.article.$off();
-    // TODO 卸载组件
+    this.editor.article.destory();
+
     const newArticle = raw ? this.createByRaw(raw) : this.createEmpty();
     this.editor.init(newArticle);
 
