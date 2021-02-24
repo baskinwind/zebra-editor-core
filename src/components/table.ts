@@ -52,7 +52,7 @@ class Table extends StructureCollection<TableRow> {
     let children = raw.children
       ? raw.children.map((item) => TableRow.create(componentFactory, item))
       : [];
-    table.addChildren(children, 0, true);
+    table.addChildren(children, 0);
     table.col = raw.col || 0;
     table.needHead = raw.needHead || false;
     return table;
@@ -77,39 +77,38 @@ class Table extends StructureCollection<TableRow> {
       }
     }
     this.col = col;
-    this.addChildren(list, 0, true);
+    this.addChildren(list, 0);
   }
 
-  addRow(index: number, customerUpdate: boolean = false) {
+  addRow(index: number) {
     let newTableRow = new TableRow(this.col);
-    this.add(newTableRow, index, customerUpdate);
+    this.add(newTableRow, index);
   }
 
-  addCol(index: number, customerUpdate: boolean = false) {
+  addCol(index: number) {
     this.col += 1;
-    this.children.forEach((item) => item.addCol(index, customerUpdate));
+    this.children.forEach((item) => item.addCol(index));
   }
 
   removeChildren(
     indexOrComponent: TableRow | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false,
   ): TableRow[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
       nextTicket(() => {
         if (this.getSize() !== 0) return;
-        this.removeSelf(customerUpdate);
+        this.removeSelf();
       });
     }
-    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+    return super.removeChildren(indexOrComponent, removeNumber);
   }
 
-  removeRow(index: number, customerUpdate: boolean = false) {
-    this.remove(index, index + 1, customerUpdate);
+  removeRow(index: number) {
+    this.remove(index, index + 1);
   }
 
-  removeCol(index: number, customerUpdate: boolean = false) {
+  removeCol(index: number) {
     this.col -= 1;
     this.children.forEach((item) => item.remove(index, index + 1));
   }
@@ -147,10 +146,10 @@ class Table extends StructureCollection<TableRow> {
     this.needHead = needHead;
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
-    if (!block) return;
-    this.removeSelf(customerUpdate);
-    return [block, 0, 0];
+  receive(block?: Block): operatorType {
+    if (!block) return [[this]];
+    this.removeSelf();
+    return [[block]];
   }
 
   snapshoot(): ITableSnapshoot {
@@ -204,7 +203,7 @@ class TableRow extends StructureCollection<TableCell> {
     let children = raw.children
       ? raw.children.map((item) => TableCell.create(componentFactory, item))
       : [];
-    tableRow.addChildren(children, 0, true);
+    tableRow.addChildren(children, 0);
     return tableRow;
   }
 
@@ -222,13 +221,13 @@ class TableRow extends StructureCollection<TableCell> {
       let item = new TableCell(children[i], this.cellType);
       list.push(item);
     }
-    super.addChildren(list, 0, true);
+    super.addChildren(list, 0);
   }
 
-  addCol(index?: number, customerUpdate: boolean = false): operatorType {
+  addCol(index?: number): operatorType {
     let newTableCell = new TableCell("", this.cellType);
-    this.add(newTableCell, index, customerUpdate);
-    return;
+    this.add(newTableCell, index);
+    return [[this]];
   }
 
   setSize(size: number) {
@@ -246,7 +245,7 @@ class TableRow extends StructureCollection<TableCell> {
     }
   }
 
-  countEmptyCell(customerUpdate: boolean = false) {
+  countEmptyCell() {
     if (!this.inCountEmptyCell) {
       Promise.resolve().then(() => {
         this.inCountEmptyCell = false;
@@ -257,7 +256,7 @@ class TableRow extends StructureCollection<TableCell> {
     this.emptyCell += 1;
     if (this.emptyCell === this.getSize()) {
       let parent = this.getParent();
-      this.removeSelf(customerUpdate);
+      this.removeSelf();
       if (this.cellType === "th") {
         // @ts-ignore
         parent.needHead = false;
@@ -299,9 +298,9 @@ class TableCell extends StructureCollection<TableItem> {
     let children = raw.children
       ? raw.children.map((item) => TableItem.create(componentFactory, item))
       : [];
-    tableCell.addChildren(children, 0, true);
+    tableCell.addChildren(children, 0);
     if (children.length) {
-      tableCell.removeChildren(tableCell.getSize() - 1, 1, true);
+      tableCell.removeChildren(tableCell.getSize() - 1, 1);
     }
     return tableCell;
   }
@@ -326,7 +325,6 @@ class TableCell extends StructureCollection<TableItem> {
         return item;
       }),
       0,
-      true,
     );
   }
 
@@ -337,24 +335,19 @@ class TableCell extends StructureCollection<TableItem> {
   removeChildren(
     indexOrTableItem: TableItem | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false,
   ) {
     if (this.getSize() === 1 && removeNumber === 1) {
       let tableItem = this.getChild(0) as TableItem;
-      tableItem?.removeChildren(0, tableItem.getSize(), customerUpdate);
+      tableItem?.removeChildren(0, tableItem.getSize());
       return [tableItem];
     }
-    return super.removeChildren(indexOrTableItem, removeNumber, customerUpdate);
+    return super.removeChildren(indexOrTableItem, removeNumber);
   }
 
-  childHeadDelete(
-    tableItem: TableItem,
-    index: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  childHeadDelete(tableItem: TableItem, index: number): operatorType {
     let prev = this.getPrev(tableItem);
-    if (!prev) return;
-    return tableItem.sendTo(prev, customerUpdate);
+    if (!prev) return [[this]];
+    return tableItem.sendTo(prev);
   }
 
   addEmptyParagraph(bottom: boolean): operatorType {
@@ -392,7 +385,7 @@ class TableItem extends ContentCollection {
   static create(componentFactory: ComponentFactory, raw: IRawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
     let children = super.getChildren(componentFactory, raw);
-    tableItem.addChildren(children, 0, true);
+    tableItem.addChildren(children, 0);
     return tableItem;
   }
 
@@ -412,7 +405,6 @@ class TableItem extends ContentCollection {
     componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
-    customerUpdate: boolean = false,
   ): TableItem[] {
     throw createError("不允许切换表格内段落");
   }
@@ -430,34 +422,26 @@ class TableItem extends ContentCollection {
   }
 
   // 监控：当表格内容一行全被删除时，把一整行移除
-  remove(
-    start: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  remove(start: number, end?: number): operatorType {
     let parent = this.getParent() as TableCell;
-    let focus = super.remove(start, end, customerUpdate);
+    let focus = super.remove(start, end);
     if (parent.isEmpty()) {
-      parent.parent?.countEmptyCell(customerUpdate);
+      parent.parent?.countEmptyCell();
     }
     return focus;
   }
 
   // 监控：当表格内容一行全被删除时，把一整行移除
-  removeSelf(customerUpdate: boolean = false): operatorType {
+  removeSelf(): operatorType {
     let parent = this.getParent() as TableCell;
-    let focus = super.removeSelf(customerUpdate);
+    let focus = super.removeSelf();
     if (parent.isEmpty()) {
-      parent.parent?.countEmptyCell(customerUpdate);
+      parent.parent?.countEmptyCell();
     }
     return focus;
   }
 
-  split(
-    index: number,
-    tableItem?: TableItem | TableItem[],
-    customerUpdate: boolean = false,
-  ): operatorType {
+  split(index: number, tableItem?: TableItem | TableItem[]): operatorType {
     // 不允许非内容组件添加
     let hasComponent: boolean = tableItem !== undefined;
     if (Array.isArray(tableItem)) {
@@ -480,19 +464,15 @@ class TableItem extends ContentCollection {
       tableItem = undefined;
     }
     if (hasComponent && tableItem === undefined) {
-      return;
+      return [[this]];
     }
-    return super.split(index, tableItem, customerUpdate);
+    return super.split(index, tableItem);
   }
 
   // 表格项在删除时，默认不将光标后的内容添加到光标前
-  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
-    try {
-      this.parent?.findChildrenIndex(block);
-      return super.sendTo(block, customerUpdate);
-    } catch (e) {
-      console.warn(e);
-    }
+  sendTo(block: Block): operatorType {
+    this.parent?.findChildrenIndex(block);
+    return super.sendTo(block);
   }
 
   render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {

@@ -11,6 +11,7 @@ import ComponentType from "../const/component-type";
 import nextTicket from "../util/next-ticket";
 import { storeData } from "../decorate/index";
 import { createError } from "../util/handle-error";
+import updateComponent from "../util/update-component";
 
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;
@@ -38,7 +39,6 @@ abstract class Block extends Component {
     componentFactory: ComponentFactory,
     component: Component,
     args?: any[],
-    customerUpdate: boolean = false,
   ): Component[] {
     throw createError("组件未实现 exchange 静态方法", this);
   }
@@ -96,50 +96,37 @@ abstract class Block extends Component {
   }
 
   // 将当前组件转换为 builder 类型的组件
-  exchangeTo(
-    builder: classType,
-    args: any[],
-    customerUpdate: boolean = false,
-  ): Block[] {
+  exchangeTo(builder: classType, args: any[]): Block[] {
     // @ts-ignore
     if (builder === this.constructor) return [this];
-    return builder.exchange(
-      this.getComponentFactory(),
-      this,
-      args,
-      customerUpdate,
-    );
+    return builder.exchange(this.getComponentFactory(), this, args);
   }
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
     collection: StructureCollection<Block>,
     index?: number,
-    customerUpdate: boolean = false,
   ): operatorType {
-    let newBlock = collection.addChildren([this], index, customerUpdate);
-    return [newBlock[0], 0, 0];
+    let newBlock = collection.addChildren([this], index);
+    return [newBlock];
   }
 
   // 从其父组件内移除
-  removeSelf(customerUpdate: boolean = false): operatorType {
-    this.parent?.removeChildren(this, 1, customerUpdate);
-    return;
+  removeSelf(): operatorType {
+    this.parent?.removeChildren(this, 1);
+    return [[this]];
   }
 
   // 替换为另一个组件
-  replaceSelf(
-    block: Block | Block[],
-    customerUpdate: boolean = false,
-  ): operatorType {
+  replaceSelf(block: Block | Block[]): operatorType {
     if (!Array.isArray(block)) block = [block];
     let parent = this.getParent();
-    let replaceBlock = parent.replaceChild(block, this, customerUpdate);
-    return [replaceBlock[0], 0, 0];
+    parent.replaceChild(block, this);
+    return [[...block, this], { id: block[0].id, offset: 0 }];
   }
 
   // 触发缩进
-  indent(customerUpdate: boolean = false): operatorType {
+  indent(): operatorType {
     let block: Block = this;
     while (
       block.parent?.type !== ComponentType.list &&
@@ -152,23 +139,23 @@ abstract class Block extends Component {
     let prev = parent.getPrev(block);
     let next = parent.getNext(block);
     if (prev?.type === ComponentType.list) {
-      block.sendTo(prev, customerUpdate);
+      block.sendTo(prev);
       if (next?.type === ComponentType.list) {
-        next.sendTo(prev, customerUpdate);
+        next.sendTo(prev);
       }
     } else if (next?.type === ComponentType.list) {
-      block.removeSelf(customerUpdate);
-      next.add(block, 0, customerUpdate);
+      block.removeSelf();
+      next.add(block, 0);
     } else {
       let newList = this.getComponentFactory().buildList("ol");
-      block.replaceSelf(newList, customerUpdate);
-      newList.add(block, undefined, customerUpdate);
+      block.replaceSelf(newList);
+      newList.add(block, undefined);
     }
-    return;
+    return [[this]];
   }
 
   // 取消缩进
-  outdent(customerUpdate: boolean = false): operatorType {
+  outdent(): operatorType {
     let block: Block = this;
     while (
       block.parent?.type !== ComponentType.list &&
@@ -179,12 +166,19 @@ abstract class Block extends Component {
 
     let parent = block.getParent();
     if (parent.type === ComponentType.article) {
-      return;
+      return [[this]];
     }
     let index = parent.findChildrenIndex(block);
-    block.removeSelf(customerUpdate);
-    parent.split(index, block, customerUpdate);
-    return;
+    block.removeSelf();
+    parent.split(index, block);
+    return [[this]];
+  }
+
+  // 修改组件的表现形式
+  modifyDecorate(style?: storeData, data?: storeData) {
+    super.modifyDecorate(style, data);
+    updateComponent(this.editor, this);
+    return [[this]];
   }
 
   // 修改子组件的表现形式，仅在 ContentCollection 组件内有效
@@ -193,7 +187,6 @@ abstract class Block extends Component {
     end: number,
     style?: storeData,
     data?: storeData,
-    customerUpdate: boolean = false,
   ) {
     return;
   }
@@ -202,9 +195,8 @@ abstract class Block extends Component {
   add(
     component: string | Component | Component[],
     index?: number,
-    customerUpdate: boolean = false,
   ): operatorType {
-    return;
+    return [[this]];
   }
 
   // 在一些组件中 Enter 被使用，导致不能在组件下方或上方创建新行
@@ -214,43 +206,33 @@ abstract class Block extends Component {
     let index = parent.findChildrenIndex(this);
     let paragraph = this.getComponentFactory().buildParagraph();
     parent.add(paragraph, index + (bottom ? 1 : 0));
-    return [paragraph, 0, 0];
+    return [[paragraph], { id: paragraph.id, offset: 0 }];
   }
 
   // 移除子组件
-  remove(
-    start?: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    return;
+  remove(start: number, end?: number): operatorType {
+    return [[this]];
   }
 
   // 在 index 处切分组件
-  split(
-    index: number,
-    component?: Component | Component[],
-    customerUpdate: boolean = false,
-  ): operatorType {
-    return;
+  split(index: number, component?: Component | Component[]): operatorType {
+    return [[this]];
   }
 
   // 将自己发送到另一组件
-  sendTo(component: Component, customerUpdate: boolean = false): operatorType {
-    return;
+  sendTo(component: Component): operatorType {
+    return [[this]];
   }
 
   // 接收另一组件
-  receive(
-    component?: Component,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    return;
+  receive(component?: Component): operatorType {
+    return [[this]];
   }
 
   destory() {
     super.destory();
     this.active = false;
+    this.parent = undefined;
     nextTicket(() => {
       this.$emit("blockDestoryed", this);
     });

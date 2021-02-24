@@ -33,7 +33,6 @@ class List extends StructureCollection<Block> {
     componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
-    customerUpdate: boolean = false,
   ): Block[] {
     let parent = block.getParent();
     // 属于列表的子元素
@@ -47,12 +46,12 @@ class List extends StructureCollection<Block> {
 
     // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
     if (prev instanceof List && prev.listType === args[0]) {
-      prev.add(block, undefined, customerUpdate);
+      prev.add(block);
     } else {
       // 否则新生成一个 List
       let newList = componentFactory.buildList(args[0]);
-      newList.add(block, 0, true);
-      parent.add(newList, index, customerUpdate);
+      newList.add(block, 0);
+      parent.add(newList);
     }
     return [block];
   }
@@ -71,7 +70,7 @@ class List extends StructureCollection<Block> {
       }
       return item;
     });
-    this.addChildren(list, 0, true);
+    this.addChildren(list, 0);
     if (this.listType === "nl") {
       this.decorate.mergeStyle({
         paddingLeft: "0px",
@@ -117,7 +116,7 @@ class List extends StructureCollection<Block> {
     );
   }
 
-  addChildren(block: Block[], index?: number, customerUpdate: boolean = false) {
+  addChildren(block: Block[], index?: number) {
     // 列表仅能添加 wrapper 包裹的组件
     let list: Block[] = block.map((item) => {
       if (this.listType === "nl") {
@@ -127,88 +126,71 @@ class List extends StructureCollection<Block> {
       }
       return item;
     });
-    return super.addChildren(list, index, customerUpdate);
+    return super.addChildren(list, index);
   }
 
-  add(
-    block: Block | Block[],
-    index?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  add(block: Block | Block[], index?: number): operatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
       if (now?.isEmpty() && !Array.isArray(block) && block.isEmpty()) {
-        let focus = this.split(index, block, customerUpdate);
+        let focus = this.split(index, block);
         now.removeSelf();
         return focus;
       }
     }
     if (!Array.isArray(block)) block = [block];
-    let newEmpty = this.addChildren(block, index, customerUpdate);
-    return newEmpty.length ? [newEmpty[0], 0, 0] : undefined;
+    let newList = this.addChildren(block, index);
+    return [[this, ...newList]];
   }
 
   removeChildren(
     indexOrComponent: Block | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false,
   ): Block[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
       nextTicket(() => {
         if (this.getSize() !== 0) return;
-        this.removeSelf(customerUpdate);
+        this.removeSelf();
       });
     }
-    let removed = super.removeChildren(
-      indexOrComponent,
-      removeNumber,
-      customerUpdate,
-    );
+    let removed = super.removeChildren(indexOrComponent, removeNumber);
     return removed;
   }
 
-  childHeadDelete(
-    block: Block,
-    index: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  childHeadDelete(block: Block, index: number): operatorType {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.getPrev(block);
-      if (!prev) return;
-      return block.sendTo(prev, customerUpdate);
+      if (!prev) return [[this]];
+      return block.sendTo(prev);
     }
 
     // 第一项时，直接将该列表项添加到父元素上
     let parent = this.getParent();
     index = parent.findChildrenIndex(this);
-    block.removeSelf(customerUpdate);
+    block.removeSelf();
     return parent.add(block, index);
   }
 
-  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
-    return block.receive(this, customerUpdate);
+  sendTo(block: Block): operatorType {
+    return block.receive(this);
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
-    if (!block) return;
+  receive(block?: Block): operatorType {
+    if (!block) return [[this]];
     block.removeSelf();
     if (block instanceof List) {
-      return this.add(
-        block.removeChildren(0, block.getSize()),
-        undefined,
-        customerUpdate,
-      );
+      return this.add(block.removeChildren(0, block.getSize()));
     } else {
       if (block.isEmpty()) {
         block.removeSelf();
         let last = this.getChild(this.getSize() - 1);
         let lastSize = last.getSize();
-        return [last, lastSize, lastSize];
+        return [[last], { id: last.id, offset: lastSize }];
       }
-      return this.add(block, undefined, customerUpdate);
+      return this.add(block);
     }
   }
 

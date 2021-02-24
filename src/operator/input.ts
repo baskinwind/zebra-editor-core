@@ -42,7 +42,8 @@ const input = (
       event?.defaultPrevented
     ) {
       event?.preventDefault();
-      focusAt(editor.mountedWindow, component.add(charOrInline, offset));
+      let operator = component.add(charOrInline, offset);
+      focusAt(editor.mountedWindow, operator[1], operator[2]);
       return;
     }
 
@@ -51,7 +52,9 @@ const input = (
       typeof charOrInline === "string"
         ? charOrInline.replace(/\n/g, "")
         : charOrInline;
-    component.add(charOrInline, offset, true);
+
+    // TODO: UPDATE TRUE
+    component.add(charOrInline, offset);
   } catch (e) {
     console.warn(e);
   }

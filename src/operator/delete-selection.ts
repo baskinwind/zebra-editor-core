@@ -17,8 +17,8 @@ const deleteSelection = (
   if (idList.length === 0) return;
   if (idList.length === 1) {
     let block = editor.storeManage.getBlockById(idList[0]);
-    let focus = block.remove(start.offset, end.offset);
-    return focusAt(editor.mountedWindow, focus);
+    let operator = block.remove(start.offset, end.offset);
+    return focusAt(editor.mountedWindow, operator[1], operator[2]);
   }
 
   let headBlock = editor.storeManage.getBlockById(idList[0]);

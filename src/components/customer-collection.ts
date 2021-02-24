@@ -34,7 +34,6 @@ class CustomerCollection extends StructureCollection<Block> {
     componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
-    customerUpdate: boolean = false,
   ): Block[] {
     let parent = block.getParent();
 
@@ -44,12 +43,12 @@ class CustomerCollection extends StructureCollection<Block> {
 
     // 当前一块内容为 CustomerCollection，并且 tag 一致，直接添加
     if (prev instanceof CustomerCollection && prev.tag === args[0]) {
-      prev.add(block, undefined, customerUpdate);
+      prev.add(block);
     } else {
       // 否则新生成一个 CustomerCollection
       let newList = componentFactory.buildCustomerCollection(args[0]);
-      newList.add(block, 0, true);
-      parent.add(newList, index, customerUpdate);
+      newList.add(block, 0);
+      parent.add(newList, index);
     }
     return [block];
   }
@@ -68,7 +67,7 @@ class CustomerCollection extends StructureCollection<Block> {
       }
       return item;
     });
-    this.add(block, 0, true);
+    this.add(block, 0);
   }
 
   getType(): string {
@@ -90,73 +89,65 @@ class CustomerCollection extends StructureCollection<Block> {
     );
   }
 
-  add(
-    block: Block | Block[],
-    index?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  add(block: Block | Block[], index?: number): operatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
       if (now?.isEmpty() && !Array.isArray(block) && block.isEmpty()) {
-        let focus = this.split(index, block, customerUpdate);
+        let focus = this.split(index, block);
         now.removeSelf();
         return focus;
       }
     }
     if (!Array.isArray(block)) block = [block];
-    let newBlock = this.addChildren(block, index, customerUpdate);
-    return newBlock.length ? [newBlock[0], 0, 0] : undefined;
+    let newBlock = this.addChildren(block, index);
+    return [[this, ...newBlock]];
   }
 
   removeChildren(
     indexOrComponent: Block | number,
     removeNumber: number = 1,
-    customerUpdate: boolean = false,
   ): Block[] {
     // 若子元素全部删除，将自己也删除
     if (removeNumber === this.getSize()) {
       nextTicket(() => {
         if (this.getSize() !== 0) return;
-        this.removeSelf(customerUpdate);
+        this.removeSelf();
       });
     }
-    return super.removeChildren(indexOrComponent, removeNumber, customerUpdate);
+    return super.removeChildren(indexOrComponent, removeNumber);
   }
 
-  childHeadDelete(
-    block: Block,
-    index: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  childHeadDelete(block: Block, index: number): operatorType {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.getPrev(block);
-      if (!prev) return;
-      return block.sendTo(prev, customerUpdate);
+      if (!prev) return [[this]];
+      return block.sendTo(prev);
     }
 
     // 第一项时，直接将该列表项添加到父元素上
     let parent = this.getParent();
     index = parent.findChildrenIndex(this);
-    block.removeSelf(customerUpdate);
+    block.removeSelf();
     return parent.add(block, index);
   }
 
-  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
-    return block.receive(this, customerUpdate);
+  sendTo(block: Block): operatorType {
+    return block.receive(this);
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
-    if (!block) return;
-    block.removeSelf();
+  receive(block?: Block): operatorType {
+    if (!block) return [[this]];
+
     if (block.isEmpty()) {
       block.removeSelf();
       let last = this.getChild(this.getSize() - 1);
       let lastSize = last.getSize();
-      return [last, lastSize, lastSize];
+      return [[last], { id: last.id, offset: lastSize }];
     }
-    return this.add(block, undefined, customerUpdate);
+
+    return this.add(block);
   }
 
   snapshoot(): IListSnapshoot {

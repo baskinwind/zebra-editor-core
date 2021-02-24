@@ -3,12 +3,10 @@ import { cursorType, getCursorPosition } from "./util";
 import { getBeforeSelection } from "./get-selection";
 import nextTicket from "../util/next-ticket";
 
-type focusAtType = cursorType | [Component, number, number];
-
 // 选中 start 到 end 的内容
 const focusAt = (
   contentWindow: Window,
-  start?: focusAtType,
+  start?: cursorType,
   end?: cursorType,
 ) => {
   try {

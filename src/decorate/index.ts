@@ -42,6 +42,7 @@ class Decorate {
       this.removeStyle(value as string);
       return;
     }
+
     this.style = this.style.set(name, value);
   }
 
@@ -80,9 +81,19 @@ class Decorate {
       this.removeData(value as string);
       return;
     }
+    if (name === "toggle") {
+      this.removeStyle(value as string);
+    }
     this.data = this.data.set(name, value);
   }
 
+  toggleData(name: string) {
+    let list = name.split(",");
+    list.forEach((key) => {
+      const prev = this.data.get(key);
+      this.setData(key, !prev);
+    });
+  }
   removeData(name: string) {
     let list = name.split(",");
     list.forEach((key) => {

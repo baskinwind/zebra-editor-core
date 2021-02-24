@@ -72,9 +72,9 @@ class Media extends Block {
     return [this];
   }
 
-  // removeSelf(customerUpdate: boolean = false): operatorType {
+  // removeSelf(): operatorType {
   //   let paragraph = getComponentFactory().buildParagraph();
-  //   this.replaceSelf(paragraph, customerUpdate);
+  //   this.replaceSelf(paragraph);
   //   return [paragraph, 0, 0];
   // }
 
@@ -83,50 +83,48 @@ class Media extends Block {
     end: number,
     style?: storeData,
     data?: storeData,
-    customerUpdate: boolean = false,
-  ) {
-    this.modifyDecorate(style, data, customerUpdate);
-    return [this, 0, 1];
+  ): operatorType {
+    this.modifyDecorate(style, data);
+    return [
+      [this],
+      { id: this.id, offset: start },
+      { id: this.id, offset: end },
+    ];
   }
 
-  remove(
-    start?: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    return this.replaceSelf(
-      this.getComponentFactory().buildParagraph(),
-      customerUpdate,
-    );
+  remove(start: number, end?: number): operatorType {
+    const info = this.replaceSelf(this.getComponentFactory().buildParagraph());
+
+    return [
+      info[0],
+      { id: this.id, offset: start },
+      { id: this.id, offset: end ? end : start },
+    ];
   }
 
-  split(
-    index: number,
-    block?: Block,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  split(index: number, block?: Block): operatorType {
     let parent = this.getParent();
     if (!block) {
       block = this.getComponentFactory().buildParagraph();
     }
     let componentIndex = parent.findChildrenIndex(this);
     if (index === 0) {
-      parent.addChildren([block], componentIndex, customerUpdate);
+      parent.addChildren([block], componentIndex);
     }
     if (index === 1) {
-      parent.addChildren([block], componentIndex + 1, customerUpdate);
+      parent.addChildren([block], componentIndex + 1);
     }
-    return [block, index, index];
+    return [[block], { id: block.id, offset: index }];
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
-    if (!block) return;
+  receive(block?: Block): operatorType {
+    if (!block) return [[this]];
     if (block.isEmpty()) {
-      block.removeSelf(customerUpdate);
-      return [this, 1, 1];
+      block.removeSelf();
+      return [[this, block], { id: this.id, offset: 1 }];
     }
-    super.removeSelf(customerUpdate);
-    return [block, 0, 0];
+    super.removeSelf();
+    return [[block], { id: block.id, offset: 0 }];
   }
 
   snapshoot(): IMediaSnapshoot {

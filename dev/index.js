@@ -87,19 +87,19 @@ new Vue({
     },
 
     bold() {
-      modifySelectionDecorate(editor, {}, { bold: true });
+      modifySelectionDecorate(editor, {}, { toggle: "bold" });
     },
     deleteText() {
-      modifySelectionDecorate(editor, {}, { deleteText: true });
+      modifySelectionDecorate(editor, {}, { toggle: "deleteText" });
     },
     italic() {
-      modifySelectionDecorate(editor, {}, { italic: true });
+      modifySelectionDecorate(editor, {}, { toggle: "italic" });
     },
     underline() {
-      modifySelectionDecorate(editor, {}, { underline: true });
+      modifySelectionDecorate(editor, {}, { toggle: "underline" });
     },
     code() {
-      modifySelectionDecorate(editor, {}, { code: true });
+      modifySelectionDecorate(editor, {}, { toggle: "code" });
     },
     clearStyle() {
       modifySelectionDecorate(editor, { remove: "all" }, { remove: "all" });

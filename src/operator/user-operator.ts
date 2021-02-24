@@ -172,7 +172,8 @@ class UserOperator {
       let component = this.editor.storeManage.getBlockById(
         selection.range[1].id,
       );
-      focusAt(this.editor.mountedWindow, component.addEmptyParagraph(!shift));
+      let operator = component.addEmptyParagraph(!shift);
+      focusAt(this.editor.mountedWindow, operator[1], operator[2]);
       return;
     }
 

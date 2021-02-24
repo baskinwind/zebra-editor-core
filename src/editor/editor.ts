@@ -63,8 +63,6 @@ class Editor {
     this.historyManage = new HistoryManage(this);
     this.storeManage = new StoreManage(this);
 
-    this.addEditorToBlock(article);
-
     createEditor(
       this.mountedElement,
       this.article,
@@ -82,13 +80,6 @@ class Editor {
     this.article = article;
     this.historyManage.init();
     this.storeManage.init();
-  }
-
-  addEditorToBlock(block: Block) {
-    block.editor = this;
-    if (block instanceof StructureCollection) {
-      block.children.forEach((item) => this.addEditorToBlock(item));
-    }
   }
 }
 

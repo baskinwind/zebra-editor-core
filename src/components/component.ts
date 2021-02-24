@@ -7,12 +7,16 @@ import Collection from "./collection";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import updateComponent from "../util/update-component";
 import { getId } from "./util";
 import { storeData } from "../decorate/index";
 import { createError } from "../util/handle-error";
+import { cursorType } from "../selection/util";
 
-export type operatorType = [Block, number, number] | undefined;
+export type operatorType =
+  | [Block[], cursorType, cursorType]
+  | [Block[], cursorType]
+  | [Block[]];
+
 export type classType = { exchangeOnly: Function; exchange: Function };
 export interface IRawType {
   id?: string;
@@ -68,6 +72,10 @@ abstract class Component extends Event {
     this.record = new Record(this);
   }
 
+  destory() {
+    this.$off();
+  }
+
   // 获取类型
   getType(): string {
     return this.type;
@@ -88,17 +96,9 @@ abstract class Component extends Event {
   }
 
   // 修改组件的表现形式
-  modifyDecorate(
-    style?: storeData,
-    data?: storeData,
-    customerUpdate: boolean = false,
-  ) {
+  modifyDecorate(style?: storeData, data?: storeData) {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
-    if (this instanceof Block) {
-      updateComponent(this.editor, this, customerUpdate);
-    }
-    return;
   }
 
   // 记录当前状态
@@ -123,10 +123,6 @@ abstract class Component extends Event {
   // 渲染该组件
   render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false): any {
     throw createError("请为组件添加 render 函数");
-  }
-
-  destory() {
-    this.$off();
   }
 
   // 将事件进行冒泡

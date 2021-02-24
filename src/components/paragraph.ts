@@ -13,7 +13,7 @@ class Paragraph extends ContentCollection {
   static create(componentFactory: ComponentFactory, raw: IRawType): Paragraph {
     let paragraph = componentFactory.buildParagraph("", raw.style, raw.data);
     let children = super.getChildren(componentFactory, raw);
-    paragraph.addChildren(children, 0, true);
+    paragraph.addChildren(children, 0);
     return paragraph;
   }
 

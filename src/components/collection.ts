@@ -10,6 +10,11 @@ export interface ICollectionSnapshoot<T> extends IBlockSnapshoot {
 abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
 
+  destory() {
+    this.children.forEach((item) => item.destory());
+    super.destory();
+  }
+
   isEmpty(): boolean {
     return this.children.size === 0;
   }
@@ -25,22 +30,14 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   // 内部使用，添加子元素
-  addChildren(
-    components: T[],
-    index?: number,
-    customerUpdate: boolean = false,
-  ): T[] {
+  addChildren(components: T[], index?: number): T[] {
     let addIndex = typeof index === "number" ? index : this.getSize();
     this.children = this.children.splice(addIndex, 0, ...components);
     return components;
   }
 
   // 内部使用，移除子元素
-  removeChildren(
-    indexOrComponent: T | number,
-    removeNumber: number = 1,
-    customerUpdate: boolean = false,
-  ): T[] {
+  removeChildren(indexOrComponent: T | number, removeNumber: number = 1): T[] {
     let removeIndex: number;
     if (removeNumber < 0) {
       throw createError(`移除数量不能小于 0：${removeNumber}`, this);
@@ -77,11 +74,6 @@ abstract class Collection<T extends Component> extends Block {
   restore(state: ICollectionSnapshoot<T>) {
     this.children = state.children;
     super.restore(state);
-  }
-
-  destory() {
-    super.destory();
-    this.children.forEach((item) => item.destory());
   }
 }
 

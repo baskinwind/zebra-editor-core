@@ -87,66 +87,46 @@ abstract class StructureCollection<
     return raw;
   }
 
-  addChildren(
-    component: T[],
-    index?: number,
-    customerUpdate: boolean = false,
-  ): T[] {
+  addChildren(component: T[], index?: number): T[] {
     component.forEach((item) => {
       item.parent = this;
       item.active = true;
       item.recordSnapshoot();
     });
     let newBlock = super.addChildren(component, index);
-    updateComponent(this.editor, [...component].reverse(), customerUpdate);
+    updateComponent(this.editor, [...component].reverse());
     return newBlock;
   }
 
-  add(
-    block: T | T[],
-    index?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  add(block: T | T[], index?: number): operatorType {
     if (!Array.isArray(block)) {
       block = [block];
     }
-    this.addChildren(block, index, customerUpdate);
-    return [block[0], 0, 0];
+    this.addChildren(block, index);
+    return [block, { id: this.id, offset: 0 }];
   }
 
-  removeChildren(
-    indexOrBlock: T | number,
-    removeNumber: number = 1,
-    customerUpdate: boolean = false,
-  ) {
+  removeChildren(indexOrBlock: T | number, removeNumber: number = 1) {
     let removed = super.removeChildren(indexOrBlock, removeNumber);
     removed.forEach((item) => {
       item.active = false;
       item.parent = undefined;
       item.recordSnapshoot();
     });
-    updateComponent(this.editor, removed, customerUpdate);
+    updateComponent(this.editor, removed);
     return removed;
   }
 
-  remove(
-    start: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    if (end === undefined) end = this.getSize();
+  remove(start: number, end: number = -1): operatorType {
+    if (end < 0) end = this.getSize() + end;
     if (start < 0 || start > end) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
-    this.removeChildren(start, end - start, customerUpdate);
-    return [this, start, start];
+    this.removeChildren(start, end - start);
+    return [[this], { id: this.id, offset: start }];
   }
 
-  replaceChild(
-    block: T[],
-    oldComponent: T,
-    customerUpdate: boolean = false,
-  ): Block[] {
+  replaceChild(block: T[], oldComponent: T): Block[] {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
       throw createError("替换组件不在子组件列表内", block);
@@ -160,60 +140,44 @@ abstract class StructureCollection<
       item.recordSnapshoot();
     });
     this.children = this.children.splice(index, 1, ...block);
-    updateComponent(
-      this.editor,
-      [oldComponent, ...[...block].reverse()],
-      customerUpdate,
-    );
+    updateComponent(this.editor, [oldComponent, ...[...block].reverse()]);
     return block;
   }
 
-  splitChild(
-    index: number,
-    customerUpdate: boolean = false,
-  ): StructureCollection<T> {
+  splitChild(index: number): StructureCollection<T> {
     if (index > this.getSize()) throw createError("分割点不在列表内", this);
 
-    let tail = this.removeChildren(
-      index,
-      this.getSize() - index,
-      customerUpdate,
-    );
+    let tail = this.removeChildren(index, this.getSize() - index);
     let newCollection = this.createEmpty();
-    newCollection.add(tail, 0, true);
+    newCollection.add(tail, 0);
     return newCollection;
   }
 
-  split(
-    index: number,
-    block?: Block | Block[],
-    customerUpdate: boolean = false,
-  ): operatorType {
+  split(index: number, block?: Block | Block[]): operatorType {
     let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
+    let changedBlock = [];
     if (index !== 0) {
-      let newCollection = this.splitChild(index, customerUpdate);
+      let newCollection = this.splitChild(index);
       if (newCollection.getSize() !== 0) {
-        parent.add(newCollection, componentIndex + 1, customerUpdate);
+        changedBlock.push(newCollection);
+        parent.add(newCollection, componentIndex + 1);
       }
     } else {
       componentIndex -= 1;
     }
     if (block) {
       if (!Array.isArray(block)) block = [block];
-      return parent.add(block, componentIndex + 1, customerUpdate);
+      changedBlock.push(...block);
+      return parent.add(block, componentIndex + 1);
     }
-    return;
+    return [changedBlock];
   }
 
   // 定义当组件的子组件的首位发生删除时的行为
   // 默认不处理，而不是报错
-  childHeadDelete(
-    component: T,
-    index: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    return;
+  childHeadDelete(component: T, index: number): operatorType {
+    return [[this]];
   }
 
   restore(state: ICollectionSnapshoot<T>) {

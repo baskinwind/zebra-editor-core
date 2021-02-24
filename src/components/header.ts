@@ -51,7 +51,7 @@ class Header extends ContentCollection {
       raw.data,
     );
     let children = super.getChildren(componentFactory, raw);
-    header.addChildren(children, 0, true);
+    header.addChildren(children, 0);
     return header;
   }
 

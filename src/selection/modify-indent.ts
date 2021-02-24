@@ -13,17 +13,17 @@ const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
   let newEndId: string = "";
   idList.forEach((item, index) => {
     let block = editor.storeManage.getBlockById(item);
-    let focus;
+    let operator;
     if (isOutdent) {
-      focus = block.outdent();
+      operator = block.outdent();
     } else {
-      focus = block.indent();
+      operator = block.indent();
     }
     if (index === 0) {
-      newStartId = focus ? focus[0].id : block.id;
+      newStartId = operator[0][0].id || block.id;
     }
     if (index === idList.length - 1) {
-      newEndId = focus ? focus[0].id : block.id;
+      newEndId = operator[0][0].id || block.id;
     }
   });
   focusAt(

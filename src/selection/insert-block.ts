@@ -16,11 +16,11 @@ const insertBlock = (editor: Editor, block: Block | Block[]) => {
   try {
     let nowComponent = editor.storeManage.getBlockById(selection.range[0].id);
     let start = selection.range[0].offset;
-    let focus = nowComponent.split(start, block);
-    if (focus && focus[0].structureType === StructureType.structure) {
+    let operator = nowComponent.split(start, block);
+    if (focus[0][0].structureType === StructureType.structure) {
       return;
     }
-    focusAt(editor.mountedWindow, focus);
+    focusAt(editor.mountedWindow, operator[1], operator[2]);
   } catch (e) {
     console.warn(e);
   }

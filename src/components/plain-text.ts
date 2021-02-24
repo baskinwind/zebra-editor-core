@@ -30,16 +30,15 @@ abstract class PlainText extends Block {
     componentFactory: ComponentFactory,
     block: Block,
     args: any[],
-    customerUpdate: boolean = false,
   ): PlainText[] {
     let parent = block.getParent();
     let prev = parent.getPrev(block);
     if (prev instanceof PlainText) {
-      prev.receive(block, customerUpdate);
+      prev.receive(block);
       return [prev];
     } else {
       let newItem = this.exchangeOnly(componentFactory, block, args);
-      block.replaceSelf(newItem, customerUpdate);
+      block.replaceSelf(newItem);
       return newItem;
     }
   }
@@ -73,50 +72,34 @@ abstract class PlainText extends Block {
     return raw;
   }
 
-  add(
-    string: string,
-    index?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  add(string: string, index?: number): operatorType {
     if (typeof string !== "string") {
       throw createError("纯文本组件仅能输入文字", this);
     }
     index = index === undefined ? this.content.length : index;
     let saveString = [...string];
     this.content.splice(index, 0, ...saveString);
-    updateComponent(this.editor, this, customerUpdate);
-    return [this, index + saveString.length, index + saveString.length];
+    updateComponent(this.editor, this);
+    return [[this], { id: this.id, offset: index + saveString.length }];
   }
 
-  remove(
-    start: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    if (end === undefined) end = this.content.length;
-    if (start < 0 && end === 0) {
-      if (this.content.length <= 1) {
-        return this.replaceSelf(this.getComponentFactory().buildParagraph());
-      }
-      return;
+  remove(start: number, end: number = start): operatorType {
+    if (start < 0 && end < 0) {
+      return this.replaceSelf(this.getComponentFactory().buildParagraph());
     }
     this.content.splice(start, end - start);
-    updateComponent(this.editor, this, customerUpdate);
-    return [this, start, start];
+    updateComponent(this.editor, this);
+    return [[this], { id: this.id, offset: start }];
   }
 
-  split(
-    index: number,
-    block?: Block | Block[],
-    customerUpdate: boolean = false,
-  ): operatorType {
+  split(index: number, block?: Block | Block[]): operatorType {
     if (block) {
       throw createError("纯文本组件仅能输入文字", this);
     }
-    return this.add("\n", index, customerUpdate);
+    return this.add("\n", index);
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
+  receive(block?: Block): operatorType {
     block?.removeSelf();
     let size = this.content.length;
     if (block instanceof ContentCollection) {
@@ -124,7 +107,7 @@ abstract class PlainText extends Block {
     } else if (block instanceof PlainText) {
       this.content.push(...block.content);
     }
-    return [this, size, size];
+    return [[this], { id: this.id, offset: size }];
   }
 
   snapshoot(): IPlainTextSnapshoot {

@@ -12,8 +12,8 @@ const enter = (
   event?.preventDefault();
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     let component = editor.storeManage.getBlockById(start.id);
-    focusAt(editor.mountedWindow, component.split(start.offset));
-    return;
+    let operator = component.split(start.offset);
+    return focusAt(editor.mountedWindow, operator[1], operator[2]);
   }
 
   let idList = getSelectedIdList(editor.article, start.id, end.id);
@@ -21,8 +21,8 @@ const enter = (
   if (idList.length === 1) {
     let component = editor.storeManage.getBlockById(idList[0]);
     component.remove(start.offset, end.offset);
-    focusAt(editor.mountedWindow, component.split(start.offset));
-    return;
+    let operator = component.split(start.offset);
+    return focusAt(editor.mountedWindow, operator[1], operator[2]);
   }
 
   // 选中多行

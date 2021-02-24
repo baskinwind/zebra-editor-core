@@ -46,17 +46,16 @@ abstract class ContentCollection extends Collection<Inline> {
     componentFactory: ComponentFactory,
     block: Block,
     args: any[],
-    customerUpdate: boolean = false,
   ): ContentCollection[] {
     let newContent = this.exchangeOnly(componentFactory, block, args);
-    block.replaceSelf(newContent, customerUpdate);
+    block.replaceSelf(newContent);
     return newContent;
   }
 
   constructor(text: string = "", style?: storeData, data?: storeData) {
     super(style, data);
     if (text) {
-      this.addText(text, 0, true);
+      this.addText(text, 0);
     }
   }
 
@@ -82,39 +81,39 @@ abstract class ContentCollection extends Collection<Inline> {
     end: number = -1,
     style?: storeData,
     data?: storeData,
-    customerUpdate: boolean = false,
-  ) {
+  ): operatorType {
     end = end < 0 ? this.getSize() + end : end;
-    if (start > end) return;
-    if (!style && !data) return;
+    if (start > end || (!style && !data)) {
+      return [[this], { id: this.id, offset: start }];
+    }
+
     for (let i = start; i <= end; i++) {
       this.getChild(i)?.modifyDecorate(style, data);
     }
-    updateComponent(this.editor, this, customerUpdate);
-    return [this, start, end];
+
+    updateComponent(this.editor, this);
+    return [
+      [this],
+      { id: this.id, offset: start },
+      { id: this.id, offset: end },
+    ];
   }
 
-  addChildren(
-    inline: Inline[],
-    index?: number,
-    customerUpdate: boolean = false,
-  ) {
+  addChildren(inline: Inline[], index?: number) {
     inline
       .filter((item) => item instanceof Inline)
       .forEach((item) => {
         item.parent = this;
       });
-    let res = super.addChildren(inline, index);
-    updateComponent(this.editor, this, customerUpdate);
-    return res;
+
+    let added = super.addChildren(inline, index);
+    updateComponent(this.editor, this);
+    return added;
   }
 
-  add(
-    inline: Inline[] | Inline | string,
-    index?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  add(inline: Inline[] | Inline | string, index?: number): operatorType {
     index = index !== undefined ? index : this.getSize();
+
     if (typeof inline === "string") {
       let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
       let list = [];
@@ -125,53 +124,43 @@ abstract class ContentCollection extends Collection<Inline> {
       }
       inline = list;
     }
+
     if (!Array.isArray(inline)) {
       inline = [inline];
     }
-    this.addChildren(inline, index, customerUpdate);
-    return [this, index + inline.length, index + inline.length];
+    this.addChildren(inline, index);
+    return [[this], { id: this.id, offset: index + inline.length }];
   }
 
-  removeChildren(
-    inline: Inline | number,
-    index?: number,
-    customerUpdate: boolean = false,
-  ) {
+  removeChildren(inline: Inline | number, index?: number) {
     let removed = super.removeChildren(inline, index);
-    updateComponent(this.editor, this, customerUpdate);
+    updateComponent(this.editor, this);
     return removed;
   }
 
-  remove(
-    start: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  remove(start: number, end?: number): operatorType {
     let parent = this.getParent();
     if (end === undefined) end = this.getSize();
     if (start < 0 && end === 0) {
       let index = parent.findChildrenIndex(this);
-      return parent.childHeadDelete(this, index, customerUpdate);
+      return parent.childHeadDelete(this, index);
     }
     end = end < 0 ? this.getSize() + end : end;
     if (start > end) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
-    this.removeChildren(start, end - start, customerUpdate);
-    return [this, start, start];
+    this.removeChildren(start, end - start);
+    return [[this], { id: this.id, offset: start }];
   }
 
-  splitChild(
-    index: number,
-    customerUpdate: boolean = false,
-  ): ContentCollection {
+  splitChild(index: number): ContentCollection {
     let isTail = index === this.getSize();
     // 如果是从中间分段，则保持段落类型
     if (!isTail) {
       let tail = this.children.slice(index).toArray();
-      this.removeChildren(index, this.getSize() - index, customerUpdate);
+      this.removeChildren(index, this.getSize() - index);
       let newCollection = this.createEmpty();
-      newCollection.add(tail, 0, true);
+      newCollection.add(tail, 0);
       return newCollection;
     }
     // 如果是从尾部分段，则直接添加一个普通段落
@@ -179,36 +168,28 @@ abstract class ContentCollection extends Collection<Inline> {
     return newParagraph;
   }
 
-  split(
-    index: number,
-    block?: Block | Block[],
-    customerUpdate: boolean = false,
-  ): operatorType {
+  split(index: number, block?: Block | Block[]): operatorType {
     let parent = this.getParent();
-    let splitBlock = this.splitChild(index, customerUpdate);
+    let splitBlock = this.splitChild(index);
     let blockIndex = parent.findChildrenIndex(this);
-    let focus;
     if (!block || splitBlock.getSize() !== 0) {
-      focus = parent.add(splitBlock, blockIndex + 1);
+      parent.add(splitBlock, blockIndex + 1);
     }
     if (block) {
       if (!Array.isArray(block)) block = [block];
-      focus = parent.add(block, blockIndex + 1, customerUpdate);
-      if (this.isEmpty()) {
-        this.removeSelf();
-      }
+      parent.add(block, blockIndex + 1);
     }
-    return focus;
+    return [[this], { id: this.id, offset: index }];
   }
 
-  addText(text: string, index?: number, customerUpdate: boolean = false) {
+  addText(text: string, index?: number): operatorType {
+    index = index ? index : this.getSize();
     let charList: Character[] = [];
     for (let char of text) {
       charList.push(new Character(char));
     }
-    this.addChildren(charList, index, customerUpdate);
-    index = index ? index : this.getSize();
-    return [this, index + text.length, index + text.length];
+    this.addChildren(charList, index);
+    return [[this], { id: this.id, offset: index + text.length }];
   }
 
   addEmptyParagraph(bottom: boolean): operatorType {
@@ -219,20 +200,20 @@ abstract class ContentCollection extends Collection<Inline> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  sendTo(block: Block, customerUpdate: boolean = false): operatorType {
-    return block.receive(this, customerUpdate);
+  sendTo(block: Block): operatorType {
+    return block.receive(this);
   }
 
-  receive(block?: Block, customerUpdate: boolean = false): operatorType {
+  receive(block?: Block): operatorType {
     let size = this.getSize();
-    if (!block) return [this, size, size];
-    block.removeSelf(customerUpdate);
+    if (!block) return [[this], { id: this.id, offset: size }];
+    block.removeSelf();
+
     if (block instanceof ContentCollection) {
       this.children = this.children.push(...block.children);
-      updateComponent(this.editor, this, customerUpdate);
-      return [this, size, size];
+      updateComponent(this.editor, this);
     }
-    return;
+    return [[this], { id: this.id, offset: size }];
   }
 
   fromatChildren() {
