@@ -1,7 +1,7 @@
 import { Map } from "immutable";
 import Component from "../components/component";
 
-export interface storeData {
+export interface StoreData {
   [key: string]: any;
 }
 
@@ -12,8 +12,8 @@ class Decorate {
 
   constructor(
     component: Component,
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     this.component = component;
     this.style = Map(style);
@@ -23,7 +23,7 @@ class Decorate {
   copyStyle() {
     return this.style.toObject();
   }
-  mergeStyle(style?: storeData) {
+  mergeStyle(style?: StoreData) {
     if (!style) return;
     for (let key in style) {
       this.setStyle(key, style[key]);
@@ -62,7 +62,7 @@ class Decorate {
   copyData() {
     return this.data.toObject();
   }
-  mergeData(data?: storeData) {
+  mergeData(data?: StoreData) {
     if (!data) return;
     for (let key in data) {
       this.setData(key, data[key]);

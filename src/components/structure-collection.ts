@@ -1,4 +1,4 @@
-import { operatorType, IRawType } from "./component";
+import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
@@ -15,25 +15,39 @@ abstract class StructureCollection<
     throw createError("组件缺少 createEmpty 方法", this);
   }
 
+  // 查找组件的位置
   findChildrenIndex(idOrBlock: string | Block): number {
-    let id = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
-    let index = this.children.findIndex((item) => item.id === id);
-    if (index < 0) throw createError("该组件不在子组件列表中", this);
+    let blockId = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
+    let index = this.children.findIndex((item) => item.id === blockId);
+
+    if (index < 0) {
+      throw createError("该组件不在子组件列表中", this);
+    }
     return index;
   }
 
+  // 获取前一个组件
   getPrev(idOrBlock: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrBlock);
-    if (index === 0) return;
+
+    if (index === 0) {
+      return;
+    }
     return this.getChild(index - 1);
   }
 
+  // 获取后一个组件
   getNext(idOrBlock: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrBlock);
-    if (index === this.getSize() - 1) return;
+
+    if (index === this.getSize() - 1) {
+      return;
+    }
     return this.getChild(index + 1);
   }
 
+  // TODO: 优化逻辑，直接用 article 取即可
+  // 获取从 startId 到 endId 所包含的所有组件
   getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
     if (!this.active) return [false, false, []];
     if (!endId) {
@@ -69,6 +83,7 @@ abstract class StructureCollection<
         res.push(item.id);
       }
     });
+
     // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
     return [startFlag, endFlag, res];
   }
@@ -88,42 +103,49 @@ abstract class StructureCollection<
   }
 
   addChildren(component: T[], index?: number): T[] {
+    index = index ? index : this.getSize();
+
     component.forEach((item) => {
       item.parent = this;
       item.active = true;
       item.recordSnapshoot();
     });
+
     let newBlock = super.addChildren(component, index);
     updateComponent(this.editor, [...component].reverse());
     return newBlock;
   }
 
-  add(block: T | T[], index?: number): operatorType {
+  add(block: T | T[], index?: number): OperatorType {
     if (!Array.isArray(block)) {
       block = [block];
     }
     this.addChildren(block, index);
-    return [block, { id: this.id, offset: 0 }];
+    return [block];
   }
 
   removeChildren(indexOrBlock: T | number, removeNumber: number = 1) {
     let removed = super.removeChildren(indexOrBlock, removeNumber);
+
     removed.forEach((item) => {
       item.active = false;
       item.parent = undefined;
       item.recordSnapshoot();
     });
+
     updateComponent(this.editor, removed);
     return removed;
   }
 
-  remove(start: number, end: number = -1): operatorType {
+  remove(start: number, end: number = start + 1): OperatorType {
     if (end < 0) end = this.getSize() + end;
+
     if (start < 0 || start > end) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
-    this.removeChildren(start, end - start);
-    return [[this], { id: this.id, offset: start }];
+
+    let removed = this.removeChildren(start, end - start);
+    return [removed];
   }
 
   replaceChild(block: T[], oldComponent: T): Block[] {
@@ -131,6 +153,7 @@ abstract class StructureCollection<
     if (index === -1) {
       throw createError("替换组件不在子组件列表内", block);
     }
+
     oldComponent.active = false;
     oldComponent.parent = undefined;
     oldComponent.recordSnapshoot();
@@ -139,13 +162,16 @@ abstract class StructureCollection<
       item.active = true;
       item.recordSnapshoot();
     });
+
     this.children = this.children.splice(index, 1, ...block);
     updateComponent(this.editor, [oldComponent, ...[...block].reverse()]);
     return block;
   }
 
   splitChild(index: number): StructureCollection<T> {
-    if (index > this.getSize()) throw createError("分割点不在列表内", this);
+    if (index > this.getSize()) {
+      throw createError("分割点不在列表内", this);
+    }
 
     let tail = this.removeChildren(index, this.getSize() - index);
     let newCollection = this.createEmpty();
@@ -153,10 +179,11 @@ abstract class StructureCollection<
     return newCollection;
   }
 
-  split(index: number, block?: Block | Block[]): operatorType {
+  split(index: number, block?: Block | Block[]): OperatorType {
     let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
     let changedBlock = [];
+
     if (index !== 0) {
       let newCollection = this.splitChild(index);
       if (newCollection.getSize() !== 0) {
@@ -166,6 +193,7 @@ abstract class StructureCollection<
     } else {
       componentIndex -= 1;
     }
+
     if (block) {
       if (!Array.isArray(block)) block = [block];
       changedBlock.push(...block);
@@ -174,10 +202,9 @@ abstract class StructureCollection<
     return [changedBlock];
   }
 
-  // 定义当组件的子组件的首位发生删除时的行为
-  // 默认不处理，而不是报错
-  childHeadDelete(component: T, index: number): operatorType {
-    return [[this]];
+  // 定义当组件的子组件的首位发生删除时的行为，实现类需完善该逻辑
+  childHeadDelete(block: T): OperatorType {
+    return [[block]];
   }
 
   restore(state: ICollectionSnapshoot<T>) {

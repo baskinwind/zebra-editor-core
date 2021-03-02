@@ -1,12 +1,12 @@
 import Editor from "../editor/editor";
 import focusAt from "../selection/focus-at";
-import { cursorType, getSelectedIdList } from "../selection/util";
+import { Cursor, getSelectedIdList } from "../selection/util";
 
 // 删除 start - end 的内容
 const deleteSelection = (
   editor: Editor,
-  start: cursorType,
-  end?: cursorType,
+  start: Cursor,
+  end?: Cursor,
 ) => {
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     return;

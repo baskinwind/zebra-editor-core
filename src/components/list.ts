@@ -1,12 +1,12 @@
 import ComponentFactory from ".";
-import { operatorType, IRawType } from "./component";
+import { OperatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import nextTicket from "../util/next-ticket";
 
 export type listType = "ol" | "ul" | "nl";
@@ -59,8 +59,8 @@ class List extends StructureCollection<Block> {
   constructor(
     type: listType = "ul",
     children: (string | Block)[] = [],
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     super(style, data);
     this.listType = type;
@@ -129,7 +129,7 @@ class List extends StructureCollection<Block> {
     return super.addChildren(list, index);
   }
 
-  add(block: Block | Block[], index?: number): operatorType {
+  add(block: Block | Block[], index?: number): OperatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
@@ -159,7 +159,10 @@ class List extends StructureCollection<Block> {
     return removed;
   }
 
-  childHeadDelete(block: Block, index: number): operatorType {
+  childHeadDelete(block: Block): OperatorType {
+    let parent = this.getParent();
+    let index = this.getParent().findChildrenIndex(this);
+
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.getPrev(block);
@@ -168,17 +171,15 @@ class List extends StructureCollection<Block> {
     }
 
     // 第一项时，直接将该列表项添加到父元素上
-    let parent = this.getParent();
-    index = parent.findChildrenIndex(this);
     block.removeSelf();
     return parent.add(block, index);
   }
 
-  sendTo(block: Block): operatorType {
+  sendTo(block: Block): OperatorType {
     return block.receive(this);
   }
 
-  receive(block?: Block): operatorType {
+  receive(block?: Block): OperatorType {
     if (!block) return [[this]];
     block.removeSelf();
     if (block instanceof List) {

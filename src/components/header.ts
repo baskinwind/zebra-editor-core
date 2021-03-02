@@ -1,13 +1,13 @@
 import ComponentFactory from ".";
-import { IRawType, classType } from "./component";
+import { IRawType } from "./component";
 import Inline from "./inline";
-import Block from "./block";
+import Block, { BlockType } from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
 
 export type headerType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -87,8 +87,8 @@ class Header extends ContentCollection {
   constructor(
     type: headerType,
     text?: string,
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     super(text, style, data);
     this.headerType = type;
@@ -121,15 +121,17 @@ class Header extends ContentCollection {
     );
   }
 
-  exchangeTo(builder: classType, args: any[]): Block[] {
-    // @ts-ignore
+  exchangeTo(builder: BlockType, args: any[]): Block[] {
+    // 不知道为什么 if 内的 this 识别不了
+    let self = this;
     if (builder === this.constructor && args[0]) {
-      if (args[0] !== this.headerType) {
-        this.setHeader(args[0]);
+      if (args[0] !== self.headerType) {
+        self.setHeader(args[0]);
         return [this];
       }
       return [this];
     }
+
     return builder.exchange(this.getComponentFactory(), this, args);
   }
 

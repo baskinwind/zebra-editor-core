@@ -2,28 +2,26 @@ import { Map } from "immutable";
 import Event from "./event";
 import Decorate from "../decorate";
 import Record from "../record";
-import Block from "./block";
 import Collection from "./collection";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getId } from "./util";
-import { storeData } from "../decorate/index";
+import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
-import { cursorType } from "../selection/util";
+import { Cursor } from "../selection/util";
 
-export type operatorType =
-  | [Block[], cursorType, cursorType]
-  | [Block[], cursorType]
-  | [Block[]];
+export type OperatorType =
+  | [Component[], Cursor, Cursor]
+  | [Component[], Cursor]
+  | [Component[]];
 
-export type classType = { exchangeOnly: Function; exchange: Function };
 export interface IRawType {
   id?: string;
   type: ComponentType | string;
   children?: IRawType[];
-  style?: storeData;
-  data?: storeData;
+  style?: StoreData;
+  data?: StoreData;
   // for CharacterList
   content?: string;
   // for Media or InlineImage
@@ -63,10 +61,10 @@ abstract class Component extends Event {
   // 结构上的作用
   abstract structureType: StructureType;
   // 默认的数据和样式
-  data: storeData = {};
-  style: storeData = {};
+  data: StoreData = {};
+  style: StoreData = {};
 
-  constructor(style: storeData = {}, data: storeData = {}) {
+  constructor(style: StoreData = {}, data: StoreData = {}) {
     super();
     this.decorate = new Decorate(this, style, data);
     this.record = new Record(this);
@@ -96,7 +94,7 @@ abstract class Component extends Event {
   }
 
   // 修改组件的表现形式
-  modifyDecorate(style?: storeData, data?: storeData) {
+  modifyDecorate(style?: StoreData, data?: StoreData) {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
   }

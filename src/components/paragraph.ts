@@ -5,7 +5,7 @@ import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
@@ -45,8 +45,8 @@ class Paragraph extends ContentCollection {
 
   constructor(
     text: string = "",
-    style?: storeData,
-    data: storeData = { tag: "p" },
+    style?: StoreData,
+    data: StoreData = { tag: "p" },
   ) {
     super(text, style, data);
   }

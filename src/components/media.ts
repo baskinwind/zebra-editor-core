@@ -1,10 +1,10 @@
 import ComponentFactory from ".";
-import { operatorType, IRawType, classType } from "./component";
-import Block, { IBlockSnapshoot } from "./block";
+import { OperatorType, IRawType } from "./component";
+import Block, { BlockType, IBlockSnapshoot } from "./block";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { storeData } from "../decorate/index";
+import { StoreData } from "../decorate/index";
 import updateComponent from "../util/update-component";
 
 export type mediaType = "image" | "audio" | "video";
@@ -32,8 +32,8 @@ class Media extends Block {
   constructor(
     mediaType: mediaType,
     src: string,
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     super(style, data);
     this.mediaType = mediaType;
@@ -68,22 +68,16 @@ class Media extends Block {
     return raw;
   }
 
-  exchangeTo(builder: classType, args: any[]): Block[] {
+  exchangeTo(builder: BlockType, args: any[]): Block[] {
     return [this];
   }
-
-  // removeSelf(): operatorType {
-  //   let paragraph = getComponentFactory().buildParagraph();
-  //   this.replaceSelf(paragraph);
-  //   return [paragraph, 0, 0];
-  // }
 
   modifyContentDecorate(
     start: number,
     end: number,
-    style?: storeData,
-    data?: storeData,
-  ): operatorType {
+    style?: StoreData,
+    data?: StoreData,
+  ): OperatorType {
     this.modifyDecorate(style, data);
     return [
       [this],
@@ -92,39 +86,44 @@ class Media extends Block {
     ];
   }
 
-  remove(start: number, end?: number): operatorType {
-    const info = this.replaceSelf(this.getComponentFactory().buildParagraph());
+  remove(): OperatorType {
+    let paragraph = this.getComponentFactory().buildParagraph();
+    this.replaceSelf(paragraph);
 
-    return [
-      info[0],
-      { id: this.id, offset: start },
-      { id: this.id, offset: end ? end : start },
-    ];
+    return [[paragraph], { id: this.id, offset: 0 }];
   }
 
-  split(index: number, block?: Block): operatorType {
-    let parent = this.getParent();
+  split(index: number, block?: Block): OperatorType {
     if (!block) {
       block = this.getComponentFactory().buildParagraph();
     }
+
+    let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
+
+    // 首位分割
     if (index === 0) {
       parent.addChildren([block], componentIndex);
     }
+
+    // 末位分割
     if (index === 1) {
       parent.addChildren([block], componentIndex + 1);
     }
-    return [[block], { id: block.id, offset: index }];
+
+    return [[block], { id: block.id, offset: 0 }];
   }
 
-  receive(block?: Block): operatorType {
+  receive(block?: Block): OperatorType {
     if (!block) return [[this]];
+
     if (block.isEmpty()) {
       block.removeSelf();
-      return [[this, block], { id: this.id, offset: 1 }];
+      return [[block], { id: this.id, offset: 1 }];
     }
+
     super.removeSelf();
-    return [[block], { id: block.id, offset: 0 }];
+    return [[this], { id: block.id, offset: 0 }];
   }
 
   snapshoot(): IMediaSnapshoot {

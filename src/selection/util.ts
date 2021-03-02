@@ -3,7 +3,7 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
 
-export interface cursorType {
+export interface Cursor {
   id: string;
   offset: number;
 }
@@ -118,7 +118,7 @@ const findFocusNode = (
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
 export const getCursorPosition = (
   contentWindow: Window,
-  cursor: cursorType,
+  cursor: Cursor,
 ): {
   node: Node;
   index: number;

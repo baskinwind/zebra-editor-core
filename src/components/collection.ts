@@ -12,6 +12,7 @@ abstract class Collection<T extends Component> extends Block {
 
   destory() {
     this.children.forEach((item) => item.destory());
+    this.children = List();
     super.destory();
   }
 
@@ -30,9 +31,11 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   // 内部使用，添加子元素
-  addChildren(components: T[], index?: number): T[] {
-    let addIndex = typeof index === "number" ? index : this.getSize();
-    this.children = this.children.splice(addIndex, 0, ...components);
+  addChildren(components: T[], index: number): T[] {
+    components.forEach((item) => {
+      item.parent = this;
+    });
+    this.children = this.children.splice(index, 0, ...components);
     return components;
   }
 
@@ -42,25 +45,36 @@ abstract class Collection<T extends Component> extends Block {
     if (removeNumber < 0) {
       throw createError(`移除数量不能小于 0：${removeNumber}`, this);
     }
-    if (removeNumber === 0) return [];
+
+    if (removeNumber === 0) {
+      return [];
+    }
+
     if (typeof indexOrComponent === "number") {
       if (indexOrComponent < 0) {
         throw createError(`移除起始位置不能小于 0：${removeNumber}`, this);
       }
+
       removeIndex = indexOrComponent;
     } else {
-      let temp = this.children.findIndex(
+      let componentIndex = this.children.findIndex(
         (item) => item.id === indexOrComponent.id,
       );
-      if (temp === -1) {
+
+      if (componentIndex === -1) {
         throw createError("移除组件不在列表内。", this);
       }
-      removeIndex = temp;
+      removeIndex = componentIndex;
     }
 
     let removedComponent = this.children
       .slice(removeIndex, removeIndex + removeNumber)
       .toArray();
+
+    removedComponent.forEach((item) => {
+      item.parent = undefined;
+    });
+
     this.children = this.children.splice(removeIndex, removeNumber);
     return removedComponent;
   }

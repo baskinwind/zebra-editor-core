@@ -1,6 +1,6 @@
 import Collection from "../../components/collection";
 import Component from "../../components/component";
-import { cursorType } from "../../selection/util";
+import { Cursor } from "../../selection/util";
 import focusAt from "../../selection/focus-at";
 import updateComponent from "../../util/update-component";
 import Editor from "../editor";
@@ -9,8 +9,8 @@ interface recoreType {
   componentList: Component[];
   idList: string[];
   selection: {
-    start: cursorType;
-    end: cursorType;
+    start: Cursor;
+    end: Cursor;
   };
 }
 
@@ -58,7 +58,7 @@ class HistoryManage {
     this.recordStack.push(this.nowRecordStack);
   }
 
-  createRecord(start: cursorType, end: cursorType) {
+  createRecord(start: Cursor, end: Cursor) {
     this.nowRecordStack.selection = {
       start,
       end,

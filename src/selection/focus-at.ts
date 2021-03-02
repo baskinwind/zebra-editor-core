@@ -1,13 +1,13 @@
 import Component from "../components/component";
-import { cursorType, getCursorPosition } from "./util";
+import { Cursor, getCursorPosition } from "./util";
 import { getBeforeSelection } from "./get-selection";
 import nextTicket from "../util/next-ticket";
 
 // 选中 start 到 end 的内容
 const focusAt = (
   contentWindow: Window,
-  start?: cursorType,
-  end?: cursorType,
+  start?: Cursor,
+  end?: Cursor,
 ) => {
   try {
     if (!start) {

@@ -1,12 +1,11 @@
 import Editor from "../editor/editor";
-import Block from "../components/block";
+import Block, { BlockType } from "../components/block";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
 import { getSelectedIdList } from "./util";
-import { classType } from "../components/component";
 
 // 修改选区中整块内容的呈现
-const exchange = (editor: Editor, newClass: classType, ...args: any[]) => {
+const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
   let selection = getSelection(editor.mountedWindow);
   let start = selection.range[0];
   let end = selection.range[1];
@@ -23,7 +22,7 @@ const exchange = (editor: Editor, newClass: classType, ...args: any[]) => {
     idList.forEach((id) => {
       editor.storeManage
         .getBlockById(id)
-        .exchangeTo(newClass, args)
+        .exchangeTo(newBlock, args)
         .forEach((item) => {
           if (!idMap[item.id]) {
             idMap[item.id] = 1;

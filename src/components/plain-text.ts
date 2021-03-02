@@ -1,10 +1,10 @@
 import ComponentFactory from ".";
-import Component, { operatorType, IRawType } from "./component";
+import Component, { OperatorType, IRawType } from "./component";
 import Block, { IBlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import updateComponent from "../util/update-component";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import { createError } from "../util/handle-error";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
@@ -14,7 +14,7 @@ export interface IPlainTextSnapshoot extends IBlockSnapshoot {
 abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
-  style: storeData = {
+  style: StoreData = {
     overflow: "auto",
   };
 
@@ -45,11 +45,11 @@ abstract class PlainText extends Block {
 
   constructor(
     content: string = "",
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     super(style, data);
-    // 纯文本最后必须有一个换行
+    // 纯文本最后必须有一个换行，js 中 emoji 的长度识别有问题
     this.content = [...content];
     if (this.content[this.content.length - 1] !== "\n") {
       this.content.push("\n");
@@ -72,41 +72,51 @@ abstract class PlainText extends Block {
     return raw;
   }
 
-  add(string: string, index?: number): operatorType {
+  add(string: string, index?: number): OperatorType {
     if (typeof string !== "string") {
       throw createError("纯文本组件仅能输入文字", this);
     }
+
     index = index === undefined ? this.content.length : index;
-    let saveString = [...string];
-    this.content.splice(index, 0, ...saveString);
+    let addString = [...string];
+    this.content.splice(index, 0, ...addString);
     updateComponent(this.editor, this);
-    return [[this], { id: this.id, offset: index + saveString.length }];
+
+    return [[this], { id: this.id, offset: index + addString.length }];
   }
 
-  remove(start: number, end: number = start): operatorType {
-    if (start < 0 && end < 0) {
+  remove(start: number, end: number = start + 1): OperatorType {
+    // 首位删除变成空行
+    if (start < 0 && end === 0) {
       return this.replaceSelf(this.getComponentFactory().buildParagraph());
     }
+
     this.content.splice(start, end - start);
     updateComponent(this.editor, this);
     return [[this], { id: this.id, offset: start }];
   }
 
-  split(index: number, block?: Block | Block[]): operatorType {
+  split(index: number, block?: Block | Block[]): OperatorType {
     if (block) {
       throw createError("纯文本组件仅能输入文字", this);
     }
+
     return this.add("\n", index);
   }
 
-  receive(block?: Block): operatorType {
+  receive(block?: Block): OperatorType {
     block?.removeSelf();
     let size = this.content.length;
+
+    // 内容集合组件添加其中的文字内容
     if (block instanceof ContentCollection) {
+      // TODO: 需要判断是否是图片
       this.add(block.children.map((item) => item.content).join("") + "\n");
+      // 纯文本组件直接合并
     } else if (block instanceof PlainText) {
       this.content.push(...block.content);
     }
+
     return [[this], { id: this.id, offset: size }];
   }
 

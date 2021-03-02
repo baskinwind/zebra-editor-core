@@ -1,7 +1,6 @@
 import Inline from "./inline";
-import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import { initRecordState } from "../record/decorators";
 
 @initRecordState
@@ -9,7 +8,7 @@ class Character extends Inline {
   type = ComponentType.character;
   content: string;
 
-  constructor(content: string, style?: storeData, data?: storeData) {
+  constructor(content: string, style?: StoreData, data?: StoreData) {
     super(style, data);
     this.content = content;
   }
@@ -21,7 +20,7 @@ class Character extends Inline {
     };
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render() {
     return this.content;
   }
 }

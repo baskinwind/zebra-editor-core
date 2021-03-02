@@ -1,12 +1,12 @@
 import Editor from "../editor/editor";
 import focusAt from "../selection/focus-at";
-import { cursorType, getSelectedIdList } from "../selection/util";
+import { Cursor, getSelectedIdList } from "../selection/util";
 
 // 在 start - end 处换行
 const enter = (
   editor: Editor,
-  start: cursorType,
-  end?: cursorType,
+  start: Cursor,
+  end?: Cursor,
   event?: KeyboardEvent,
 ) => {
   event?.preventDefault();

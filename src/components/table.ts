@@ -1,14 +1,13 @@
 import ComponentFactory from ".";
-import { operatorType, classType, IRawType } from "./component";
-import Block from "./block";
+import { OperatorType, IRawType } from "./component";
+import Block, { BlockType } from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
 import { createError } from "../util/handle-error";
-import nextTicket from "../util/next-ticket";
 
 type tableCellChildType = string | TableItem | undefined;
 
@@ -21,21 +20,21 @@ class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
   col: number;
   needHead: boolean;
-  style: storeData = {
+  style: StoreData = {
     margin: "auto",
     overflowX: "auto",
   };
 
-  static getTable(component: Block): Table | undefined {
+  static getTable(block: Block): Table | undefined {
     let table: Table | undefined;
-    if (component instanceof TableItem) {
-      table = component.parent?.parent?.parent;
-    } else if (component instanceof TableCell) {
-      table = component.parent?.parent;
-    } else if (component instanceof TableRow) {
-      table = component.parent;
-    } else if (component instanceof Table) {
-      table = component;
+    if (block instanceof TableItem) {
+      table = block.parent?.parent?.parent;
+    } else if (block instanceof TableCell) {
+      table = block.parent?.parent;
+    } else if (block instanceof TableRow) {
+      table = block.parent;
+    } else if (block instanceof Table) {
+      table = block;
     }
     return table;
   }
@@ -63,21 +62,22 @@ class Table extends StructureCollection<TableRow> {
     col: number,
     children: (tableCellChildType[] | tableCellChildType)[][] = [],
     needHead: boolean = true,
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     super(style, data);
     this.needHead = needHead;
-    let list = [];
+
+    let rows = [];
     for (let i = 0; i < row + (needHead ? 1 : 0); i++) {
       if (needHead && i === 0) {
-        list.push(new TableRow(col, children[i], "th"));
+        rows.push(new TableRow(col, children[i], "th"));
       } else {
-        list.push(new TableRow(col, children[i]));
+        rows.push(new TableRow(col, children[i]));
       }
     }
     this.col = col;
-    this.addChildren(list, 0);
+    this.addChildren(rows, 0);
   }
 
   addRow(index: number) {
@@ -94,14 +94,12 @@ class Table extends StructureCollection<TableRow> {
     indexOrComponent: TableRow | number,
     removeNumber: number = 1,
   ): TableRow[] {
+    let operator = super.removeChildren(indexOrComponent, removeNumber);
     // 若子元素全部删除，将自己也删除
-    if (removeNumber === this.getSize()) {
-      nextTicket(() => {
-        if (this.getSize() !== 0) return;
-        this.removeSelf();
-      });
+    if (this.getSize() == 0) {
+      this.removeSelf();
     }
-    return super.removeChildren(indexOrComponent, removeNumber);
+    return operator;
   }
 
   removeRow(index: number) {
@@ -146,7 +144,7 @@ class Table extends StructureCollection<TableRow> {
     this.needHead = needHead;
   }
 
-  receive(block?: Block): operatorType {
+  receive(block?: Block): OperatorType {
     if (!block) return [[this]];
     this.removeSelf();
     return [[block]];
@@ -211,8 +209,8 @@ class TableRow extends StructureCollection<TableCell> {
     size: number,
     children: (tableCellChildType[] | tableCellChildType)[] = [],
     cellType: "th" | "td" = "td",
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     super(style, data);
     this.cellType = cellType;
@@ -224,7 +222,7 @@ class TableRow extends StructureCollection<TableCell> {
     super.addChildren(list, 0);
   }
 
-  addCol(index?: number): operatorType {
+  addCol(index?: number): OperatorType {
     let newTableCell = new TableCell("", this.cellType);
     this.add(newTableCell, index);
     return [[this]];
@@ -270,7 +268,7 @@ class TableRow extends StructureCollection<TableCell> {
     return raw;
   }
 
-  addEmptyParagraph(bottom: boolean): operatorType {
+  addEmptyParagraph(bottom: boolean): OperatorType {
     let parent = this.getParent();
     return parent.addEmptyParagraph(bottom);
   }
@@ -308,8 +306,8 @@ class TableCell extends StructureCollection<TableItem> {
   constructor(
     children: tableCellChildType[] | tableCellChildType = "",
     cellType: "th" | "td" = "td",
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     super(style, data);
     this.cellType = cellType;
@@ -344,13 +342,13 @@ class TableCell extends StructureCollection<TableItem> {
     return super.removeChildren(indexOrTableItem, removeNumber);
   }
 
-  childHeadDelete(tableItem: TableItem, index: number): operatorType {
+  childHeadDelete(tableItem: TableItem): OperatorType {
     let prev = this.getPrev(tableItem);
     if (!prev) return [[this]];
     return tableItem.sendTo(prev);
   }
 
-  addEmptyParagraph(bottom: boolean): operatorType {
+  addEmptyParagraph(bottom: boolean): OperatorType {
     let parent = this.getParent();
     return parent.addEmptyParagraph(bottom);
   }
@@ -378,7 +376,7 @@ class TableCell extends StructureCollection<TableItem> {
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
-  style: storeData = {
+  style: StoreData = {
     textAlign: "center",
   };
 
@@ -409,7 +407,7 @@ class TableItem extends ContentCollection {
     throw createError("不允许切换表格内段落");
   }
 
-  exchangeTo(builder: classType, args: any[]): Block[] {
+  exchangeTo(builder: BlockType, args: any[]): Block[] {
     throw createError("表格内段落不允许切换类型！！", this);
   }
 
@@ -422,7 +420,7 @@ class TableItem extends ContentCollection {
   }
 
   // 监控：当表格内容一行全被删除时，把一整行移除
-  remove(start: number, end?: number): operatorType {
+  remove(start: number, end?: number): OperatorType {
     let parent = this.getParent() as TableCell;
     let focus = super.remove(start, end);
     if (parent.isEmpty()) {
@@ -432,7 +430,7 @@ class TableItem extends ContentCollection {
   }
 
   // 监控：当表格内容一行全被删除时，把一整行移除
-  removeSelf(): operatorType {
+  removeSelf(): OperatorType {
     let parent = this.getParent() as TableCell;
     let focus = super.removeSelf();
     if (parent.isEmpty()) {
@@ -441,7 +439,7 @@ class TableItem extends ContentCollection {
     return focus;
   }
 
-  split(index: number, tableItem?: TableItem | TableItem[]): operatorType {
+  split(index: number, tableItem?: TableItem | TableItem[]): OperatorType {
     // 不允许非内容组件添加
     let hasComponent: boolean = tableItem !== undefined;
     if (Array.isArray(tableItem)) {
@@ -470,7 +468,7 @@ class TableItem extends ContentCollection {
   }
 
   // 表格项在删除时，默认不将光标后的内容添加到光标前
-  sendTo(block: Block): operatorType {
+  sendTo(block: Block): OperatorType {
     this.parent?.findChildrenIndex(block);
     return super.sendTo(block);
   }

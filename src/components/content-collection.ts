@@ -1,5 +1,5 @@
-import Decorate, { storeData } from "../decorate";
-import { operatorType, IRawType } from "./component";
+import Decorate, { StoreData } from "../decorate";
+import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
@@ -34,25 +34,21 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
-  static exchangeOnly(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args?: any[],
-  ): ContentCollection[] {
-    throw createError("组件未实现 exchangeOnly 静态方法", this);
-  }
-
   static exchange(
     componentFactory: ComponentFactory,
     block: Block,
     args: any[],
   ): ContentCollection[] {
-    let newContent = this.exchangeOnly(componentFactory, block, args);
+    let newContent = this.exchangeOnly(
+      componentFactory,
+      block,
+      args,
+    ) as ContentCollection[];
     block.replaceSelf(newContent);
     return newContent;
   }
 
-  constructor(text: string = "", style?: storeData, data?: storeData) {
+  constructor(text: string = "", style?: StoreData, data?: StoreData) {
     super(style, data);
     if (text) {
       this.addText(text, 0);
@@ -72,16 +68,12 @@ abstract class ContentCollection extends Collection<Inline> {
     return res;
   }
 
-  createEmpty(): ContentCollection {
-    throw createError("组件缺少 createEmpty 方法", this);
-  }
-
   modifyContentDecorate(
     start: number = 0,
     end: number = -1,
-    style?: storeData,
-    data?: storeData,
-  ): operatorType {
+    style?: StoreData,
+    data?: StoreData,
+  ): OperatorType {
     end = end < 0 ? this.getSize() + end : end;
     if (start > end || (!style && !data)) {
       return [[this], { id: this.id, offset: start }];
@@ -99,19 +91,7 @@ abstract class ContentCollection extends Collection<Inline> {
     ];
   }
 
-  addChildren(inline: Inline[], index?: number) {
-    inline
-      .filter((item) => item instanceof Inline)
-      .forEach((item) => {
-        item.parent = this;
-      });
-
-    let added = super.addChildren(inline, index);
-    updateComponent(this.editor, this);
-    return added;
-  }
-
-  add(inline: Inline[] | Inline | string, index?: number): operatorType {
+  add(inline: Inline[] | Inline | string, index?: number): OperatorType {
     index = index !== undefined ? index : this.getSize();
 
     if (typeof inline === "string") {
@@ -128,94 +108,115 @@ abstract class ContentCollection extends Collection<Inline> {
     if (!Array.isArray(inline)) {
       inline = [inline];
     }
+
     this.addChildren(inline, index);
+    updateComponent(this.editor, this);
     return [[this], { id: this.id, offset: index + inline.length }];
   }
 
-  removeChildren(inline: Inline | number, index?: number) {
-    let removed = super.removeChildren(inline, index);
-    updateComponent(this.editor, this);
-    return removed;
-  }
-
-  remove(start: number, end?: number): operatorType {
+  remove(start: number, end: number = start + 1): OperatorType {
     let parent = this.getParent();
-    if (end === undefined) end = this.getSize();
-    if (start < 0 && end === 0) {
-      let index = parent.findChildrenIndex(this);
-      return parent.childHeadDelete(this, index);
-    }
     end = end < 0 ? this.getSize() + end : end;
+
+    if (start < 0 && end === 0) {
+      return parent.childHeadDelete(this);
+    }
+
     if (start > end) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
+
     this.removeChildren(start, end - start);
+    updateComponent(this.editor, this);
     return [[this], { id: this.id, offset: start }];
   }
 
   splitChild(index: number): ContentCollection {
     let isTail = index === this.getSize();
+
     // 如果是从中间分段，则保持段落类型
     if (!isTail) {
       let tail = this.children.slice(index).toArray();
       this.removeChildren(index, this.getSize() - index);
-      let newCollection = this.createEmpty();
+      let newCollection = this.createEmpty() as ContentCollection;
       newCollection.add(tail, 0);
       return newCollection;
     }
+
     // 如果是从尾部分段，则直接添加一个普通段落
     let newParagraph = this.getComponentFactory().buildParagraph();
     return newParagraph;
   }
 
-  split(index: number, block?: Block | Block[]): operatorType {
+  split(index: number, block?: Block | Block[]): OperatorType {
     let parent = this.getParent();
-    let splitBlock = this.splitChild(index);
     let blockIndex = parent.findChildrenIndex(this);
+    let splitBlock = this.splitChild(index);
+
+    let addBlock: Block[] = [];
+
     if (!block || splitBlock.getSize() !== 0) {
+      addBlock.push(splitBlock);
       parent.add(splitBlock, blockIndex + 1);
     }
+
     if (block) {
-      if (!Array.isArray(block)) block = [block];
+      if (!Array.isArray(block)) {
+        block = [block];
+      }
+
+      addBlock.push(...block);
       parent.add(block, blockIndex + 1);
     }
-    return [[this], { id: this.id, offset: index }];
+
+    return [addBlock, { id: this.id, offset: index }];
   }
 
-  addText(text: string, index?: number): operatorType {
+  addText(text: string, index?: number): OperatorType {
     index = index ? index : this.getSize();
     let charList: Character[] = [];
+
     for (let char of text) {
       charList.push(new Character(char));
     }
+
     this.addChildren(charList, index);
-    return [[this], { id: this.id, offset: index + text.length }];
+    return [[this], { id: this.id, offset: index + charList.length }];
   }
 
-  addEmptyParagraph(bottom: boolean): operatorType {
+  // 在组件上下添加空余的行
+  addEmptyParagraph(bottom: boolean): OperatorType {
     let parent = this.getParent();
+
     if (parent.type === ComponentType.article) {
       return super.addEmptyParagraph(bottom);
     }
+
     return parent.addEmptyParagraph(bottom);
   }
 
-  sendTo(block: Block): operatorType {
+  sendTo(block: Block): OperatorType {
     return block.receive(this);
   }
 
-  receive(block?: Block): operatorType {
+  receive(block?: Block): OperatorType {
     let size = this.getSize();
-    if (!block) return [[this], { id: this.id, offset: size }];
+
+    // ContentCollection 组件仅能接收 ContentCollection 组件
+    if (!block || !(block instanceof ContentCollection)) {
+      return [[]];
+    }
+
+    // 确保接收的组件已移除
     block.removeSelf();
 
-    if (block instanceof ContentCollection) {
-      this.children = this.children.push(...block.children);
-      updateComponent(this.editor, this);
-    }
+    this.children = this.children.push(...block.children);
+    updateComponent(this.editor, this);
+
     return [[this], { id: this.id, offset: size }];
   }
 
+  // 将内容进行拆分，适应 HTML 的表现形式
   fromatChildren() {
     let content: any[] = [];
     let acc: Character[] = [];
@@ -245,6 +246,7 @@ abstract class ContentCollection extends Collection<Inline> {
       createCharacterList();
       content.push(value);
     });
+
     createCharacterList();
     return content;
   }
@@ -254,8 +256,8 @@ abstract class ContentCollection extends Collection<Inline> {
       if (item.getRaw) {
         return item.getRaw();
       }
+      // 无 type 说明是字符串
       // @ts-ignore
-      // 字符无需特定的 type 生成 JSON 时，这段重复出现，占据比例极大，优化
       let raw: IRawType = {
         content: item[0],
       };

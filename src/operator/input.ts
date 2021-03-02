@@ -2,14 +2,14 @@ import Editor from "../editor/editor";
 import Inline from "../components/inline";
 import Character from "../components/character";
 import focusAt from "../selection/focus-at";
-import { getCursorPosition, cursorType } from "../selection/util";
+import { getCursorPosition, Cursor } from "../selection/util";
 import { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
 
 const input = (
   editor: Editor,
   charOrInline: string | Inline,
-  start: cursorType,
+  start: Cursor,
   event?: KeyboardEvent | CompositionEvent | InputEvent,
 ) => {
   try {

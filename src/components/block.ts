@@ -1,18 +1,14 @@
 import Editor from "../editor/editor";
 import ComponentFactory, { getDefaultComponentFactory } from ".";
-import Component, {
-  classType,
-  operatorType,
-  IRawType,
-  ISnapshoot,
-} from "./component";
+import Component, { OperatorType, IRawType, ISnapshoot } from "./component";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import nextTicket from "../util/next-ticket";
-import { storeData } from "../decorate/index";
+import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
 import updateComponent from "../util/update-component";
 
+export type BlockType = typeof Block;
 export interface IBlockSnapshoot extends ISnapshoot {
   active: boolean;
 }
@@ -30,7 +26,7 @@ abstract class Block extends Component {
     componentFactory: ComponentFactory,
     component: Component,
     args?: any[],
-  ): Component[] {
+  ): Block[] {
     throw createError("组件未实现 exchangeOnly 静态方法", this);
   }
 
@@ -39,7 +35,7 @@ abstract class Block extends Component {
     componentFactory: ComponentFactory,
     component: Component,
     args?: any[],
-  ): Component[] {
+  ): Block[] {
     throw createError("组件未实现 exchange 静态方法", this);
   }
 
@@ -48,7 +44,7 @@ abstract class Block extends Component {
     throw createError("组件未实现 create 静态方法", this);
   }
 
-  constructor(style?: storeData, data?: storeData) {
+  constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
     nextTicket(() => {
       this.$emit("blockCreated", this);
@@ -91,14 +87,14 @@ abstract class Block extends Component {
   }
 
   // 创建一个空的当前组件
-  createEmpty(): Component {
+  createEmpty(): Block {
     throw createError("组件未实现 createEmpty 方法", this);
   }
 
   // 将当前组件转换为 builder 类型的组件
-  exchangeTo(builder: classType, args: any[]): Block[] {
-    // @ts-ignore
+  exchangeTo(builder: BlockType, args: any[]): Block[] {
     if (builder === this.constructor) return [this];
+
     return builder.exchange(this.getComponentFactory(), this, args);
   }
 
@@ -106,19 +102,19 @@ abstract class Block extends Component {
   addInto(
     collection: StructureCollection<Block>,
     index?: number,
-  ): operatorType {
+  ): OperatorType {
     let newBlock = collection.addChildren([this], index);
     return [newBlock];
   }
 
   // 从其父组件内移除
-  removeSelf(): operatorType {
+  removeSelf(): OperatorType {
     this.parent?.removeChildren(this, 1);
     return [[this]];
   }
 
   // 替换为另一个组件
-  replaceSelf(block: Block | Block[]): operatorType {
+  replaceSelf(block: Block | Block[]): OperatorType {
     if (!Array.isArray(block)) block = [block];
     let parent = this.getParent();
     parent.replaceChild(block, this);
@@ -126,7 +122,7 @@ abstract class Block extends Component {
   }
 
   // 触发缩进
-  indent(): operatorType {
+  indent(): OperatorType {
     let block: Block = this;
     while (
       block.parent?.type !== ComponentType.list &&
@@ -155,7 +151,7 @@ abstract class Block extends Component {
   }
 
   // 取消缩进
-  outdent(): operatorType {
+  outdent(): OperatorType {
     let block: Block = this;
     while (
       block.parent?.type !== ComponentType.list &&
@@ -175,7 +171,7 @@ abstract class Block extends Component {
   }
 
   // 修改组件的表现形式
-  modifyDecorate(style?: storeData, data?: storeData) {
+  modifyDecorate(style?: StoreData, data?: StoreData) {
     super.modifyDecorate(style, data);
     updateComponent(this.editor, this);
     return [[this]];
@@ -185,8 +181,8 @@ abstract class Block extends Component {
   modifyContentDecorate(
     start: number,
     end: number,
-    style?: storeData,
-    data?: storeData,
+    style?: StoreData,
+    data?: StoreData,
   ) {
     return;
   }
@@ -195,13 +191,13 @@ abstract class Block extends Component {
   add(
     component: string | Component | Component[],
     index?: number,
-  ): operatorType {
+  ): OperatorType {
     return [[this]];
   }
 
   // 在一些组件中 Enter 被使用，导致不能在组件下方或上方创建新行
   // 使用该 api 创建上方或是下方的新行
-  addEmptyParagraph(bottom: boolean): operatorType {
+  addEmptyParagraph(bottom: boolean): OperatorType {
     let parent = this.getParent();
     let index = parent.findChildrenIndex(this);
     let paragraph = this.getComponentFactory().buildParagraph();
@@ -210,22 +206,22 @@ abstract class Block extends Component {
   }
 
   // 移除子组件
-  remove(start: number, end?: number): operatorType {
+  remove(start: number, end?: number): OperatorType {
     return [[this]];
   }
 
   // 在 index 处切分组件
-  split(index: number, component?: Component | Component[]): operatorType {
+  split(index: number, component?: Component | Component[]): OperatorType {
     return [[this]];
   }
 
   // 将自己发送到另一组件
-  sendTo(component: Component): operatorType {
+  sendTo(component: Component): OperatorType {
     return [[this]];
   }
 
   // 接收另一组件
-  receive(component?: Component): operatorType {
+  receive(component?: Component): OperatorType {
     return [[this]];
   }
 

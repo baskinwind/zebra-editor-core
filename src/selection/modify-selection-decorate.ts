@@ -1,5 +1,5 @@
 import Editor from "../editor/editor";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import getSelection from "./get-selection";
 import { getSelectedIdList } from "./util";
 import focusAt from "./focus-at";
@@ -7,8 +7,8 @@ import focusAt from "./focus-at";
 // 修改选区内的文字
 const modifySelectionDecorate = (
   editor: Editor,
-  style?: storeData,
-  data?: storeData,
+  style?: StoreData,
+  data?: StoreData,
 ) => {
   let selection = getSelection(editor.mountedWindow);
   // 为光标时，不需要处理

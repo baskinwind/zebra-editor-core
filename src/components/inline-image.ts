@@ -2,12 +2,12 @@ import ComponentFactory from ".";
 import Inline from "./inline";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import { storeData } from "../decorate/index";
+import { StoreData } from "../decorate/index";
 import { IRawType } from "./component";
 
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;
-  content = "$$$INLINEIMAGE$$$";
+  content = "";
   src: string;
 
   static create(
@@ -21,7 +21,7 @@ class InlineImage extends Inline {
     );
   }
 
-  constructor(src: string = "", style?: storeData, data?: storeData) {
+  constructor(src: string = "", style?: StoreData, data?: StoreData) {
     super(style, data);
     this.src = src;
   }

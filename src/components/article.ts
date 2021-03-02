@@ -1,6 +1,6 @@
 import ComponentFactory from ".";
 import BaseBuilder from "../content/base-builder";
-import { operatorType, IRawType } from "./component";
+import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
@@ -24,7 +24,8 @@ class Article extends StructureCollection<Block> {
           );
         })
       : [];
-    article.add(children, 0, true);
+    // TODO: update true
+    article.add(children, 0);
     return article;
   }
 
@@ -36,12 +37,9 @@ class Article extends StructureCollection<Block> {
     return this.getSize() === 1 && this.getChild(0)?.getSize() === 0;
   }
 
-  childHeadDelete(
-    block: Block,
-    index: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
+  childHeadDelete(block: Block): OperatorType {
     let prev = this.getPrev(block);
+    // 若在 Article 的第一个
     if (!prev) {
       if (!block.decorate.isEmpty() || block.type !== ComponentType.paragraph) {
         block.decorate.clear();
@@ -50,24 +48,16 @@ class Article extends StructureCollection<Block> {
           [],
         );
         updateComponent(this.editor, block);
-        return [exchanged[0], 0, 0];
+        return [exchanged];
       }
-      // 若不是仅有一行，则删除该行
-      if (this.getSize() !== 1) {
-        block.removeSelf();
-        return;
-      }
-      return;
+
+      return [[block]];
     }
-    return block.sendTo(prev, customerUpdate);
+    return block.sendTo(prev);
   }
 
-  remove(
-    start: number,
-    end?: number,
-    customerUpdate: boolean = false,
-  ): operatorType {
-    let focus = super.remove(start, end, customerUpdate);
+  remove(start: number, end?: number): OperatorType {
+    let focus = super.remove(start, end);
     if (this.getSize() === 0) {
       return this.add(this.getComponentFactory().buildParagraph());
     }

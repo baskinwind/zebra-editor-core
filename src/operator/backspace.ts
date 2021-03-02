@@ -1,36 +1,37 @@
 import Editor from "../editor/editor";
 import StructureType from "../const/structure-type";
 import focusAt from "../selection/focus-at";
-import { cursorType, getSelectedIdList } from "../selection/util";
+import { Cursor, getSelectedIdList } from "../selection/util";
 
 // 删除：删除 start - end 的内容，若开始与结束一致，则删除前一个字符
 const backspace = (
   editor: Editor,
-  start: cursorType,
-  end?: cursorType,
+  start: Cursor,
+  end?: Cursor,
   event?: KeyboardEvent | CompositionEvent,
 ) => {
   if (!end || (start.id === end.id && start.offset === end.offset)) {
-    let component = editor.storeManage.getBlockById(start.id);
+    let block = editor.storeManage.getBlockById(start.id);
     // 优化段落内删除逻辑，不需要整段更新
     if (
       event &&
-      (component.structureType === StructureType.content ||
-        component.structureType === StructureType.plainText)
+      [StructureType.content, StructureType.plainText].includes(
+        block.structureType,
+      )
     ) {
-      if (start.offset <= 1 || start.offset >= component.getSize() - 1) {
+      if (start.offset <= 1 || start.offset >= block.getSize() - 1) {
         // 当删除发生在首位或第一位或最后一位时，需要强制更新
         event?.preventDefault();
-        let operator = component.remove(start.offset - 1, start.offset);
+        let operator = block.remove(start.offset - 1, start.offset);
         return focusAt(editor.mountedWindow, operator[1], operator[2]);
       }
       // TODO: update true
-      return component.remove(start.offset - 1, start.offset);
+      return block.remove(start.offset - 1, start.offset);
     }
 
     // 非文字组件删除需要强制更新
     event?.preventDefault();
-    let operator = component.remove(start.offset, start.offset + 1);
+    let operator = block.remove(start.offset, start.offset + 1);
     return focusAt(editor.mountedWindow, operator[1], operator[2]);
   }
 

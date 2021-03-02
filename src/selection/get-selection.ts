@@ -1,7 +1,7 @@
 import {
   getElememtSize,
   getContainer,
-  cursorType,
+  Cursor,
   getParent,
   getOffset,
 } from "./util";
@@ -10,7 +10,7 @@ import Article from "../components/article";
 
 export interface selectionType {
   isCollapsed: boolean;
-  range: [cursorType, cursorType];
+  range: [Cursor, Cursor];
 }
 
 let selectionStore: selectionType = {

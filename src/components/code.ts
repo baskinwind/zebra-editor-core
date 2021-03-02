@@ -5,11 +5,11 @@ import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 
 class Code extends PlainText {
   type = ComponentType.code;
-  style: storeData = {
+  style: StoreData = {
     fontSize: "14px",
     borderRadius: "4px",
     backgroundColor: "rgba(248, 248, 248, 1)",
@@ -40,8 +40,8 @@ class Code extends PlainText {
   constructor(
     content: string = "",
     language: string = "",
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     super(content, style, data);
     this.language = language;

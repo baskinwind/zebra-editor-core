@@ -1,5 +1,5 @@
 import Editor from "../editor/editor";
-import { storeData } from "../decorate";
+import { StoreData } from "../decorate";
 import Article from "./article";
 import List, { listType } from "./list";
 import Table from "./table";
@@ -38,15 +38,15 @@ class ComponentFactory {
     };
   }
 
-  buildArticle(style: storeData = {}, data: storeData = {}) {
+  buildArticle(style: StoreData = {}, data: StoreData = {}) {
     return new Article(style, data);
   }
 
   buildCustomerCollection(
     tag: string = "div",
     children: string[] = [],
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     return new CustomerCollection(tag, children, style, data);
   }
@@ -54,8 +54,8 @@ class ComponentFactory {
   buildList(
     type: listType = "ul",
     children: string[] = [],
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     return new List(type, children, style, data);
   }
@@ -65,8 +65,8 @@ class ComponentFactory {
     col: number,
     children: (string[] | string)[][] = [],
     needHead: boolean = true,
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     return new Table(row, col, children, needHead, style, data);
   }
@@ -74,21 +74,21 @@ class ComponentFactory {
   buildHeader(
     type: headerType,
     text?: string,
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     return new Header(type, text, style, data);
   }
 
-  buildParagraph(text?: string, style: storeData = {}, data: storeData = {}) {
+  buildParagraph(text?: string, style: StoreData = {}, data: StoreData = {}) {
     return new Paragraph(text, style, data);
   }
 
   buildMedia(
     mediaType: mediaType,
     src: string,
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     return new Media(mediaType, src, style, data);
   }
@@ -96,13 +96,13 @@ class ComponentFactory {
   buildCode(
     content: string = "",
     language: string = "",
-    style: storeData = {},
-    data: storeData = {},
+    style: StoreData = {},
+    data: StoreData = {},
   ) {
     return new Code(content, language, style, data);
   }
 
-  buildInlineImage(src: string, style: storeData = {}, data: storeData = {}) {
+  buildInlineImage(src: string, style: StoreData = {}, data: StoreData = {}) {
     return new InlineImage(src, style, data);
   }
 }
