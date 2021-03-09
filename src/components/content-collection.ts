@@ -34,20 +34,6 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[],
-  ): ContentCollection[] {
-    let newContent = this.exchangeOnly(
-      componentFactory,
-      block,
-      args,
-    ) as ContentCollection[];
-    block.replaceSelf(newContent);
-    return newContent;
-  }
-
   constructor(text: string = "", style?: StoreData, data?: StoreData) {
     super(style, data);
     if (text) {

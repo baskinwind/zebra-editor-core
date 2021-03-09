@@ -29,10 +29,6 @@ class Article extends StructureCollection<Block> {
     return article;
   }
 
-  setId(id: string) {
-    this.id = id;
-  }
-
   isEmpty() {
     return this.getSize() === 1 && this.getChild(0)?.getSize() === 0;
   }

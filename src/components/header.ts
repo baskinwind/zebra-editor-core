@@ -55,7 +55,7 @@ class Header extends ContentCollection {
     return header;
   }
 
-  static exchangeOnly(
+  static exchange(
     componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
@@ -81,6 +81,8 @@ class Header extends ContentCollection {
         list.push(componentFactory.buildHeader(headerType, item));
       });
     }
+
+    block.replaceSelf(list);
     return list;
   }
 

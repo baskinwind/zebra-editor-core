@@ -18,31 +18,6 @@ abstract class PlainText extends Block {
     overflow: "auto",
   };
 
-  static exchangeOnly(
-    componentFactory: ComponentFactory,
-    component: Component,
-    args: any[] = [],
-  ): PlainText[] {
-    throw createError("组件未实现 exchangeOnly 静态方法", this);
-  }
-
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[],
-  ): PlainText[] {
-    let parent = block.getParent();
-    let prev = parent.getPrev(block);
-    if (prev instanceof PlainText) {
-      prev.receive(block);
-      return [prev];
-    } else {
-      let newItem = this.exchangeOnly(componentFactory, block, args);
-      block.replaceSelf(newItem);
-      return newItem;
-    }
-  }
-
   constructor(
     content: string = "",
     style: StoreData = {},

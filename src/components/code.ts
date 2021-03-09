@@ -6,6 +6,7 @@ import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import updateComponent from "../util/update-component";
 import { StoreData } from "../decorate";
+import Block from "./block";
 
 class Code extends PlainText {
   type = ComponentType.code;
@@ -25,16 +26,25 @@ class Code extends PlainText {
     );
   }
 
-  static exchangeOnly(
+  static exchange(
     componentFactory: ComponentFactory,
-    component: Component,
+    block: Block,
     args: any[] = [],
   ): Code[] {
-    let code = componentFactory.buildCode();
-    if (component instanceof ContentCollection) {
-      code.add(component.children.map((item) => item.content).join(""), 0);
+    let parent = block.getParent();
+    let prev = parent.getPrev(block);
+
+    if (prev instanceof Code) {
+      prev.receive(block);
+      return [prev];
+    } else {
+      let code = componentFactory.buildCode();
+      if (block instanceof ContentCollection) {
+        code.add(block.children.map((item) => item.content).join(""), 0);
+      }
+      block.replaceSelf(code);
+      return [code];
     }
-    return [code];
   }
 
   constructor(

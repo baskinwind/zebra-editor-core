@@ -17,7 +17,7 @@ class Paragraph extends ContentCollection {
     return paragraph;
   }
 
-  static exchangeOnly(
+  static exchange(
     componentFactory: ComponentFactory,
     block: Block,
     args: any[] = [],
@@ -40,6 +40,8 @@ class Paragraph extends ContentCollection {
         list.push(componentFactory.buildParagraph(item));
       });
     }
+
+    block.replaceSelf(list);
     return list;
   }
 

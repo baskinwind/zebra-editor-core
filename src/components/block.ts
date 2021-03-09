@@ -21,16 +21,7 @@ abstract class Block extends Component {
   // 组件所属的编辑器
   editor?: Editor;
 
-  // 定义如何将别的组件转换为当前组件，不会触发更新
-  static exchangeOnly(
-    componentFactory: ComponentFactory,
-    component: Component,
-    args?: any[],
-  ): Block[] {
-    throw createError("组件未实现 exchangeOnly 静态方法", this);
-  }
-
-  // 将别的组件转换为当前组件，并更新组件在文档中的状态
+  // 将别的组件转换为当前组件类型
   static exchange(
     componentFactory: ComponentFactory,
     component: Component,
