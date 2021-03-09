@@ -13,7 +13,7 @@ class Paragraph extends ContentCollection {
   static create(componentFactory: ComponentFactory, raw: IRawType): Paragraph {
     let paragraph = componentFactory.buildParagraph("", raw.style, raw.data);
     let children = super.getChildren(componentFactory, raw);
-    paragraph.addChildren(children, 0);
+    paragraph.addChildren(0, children);
     return paragraph;
   }
 
@@ -31,7 +31,7 @@ class Paragraph extends ContentCollection {
         block.decorate.copyStyle(),
         block.decorate.copyData(),
       );
-      newParagraph.addChildren(block.children.toArray(), 0);
+      newParagraph.addChildren(0, block.children.toArray());
       list.push(newParagraph);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");

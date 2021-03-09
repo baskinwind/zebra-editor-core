@@ -103,12 +103,12 @@ class Media extends Block {
 
     // 首位分割
     if (index === 0) {
-      parent.addChildren([block], componentIndex);
+      parent.addChildren(componentIndex, [block]);
     }
 
     // 末位分割
     if (index === 1) {
-      parent.addChildren([block], componentIndex + 1);
+      parent.addChildren(componentIndex + 1, [block]);
     }
 
     return [[block], { id: block.id, offset: 0 }];

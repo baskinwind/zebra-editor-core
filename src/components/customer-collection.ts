@@ -89,7 +89,7 @@ class CustomerCollection extends StructureCollection<Block> {
     );
   }
 
-  add(block: Block | Block[], index?: number): OperatorType {
+  add(block: Block | Block[], index: number = 0): OperatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
@@ -104,15 +104,13 @@ class CustomerCollection extends StructureCollection<Block> {
       block = [block];
     }
 
-    let newBlock = this.addChildren(block, index);
+    let newBlock = this.addChildren(index, block);
     return [newBlock];
   }
 
-  removeChildren(
-    indexOrComponent: Block | number,
-    removeNumber: number = 1,
-  ): Block[] {
-    let removed = super.removeChildren(indexOrComponent, removeNumber);
+  removeChildren(start: number, end: number = 0): Block[] {
+    let removed = super.removeChildren(start, end);
+
     // 若子元素全部删除，将自己也删除
     if (this.getSize() === 0) {
       this.removeSelf();

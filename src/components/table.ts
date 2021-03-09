@@ -51,7 +51,7 @@ class Table extends StructureCollection<TableRow> {
     let children = raw.children
       ? raw.children.map((item) => TableRow.create(componentFactory, item))
       : [];
-    table.addChildren(children, 0);
+    table.addChildren(0, children);
     table.col = raw.col || 0;
     table.needHead = raw.needHead || false;
     return table;
@@ -77,7 +77,7 @@ class Table extends StructureCollection<TableRow> {
       }
     }
     this.col = col;
-    this.addChildren(rows, 0);
+    this.addChildren(0, rows);
   }
 
   addRow(index: number) {
@@ -90,11 +90,9 @@ class Table extends StructureCollection<TableRow> {
     this.children.forEach((item) => item.addCol(index));
   }
 
-  removeChildren(
-    indexOrComponent: TableRow | number,
-    removeNumber: number = 1,
-  ): TableRow[] {
-    let operator = super.removeChildren(indexOrComponent, removeNumber);
+  removeChildren(start: number, end: number = 0): TableRow[] {
+    let operator = super.removeChildren(start, end);
+
     // 若子元素全部删除，将自己也删除
     if (this.getSize() == 0) {
       this.removeSelf();
@@ -121,7 +119,7 @@ class Table extends StructureCollection<TableRow> {
         let item = new TableRow(this.col);
         list.push(item);
       }
-      this.addChildren(list);
+      this.addChildren(0, list);
     } else {
       this.remove(row, size);
     }
@@ -201,7 +199,7 @@ class TableRow extends StructureCollection<TableCell> {
     let children = raw.children
       ? raw.children.map((item) => TableCell.create(componentFactory, item))
       : [];
-    tableRow.addChildren(children, 0);
+    tableRow.addChildren(0, children);
     return tableRow;
   }
 
@@ -219,7 +217,7 @@ class TableRow extends StructureCollection<TableCell> {
       let item = new TableCell(children[i], this.cellType);
       list.push(item);
     }
-    super.addChildren(list, 0);
+    super.addChildren(0, list);
   }
 
   addCol(index?: number): OperatorType {
@@ -296,9 +294,9 @@ class TableCell extends StructureCollection<TableItem> {
     let children = raw.children
       ? raw.children.map((item) => TableItem.create(componentFactory, item))
       : [];
-    tableCell.addChildren(children, 0);
+    tableCell.addChildren(0, children);
     if (children.length) {
-      tableCell.removeChildren(tableCell.getSize() - 1, 1);
+      tableCell.removeChildren(tableCell.getSize() - 1);
     }
     return tableCell;
   }
@@ -313,6 +311,7 @@ class TableCell extends StructureCollection<TableItem> {
     this.cellType = cellType;
     if (!Array.isArray(children)) children = [children];
     this.addChildren(
+      0,
       children.map((item) => {
         if (!item) {
           return new TableItem();
@@ -322,7 +321,6 @@ class TableCell extends StructureCollection<TableItem> {
         }
         return item;
       }),
-      0,
     );
   }
 
@@ -330,16 +328,13 @@ class TableCell extends StructureCollection<TableItem> {
     return this.getSize() === 1 && this.getChild(0).getSize() === 0;
   }
 
-  removeChildren(
-    indexOrTableItem: TableItem | number,
-    removeNumber: number = 1,
-  ) {
-    if (this.getSize() === 1 && removeNumber === 1) {
+  removeChildren(start: number, end: number = 0) {
+    if (this.getSize() === 1 && end === 1) {
       let tableItem = this.getChild(0) as TableItem;
-      tableItem?.removeChildren(0, tableItem.getSize());
+      tableItem?.removeChildren(0);
       return [tableItem];
     }
-    return super.removeChildren(indexOrTableItem, removeNumber);
+    return super.removeChildren(start, end);
   }
 
   childHeadDelete(tableItem: TableItem): OperatorType {
@@ -383,7 +378,7 @@ class TableItem extends ContentCollection {
   static create(componentFactory: ComponentFactory, raw: IRawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
     let children = super.getChildren(componentFactory, raw);
-    tableItem.addChildren(children, 0);
+    tableItem.addChildren(0, children);
     return tableItem;
   }
 
@@ -394,7 +389,7 @@ class TableItem extends ContentCollection {
   ): TableItem[] {
     let newItem = new TableItem();
     if (block instanceof ContentCollection) {
-      newItem.addChildren(block.children.toArray(), 0);
+      newItem.addChildren(0, block.children.toArray());
     }
     return [newItem];
   }

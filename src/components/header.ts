@@ -51,7 +51,7 @@ class Header extends ContentCollection {
       raw.data,
     );
     let children = super.getChildren(componentFactory, raw);
-    header.addChildren(children, 0);
+    header.addChildren(0, children);
     return header;
   }
 
@@ -72,7 +72,7 @@ class Header extends ContentCollection {
         block.decorate.copyData(),
       );
       newHeader.style = styleMap[newHeader.headerType];
-      newHeader.addChildren(block.children.toArray(), 0);
+      newHeader.addChildren(0, block.children.toArray());
       list.push(newHeader);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");

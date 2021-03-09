@@ -92,15 +92,17 @@ abstract class Block extends Component {
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
     collection: StructureCollection<Block>,
-    index?: number,
+    index: number = 0,
   ): OperatorType {
-    let newBlock = collection.addChildren([this], index);
+    let newBlock = collection.addChildren(index, [this]);
     return [newBlock];
   }
 
   // 从其父组件内移除
   removeSelf(): OperatorType {
-    this.parent?.removeChildren(this, 1);
+    let parent = this.getParent();
+    let index = parent.findChildrenIndex(this);
+    parent.removeChildren(index, index + 1);
     return [[this]];
   }
 

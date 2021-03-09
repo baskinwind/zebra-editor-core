@@ -70,7 +70,7 @@ class List extends StructureCollection<Block> {
       }
       return item;
     });
-    this.addChildren(list, 0);
+    this.addChildren(0, list);
     if (this.listType === "nl") {
       this.decorate.mergeStyle({
         paddingLeft: "0px",
@@ -116,7 +116,7 @@ class List extends StructureCollection<Block> {
     );
   }
 
-  addChildren(block: Block[], index?: number) {
+  addChildren(index: number, block: Block[]) {
     // 列表仅能添加 wrapper 包裹的组件
     let list: Block[] = block.map((item) => {
       if (this.listType === "nl") {
@@ -126,10 +126,10 @@ class List extends StructureCollection<Block> {
       }
       return item;
     });
-    return super.addChildren(list, index);
+    return super.addChildren(index, list);
   }
 
-  add(block: Block | Block[], index?: number): OperatorType {
+  add(block: Block | Block[], index: number = 0): OperatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
@@ -140,22 +140,20 @@ class List extends StructureCollection<Block> {
       }
     }
     if (!Array.isArray(block)) block = [block];
-    let newList = this.addChildren(block, index);
+    let newList = this.addChildren(index, block);
     return [[this, ...newList]];
   }
 
-  removeChildren(
-    indexOrComponent: Block | number,
-    removeNumber: number = 1,
-  ): Block[] {
+  removeChildren(start: number, end: number = 0): Block[] {
     // 若子元素全部删除，将自己也删除
-    if (removeNumber === this.getSize()) {
+    if (end === this.getSize()) {
       nextTicket(() => {
         if (this.getSize() !== 0) return;
         this.removeSelf();
       });
     }
-    let removed = super.removeChildren(indexOrComponent, removeNumber);
+
+    let removed = super.removeChildren(start, end);
     return removed;
   }
 
@@ -183,7 +181,7 @@ class List extends StructureCollection<Block> {
     if (!block) return [[this]];
     block.removeSelf();
     if (block instanceof List) {
-      return this.add(block.removeChildren(0, block.getSize()));
+      return this.add(block.removeChildren(0));
     } else {
       if (block.isEmpty()) {
         block.removeSelf();

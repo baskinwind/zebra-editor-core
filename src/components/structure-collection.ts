@@ -102,7 +102,7 @@ abstract class StructureCollection<
     return raw;
   }
 
-  addChildren(component: T[], index?: number): T[] {
+  addChildren(index: number, component: T[]): T[] {
     index = index ? index : this.getSize();
 
     component.forEach((item) => {
@@ -111,21 +111,21 @@ abstract class StructureCollection<
       item.recordSnapshoot();
     });
 
-    let newBlock = super.addChildren(component, index);
+    let newBlock = super.addChildren(index, component);
     updateComponent(this.editor, [...component].reverse());
     return newBlock;
   }
 
-  add(block: T | T[], index?: number): OperatorType {
+  add(block: T | T[], index: number = 0): OperatorType {
     if (!Array.isArray(block)) {
       block = [block];
     }
-    this.addChildren(block, index);
+    this.addChildren(index, block);
     return [block];
   }
 
-  removeChildren(indexOrBlock: T | number, removeNumber: number = 1) {
-    let removed = super.removeChildren(indexOrBlock, removeNumber);
+  removeChildren(start: number, end: number = 0) {
+    let removed = super.removeChildren(start, end);
 
     removed.forEach((item) => {
       item.active = false;
@@ -138,13 +138,11 @@ abstract class StructureCollection<
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
-    if (end < 0) end = this.getSize() + end;
-
-    if (start < 0 || start > end) {
+    if (start < 0) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    let removed = this.removeChildren(start, end - start);
+    let removed = this.removeChildren(start, end);
     return [removed];
   }
 
@@ -173,7 +171,7 @@ abstract class StructureCollection<
       throw createError("分割点不在列表内", this);
     }
 
-    let tail = this.removeChildren(index, this.getSize() - index);
+    let tail = this.removeChildren(index);
     let newCollection = this.createEmpty();
     newCollection.add(tail, 0);
     return newCollection;

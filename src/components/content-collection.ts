@@ -95,24 +95,24 @@ abstract class ContentCollection extends Collection<Inline> {
       inline = [inline];
     }
 
-    this.addChildren(inline, index);
+    this.addChildren(index, inline);
     updateComponent(this.editor, this);
     return [[this], { id: this.id, offset: index + inline.length }];
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
     let parent = this.getParent();
-    end = end < 0 ? this.getSize() + end : end;
 
-    if (start < 0 && end === 0) {
+    // 在段落的首处按下删除时
+    if (start === -1 && end === 0) {
       return parent.childHeadDelete(this);
     }
 
-    if (start > end) {
+    if (start < 0) {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    this.removeChildren(start, end - start);
+    this.removeChildren(start, end);
     updateComponent(this.editor, this);
     return [[this], { id: this.id, offset: start }];
   }
@@ -123,7 +123,7 @@ abstract class ContentCollection extends Collection<Inline> {
     // 如果是从中间分段，则保持段落类型
     if (!isTail) {
       let tail = this.children.slice(index).toArray();
-      this.removeChildren(index, this.getSize() - index);
+      this.removeChildren(index);
       let newCollection = this.createEmpty() as ContentCollection;
       newCollection.add(tail, 0);
       return newCollection;
@@ -166,7 +166,7 @@ abstract class ContentCollection extends Collection<Inline> {
       charList.push(new Character(char));
     }
 
-    this.addChildren(charList, index);
+    this.addChildren(index, charList);
     return [[this], { id: this.id, offset: index + charList.length }];
   }
 
