@@ -1,6 +1,6 @@
 import Editor from "../editor";
 import defaultStyle from "../../util/default-style";
-import nextTicket from "../../util/next-ticket";
+import nextTick from "../../util/next-tick";
 import Article from "../../components/article";
 import StructureType from "../../const/structure-type";
 
@@ -58,7 +58,7 @@ const createEditor = (
       }
     });
 
-    nextTicket(() => {
+    nextTick(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
 
@@ -81,7 +81,7 @@ const createEditor = (
 
     editorDom.addEventListener("dblclick", (event) => {
       try {
-        operator.onDBClick(event);
+        operator.onDoubleClick(event);
       } catch (e) {
         console.warn(e);
       }

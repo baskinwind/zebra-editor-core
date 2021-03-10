@@ -2,7 +2,7 @@ import Component from "../components/component";
 import Block from "../components/block";
 import Editor from "../editor/editor";
 import ComponentType from "../const/component-type";
-import nextTicket from "./next-ticket";
+import nextTick from "./next-tick";
 
 let delayUpdateQueue: Set<string> = new Set();
 let inLoop = false;
@@ -38,7 +38,7 @@ const updateComponent = (
       update(editor, editor.storeManage.getBlockById(id)),
     );
     delayUpdateQueue.clear();
-    nextTicket(() => {
+    nextTick(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
   }
@@ -54,7 +54,7 @@ const updateComponent = (
   // 避免过度触发 editorChange 事件
   if (!inLoop) {
     inLoop = true;
-    nextTicket(() => {
+    nextTick(() => {
       inLoop = false;
       document.dispatchEvent(new Event("editorChange"));
     });

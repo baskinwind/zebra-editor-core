@@ -6,7 +6,7 @@ import Block from "./block";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
-import nextTicket from "../util/next-ticket";
+import nextTick from "../util/next-tick";
 
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   tag: string;

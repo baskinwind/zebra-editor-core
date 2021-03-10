@@ -1,19 +1,32 @@
 import Editor from "../editor";
-import nextTicket from "../../util/next-ticket";
+import nextTick from "../../util/next-tick";
 import Component, { IRawType } from "../../components/component";
 import updateComponent from "../../util/update-component";
 
 class ArticleManage {
   editor: Editor;
+  update: boolean;
 
   constructor(editor: Editor) {
     this.editor = editor;
+    this.update = false;
   }
 
   init() {
+    this.update = true;
     this.editor.article.$on("componentUpdated", (component: Component[]) => {
-      updateComponent(this.editor, component);
+      if (this.update) {
+        updateComponent(this.editor, component);
+      }
     });
+  }
+
+  stopUpdate() {
+    this.update = false;
+  }
+
+  startUpdate() {
+    this.update = true;
   }
 
   createEmpty() {
@@ -42,7 +55,7 @@ class ArticleManage {
     this.editor.init(newArticle);
 
     editorDom.appendChild(newArticle.render(this.editor.contentBuilder));
-    nextTicket(() => {
+    nextTick(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
   }

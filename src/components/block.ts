@@ -3,7 +3,7 @@ import ComponentFactory, { getDefaultComponentFactory } from ".";
 import Component, { OperatorType, IRawType, ISnapshoot } from "./component";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
-import nextTicket from "../util/next-ticket";
+import nextTick from "../util/next-tick";
 import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
 
@@ -36,7 +36,7 @@ abstract class Block extends Component {
 
   constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
-    nextTicket(() => {
+    nextTick(() => {
       this.$emit("blockCreated", this);
       this.init();
     });
@@ -221,7 +221,7 @@ abstract class Block extends Component {
     super.destory();
     this.active = false;
     this.parent = undefined;
-    nextTicket(() => {
+    nextTick(() => {
       this.$emit("blockDestoryed", this);
     });
   }

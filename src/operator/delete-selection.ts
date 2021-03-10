@@ -3,11 +3,8 @@ import focusAt from "../selection/focus-at";
 import { Cursor, getSelectedIdList } from "../selection/util";
 
 // 删除 start - end 的内容
-const deleteSelection = (
-  editor: Editor,
-  start: Cursor,
-  end?: Cursor,
-) => {
+const deleteSelection = (editor: Editor, start: Cursor, end?: Cursor) => {
+  // 没有选区不操作
   if (!end || (start.id === end.id && start.offset === end.offset)) {
     return;
   }
@@ -15,6 +12,7 @@ const deleteSelection = (
   let idList = getSelectedIdList(editor.article, start.id, end.id);
   // 选中多行
   if (idList.length === 0) return;
+
   if (idList.length === 1) {
     let block = editor.storeManage.getBlockById(idList[0]);
     let operator = block.remove(start.offset, end.offset);

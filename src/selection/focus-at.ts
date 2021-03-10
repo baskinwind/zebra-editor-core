@@ -1,7 +1,7 @@
 import Component from "../components/component";
 import { Cursor, getCursorPosition } from "./util";
 import { getBeforeSelection } from "./get-selection";
-import nextTicket from "../util/next-ticket";
+import nextTick from "../util/next-tick";
 
 // 选中 start 到 end 的内容
 const focusAt = (
@@ -32,7 +32,7 @@ const focusAt = (
     if (!block) return;
 
     // 让 focus 的节点移入视口内
-    nextTicket(() => {
+    nextTick(() => {
       // @ts-ignore
       block?.scrollIntoView({
         behavior: "smooth",
@@ -117,7 +117,7 @@ const focusNode = (
       contentEdit.focus();
     }
   }
-  nextTicket(() => {
+  nextTick(() => {
     document.dispatchEvent(new Event("editorChange"));
   });
 };

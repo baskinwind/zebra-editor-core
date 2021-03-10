@@ -9,7 +9,7 @@ import input from "./input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import focusAt from "../selection/focus-at";
-import nextTicket from "../util/next-ticket";
+import nextTick from "../util/next-tick";
 
 class UserOperator {
   isFireFox: boolean = navigator.userAgent.indexOf("Firefox") > -1;
@@ -36,12 +36,13 @@ class UserOperator {
       range.selectNode(target);
       section?.addRange(range);
     }
-    nextTicket(() => {
+
+    nextTick(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
   }
 
-  onDBClick(event: MouseEvent) {}
+  onDoubleClick(event: MouseEvent) {}
 
   onPaste(event: ClipboardEvent) {
     onPaste(this.editor, event);
@@ -154,7 +155,7 @@ class UserOperator {
   }
 
   handleArrawKey(direction: DirectionType) {
-    nextTicket(() => {
+    nextTick(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
   }

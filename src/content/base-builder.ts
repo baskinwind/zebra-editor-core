@@ -1,4 +1,4 @@
-import nextTicket from "../util/next-ticket";
+import nextTick from "../util/next-tick";
 import Block from "../components/block";
 
 export interface mapData {
@@ -12,7 +12,7 @@ abstract class BaseBuilder<T = any> {
 
   setUpdateDecorate() {
     this.updateDecorate = true;
-    nextTicket(() => (this.updateDecorate = false));
+    nextTick(() => (this.updateDecorate = false));
   }
 
   abstract buildArticle(

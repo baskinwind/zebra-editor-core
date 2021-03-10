@@ -4,8 +4,6 @@ import getSelection from "../selection/get-selection";
 import enter from "../operator/enter";
 import backspace from "../operator/backspace";
 
-// keydown 主要处理一些特殊表现的按键
-// enter backspace
 const onKeyDown = (editor: Editor, event: KeyboardEvent) => {
   let key = event.key.toLowerCase();
   let isEnter = key === "enter";

@@ -89,7 +89,7 @@ class Media extends Block {
     let paragraph = this.getComponentFactory().buildParagraph();
     this.replaceSelf(paragraph);
 
-    return [[paragraph], { id: this.id, offset: 0 }];
+    return [[paragraph], { id: paragraph.id, offset: 0 }];
   }
 
   split(index: number, block?: Block): OperatorType {

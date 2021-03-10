@@ -6,7 +6,7 @@ import Block from "./block";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
-import nextTicket from "../util/next-ticket";
+import nextTick from "../util/next-tick";
 
 export type listType = "ol" | "ul" | "nl";
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
@@ -146,7 +146,7 @@ class List extends StructureCollection<Block> {
   removeChildren(start: number, end: number = 0): Block[] {
     // 若子元素全部删除，将自己也删除
     if (end === this.getSize()) {
-      nextTicket(() => {
+      nextTick(() => {
         if (this.getSize() !== 0) return;
         this.removeSelf();
       });

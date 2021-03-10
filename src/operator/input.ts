@@ -53,8 +53,9 @@ const input = (
         ? charOrInline.replace(/\n/g, "")
         : charOrInline;
 
-    // TODO: UPDATE TRUE
+    editor.articleManage.stopUpdate();
     component.add(charOrInline, offset);
+    editor.articleManage.startUpdate();
   } catch (e) {
     console.warn(e);
   }

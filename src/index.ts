@@ -23,7 +23,7 @@ import exchange from "./selection/exchange";
 // 操作内容
 import updateComponent from "./util/update-component";
 
-import nextTicket from "./util/next-ticket";
+import nextTick from "./util/next-tick";
 
 export {
   ComponentFactory,
@@ -41,6 +41,6 @@ export {
   modifyTable,
   modifyIndent,
   exchange,
-  nextTicket,
+  nextTick as nextTicket,
   updateComponent,
 };
