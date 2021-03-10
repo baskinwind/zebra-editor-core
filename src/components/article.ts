@@ -5,7 +5,7 @@ import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import updateComponent from "../util/update-component";
+import Editor from "../editor/editor";
 
 class Article extends StructureCollection<Block> {
   type = ComponentType.article;
@@ -43,7 +43,7 @@ class Article extends StructureCollection<Block> {
           this.getComponentFactory().typeMap.PARAGRAPH,
           [],
         );
-        updateComponent(this.editor, block);
+        this.$emit("componentUpdated", [block]);
         return [exchanged];
       }
 

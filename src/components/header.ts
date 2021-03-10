@@ -6,7 +6,6 @@ import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import updateComponent from "../util/update-component";
 import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
 
@@ -101,7 +100,7 @@ class Header extends ContentCollection {
     if (this.headerType === type) return;
     this.headerType = type;
     this.style = styleMap[type];
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
   }
 
   getType(): string {

@@ -28,13 +28,13 @@ class Editor {
   mountedWindow!: Window;
   mountedDocument!: Document;
 
-  articleManage: ArticleManage;
-  historyManage: HistoryManage;
-  storeManage: StoreManage;
-
   userOperator: UserOperator;
   componentFactory: ComponentFactory;
   contentBuilder: ContentBuilder;
+
+  articleManage: ArticleManage;
+  historyManage: HistoryManage;
+  storeManage: StoreManage;
 
   constructor(
     idOrElement: string | HTMLElement,
@@ -62,6 +62,7 @@ class Editor {
     this.articleManage = new ArticleManage(this);
     this.historyManage = new HistoryManage(this);
     this.storeManage = new StoreManage(this);
+    this.init(article);
 
     createEditor(
       this.mountedElement,
@@ -78,6 +79,7 @@ class Editor {
 
   init(article: Article) {
     this.article = article;
+    this.articleManage.init();
     this.historyManage.init();
     this.storeManage.init();
   }

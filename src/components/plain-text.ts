@@ -3,7 +3,6 @@ import Component, { OperatorType, IRawType } from "./component";
 import Block, { IBlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
-import updateComponent from "../util/update-component";
 import { StoreData } from "../decorate";
 import { createError } from "../util/handle-error";
 
@@ -55,7 +54,7 @@ abstract class PlainText extends Block {
     index = index === undefined ? this.content.length : index;
     let addString = [...string];
     this.content.splice(index, 0, ...addString);
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
 
     return [[this], { id: this.id, offset: index + addString.length }];
   }
@@ -67,7 +66,7 @@ abstract class PlainText extends Block {
     }
 
     this.content.splice(start, end - start);
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
     return [[this], { id: this.id, offset: start }];
   }
 

@@ -8,7 +8,6 @@ import ComponentFactory from ".";
 import ComponentType from "../const/component-type";
 import BaseBuilder from "../content/base-builder";
 import StructureType from "../const/structure-type";
-import updateComponent from "../util/update-component";
 import { createError } from "../util/handle-error";
 
 abstract class ContentCollection extends Collection<Inline> {
@@ -69,7 +68,7 @@ abstract class ContentCollection extends Collection<Inline> {
       this.getChild(i)?.modifyDecorate(style, data);
     }
 
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
     return [
       [this],
       { id: this.id, offset: start },
@@ -96,7 +95,7 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     this.addChildren(index, inline);
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
     return [[this], { id: this.id, offset: index + inline.length }];
   }
 
@@ -113,7 +112,7 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     this.removeChildren(start, end);
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
     return [[this], { id: this.id, offset: start }];
   }
 
@@ -155,7 +154,8 @@ abstract class ContentCollection extends Collection<Inline> {
       parent.add(block, blockIndex + 1);
     }
 
-    return [addBlock, { id: this.id, offset: index }];
+    this.$emit("componentUpdated", [this, ...addBlock]);
+    return [addBlock, { id: addBlock[0].id, offset: 0 }];
   }
 
   addText(text: string, index?: number): OperatorType {
@@ -197,7 +197,7 @@ abstract class ContentCollection extends Collection<Inline> {
     block.removeSelf();
 
     this.children = this.children.push(...block.children);
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
 
     return [[this], { id: this.id, offset: size }];
   }

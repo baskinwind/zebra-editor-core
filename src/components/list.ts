@@ -5,7 +5,6 @@ import StructureCollection from "./structure-collection";
 import Block from "./block";
 import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
-import updateComponent from "../util/update-component";
 import { StoreData } from "../decorate";
 import nextTicket from "../util/next-ticket";
 
@@ -88,7 +87,7 @@ class List extends StructureCollection<Block> {
     } else {
       this.decorate.mergeStyle({ remove: "paddingLeft" });
     }
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
   }
 
   getType(): string {

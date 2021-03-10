@@ -2,7 +2,6 @@ import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
-import updateComponent from "../util/update-component";
 import { mergerStatistic } from "./util";
 import { createError } from "../util/handle-error";
 
@@ -112,7 +111,6 @@ abstract class StructureCollection<
     });
 
     let newBlock = super.addChildren(index, component);
-    updateComponent(this.editor, [...component].reverse());
     return newBlock;
   }
 
@@ -133,7 +131,7 @@ abstract class StructureCollection<
       item.recordSnapshoot();
     });
 
-    updateComponent(this.editor, removed);
+    this.$emit("componentUpdated", removed);
     return removed;
   }
 
@@ -162,7 +160,7 @@ abstract class StructureCollection<
     });
 
     this.children = this.children.splice(index, 1, ...block);
-    updateComponent(this.editor, [oldComponent, ...[...block].reverse()]);
+    this.$emit("componentUpdated", [oldComponent, ...[...block].reverse()]);
     return block;
   }
 

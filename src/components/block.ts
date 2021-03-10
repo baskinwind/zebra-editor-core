@@ -6,7 +6,6 @@ import ComponentType from "../const/component-type";
 import nextTicket from "../util/next-ticket";
 import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
-import updateComponent from "../util/update-component";
 
 export type BlockType = typeof Block;
 export interface IBlockSnapshoot extends ISnapshoot {
@@ -166,7 +165,7 @@ abstract class Block extends Component {
   // 修改组件的表现形式
   modifyDecorate(style?: StoreData, data?: StoreData) {
     super.modifyDecorate(style, data);
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
     return [[this]];
   }
 

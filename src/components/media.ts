@@ -5,7 +5,6 @@ import BaseBuilder from "../content/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { StoreData } from "../decorate/index";
-import updateComponent from "../util/update-component";
 
 export type mediaType = "image" | "audio" | "video";
 
@@ -43,7 +42,7 @@ class Media extends Block {
   setSrc(src: string) {
     if (this.src === src) return;
     this.src = src;
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
     this.recordSnapshoot();
   }
 

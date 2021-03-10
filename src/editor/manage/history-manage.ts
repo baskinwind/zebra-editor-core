@@ -25,7 +25,6 @@ class HistoryManage {
 
   constructor(editor: Editor) {
     this.editor = editor;
-    this.init();
   }
 
   init() {

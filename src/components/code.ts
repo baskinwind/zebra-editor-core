@@ -4,7 +4,6 @@ import Component, { IRawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
-import updateComponent from "../util/update-component";
 import { StoreData } from "../decorate";
 import Block from "./block";
 
@@ -59,7 +58,7 @@ class Code extends PlainText {
 
   setLanguage(language: string) {
     this.language = language;
-    updateComponent(this.editor, this);
+    this.$emit("componentUpdated", [this]);
   }
 
   getStatistic() {

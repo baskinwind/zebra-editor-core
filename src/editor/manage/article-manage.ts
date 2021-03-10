@@ -1,13 +1,19 @@
 import Editor from "../editor";
-import { throttle } from "lodash";
 import nextTicket from "../../util/next-ticket";
-import { IRawType } from "../../components/component";
+import Component, { IRawType } from "../../components/component";
+import updateComponent from "../../util/update-component";
 
 class ArticleManage {
   editor: Editor;
 
   constructor(editor: Editor) {
     this.editor = editor;
+  }
+
+  init() {
+    this.editor.article.$on("componentUpdated", (component: Component[]) => {
+      updateComponent(this.editor, component);
+    });
   }
 
   createEmpty() {
