@@ -1,14 +1,9 @@
-import Component from "../components/component";
 import { Cursor, getCursorPosition } from "./util";
 import { getBeforeSelection } from "./get-selection";
 import nextTick from "../util/next-tick";
 
 // 选中 start 到 end 的内容
-const focusAt = (
-  contentWindow: Window,
-  start?: Cursor,
-  end?: Cursor,
-) => {
+const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
   try {
     if (!start) {
       // 若无选区，则使用前一步的选区内容

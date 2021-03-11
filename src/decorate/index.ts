@@ -82,7 +82,7 @@ class Decorate {
       return;
     }
     if (name === "toggle") {
-      this.removeStyle(value as string);
+      this.toggleData(value as string);
     }
     this.data = this.data.set(name, value);
   }

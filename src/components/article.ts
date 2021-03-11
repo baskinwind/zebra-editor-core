@@ -24,8 +24,7 @@ class Article extends StructureCollection<Block> {
           );
         })
       : [];
-    // TODO: update true
-    article.add(children, 0);
+    article.add(children);
     return article;
   }
 

@@ -5,6 +5,7 @@ import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import { StoreData } from "../decorate";
 import { createError } from "../util/handle-error";
+import Character from "./character";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
   content: string;
@@ -84,8 +85,12 @@ abstract class PlainText extends Block {
 
     // 内容集合组件添加其中的文字内容
     if (block instanceof ContentCollection) {
-      // TODO: 需要判断是否是图片
-      this.add(block.children.map((item) => item.content).join("") + "\n");
+      this.add(
+        block.children
+          .filter((item) => item instanceof Character)
+          .map((item) => item.content)
+          .join("") + "\n",
+      );
       // 纯文本组件直接合并
     } else if (block instanceof PlainText) {
       this.content.push(...block.content);

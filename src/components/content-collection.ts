@@ -55,11 +55,12 @@ abstract class ContentCollection extends Collection<Inline> {
 
   modifyContentDecorate(
     start: number = 0,
-    end: number = -1,
+    end: number = 0,
     style?: StoreData,
     data?: StoreData,
   ): OperatorType {
-    end = end < 0 ? this.getSize() + end : end;
+    end = end <= 0 ? this.getSize() + end : end;
+
     if (start > end || (!style && !data)) {
       return [[this], { id: this.id, offset: start }];
     }
@@ -136,26 +137,33 @@ abstract class ContentCollection extends Collection<Inline> {
   split(index: number, block?: Block | Block[]): OperatorType {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
-    let splitBlock = this.splitChild(index);
 
-    let addBlock: Block[] = [];
-
-    if (!block || splitBlock.getSize() !== 0) {
-      addBlock.push(splitBlock);
-      parent.add(splitBlock, blockIndex + 1);
+    if (index === 0) {
+      if (block) {
+        parent.add(block, blockIndex);
+      }
+      return [[], { id: this.id, offset: 0 }];
     }
+
+    let splitBlock = this.splitChild(index);
+    let newBlockList: Block[] = [];
 
     if (block) {
       if (!Array.isArray(block)) {
-        block = [block];
+        newBlockList.push(block);
+      } else {
+        newBlockList.push(...block);
       }
-
-      addBlock.push(...block);
-      parent.add(block, blockIndex + 1);
     }
 
-    this.$emit("componentUpdated", [this, ...addBlock]);
-    return [addBlock, { id: addBlock[0].id, offset: 0 }];
+    if (splitBlock.getSize() !== 0) {
+      newBlockList.push(splitBlock);
+    }
+
+    parent.add(newBlockList, blockIndex + 1);
+
+    this.$emit("componentUpdated", [this]);
+    return [newBlockList, { id: splitBlock.id, offset: 0 }];
   }
 
   addText(text: string, index?: number): OperatorType {

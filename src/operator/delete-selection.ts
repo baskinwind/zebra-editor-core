@@ -2,7 +2,7 @@ import Editor from "../editor/editor";
 import focusAt from "../selection/focus-at";
 import { Cursor, getSelectedIdList } from "../selection/util";
 
-// 删除 start - end 的内容
+// 删除 start 到 end 的内容
 const deleteSelection = (editor: Editor, start: Cursor, end?: Cursor) => {
   // 没有选区不操作
   if (!end || (start.id === end.id && start.offset === end.offset)) {
@@ -21,14 +21,15 @@ const deleteSelection = (editor: Editor, start: Cursor, end?: Cursor) => {
 
   let headBlock = editor.storeManage.getBlockById(idList[0]);
   let tailBlock = editor.storeManage.getBlockById(idList[idList.length - 1]);
-  headBlock.remove(start.offset);
 
-  // 其他情况，删除中间行，首尾行合并
+  // 删除选中内容
+  headBlock.remove(start.offset, 0);
   for (let i = 1; i < idList.length - 1; i++) {
     editor.storeManage.getBlockById(idList[i]).removeSelf();
   }
-
   tailBlock.remove(0, end.offset);
+
+  // 首尾行合并
   tailBlock.sendTo(headBlock);
 
   return focusAt(editor.mountedWindow, {

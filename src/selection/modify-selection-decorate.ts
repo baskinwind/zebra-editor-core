@@ -15,18 +15,21 @@ const modifySelectionDecorate = (
   if (selection.isCollapsed) {
     return;
   }
+
   let start = selection.range[0];
   let end = selection.range[1];
 
   let idList = getSelectedIdList(start.id, end.id);
   // 未选中内容，不需要处理
   if (idList.length === 0) return;
+
   // 选中一行
   if (idList.length === 1) {
     let component = editor.storeManage.getBlockById(idList[0]);
     component.modifyContentDecorate(start.offset, end.offset - 1, style, data);
     return focusAt(editor.mountedWindow, start, end);
   }
+
   // 其他情况
   let firstComponent = editor.storeManage.getBlockById(idList[0]);
   let lastComponent = editor.storeManage.getBlockById(

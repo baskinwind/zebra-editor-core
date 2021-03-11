@@ -49,8 +49,8 @@ class List extends StructureCollection<Block> {
     } else {
       // 否则新生成一个 List
       let newList = componentFactory.buildList(args[0]);
-      newList.add(block, 0);
-      parent.add(newList);
+      newList.add(block);
+      parent.add(newList, index);
     }
     return [block];
   }
@@ -157,8 +157,7 @@ class List extends StructureCollection<Block> {
   }
 
   childHeadDelete(block: Block): OperatorType {
-    let parent = this.getParent();
-    let index = this.getParent().findChildrenIndex(this);
+    let index = this.findChildrenIndex(block);
 
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
@@ -169,7 +168,9 @@ class List extends StructureCollection<Block> {
 
     // 第一项时，直接将该列表项添加到父元素上
     block.removeSelf();
-    return parent.add(block, index);
+    let parent = this.getParent();
+    let parentIndex = parent.findChildrenIndex(this);
+    return parent.add(block, parentIndex);
   }
 
   sendTo(block: Block): OperatorType {

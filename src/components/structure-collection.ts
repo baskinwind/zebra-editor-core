@@ -18,10 +18,6 @@ abstract class StructureCollection<
   findChildrenIndex(idOrBlock: string | Block): number {
     let blockId = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
     let index = this.children.findIndex((item) => item.id === blockId);
-
-    if (index < 0) {
-      throw createError("该组件不在子组件列表中", this);
-    }
     return index;
   }
 
@@ -110,8 +106,9 @@ abstract class StructureCollection<
       item.recordSnapshoot();
     });
 
-    let newBlock = super.addChildren(index, component);
-    return newBlock;
+    let newBlockList = super.addChildren(index, component);
+    this.$emit("componentUpdated", newBlockList);
+    return newBlockList;
   }
 
   add(block: T | T[], index: number = 0): OperatorType {
@@ -160,7 +157,7 @@ abstract class StructureCollection<
     });
 
     this.children = this.children.splice(index, 1, ...block);
-    this.$emit("componentUpdated", [oldComponent, ...[...block].reverse()]);
+    this.$emit("componentUpdated", [oldComponent, ...block]);
     return block;
   }
 

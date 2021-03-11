@@ -3,7 +3,6 @@ import Block from "../components/block";
 import getSelection from "./get-selection";
 import deleteSelection from "../operator/delete-selection";
 import focusAt from "./focus-at";
-import StructureType from "../const/structure-type";
 
 // 在光标处插入一个内容块
 const insertBlock = (editor: Editor, block: Block | Block[]) => {
@@ -17,9 +16,6 @@ const insertBlock = (editor: Editor, block: Block | Block[]) => {
     let nowComponent = editor.storeManage.getBlockById(selection.range[0].id);
     let start = selection.range[0].offset;
     let operator = nowComponent.split(start, block);
-    if (focus[0][0].structureType === StructureType.structure) {
-      return;
-    }
     focusAt(editor.mountedWindow, operator[1], operator[2]);
   } catch (e) {
     console.warn(e);

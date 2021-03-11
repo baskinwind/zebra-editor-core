@@ -54,18 +54,19 @@ const backspace = (
 
   let headBlock = editor.storeManage.getBlockById(idList[0]);
   let tailBlock = editor.storeManage.getBlockById(idList[idList.length - 1]);
-  // 为了避免 send 时，组件不更新，此处需要开启更新
-  let operator = headBlock.remove(start.offset);
 
-  // 其他情况，删除中间行，首尾行合并
+  // 删除选中内容
+  headBlock.remove(start.offset, 0);
   for (let i = 1; i < idList.length - 1; i++) {
     editor.storeManage.getBlockById(idList[i]).removeSelf();
   }
   tailBlock.remove(0, end.offset);
+
+  // 首尾行合并
   tailBlock.sendTo(headBlock);
 
   return focusAt(editor.mountedWindow, {
-    id: operator[0][0].id,
+    id: headBlock.id,
     offset: start.offset,
   });
 };

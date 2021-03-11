@@ -39,7 +39,7 @@ const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
     while (index < exchangeList.length) {
       let component = exchangeList[index];
       let size = component.getSize();
-      if (!nowStart.id && nowStart.offset >= 0 && nowStart.offset <= size) {
+      if (nowStart.offset <= size) {
         nowStart.id = component.id;
         break;
       }
@@ -52,7 +52,7 @@ const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
     while (tailIndex >= 0) {
       let component = exchangeList[tailIndex];
       let size = component.getSize();
-      if (!nowEnd.id && nowEnd.offset >= 0 && nowEnd.offset <= size) {
+      if (nowEnd.offset <= size) {
         nowEnd.id = component.id;
         nowEnd.offset = size - nowEnd.offset;
         break;
@@ -60,6 +60,7 @@ const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
       nowEnd.offset -= size;
       tailIndex -= 1;
     }
+
     focusAt(editor.mountedWindow, nowStart, nowEnd);
   } catch (err) {
     console.warn(err);
