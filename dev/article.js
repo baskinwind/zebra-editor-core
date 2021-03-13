@@ -85,12 +85,16 @@ para.add(
 para.addInto(article);
 
 article.add(factory.buildHeader("h3", "表格"));
-let table = factory.buildTable(3, 3, [
+let table = factory.buildTable(
+  3,
+  3,
   ["表头一", "表头二", "表头三"],
-  ["1-1", "1-2", "1-3"],
-  ["2-1", "2-2", "2-3"],
-  ["3-1", "3-2", "3-3"],
-]);
+  [
+    ["1-1", "1-2", "1-3"],
+    ["2-1", "2-2", "2-3"],
+    ["3-1", "3-2", "3-3"],
+  ],
+);
 table.addInto(article);
 
 factory.buildParagraph().addInto(article);

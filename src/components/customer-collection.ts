@@ -162,16 +162,13 @@ class CustomerCollection extends StructureCollection<Block> {
     super.restore(state);
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     let content = contentBuilder.buildCustomerCollection(
       this.id,
       this.tag,
-      () =>
-        this.children
-          .map((item) => item.render(contentBuilder, onlyDecorate))
-          .toArray(),
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
     return content;
   }

@@ -8,7 +8,7 @@ import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import nextTick from "../util/next-tick";
 
-export type listType = "ol" | "ul" | "nl";
+export type listType = "ol" | "ul";
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   listType: listType;
 }
@@ -70,23 +70,11 @@ class List extends StructureCollection<Block> {
       return item;
     });
     this.addChildren(0, list);
-    if (this.listType === "nl") {
-      this.decorate.mergeStyle({
-        paddingLeft: "0px",
-      });
-    }
   }
 
   setListType(type: listType = "ol") {
     if (type === this.listType) return;
     this.listType = type;
-    if (this.listType === "nl") {
-      this.decorate.mergeStyle({
-        paddingLeft: "0px",
-      });
-    } else {
-      this.decorate.mergeStyle({ remove: "paddingLeft" });
-    }
     this.$emit("componentUpdated", [this]);
   }
 
@@ -113,19 +101,6 @@ class List extends StructureCollection<Block> {
       this.decorate.copyStyle(),
       this.decorate.copyData(),
     );
-  }
-
-  addChildren(index: number, block: Block[]) {
-    // 列表仅能添加 wrapper 包裹的组件
-    let list: Block[] = block.map((item) => {
-      if (this.listType === "nl") {
-        item.decorate.mergeStyle({ display: "block" });
-      } else {
-        item.decorate.mergeStyle({ remove: "display" });
-      }
-      return item;
-    });
-    return super.addChildren(index, list);
   }
 
   add(block: Block | Block[], index: number = 0): OperatorType {
@@ -204,17 +179,23 @@ class List extends StructureCollection<Block> {
     super.restore(state);
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     let content = contentBuilder.buildList(
       this.id,
-      () =>
-        this.children
-          .map((item) => contentBuilder.buildListItem(item, onlyDecorate))
-          .toArray(),
-      this.decorate.getStyle(onlyDecorate),
+      () => {
+        return this.children
+          .map((item) => {
+            return contentBuilder.buildListItem(
+              item.render(contentBuilder),
+              item.structureType,
+            );
+          })
+          .toArray();
+      },
+      this.decorate.getStyle(),
       {
-        ...this.decorate.getData(onlyDecorate),
-        tag: this.listType === "nl" ? "ul" : this.listType,
+        ...this.decorate.getData(),
+        tag: this.listType,
       },
     );
     return content;

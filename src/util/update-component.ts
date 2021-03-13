@@ -63,35 +63,27 @@ const updateComponent = (
   }
 };
 
-const recallQueue: [Block, HTMLElement][] = [];
+const recallQueue: [Block, string, HTMLElement, HTMLElement][] = [];
 
 const handleRecallQueue = (editor: Editor) => {
   let containDocument = editor.mountedDocument;
 
   while (recallQueue.length) {
-    const [component, dom] = recallQueue.pop()!;
+    const [component, afterComId, dom, parentDom] = recallQueue.pop()!;
     const parentComponent = component.parent;
 
     if (!parentComponent) continue;
-    let parentDom = containDocument.getElementById(parentComponent.id);
 
-    if (!parentDom) continue;
-    let index = parentComponent.findChildrenIndex(component);
     let isList = parentComponent.type === ComponentType.list;
 
-    if (index === parentComponent.getSize() - 1) {
-      parentDom.appendChild(dom);
+    let afterDom = containDocument.getElementById(afterComId);
+    if (isList) {
+      afterDom = afterDom?.parentElement as HTMLElement;
+    }
+    if (afterDom) {
+      parentDom.insertBefore(dom, afterDom);
     } else {
-      let afterComId = parentComponent.getChild(index + 1).id;
-      let afterDom = containDocument.getElementById(afterComId);
-      if (isList) {
-        afterDom = afterDom?.parentElement as HTMLElement;
-      }
-      if (afterDom) {
-        parentDom.insertBefore(dom, afterDom);
-      } else {
-        recallQueue.push([component, dom]);
-      }
+      recallQueue.push([component, afterComId, dom, parentDom]);
     }
   }
 };
@@ -113,17 +105,18 @@ const update = (editor: Editor, component: Component) => {
   }
 
   let isList = component.parent.type === ComponentType.list;
+  let newDom: HTMLElement = component.render(editor.contentBuilder);
+  if (isList) {
+    newDom = editor.contentBuilder.buildListItem(
+      component.render(editor.contentBuilder),
+      component.structureType,
+    );
+  }
 
   if (component instanceof Block) {
     if (oldDom) {
       if (component.active) {
-        let newDom: HTMLElement;
-        newDom = component.render(editor.contentBuilder);
-        // 当仅发生样式变化时，render 返回节点不会变化
-        if (newDom === oldDom) return;
-
         if (isList) {
-          newDom = editor.contentBuilder.buildListItem(component);
           oldDom = oldDom.parentElement;
         }
 
@@ -154,16 +147,6 @@ const update = (editor: Editor, component: Component) => {
         return;
       }
 
-      // 组件渲染结果
-      let newDom: HTMLElement;
-
-      // 列表的子组件需要嵌套 li
-      if (isList) {
-        newDom = editor.contentBuilder.buildListItem(component);
-      } else {
-        newDom = component.render(editor.contentBuilder);
-      }
-
       // 将该组件插入到合适的位置
       let index = parentComponent.findChildrenIndex(component);
       if (index === parentComponent.getSize() - 1) {
@@ -177,12 +160,11 @@ const update = (editor: Editor, component: Component) => {
         if (afterDom) {
           parentDom.insertBefore(newDom, afterDom);
         } else {
-          recallQueue.push([component, newDom]);
+          recallQueue.push([component, afterComId, newDom, parentDom]);
         }
       }
     }
   } else {
-    let newDom = component.render(editor.contentBuilder);
     if (oldDom) {
       oldDom.replaceWith(newDom);
     } else if (component.parent) {

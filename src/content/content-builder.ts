@@ -132,18 +132,13 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return list;
   }
 
-  buildListItem(block: Block, onlyDecorate: boolean = false): HTMLElement {
+  buildListItem(list: HTMLElement, structureType: StructureType): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let li = containDocument.createElement("li");
-    li.appendChild(block.render(this, onlyDecorate));
+    li.appendChild(list);
     let style: mapData = {};
-    if (block.structureType !== StructureType.content) {
+    if (structureType !== StructureType.content) {
       style.display = "block";
-    }
-    let parent = block.getParent();
-    // @ts-ignore
-    if (parent.listType === "nl") {
-      style.listStyle = "none";
     }
     this.addStyle(li, style);
     return li;

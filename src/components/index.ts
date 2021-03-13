@@ -63,12 +63,12 @@ class ComponentFactory {
   buildTable(
     row: number,
     col: number,
+    head: string[] = [],
     children: (string[] | string)[][] = [],
-    needHead: boolean = true,
     style: StoreData = {},
     data: StoreData = {},
   ) {
-    return new Table(row, col, children, needHead, style, data);
+    return new Table(row, col, head, children, style, data);
   }
 
   buildHeader(

@@ -138,13 +138,6 @@ abstract class ContentCollection extends Collection<Inline> {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
 
-    if (index === 0) {
-      if (block) {
-        parent.add(block, blockIndex);
-      }
-      return [[], { id: this.id, offset: 0 }];
-    }
-
     let splitBlock = this.splitChild(index);
     let newBlockList: Block[] = [];
 
@@ -161,7 +154,6 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     parent.add(newBlockList, blockIndex + 1);
-
     this.$emit("componentUpdated", [this]);
     return [newBlockList, { id: splitBlock.id, offset: 0 }];
   }

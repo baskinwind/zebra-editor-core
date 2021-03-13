@@ -98,8 +98,6 @@ abstract class StructureCollection<
   }
 
   addChildren(index: number, component: T[]): T[] {
-    index = index ? index : this.getSize();
-
     component.forEach((item) => {
       item.parent = this;
       item.active = true;
@@ -111,10 +109,15 @@ abstract class StructureCollection<
     return newBlockList;
   }
 
-  add(block: T | T[], index: number = 0): OperatorType {
+  add(block: T | T[], index?: number): OperatorType {
+    if (index === undefined) {
+      index = this.getSize();
+    }
+
     if (!Array.isArray(block)) {
       block = [block];
     }
+
     this.addChildren(index, block);
     return [block];
   }

@@ -1,5 +1,6 @@
 import nextTick from "../util/next-tick";
 import Block from "../components/block";
+import StructureType from "../const/structure-type";
 
 export interface mapData {
   [key: string]: any;
@@ -59,7 +60,7 @@ abstract class BaseBuilder<T = any> {
     data: mapData,
   ): T;
 
-  abstract buildListItem(block: Block, onlyDecorate?: boolean): T;
+  abstract buildListItem(list: T, structureType: StructureType): T;
 
   abstract buildParagraph(
     id: string,

@@ -82,13 +82,13 @@ class Code extends PlainText {
     );
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildCode(
       this.id,
       this.content.join(""),
       this.language,
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
   }
 }

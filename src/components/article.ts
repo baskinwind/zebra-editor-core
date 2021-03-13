@@ -65,15 +65,12 @@ class Article extends StructureCollection<Block> {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildArticle(
       this.id,
-      () =>
-        this.children
-          .map((item) => item.render(contentBuilder, onlyDecorate))
-          .toArray(),
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
   }
 }

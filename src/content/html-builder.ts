@@ -127,13 +127,12 @@ class HtmlBuilder extends BaseBuilder<string> {
     );
   }
 
-  buildListItem(block: Block, onlyDecorate: boolean = false): string {
-    let children = block.render(this, onlyDecorate);
+  buildListItem(list: string, structureType: StructureType): string {
     let style: mapData = {};
-    if (block.structureType !== StructureType.content) {
+    if (structureType !== StructureType.content) {
       style.display = "block";
     }
-    return this.buildHtml("li", "zebra-editor-list-item", style, children);
+    return this.buildHtml("li", "zebra-editor-list-item", style, list);
   }
 
   buildParagraph(

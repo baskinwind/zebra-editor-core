@@ -32,12 +32,12 @@ class InlineImage extends Inline {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildInlineImage(
       this.id,
       this.src,
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
   }
 }

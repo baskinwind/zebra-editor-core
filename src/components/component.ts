@@ -31,7 +31,7 @@ export interface IRawType {
   // fro Header
   headerType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   // for List
-  listType?: "ul" | "ol" | "nl";
+  listType?: "ul" | "ol";
   // for Table
   row?: number;
   col?: number;
@@ -119,7 +119,7 @@ abstract class Component extends Event {
   }
 
   // 渲染该组件
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false): any {
+  render(contentBuilder: BaseBuilder): any {
     throw createError("请为组件添加 render 函数");
   }
 

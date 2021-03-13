@@ -131,7 +131,7 @@ new Vue({
     },
 
     addTable() {
-      let table = editor.componentFactory.buildTable(3, 3);
+      let table = editor.componentFactory.buildTable(3, 3, []);
       insertBlock(editor, table);
       focusAt(editor.mountedWindow, [
         table.getChild(0).getChild(0).getChild(0),

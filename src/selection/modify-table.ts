@@ -18,13 +18,13 @@ const modifyTable = (
   let table = Table.getTable(component);
   if (!table) return;
   if (option.row) {
-    table.setTableRow(option.row);
+    table.setRow(option.row);
   }
   if (option.col) {
-    table.setTableCol(option.col);
+    table.setCol(option.col);
   }
   if (option.head !== undefined) {
-    table.setTableHead(option.head);
+    table.setHead(option.head);
   }
 };
 

@@ -91,8 +91,12 @@ abstract class Block extends Component {
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
   addInto(
     collection: StructureCollection<Block>,
-    index: number = 0,
+    index?: number,
   ): OperatorType {
+    if (index === undefined) {
+      index = collection.getSize();
+    }
+
     let newBlock = collection.addChildren(index, [this]);
     return [newBlock];
   }

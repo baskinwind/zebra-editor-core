@@ -148,12 +148,12 @@ class Header extends ContentCollection {
     super.restore(state);
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildParagraph(
       this.id,
       () => this.getContent(contentBuilder),
-      this.decorate.getStyle(onlyDecorate),
-      { ...this.decorate.getData(onlyDecorate), tag: this.headerType },
+      this.decorate.getStyle(),
+      { ...this.decorate.getData(), tag: this.headerType },
     );
   }
 }

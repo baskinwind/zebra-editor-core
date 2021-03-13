@@ -1,6 +1,6 @@
 import ComponentFactory from ".";
 import { OperatorType, IRawType } from "./component";
-import Block, { BlockType } from "./block";
+import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
 import BaseBuilder from "../content/base-builder";
@@ -9,7 +9,7 @@ import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
 import { createError } from "../util/handle-error";
 
-type tableCellChildType = string | TableItem | undefined;
+type tableCellType = string | string[];
 
 interface ITableSnapshoot extends ICollectionSnapshoot<TableRow> {
   col: number;
@@ -18,8 +18,6 @@ interface ITableSnapshoot extends ICollectionSnapshoot<TableRow> {
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
-  col: number;
-  needHead: boolean;
   style: StoreData = {
     margin: "auto",
     overflowX: "auto",
@@ -40,54 +38,47 @@ class Table extends StructureCollection<TableRow> {
   }
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Table {
-    let table = componentFactory.buildTable(
-      0,
-      0,
-      [],
-      false,
-      raw.style,
-      raw.data,
-    );
+    let table = componentFactory.buildTable(0, 0, [], [], raw.style, raw.data);
     let children = raw.children
       ? raw.children.map((item) => TableRow.create(componentFactory, item))
       : [];
     table.addChildren(0, children);
-    table.col = raw.col || 0;
-    table.needHead = raw.needHead || false;
     return table;
   }
 
   constructor(
     row: number,
     col: number,
-    children: (tableCellChildType[] | tableCellChildType)[][] = [],
-    needHead: boolean = true,
+    head: tableCellType[] | boolean = true,
+    rows: tableCellType[][] = [],
     style?: StoreData,
     data?: StoreData,
   ) {
     super(style, data);
-    this.needHead = needHead;
 
-    let rows = [];
-    for (let i = 0; i < row + (needHead ? 1 : 0); i++) {
-      if (needHead && i === 0) {
-        rows.push(new TableRow(col, children[i], "th"));
-      } else {
-        rows.push(new TableRow(col, children[i]));
+    let tableRows = [];
+    if (head) {
+      if (head === true) {
+        head = [];
       }
+      tableRows.push(new TableRow(col, "th", head));
     }
-    this.col = col;
-    this.addChildren(0, rows);
+
+    for (let i = 0; i < row; i++) {
+      tableRows.push(new TableRow(col, "td", rows[i]));
+    }
+
+    this.addChildren(0, tableRows);
   }
 
   addRow(index: number) {
-    let newTableRow = new TableRow(this.col);
+    let cellSize = this.getChild(0).getSize();
+    let newTableRow = new TableRow(cellSize);
     this.add(newTableRow, index);
   }
 
   addCol(index: number) {
-    this.col += 1;
-    this.children.forEach((item) => item.addCol(index));
+    this.children.forEach((item) => item.addCell(index));
   }
 
   removeChildren(start: number, end: number = 0): TableRow[] {
@@ -100,72 +91,60 @@ class Table extends StructureCollection<TableRow> {
     return operator;
   }
 
-  removeRow(index: number) {
-    this.remove(index, index + 1);
+  removeRow(start: number, end: number = start + 1) {
+    this.remove(start, end);
   }
 
-  removeCol(index: number) {
-    this.col -= 1;
-    this.children.forEach((item) => item.remove(index, index + 1));
+  removeCol(start: number, end: number = start + 1) {
+    this.children.forEach((item) => item.remove(start, end));
   }
 
-  setTableRow(row: number) {
-    row = row + (this.needHead ? 1 : 0);
+  setRow(row: number) {
     let size = this.getSize();
-    if (!row || row === size) return;
-    if (row > size) {
+    let cellSize = this.getChild(0).getSize();
+    let hasHead = this.getChild(0).cellType === "th";
+    let rowSize = hasHead ? size - 1 : size;
+
+    if (row === rowSize) {
+      return;
+    }
+
+    if (row > rowSize) {
       let list = [];
-      for (let i = size; i < row; i++) {
-        let item = new TableRow(this.col);
+      for (let i = rowSize; i < row; i++) {
+        let item = new TableRow(cellSize);
         list.push(item);
       }
-      this.addChildren(0, list);
+      this.add(list, size + 1);
     } else {
       this.remove(row, size);
     }
   }
 
-  setTableCol(col: number) {
-    if (col === this.col) return;
+  setCol(col: number) {
     this.children.forEach((item) => item.setSize(col));
-    this.col = col;
   }
 
-  setTableHead(needHead?: boolean) {
-    if (needHead === undefined) return;
-    if (needHead === this.needHead) return;
-    if (needHead) {
-      this.add(new TableRow(this.col, [], "th"), 0);
+  setHead(head: boolean) {
+    let hasHead = this.getChild(0).cellType === "th";
+
+    if (head === hasHead) return;
+
+    if (head) {
+      let colNumber = this.getChild(0).getSize();
+      this.add(new TableRow(colNumber, "th", []), 0);
     } else {
       this.remove(0, 1);
     }
-    this.needHead = needHead;
   }
 
-  receive(block?: Block): OperatorType {
-    if (!block) return [[this]];
+  receive(block: Block): OperatorType {
     this.removeSelf();
-    return [[block]];
-  }
-
-  snapshoot(): ITableSnapshoot {
-    let snap = super.snapshoot() as ITableSnapshoot;
-    snap.needHead = this.needHead;
-    snap.col = this.col;
-    return snap;
+    return [[block], { id: block.id, offset: 0 }];
   }
 
   restore(state: ITableSnapshoot) {
-    this.needHead = state.needHead;
-    this.col = state.col;
     super.restore(state);
-  }
-
-  getRaw() {
-    let raw = super.getRaw();
-    raw.col = this.col;
-    raw.needHead = this.needHead;
-    return raw;
   }
 
   getStatistic() {
@@ -174,15 +153,12 @@ class Table extends StructureCollection<TableRow> {
     return res;
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildTable(
       this.id,
-      () =>
-        this.children
-          .map((item) => item.render(contentBuilder, onlyDecorate))
-          .toArray(),
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
   }
 }
@@ -195,7 +171,13 @@ class TableRow extends StructureCollection<TableCell> {
   cellType: "th" | "td";
 
   static create(componentFactory: ComponentFactory, raw: IRawType): TableRow {
-    let tableRow = new TableRow(0, [], raw.cellType, raw.style, raw.data);
+    let tableRow = new TableRow(
+      raw.children!.length,
+      raw.cellType,
+      [],
+      raw.style,
+      raw.data,
+    );
     let children = raw.children
       ? raw.children.map((item) => TableCell.create(componentFactory, item))
       : [];
@@ -205,58 +187,48 @@ class TableRow extends StructureCollection<TableCell> {
 
   constructor(
     size: number,
-    children: (tableCellChildType[] | tableCellChildType)[] = [],
     cellType: "th" | "td" = "td",
+    children: tableCellType[] = [],
     style?: StoreData,
     data?: StoreData,
   ) {
     super(style, data);
     this.cellType = cellType;
-    let list = [];
+
+    let cells = [];
     for (let i = 0; i < size; i++) {
-      let item = new TableCell(children[i], this.cellType);
-      list.push(item);
+      if (children[i]) {
+        cells.push(new TableCell(this.cellType, children[i]));
+      } else {
+        cells.push(new TableCell(this.cellType));
+      }
     }
-    super.addChildren(0, list);
+
+    super.addChildren(0, cells);
   }
 
-  addCol(index?: number): OperatorType {
-    let newTableCell = new TableCell("", this.cellType);
+  addCell(index?: number) {
+    let newTableCell = new TableCell(this.cellType);
     this.add(newTableCell, index);
-    return [[this]];
+    return newTableCell;
   }
 
   setSize(size: number) {
-    let oldSize = this.getSize();
-    if (size === oldSize) return;
-    if (size > oldSize) {
+    let cellSize = this.getSize();
+
+    if (size === cellSize) {
+      return;
+    }
+
+    if (size > cellSize) {
       let list = [];
-      for (let i = oldSize; i < size; i++) {
-        let item = new TableCell("", this.cellType);
+      for (let i = cellSize; i < size; i++) {
+        let item = new TableCell(this.cellType);
         list.push(item);
       }
       this.add(list);
     } else {
-      this.remove(size, oldSize);
-    }
-  }
-
-  countEmptyCell() {
-    if (!this.inCountEmptyCell) {
-      Promise.resolve().then(() => {
-        this.inCountEmptyCell = false;
-        this.emptyCell = 0;
-      });
-    }
-    this.inCountEmptyCell = true;
-    this.emptyCell += 1;
-    if (this.emptyCell === this.getSize()) {
-      let parent = this.getParent();
-      this.removeSelf();
-      if (this.cellType === "th") {
-        // @ts-ignore
-        parent.needHead = false;
-      }
+      this.remove(size, cellSize);
     }
   }
 
@@ -271,15 +243,12 @@ class TableRow extends StructureCollection<TableCell> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildTableRow(
       this.id,
-      () =>
-        this.children
-          .map((item) => item.render(contentBuilder, onlyDecorate))
-          .toArray(),
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
   }
 }
@@ -290,7 +259,7 @@ class TableCell extends StructureCollection<TableItem> {
   cellType: "th" | "td";
 
   static create(componentFactory: ComponentFactory, raw: IRawType): TableCell {
-    let tableCell = new TableCell("", raw.cellType, raw.style, raw.data);
+    let tableCell = new TableCell(raw.cellType, "", raw.style, raw.data);
     let children = raw.children
       ? raw.children.map((item) => TableItem.create(componentFactory, item))
       : [];
@@ -302,25 +271,21 @@ class TableCell extends StructureCollection<TableItem> {
   }
 
   constructor(
-    children: tableCellChildType[] | tableCellChildType = "",
     cellType: "th" | "td" = "td",
+    children: tableCellType = "",
     style?: StoreData,
     data?: StoreData,
   ) {
     super(style, data);
     this.cellType = cellType;
-    if (!Array.isArray(children)) children = [children];
+
+    if (!Array.isArray(children)) {
+      children = [children];
+    }
+
     this.addChildren(
       0,
-      children.map((item) => {
-        if (!item) {
-          return new TableItem();
-        }
-        if (typeof item === "string") {
-          return new TableItem(item);
-        }
-        return item;
-      }),
+      children.map((item) => new TableItem(item)),
     );
   }
 
@@ -329,17 +294,17 @@ class TableCell extends StructureCollection<TableItem> {
   }
 
   removeChildren(start: number, end: number = 0) {
-    if (this.getSize() === 1 && end === 1) {
-      let tableItem = this.getChild(0) as TableItem;
-      tableItem?.removeChildren(0);
-      return [tableItem];
+    // 单元格至少要保存一个空行
+    if (this.getSize() === 1) {
+      this.getChild(0)?.removeChildren(0);
+      return [];
     }
     return super.removeChildren(start, end);
   }
 
   childHeadDelete(tableItem: TableItem): OperatorType {
     let prev = this.getPrev(tableItem);
-    if (!prev) return [[this]];
+    if (!prev) return [[]];
     return tableItem.sendTo(prev);
   }
 
@@ -354,16 +319,13 @@ class TableCell extends StructureCollection<TableItem> {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildTableCell(
       this.id,
       this.cellType,
-      () =>
-        this.children
-          .map((item) => item.render(contentBuilder, onlyDecorate))
-          .toArray(),
-      this.decorate.getStyle(onlyDecorate),
-      this.decorate.getData(onlyDecorate),
+      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      this.decorate.getStyle(),
+      this.decorate.getData(),
     );
   }
 }
@@ -382,28 +344,12 @@ class TableItem extends ContentCollection {
     return tableItem;
   }
 
-  static exchangeOnly(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[] = [],
-  ): TableItem[] {
-    let newItem = new TableItem();
-    if (block instanceof ContentCollection) {
-      newItem.addChildren(0, block.children.toArray());
-    }
-    return [newItem];
-  }
-
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[] = [],
-  ): TableItem[] {
+  static exchange(): TableItem[] {
     throw createError("不允许切换表格内段落");
   }
 
-  exchangeTo(builder: BlockType, args: any[]): Block[] {
-    throw createError("表格内段落不允许切换类型！！", this);
+  exchangeTo(): Block[] {
+    throw createError("表格内段落不允许切换类型", this);
   }
 
   createEmpty() {
@@ -414,66 +360,19 @@ class TableItem extends ContentCollection {
     );
   }
 
-  // 监控：当表格内容一行全被删除时，把一整行移除
-  remove(start: number, end?: number): OperatorType {
-    let parent = this.getParent() as TableCell;
-    let focus = super.remove(start, end);
-    if (parent.isEmpty()) {
-      parent.parent?.countEmptyCell();
-    }
-    return focus;
-  }
-
-  // 监控：当表格内容一行全被删除时，把一整行移除
-  removeSelf(): OperatorType {
-    let parent = this.getParent() as TableCell;
-    let focus = super.removeSelf();
-    if (parent.isEmpty()) {
-      parent.parent?.countEmptyCell();
-    }
-    return focus;
-  }
-
   split(index: number, tableItem?: TableItem | TableItem[]): OperatorType {
-    // 不允许非内容组件添加
-    let hasComponent: boolean = tableItem !== undefined;
-    if (Array.isArray(tableItem)) {
-      if (tableItem.length === 0) hasComponent = false;
-      let newList: TableItem[] = [];
-      tableItem
-        .filter((item) => {
-          return item instanceof ContentCollection;
-        })
-        .forEach((item) => {
-          newList.push(
-            ...TableItem.exchangeOnly(this.getComponentFactory(), item),
-          );
-        });
-      tableItem = newList;
-      tableItem = tableItem.length === 0 ? undefined : tableItem;
-    } else if (tableItem && tableItem instanceof ContentCollection) {
-      tableItem = TableItem.exchangeOnly(this.getComponentFactory(), tableItem);
-    } else {
-      tableItem = undefined;
-    }
-    if (hasComponent && tableItem === undefined) {
-      return [[this]];
+    if (tableItem) {
+      throw createError("表格组件不允许添加其他组件", this);
     }
     return super.split(index, tableItem);
   }
 
-  // 表格项在删除时，默认不将光标后的内容添加到光标前
-  sendTo(block: Block): OperatorType {
-    this.parent?.findChildrenIndex(block);
-    return super.sendTo(block);
-  }
-
-  render(contentBuilder: BaseBuilder, onlyDecorate: boolean = false) {
+  render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildParagraph(
       this.id,
       () => this.getContent(contentBuilder),
-      this.decorate.getStyle(onlyDecorate),
-      { ...this.decorate.getData(onlyDecorate), tag: "p" },
+      this.decorate.getStyle(),
+      { ...this.decorate.getData(), tag: "p" },
     );
   }
 }

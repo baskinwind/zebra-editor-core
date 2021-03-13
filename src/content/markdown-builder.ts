@@ -144,8 +144,8 @@ class MarkdownBuilder extends BaseBuilder {
     return [res, "list"];
   }
 
-  buildListItem(block: Block): string {
-    return block.render(this);
+  buildListItem(list: string): string {
+    return list;
   }
 
   buildParagraph(
