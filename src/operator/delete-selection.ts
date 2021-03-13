@@ -1,6 +1,7 @@
 import Editor from "../editor/editor";
 import focusAt from "../selection/focus-at";
-import { Cursor, getSelectedIdList } from "../selection/util";
+import { getSelectedIdList } from "../selection/get-selected-id-list";
+import { Cursor } from "../selection/util";
 
 // 删除 start 到 end 的内容
 const deleteSelection = (editor: Editor, start: Cursor, end?: Cursor) => {

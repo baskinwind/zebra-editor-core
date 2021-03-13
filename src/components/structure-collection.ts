@@ -41,48 +41,6 @@ abstract class StructureCollection<
     return this.getChild(index + 1);
   }
 
-  // TODO: 优化逻辑，直接用 article 取即可
-  // 获取从 startId 到 endId 所包含的所有组件
-  getIdList(startId?: string, endId?: string): [boolean, boolean, string[]] {
-    if (!this.active) return [false, false, []];
-    if (!endId) {
-      endId = startId;
-    }
-    let res: string[] = [];
-    let startFlag = false;
-    let endFlag = false;
-
-    this.children.forEach((item) => {
-      if (endFlag) return;
-      if (item instanceof StructureCollection) {
-        let temp = item.getIdList(startFlag ? "" : startId, endId);
-        startFlag = startFlag || temp[0];
-        endFlag = endFlag || temp[1];
-        res.push(...temp[2]);
-        return;
-      }
-      if (item.id === startId || startId === "") {
-        res.push(item.id);
-        startFlag = true;
-        if (item.id === endId) {
-          endFlag = true;
-        }
-        return;
-      }
-      if (item.id === endId) {
-        res.push(item.id);
-        endFlag = true;
-        return;
-      }
-      if (startFlag && !endFlag) {
-        res.push(item.id);
-      }
-    });
-
-    // [是否已找到 startId, 是否已找到 endId, 在范围内的 Id]
-    return [startFlag, endFlag, res];
-  }
-
   getStatistic() {
     let res = super.getStatistic();
     this.children.forEach((item) => {

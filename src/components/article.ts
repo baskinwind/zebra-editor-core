@@ -1,5 +1,5 @@
 import ComponentFactory from ".";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";

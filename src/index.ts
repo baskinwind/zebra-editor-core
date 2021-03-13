@@ -2,9 +2,9 @@
 import ComponentFactory, { getDefaultComponentFactory } from "./components";
 
 // 内容生成器
-import ContentBuilder from "./content/content-builder";
-import MarkdownBuilder from "./content/markdown-builder";
-import HtmlBuilder from "./content/html-builder";
+import ContentBuilder from "./builder/content-builder";
+import MarkdownBuilder from "./builder/markdown-builder";
+import HtmlBuilder from "./builder/html-builder";
 
 // 用户操作处理
 import UserOperator from "./operator/user-operator";

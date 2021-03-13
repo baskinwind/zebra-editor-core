@@ -6,7 +6,7 @@ import Inline from "./inline";
 import Character from "./character";
 import ComponentFactory from ".";
 import ComponentType from "../const/component-type";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
 

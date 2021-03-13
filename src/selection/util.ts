@@ -1,4 +1,5 @@
 // @ts-nocheck
+import Article from "../components/article";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
@@ -168,15 +169,4 @@ export const getOffset = (
     return size;
   };
   return countSize(parent, wrap) + offset;
-};
-
-// 获取所有选中的叶节点，不包括结构性的组件
-export const getSelectedIdList = (
-  article: Article,
-  startId: string,
-  endId: string = startId,
-): string[] => {
-  if (startId === "") return [];
-  if (startId === endId) return [startId];
-  return article.getIdList(startId, endId)[2];
 };

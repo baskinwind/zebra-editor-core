@@ -1,7 +1,7 @@
 import ComponentFactory from ".";
 import { OperatorType, IRawType } from "./component";
 import Block, { BlockType, IBlockSnapshoot } from "./block";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { StoreData } from "../decorate/index";

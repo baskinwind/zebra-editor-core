@@ -2,7 +2,7 @@ import Editor from "../editor/editor";
 import Block, { BlockType } from "../components/block";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
-import { getSelectedIdList } from "./util";
+import { getSelectedIdList } from "./get-selected-id-list";
 
 // 修改选区中整块内容的呈现
 const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {

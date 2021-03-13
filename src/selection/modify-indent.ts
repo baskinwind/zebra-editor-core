@@ -1,14 +1,14 @@
 import Editor from "../editor/editor";
 import getSelection from "./get-selection";
-import { getSelectedIdList } from "./util";
 import focusAt from "./focus-at";
+import { getSelectedIdList } from "./get-selected-id-list";
 
 // 修改选中组件的缩进
 const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
   let selection = getSelection(editor.mountedWindow);
   let start = selection.range[0];
   let end = selection.range[1];
-  let idList = getSelectedIdList(start.id, end.id);
+  let idList = getSelectedIdList(editor.article, start.id, end.id);
   let newStartId: string = "";
   let newEndId: string = "";
   idList.forEach((item, index) => {

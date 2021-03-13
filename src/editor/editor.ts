@@ -2,7 +2,7 @@ import ComponentFactory from "../components";
 import Article from "../components/article";
 import Block from "../components/block";
 import StructureCollection from "../components/structure-collection";
-import ContentBuilder from "../content/content-builder";
+import ContentBuilder from "../builder/content-builder";
 import UserOperator from "../operator/user-operator";
 import { createError } from "../util/handle-error";
 import ArticleManage from "./manage/article-manage";

@@ -1,8 +1,8 @@
 import Editor from "../editor/editor";
 import { StoreData } from "../decorate";
 import getSelection from "./get-selection";
-import { getSelectedIdList } from "./util";
 import focusAt from "./focus-at";
+import { getSelectedIdList } from "./get-selected-id-list";
 
 // 修改选区内的文字
 const modifySelectionDecorate = (
@@ -19,7 +19,7 @@ const modifySelectionDecorate = (
   let start = selection.range[0];
   let end = selection.range[1];
 
-  let idList = getSelectedIdList(start.id, end.id);
+  let idList = getSelectedIdList(editor.article, start.id, end.id);
   // 未选中内容，不需要处理
   if (idList.length === 0) return;
 

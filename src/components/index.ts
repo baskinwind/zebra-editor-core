@@ -6,7 +6,7 @@ import Table from "./table";
 import Header, { headerType } from "./header";
 import Paragraph from "./paragraph";
 import Media, { mediaType } from "./media";
-import Code from "./code";
+import CodeBlock from "./code-block";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
 import CustomerCollection from "./customer-collection";
@@ -33,7 +33,7 @@ class ComponentFactory {
       [ComponentType.header]: Header,
       [ComponentType.paragraph]: Paragraph,
       [ComponentType.media]: Media,
-      [ComponentType.code]: Code,
+      [ComponentType.code]: CodeBlock,
       [ComponentType.inlineImage]: InlineImage,
     };
   }
@@ -99,7 +99,7 @@ class ComponentFactory {
     style: StoreData = {},
     data: StoreData = {},
   ) {
-    return new Code(content, language, style, data);
+    return new CodeBlock(content, language, style, data);
   }
 
   buildInlineImage(src: string, style: StoreData = {}, data: StoreData = {}) {

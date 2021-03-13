@@ -3,7 +3,7 @@ import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
@@ -166,8 +166,6 @@ class Table extends StructureCollection<TableRow> {
 class TableRow extends StructureCollection<TableCell> {
   type: ComponentType = ComponentType.tableRow;
   parent?: Table;
-  emptyCell: number = 0;
-  inCountEmptyCell: boolean = false;
   cellType: "th" | "td";
 
   static create(componentFactory: ComponentFactory, raw: IRawType): TableRow {

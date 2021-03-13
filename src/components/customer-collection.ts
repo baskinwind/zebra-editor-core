@@ -3,7 +3,7 @@ import { OperatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import nextTick from "../util/next-tick";

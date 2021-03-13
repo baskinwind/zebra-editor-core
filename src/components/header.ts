@@ -4,7 +4,7 @@ import Inline from "./inline";
 import Block, { BlockType } from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";

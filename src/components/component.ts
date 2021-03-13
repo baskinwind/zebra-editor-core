@@ -1,13 +1,12 @@
 import { Map } from "immutable";
 import Event from "./event";
-import Decorate from "../decorate";
+import Decorate, { StoreData } from "../decorate";
 import Record from "../record";
 import Collection from "./collection";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getId } from "./util";
-import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
 import { Cursor } from "../selection/util";
 
@@ -32,14 +31,10 @@ export interface IRawType {
   headerType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   // for List
   listType?: "ul" | "ol";
-  // for Table
-  row?: number;
-  col?: number;
-  needHead?: boolean;
   // for TableRaw
   cellType?: "th" | "td";
   size?: number;
-  // for code
+  // for CodeBlock
   language?: string;
   tag?: string;
 }

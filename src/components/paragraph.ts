@@ -3,7 +3,7 @@ import { IRawType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import BaseBuilder from "../content/base-builder";
+import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 
