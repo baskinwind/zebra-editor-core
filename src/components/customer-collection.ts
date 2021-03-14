@@ -89,7 +89,7 @@ class CustomerCollection extends StructureCollection<Block> {
     return [newBlock];
   }
 
-  removeChildren(start: number, end: number = 0): Block[] {
+  removeChildren(start: number, end: number = -1): Block[] {
     let removed = super.removeChildren(start, end);
 
     // 若子元素全部删除，将自己也删除

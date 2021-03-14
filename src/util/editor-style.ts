@@ -1,7 +1,6 @@
 export default `
-html,
-body {
-  min-height: 100%;
+html, body {
+  height: 100%;
   margin: 0;
 }
 body {

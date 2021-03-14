@@ -1,5 +1,4 @@
 // @ts-nocheck
-import Article from "../components/article";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
@@ -10,24 +9,32 @@ export interface Cursor {
 }
 
 // 获取光标所在的组件
-export const getParent = (
+export const getCursorElement = (
   element: HTMLElement | Node | null | undefined,
 ): HTMLElement => {
   if (element === null || element === undefined)
     throw createError("获取光标所在节点失败", undefined, "selection");
   // 文本节点处理
   if (element.nodeType === 3) {
-    return getParent(element.parentElement);
+    return getCursorElement(element.parentElement);
   }
+
   if (
     element.dataset &&
-    (element.dataset.structure === StructureType.structure ||
-      element.dataset.structure === StructureType.content ||
+    element.dataset.structure === StructureType.structure
+  ) {
+    return getCursorElement(element.children[0]);
+  }
+
+  if (
+    element.dataset &&
+    (element.dataset.structure === StructureType.content ||
       element.dataset.structure === StructureType.plainText)
   ) {
     return element;
   }
-  return getParent(element.parentElement);
+
+  return getCursorElement(element.parentElement);
 };
 
 // 获取光标所在的文本节点

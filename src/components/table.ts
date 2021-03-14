@@ -77,7 +77,7 @@ class Table extends StructureCollection<TableRow> {
     this.children.forEach((item) => item.addCell(index));
   }
 
-  removeChildren(start: number, end: number = 0): TableRow[] {
+  removeChildren(start: number, end: number = -1): TableRow[] {
     let operator = super.removeChildren(start, end);
 
     // 若子元素全部删除，将自己也删除
@@ -287,10 +287,10 @@ class TableCell extends StructureCollection<TableItem> {
     return this.getSize() === 1 && this.getChild(0).getSize() === 0;
   }
 
-  removeChildren(start: number, end: number = 0) {
+  removeChildren(start: number, end: number = -1) {
     // 单元格至少要保存一个空行
     if (this.getSize() === 1) {
-      this.getChild(0)?.removeChildren(0);
+      this.getChild(0)?.remove(0, -1);
       return [];
     }
     return super.removeChildren(start, end);

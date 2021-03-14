@@ -20,13 +20,13 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   // 内部使用，移除子元素
-  removeChildren(start: number, end: number = 0): T[] {
+  removeChildren(start: number, end: number = -1): T[] {
     if (start < 0) {
       throw createError(`移除起始位置不能小于 0：${start}`, this);
     }
 
-    if (end < 1) {
-      end = this.getSize() + end;
+    if (end < 0) {
+      end = this.getSize() + 1 + end;
     }
 
     if (start > end) {

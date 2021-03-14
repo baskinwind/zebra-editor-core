@@ -2,7 +2,7 @@ import {
   getElememtSize,
   getContainer,
   Cursor,
-  getParent,
+  getCursorElement,
   getOffset,
 } from "./util";
 import { cloneDeep, throttle } from "lodash";
@@ -74,20 +74,24 @@ const getSelection = (contentWindow: Window) => {
     // @ts-ignore
     (anchorNode.dataset && anchorNode.dataset.type === "ARTICLE")
   ) {
-    let block = rootDom;
-    while (block.dataset && block.dataset.structure !== "CONTENT") {
-      block = block.children[0] as HTMLElement;
+    let startBlock = rootDom;
+    let endBlock = rootDom;
+    while (startBlock.dataset && startBlock.dataset.structure !== "CONTENT") {
+      startBlock = startBlock.children[0] as HTMLElement;
+    }
+    while (endBlock.dataset && endBlock.dataset.structure !== "CONTENT") {
+      endBlock = endBlock.children[endBlock.children.length - 1] as HTMLElement;
     }
     selectionStore = {
-      isCollapsed: true,
+      isCollapsed: section.isCollapsed,
       range: [
         {
-          id: block.id,
+          id: startBlock.id,
           offset: 0,
         },
         {
-          id: block.id,
-          offset: 0,
+          id: endBlock.id,
+          offset: -1,
         },
       ],
     };
@@ -100,7 +104,7 @@ const getSelection = (contentWindow: Window) => {
     (anchorEle.dataset.structure === "CONTENT" ||
       anchorEle.dataset.structure === "CONTENTWRAP")
   ) {
-    let startParent: HTMLElement = getParent(anchorEle);
+    let startParent: HTMLElement = getCursorElement(anchorEle);
     let offset = 0;
     for (let i = 0; i < section.anchorOffset; i++) {
       offset += getElememtSize(anchorEle.children[i]);
@@ -170,10 +174,10 @@ const getSelection = (contentWindow: Window) => {
 
   // 修正光标节点的位置
   // 获得光标距离所在段落的位置
-  let startParent: HTMLElement = getParent(startNode);
-  let startContainer: HTMLElement = getContainer(startNode);
-  let endParent: HTMLElement = getParent(endNode);
-  let endContainer: HTMLElement = getContainer(endNode);
+  let startParent: HTMLElement = getCursorElement(startNode);
+  let startContainer: HTMLElement = getContainer(startParent);
+  let endParent: HTMLElement = getCursorElement(endNode);
+  let endContainer: HTMLElement = getContainer(endParent);
   startOffset = getOffset(startParent, startContainer, startOffset);
   endOffset = getOffset(endParent, endContainer, endOffset);
 

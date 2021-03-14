@@ -46,7 +46,7 @@ abstract class StructureCollection<
     return [block];
   }
 
-  removeChildren(start: number, end: number = 0) {
+  removeChildren(start: number, end: number = -1) {
     let removed = super.removeChildren(start, end);
 
     removed.forEach((item) => {

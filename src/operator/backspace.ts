@@ -57,7 +57,7 @@ const backspace = (
   let tailBlock = editor.storeManage.getBlockById(idList[idList.length - 1]);
 
   // 删除选中内容
-  headBlock.remove(start.offset, 0);
+  headBlock.remove(start.offset, -1);
   for (let i = 1; i < idList.length - 1; i++) {
     editor.storeManage.getBlockById(idList[i]).removeSelf();
   }

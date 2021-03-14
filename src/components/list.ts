@@ -97,7 +97,7 @@ class List extends StructureCollection<Block> {
     return [[this, ...newList]];
   }
 
-  removeChildren(start: number, end: number = 0): Block[] {
+  removeChildren(start: number, end: number = -1): Block[] {
     // 若子元素全部删除，将自己也删除
     if (end === this.getSize()) {
       nextTick(() => {
