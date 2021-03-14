@@ -21,40 +21,6 @@ abstract class StructureCollection<
     return index;
   }
 
-  // 获取前一个组件
-  getPrev(idOrBlock: string | T): T | undefined {
-    let index = this.findChildrenIndex(idOrBlock);
-
-    if (index === 0) {
-      return;
-    }
-    return this.getChild(index - 1);
-  }
-
-  // 获取后一个组件
-  getNext(idOrBlock: string | T): T | undefined {
-    let index = this.findChildrenIndex(idOrBlock);
-
-    if (index === this.getSize() - 1) {
-      return;
-    }
-    return this.getChild(index + 1);
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    this.children.forEach((item) => {
-      res = mergerStatistic(res, item.getStatistic());
-    });
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.children = this.children.toArray().map((item) => item.getRaw());
-    return raw;
-  }
-
   addChildren(index: number, component: T[]): T[] {
     component.forEach((item) => {
       item.parent = this;
@@ -173,6 +139,40 @@ abstract class StructureCollection<
       item.parent = this;
     });
     super.restore(state);
+  }
+
+  // 获取前一个组件
+  getPrev(idOrBlock: string | T): T | undefined {
+    let index = this.findChildrenIndex(idOrBlock);
+
+    if (index === 0) {
+      return;
+    }
+    return this.getChild(index - 1);
+  }
+
+  // 获取后一个组件
+  getNext(idOrBlock: string | T): T | undefined {
+    let index = this.findChildrenIndex(idOrBlock);
+
+    if (index === this.getSize() - 1) {
+      return;
+    }
+    return this.getChild(index + 1);
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    this.children.forEach((item) => {
+      res = mergerStatistic(res, item.getStatistic());
+    });
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.children = this.children.toArray().map((item) => item.getRaw());
+    return raw;
   }
 }
 

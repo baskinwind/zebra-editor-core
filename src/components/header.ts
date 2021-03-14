@@ -103,25 +103,6 @@ class Header extends ContentCollection {
     this.$emit("componentUpdated", [this]);
   }
 
-  getType(): string {
-    return `${this.type}>${this.headerType}`;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.headerType = this.headerType;
-    return raw;
-  }
-
-  createEmpty() {
-    return this.getComponentFactory().buildHeader(
-      this.headerType,
-      "",
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
-  }
-
   exchangeTo(builder: BlockType, args: any[]): Block[] {
     // 不知道为什么 if 内的 this 识别不了
     let self = this;
@@ -146,6 +127,25 @@ class Header extends ContentCollection {
     this.headerType = state.headerType;
     this.style = styleMap[state.headerType];
     super.restore(state);
+  }
+
+  getType(): string {
+    return `${this.type}>${this.headerType}`;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.headerType = this.headerType;
+    return raw;
+  }
+
+  createEmpty() {
+    return this.getComponentFactory().buildHeader(
+      this.headerType,
+      "",
+      this.decorate.copyStyle(),
+      this.decorate.copyData(),
+    );
   }
 
   render(contentBuilder: BaseBuilder) {

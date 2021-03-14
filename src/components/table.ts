@@ -18,10 +18,6 @@ interface ITableSnapshoot extends ICollectionSnapshoot<TableRow> {
 
 class Table extends StructureCollection<TableRow> {
   type: ComponentType = ComponentType.table;
-  style: StoreData = {
-    margin: "auto",
-    overflowX: "auto",
-  };
 
   static getTable(block: Block): Table | undefined {
     let table: Table | undefined;

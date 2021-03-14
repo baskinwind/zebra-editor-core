@@ -70,25 +70,6 @@ class CustomerCollection extends StructureCollection<Block> {
     this.add(block, 0);
   }
 
-  getType(): string {
-    return `${this.type}>${this.tag}`;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.tag = this.tag;
-    return raw;
-  }
-
-  createEmpty(): CustomerCollection {
-    return this.getComponentFactory().buildCustomerCollection(
-      this.tag,
-      [],
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
-  }
-
   add(block: Block | Block[], index: number = 0): OperatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
@@ -160,6 +141,25 @@ class CustomerCollection extends StructureCollection<Block> {
   restore(state: IListSnapshoot) {
     this.tag = state.tag;
     super.restore(state);
+  }
+
+  getType(): string {
+    return `${this.type}>${this.tag}`;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.tag = this.tag;
+    return raw;
+  }
+
+  createEmpty(): CustomerCollection {
+    return this.getComponentFactory().buildCustomerCollection(
+      this.tag,
+      [],
+      this.decorate.copyStyle(),
+      this.decorate.copyData(),
+    );
   }
 
   render(contentBuilder: BaseBuilder) {

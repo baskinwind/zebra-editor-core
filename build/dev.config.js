@@ -28,7 +28,6 @@ module.exports = {
     clientLogLevel: "silent",
     contentBase: path.join(__dirname, "static"),
     hot: true,
-    compress: true,
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

@@ -84,7 +84,6 @@ class Decorate {
     }
     this.data = this.data.set(name, value);
   }
-
   toggleData(name: string) {
     let list = name.split(",");
     list.forEach((key) => {

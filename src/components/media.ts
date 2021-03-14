@@ -46,27 +46,6 @@ class Media extends Block {
     this.recordSnapshoot();
   }
 
-  getSize(): number {
-    return 1;
-  }
-
-  getType(): string {
-    return `${this.type}>${this.mediaType}`;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res[this.mediaType] += 1;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.src = this.src;
-    raw.mediaType = this.mediaType;
-    return raw;
-  }
-
   exchangeTo(builder: BlockType, args: any[]): Block[] {
     return [this];
   }
@@ -136,6 +115,27 @@ class Media extends Block {
     this.mediaType = state.mediaType;
     this.src = state.src;
     super.restore(state);
+  }
+
+  getSize(): number {
+    return 1;
+  }
+
+  getType(): string {
+    return `${this.type}>${this.mediaType}`;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res[this.mediaType] += 1;
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.src = this.src;
+    raw.mediaType = this.mediaType;
+    return raw;
   }
 
   render(contentBuilder: BaseBuilder) {

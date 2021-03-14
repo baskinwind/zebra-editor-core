@@ -65,8 +65,29 @@ abstract class Component extends Event {
     this.record = new Record(this);
   }
 
-  destory() {
-    this.$off();
+  // 修改组件的表现形式
+  modifyDecorate(style?: StoreData, data?: StoreData) {
+    this.decorate.mergeStyle(style);
+    this.decorate.mergeData(data);
+  }
+
+  // 获得当前组件的快照，用于撤销和回退
+  snapshoot(): ISnapshoot {
+    return {
+      style: this.decorate.style,
+      data: this.decorate.data,
+    };
+  }
+
+  // 回退组件状态
+  restore(state: ISnapshoot) {
+    this.decorate.style = state.style;
+    this.decorate.data = state.data;
+  }
+
+  // 记录当前状态
+  recordSnapshoot() {
+    this.$emit("componentSnapshot", this);
   }
 
   // 获取类型
@@ -88,29 +109,8 @@ abstract class Component extends Event {
     return raw;
   }
 
-  // 修改组件的表现形式
-  modifyDecorate(style?: StoreData, data?: StoreData) {
-    this.decorate.mergeStyle(style);
-    this.decorate.mergeData(data);
-  }
-
-  // 记录当前状态
-  recordSnapshoot() {
-    this.$emit("componentSnapshot", this);
-  }
-
-  // 获得当前组件的快照，用于撤销和回退
-  snapshoot(): ISnapshoot {
-    return {
-      style: this.decorate.style,
-      data: this.decorate.data,
-    };
-  }
-
-  // 回退组件状态
-  restore(state: ISnapshoot) {
-    this.decorate.style = state.style;
-    this.decorate.data = state.data;
+  destory() {
+    this.$off();
   }
 
   // 渲染该组件

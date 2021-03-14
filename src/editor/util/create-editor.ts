@@ -1,5 +1,5 @@
 import Editor from "../editor";
-import defaultStyle from "../../util/default-style";
+import editorStyle from "../../util/editor-style";
 import nextTick from "../../util/next-tick";
 import Article from "../../components/article";
 import StructureType from "../../const/structure-type";
@@ -30,7 +30,7 @@ const createEditor = (
     }
 
     let style = iframe.contentDocument.createElement("style");
-    style.textContent = defaultStyle;
+    style.textContent = editorStyle;
     iframe.contentDocument.head.appendChild(style);
 
     if (beforeCreate) {
@@ -45,9 +45,11 @@ const createEditor = (
     iframe.contentDocument.body.appendChild(editorDom);
 
     // placeholder
-    const placeholderStyle = iframe.contentDocument.createElement("style");
-    placeholderStyle.textContent = `.zebra-editor-article > :first-child.zebra-editor-empty::before {content:'${editor.placeholder}';}`;
-    iframe.contentDocument.head.appendChild(placeholderStyle);
+    if (editor.placeholder) {
+      const placeholderStyle = iframe.contentDocument.createElement("style");
+      placeholderStyle.textContent = `.zebra-editor-article > :first-child.zebra-editor-empty::before {content:'${editor.placeholder}';}`;
+      iframe.contentDocument.head.appendChild(placeholderStyle);
+    }
 
     document.addEventListener("editorChange", (e) => {
       let article = editor.article;
@@ -190,13 +192,7 @@ const createEditor = (
     }
   };
 
-  // firefox 下必须通过 load 才能正确加载
-  if (navigator.userAgent.indexOf("Firefox") > -1) {
-    iframe.addEventListener("load", loadIframe);
-  } else {
-    loadIframe();
-  }
-
+  iframe.addEventListener("load", loadIframe);
   return root;
 };
 

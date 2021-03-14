@@ -10,26 +10,6 @@ export interface ICollectionSnapshoot<T> extends IBlockSnapshoot {
 abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
 
-  destory() {
-    this.children.forEach((item) => item.destory());
-    this.children = List();
-    super.destory();
-  }
-
-  isEmpty(): boolean {
-    return this.children.size === 0;
-  }
-
-  getChild(index: number): T {
-    let child = this.children.get(index);
-    if (!child) throw createError(`未找到${index}位置的子组件`, this);
-    return child;
-  }
-
-  getSize(): number {
-    return this.children.size;
-  }
-
   // 内部使用，添加子元素
   addChildren(index: number, components: T[]): T[] {
     components.forEach((item) => {
@@ -72,6 +52,26 @@ abstract class Collection<T extends Component> extends Block {
   restore(state: ICollectionSnapshoot<T>) {
     this.children = state.children;
     super.restore(state);
+  }
+
+  isEmpty(): boolean {
+    return this.children.size === 0;
+  }
+
+  getChild(index: number): T {
+    let child = this.children.get(index);
+    if (!child) throw createError(`未找到${index}位置的子组件`, this);
+    return child;
+  }
+
+  getSize(): number {
+    return this.children.size;
+  }
+
+  destory() {
+    this.children.forEach((item) => item.destory());
+    this.children = List();
+    super.destory();
   }
 }
 

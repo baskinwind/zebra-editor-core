@@ -14,9 +14,6 @@ export interface IPlainTextSnapshoot extends IBlockSnapshoot {
 abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
-  style: StoreData = {
-    overflow: "auto",
-  };
 
   constructor(
     content: string = "",
@@ -29,22 +26,6 @@ abstract class PlainText extends Block {
     if (this.content[this.content.length - 1] !== "\n") {
       this.content.push("\n");
     }
-  }
-
-  getSize() {
-    return this.content.length - 1;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.word = this.content.length;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.content = this.content.join("");
-    return raw;
   }
 
   add(string: string, index?: number): OperatorType {
@@ -108,6 +89,22 @@ abstract class PlainText extends Block {
   restore(state: IPlainTextSnapshoot) {
     this.content = [...state.content];
     super.restore(state);
+  }
+
+  getSize() {
+    return this.content.length - 1;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.word = this.content.length;
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.content = this.content.join("");
+    return raw;
   }
 }
 

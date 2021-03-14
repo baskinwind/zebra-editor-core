@@ -40,7 +40,7 @@
     "webpack-cli": "^4.1.0"
   },
   "scripts": {
-    "start": "webpack serve --hot --config build/dev.config.js",
+    "start": "webpack serve --config build/dev.config.js",
     "build": "npm run build:umd && npm run build:mjs",
     "build:example": "webpack --config build/dev.config.js",
     "build:umd": "webpack --config build/prod.config.js",

@@ -9,13 +9,16 @@ const walkCollection = (
   for (let i = 0, len = structureCollection.getSize(); i < len; i++) {
     let item = structureCollection.getChild(i);
     if (item instanceof StructureCollection) {
-      walkCollection(item, callback);
+      if (walkCollection(item, callback)) {
+        return true;
+      }
     } else {
       if (callback(item)) {
-        break;
+        return true;
       }
     }
   }
+  return false;
 };
 
 export const getSelectedIdList = (

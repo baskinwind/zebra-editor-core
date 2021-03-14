@@ -78,32 +78,11 @@ class List extends StructureCollection<Block> {
     this.$emit("componentUpdated", [this]);
   }
 
-  getType(): string {
-    return `${this.type}>${this.listType}`;
-  }
+  add(block: Block | Block[], index?: number): OperatorType {
+    if (index === undefined) {
+      index = this.getSize();
+    }
 
-  getStatistic() {
-    let res = super.getStatistic();
-    res.list += 1;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.listType = this.listType;
-    return raw;
-  }
-
-  createEmpty(): List {
-    return this.getComponentFactory().buildList(
-      this.listType,
-      [],
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
-  }
-
-  add(block: Block | Block[], index: number = 0): OperatorType {
     // 连续输入空行，截断列表
     if (typeof index === "number" && index > 1) {
       let now = this.getChild(index - 1);
@@ -177,6 +156,31 @@ class List extends StructureCollection<Block> {
   restore(state: IListSnapshoot) {
     this.listType = state.listType;
     super.restore(state);
+  }
+
+  getType(): string {
+    return `${this.type}>${this.listType}`;
+  }
+
+  getStatistic() {
+    let res = super.getStatistic();
+    res.list += 1;
+    return res;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.listType = this.listType;
+    return raw;
+  }
+
+  createEmpty(): List {
+    return this.getComponentFactory().buildList(
+      this.listType,
+      [],
+      this.decorate.copyStyle(),
+      this.decorate.copyData(),
+    );
   }
 
   render(contentBuilder: BaseBuilder) {
