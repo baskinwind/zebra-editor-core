@@ -22,20 +22,6 @@ const onKeyDown = (editor: Editor, event: KeyboardEvent) => {
 
   // 删除
   if (isBackspace) {
-    const article = editor.article;
-    const focusBlock = editor.storeManage.getBlockById(selection.range[0].id);
-
-    // 在文章首位按下删除，不需要操作
-    if (
-      selection.range[0].offset === 0 &&
-      selection.isCollapsed &&
-      article.findChildrenIndex(selection.range[0].id) === 0 &&
-      focusBlock.type === ComponentType.paragraph
-    ) {
-      event.preventDefault();
-      return;
-    }
-
     backspace(editor, selection.range[0], selection.range[1], event);
     return;
   }

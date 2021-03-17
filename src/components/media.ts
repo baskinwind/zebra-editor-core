@@ -92,9 +92,7 @@ class Media extends Block {
     return [[block], { id: block.id, offset: 0 }];
   }
 
-  receive(block?: Block): OperatorType {
-    if (!block) return [[this]];
-
+  receive(block: Block): OperatorType {
     if (block.isEmpty()) {
       block.removeSelf();
       return [[block], { id: this.id, offset: 1 }];
@@ -123,12 +121,6 @@ class Media extends Block {
 
   getType(): string {
     return `${this.type}>${this.mediaType}`;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res[this.mediaType] += 1;
-    return res;
   }
 
   getRaw(): IRawType {

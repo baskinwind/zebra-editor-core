@@ -5,6 +5,7 @@ import ComponentFactory, { getDefaultComponentFactory } from "./components";
 import ContentBuilder from "./builder/content-builder";
 import MarkdownBuilder from "./builder/markdown-builder";
 import HtmlBuilder from "./builder/html-builder";
+import StatisticBuilder from "./builder/statistic-builder";
 
 // 用户操作处理
 import UserOperator from "./operator/user-operator";
@@ -31,6 +32,7 @@ export {
   ContentBuilder,
   HtmlBuilder,
   MarkdownBuilder,
+  StatisticBuilder,
   UserOperator,
   focusAt,
   getSelection,

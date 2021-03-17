@@ -1,6 +1,6 @@
 import ComponentFactory from ".";
 import BaseBuilder from "../builder/base-builder";
-import Component, { IRawType } from "./component";
+import { IRawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
@@ -9,11 +9,6 @@ import Block from "./block";
 
 class CodeBlock extends PlainText {
   type = ComponentType.code;
-  style: StoreData = {
-    fontSize: "14px",
-    borderRadius: "4px",
-    backgroundColor: "rgba(248, 248, 248, 1)",
-  };
   language: string;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): CodeBlock {
@@ -61,18 +56,6 @@ class CodeBlock extends PlainText {
     this.$emit("componentUpdated", [this]);
   }
 
-  getStatistic() {
-    let res = super.getStatistic();
-    res.code += 1;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.language = this.language;
-    return raw;
-  }
-
   createEmpty() {
     return this.getComponentFactory().buildCode(
       "\n",
@@ -82,8 +65,14 @@ class CodeBlock extends PlainText {
     );
   }
 
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.language = this.language;
+    return raw;
+  }
+
   render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildCode(
+    return contentBuilder.buildCodeBlock(
       this.id,
       this.content.join(""),
       this.language,

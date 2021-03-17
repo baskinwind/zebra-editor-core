@@ -5,6 +5,7 @@ import {
   ContentBuilder,
   HtmlBuilder,
   MarkdownBuilder,
+  StatisticBuilder,
   UserOperator,
   exchange,
   modifySelectionDecorate,
@@ -21,17 +22,7 @@ const editor = new Editor("root", article, {
   componentFactory: ComponentFactory,
   userOperator: UserOperator,
   contentBuilder: ContentBuilder,
-  beforeCreate(doc) {
-    let defaultArticleTheme = doc.createElement("link");
-    defaultArticleTheme.href =
-      "https://zebrastudio.tech/theme/article/default.css";
-    defaultArticleTheme.rel = "stylesheet";
-    defaultArticleTheme.type = "text/css";
-    doc.head.appendChild(defaultArticleTheme);
-  },
 });
-
-console.log(editor);
 
 new Vue({
   el: "#operator",
@@ -66,6 +57,9 @@ new Vue({
     },
     logMD() {
       console.log(editor.article.render(new MarkdownBuilder()));
+    },
+    logStatistic() {
+      console.log(editor.article.render(new StatisticBuilder()));
     },
     logRawData() {
       console.log(JSON.stringify(editor.article.getRaw()));

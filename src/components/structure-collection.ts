@@ -2,7 +2,6 @@ import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
-import { mergerStatistic } from "./util";
 import { createError } from "../util/handle-error";
 
 abstract class StructureCollection<
@@ -159,14 +158,6 @@ abstract class StructureCollection<
       return;
     }
     return this.getChild(index + 1);
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    this.children.forEach((item) => {
-      res = mergerStatistic(res, item.getStatistic());
-    });
-    return res;
   }
 
   getRaw(): IRawType {

@@ -43,13 +43,14 @@ class Header extends ContentCollection {
   };
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Header {
+    let children = super.getChildren(componentFactory, raw);
+
     let header = componentFactory.buildHeader(
       raw.headerType || "h1",
       "",
       raw.style,
       raw.data,
     );
-    let children = super.getChildren(componentFactory, raw);
     header.addChildren(0, children);
     return header;
   }
@@ -129,6 +130,15 @@ class Header extends ContentCollection {
     super.restore(state);
   }
 
+  createEmpty() {
+    return this.getComponentFactory().buildHeader(
+      this.headerType,
+      "",
+      this.decorate.copyStyle(),
+      this.decorate.copyData(),
+    );
+  }
+
   getType(): string {
     return `${this.type}>${this.headerType}`;
   }
@@ -139,21 +149,13 @@ class Header extends ContentCollection {
     return raw;
   }
 
-  createEmpty() {
-    return this.getComponentFactory().buildHeader(
-      this.headerType,
-      "",
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
-  }
-
   render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildParagraph(
+    return contentBuilder.buildHeader(
       this.id,
+      this.headerType,
       () => this.getContent(contentBuilder),
       this.decorate.getStyle(),
-      { ...this.decorate.getData(), tag: this.headerType },
+      this.decorate.getData(),
     );
   }
 }

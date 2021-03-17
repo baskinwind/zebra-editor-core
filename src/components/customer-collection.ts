@@ -6,7 +6,6 @@ import Block from "./block";
 import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
-import nextTick from "../util/next-tick";
 
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
   tag: string;
@@ -20,11 +19,10 @@ class CustomerCollection extends StructureCollection<Block> {
     componentFactory: ComponentFactory,
     raw: IRawType,
   ): CustomerCollection {
-    let children = raw.children
-      ? raw.children.map((item) =>
-          componentFactory.typeMap[item.type].create(item),
-        )
-      : [];
+    let children = (raw.children || []).map((item) => {
+      return componentFactory.typeMap[item.type].create(item);
+    });
+
     let collection = componentFactory.buildCustomerCollection(raw.tag);
     collection.add(children);
     return collection;
@@ -96,6 +94,7 @@ class CustomerCollection extends StructureCollection<Block> {
     if (this.getSize() === 0) {
       this.removeSelf();
     }
+
     return removed;
   }
 
@@ -119,9 +118,7 @@ class CustomerCollection extends StructureCollection<Block> {
     return block.receive(this);
   }
 
-  receive(block?: Block): OperatorType {
-    if (!block) return [[this]];
-
+  receive(block: Block): OperatorType {
     if (block.isEmpty()) {
       block.removeSelf();
       let last = this.getChild(this.getSize() - 1);
@@ -143,6 +140,15 @@ class CustomerCollection extends StructureCollection<Block> {
     super.restore(state);
   }
 
+  createEmpty(): CustomerCollection {
+    return this.getComponentFactory().buildCustomerCollection(
+      this.tag,
+      [],
+      this.decorate.copyStyle(),
+      this.decorate.copyData(),
+    );
+  }
+
   getType(): string {
     return `${this.type}>${this.tag}`;
   }
@@ -153,20 +159,11 @@ class CustomerCollection extends StructureCollection<Block> {
     return raw;
   }
 
-  createEmpty(): CustomerCollection {
-    return this.getComponentFactory().buildCustomerCollection(
-      this.tag,
-      [],
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
-  }
-
   render(contentBuilder: BaseBuilder) {
     let content = contentBuilder.buildCustomerCollection(
       this.id,
       this.tag,
-      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      () => this.children.toArray().map((item) => item.render(contentBuilder)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

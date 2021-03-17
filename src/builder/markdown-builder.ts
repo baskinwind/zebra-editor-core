@@ -1,5 +1,5 @@
+import { headerType } from "../components/header";
 import BaseBuilder, { mapData } from "./base-builder";
-import Block from "../components/block";
 
 class MarkdownBuilder extends BaseBuilder {
   listIndent: number = -1;
@@ -41,7 +41,7 @@ class MarkdownBuilder extends BaseBuilder {
     let res = getChildren()
       .map(([item, type]: [string, string]) => {
         let arr = item.split("\n");
-        if (type === "paragraph" || type === "media") {
+        if (type === "paragraph" || type === "header" || type === "media") {
           arr[arr.length - 1] = `${Array(this.blockIndent)
             .fill(">")
             .join("")} ${arr[arr.length - 1]}`;
@@ -124,7 +124,7 @@ class MarkdownBuilder extends BaseBuilder {
     let res = getChildren()
       .map(([item, type]: [string, string], index: number) => {
         let arr = item.split("\n");
-        if (type === "paragraph" || type === "media") {
+        if (type === "paragraph" || type === "header" || type === "media") {
           if (ordered) {
             arr[arr.length - 1] = `${index + 1}. ${arr[arr.length - 1]}`;
           } else {
@@ -155,16 +155,27 @@ class MarkdownBuilder extends BaseBuilder {
     data: mapData,
   ) {
     let res = getChildren().join("");
-    if (/^h[1-6]$/.test(data.tag)) {
-      res = `${Array(Number(data.tag[1])).fill("#").join("")} ${res}`;
-    }
     if (res === "") {
       res = "<br />";
     }
     return [res, "paragraph"];
   }
 
-  buildCode(
+  buildHeader(
+    id: string,
+    type: headerType,
+    getChildren: () => string[],
+    style: mapData,
+    data: mapData,
+  ) {
+    let res = `${Array(Number(type[1]))
+      .fill("#")
+      .join("")} ${getChildren().join("")}`;
+
+    return [res, "header"];
+  }
+
+  buildCodeBlock(
     id: string,
     content: string,
     language: string,

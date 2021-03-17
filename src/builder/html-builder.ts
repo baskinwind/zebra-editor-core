@@ -1,6 +1,6 @@
 import BaseBuilder, { mapData } from "./base-builder";
-import Block from "../components/block";
 import StructureType from "../const/structure-type";
+import { headerType } from "../components/header";
 
 class HtmlBuilder extends BaseBuilder<string> {
   formatStyle(styleName: string) {
@@ -150,7 +150,22 @@ class HtmlBuilder extends BaseBuilder<string> {
     );
   }
 
-  buildCode(
+  buildHeader(
+    id: string,
+    type: headerType,
+    getChildren: () => string[],
+    style: mapData,
+    data: mapData,
+  ): string {
+    return this.buildHtml(
+      type,
+      `zebra-editor-${type}`,
+      style,
+      `<span>${getChildren().join("") || "<br />"}</span>`,
+    );
+  }
+
+  buildCodeBlock(
     id: string,
     content: string,
     language: string,

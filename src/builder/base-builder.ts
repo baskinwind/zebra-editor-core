@@ -1,20 +1,16 @@
-import nextTick from "../util/next-tick";
-import Block from "../components/block";
 import StructureType from "../const/structure-type";
+import { headerType } from "../components/header";
 
 export interface mapData {
   [key: string]: any;
 }
 
 abstract class BaseBuilder<T = any> {
-  protected constructor() {}
-
-  protected updateDecorate: boolean = false;
-
-  setUpdateDecorate() {
-    this.updateDecorate = true;
-    nextTick(() => (this.updateDecorate = false));
+  constructor() {
+    this.init();
   }
+
+  init() {}
 
   abstract buildArticle(
     id: string,
@@ -69,7 +65,15 @@ abstract class BaseBuilder<T = any> {
     data: mapData,
   ): T;
 
-  abstract buildCode(
+  abstract buildHeader(
+    id: string,
+    type: headerType,
+    getChildren: () => T[],
+    style: mapData,
+    data: mapData,
+  ): T;
+
+  abstract buildCodeBlock(
     id: string,
     content: string,
     language: string,

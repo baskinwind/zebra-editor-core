@@ -1,12 +1,12 @@
 import { Map } from "immutable";
 import Event from "./event";
+import { v4 as uuidv4 } from "uuid";
 import Decorate, { StoreData } from "../decorate";
 import Record from "../record";
 import Collection from "./collection";
 import BaseBuilder from "../builder/base-builder";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getId } from "./util";
 import { createError } from "../util/handle-error";
 import { Cursor } from "../selection/util";
 
@@ -31,7 +31,7 @@ export interface IRawType {
   headerType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   // for List
   listType?: "ul" | "ol";
-  // for TableRaw
+  // for TableRow
   cellType?: "th" | "td";
   size?: number;
   // for CodeBlock
@@ -45,7 +45,7 @@ export interface ISnapshoot {
 }
 
 abstract class Component extends Event {
-  id: string = getId();
+  id: string = uuidv4();
   parent?: Collection<Component>;
   // 样式，额外数据
   decorate: Decorate;

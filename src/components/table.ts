@@ -34,10 +34,11 @@ class Table extends StructureCollection<TableRow> {
   }
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Table {
+    let children = (raw.children || []).map((item) => {
+      return TableRow.create(componentFactory, item);
+    });
+
     let table = componentFactory.buildTable(0, 0, [], [], raw.style, raw.data);
-    let children = raw.children
-      ? raw.children.map((item) => TableRow.create(componentFactory, item))
-      : [];
     table.addChildren(0, children);
     return table;
   }
@@ -141,12 +142,6 @@ class Table extends StructureCollection<TableRow> {
 
   restore(state: ITableSnapshoot) {
     super.restore(state);
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.table += 1;
-    return res;
   }
 
   render(contentBuilder: BaseBuilder) {

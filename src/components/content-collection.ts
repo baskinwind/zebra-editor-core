@@ -17,19 +17,23 @@ abstract class ContentCollection extends Collection<Inline> {
     componentFactory: ComponentFactory,
     raw: IRawType,
   ): Inline[] {
-    if (!raw.children) return [];
+    if (!raw.children) {
+      return [];
+    }
+
     let children: Inline[] = [];
     raw.children.forEach((item: IRawType) => {
       if (componentFactory.typeMap[item.type]) {
         children.push(componentFactory.typeMap[item.type].create(item));
         return;
       }
+
       if (!item.content) return;
       for (let char of item.content) {
         children.push(new Character(char, item.style, item.data));
       }
-      return;
     });
+
     return children;
   }
 
@@ -42,11 +46,11 @@ abstract class ContentCollection extends Collection<Inline> {
 
   modifyContentDecorate(
     start: number = 0,
-    end: number = 0,
+    end: number = -1,
     style?: StoreData,
     data?: StoreData,
   ): OperatorType {
-    end = end <= 0 ? this.getSize() + end : end;
+    end = end < 0 ? this.getSize() + end : end;
 
     if (start > end || (!style && !data)) {
       return [[this], { id: this.id, offset: start }];
@@ -172,11 +176,11 @@ abstract class ContentCollection extends Collection<Inline> {
     return block.receive(this);
   }
 
-  receive(block?: Block): OperatorType {
+  receive(block: Block): OperatorType {
     let size = this.getSize();
 
     // ContentCollection 组件仅能接收 ContentCollection 组件
-    if (!block || !(block instanceof ContentCollection)) {
+    if (!(block instanceof ContentCollection)) {
       return [[]];
     }
 
@@ -224,19 +228,6 @@ abstract class ContentCollection extends Collection<Inline> {
     return content;
   }
 
-  getStatistic() {
-    let res = super.getStatistic();
-    this.children.forEach((item) => {
-      if (item instanceof Character) {
-        res.word += 1;
-      } else {
-        res.image += 1;
-      }
-    });
-    res.block += 1;
-    return res;
-  }
-
   getRaw(): IRawType {
     let children = this.fromatChildren().map((item) => {
       if (item.getRaw) {
@@ -273,6 +264,7 @@ abstract class ContentCollection extends Collection<Inline> {
       if (item.render) {
         return item.render(contentBuilder);
       }
+
       return contentBuilder.buildCharacterList(
         `${this.id}__${index}`,
         item[0],

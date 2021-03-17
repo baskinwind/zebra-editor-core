@@ -5,7 +5,6 @@ import StructureCollection from "./structure-collection";
 import Block from "./block";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
-import nextTick from "../util/next-tick";
 import BaseBuilder from "../builder/base-builder";
 
 export type listType = "ol" | "ul";
@@ -18,11 +17,10 @@ class List extends StructureCollection<Block> {
   listType: listType;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): List {
-    let children = raw.children
-      ? raw.children.map((item: IRawType) =>
-          componentFactory.typeMap[item.type].create(item),
-        )
-      : [];
+    let children = (raw.children || []).map((item: IRawType) =>
+      componentFactory.typeMap[item.type].create(item),
+    );
+
     let list = componentFactory.buildList(raw.listType);
     list.add(children);
     return list;
@@ -92,7 +90,11 @@ class List extends StructureCollection<Block> {
         return focus;
       }
     }
-    if (!Array.isArray(block)) block = [block];
+
+    if (!Array.isArray(block)) {
+      block = [block];
+    }
+
     let newList = this.addChildren(index, block);
     return [[this, ...newList]];
   }
@@ -100,10 +102,7 @@ class List extends StructureCollection<Block> {
   removeChildren(start: number, end: number = -1): Block[] {
     // 若子元素全部删除，将自己也删除
     if (end === this.getSize()) {
-      nextTick(() => {
-        if (this.getSize() !== 0) return;
-        this.removeSelf();
-      });
+      this.removeSelf();
     }
 
     let removed = super.removeChildren(start, end);
@@ -131,9 +130,9 @@ class List extends StructureCollection<Block> {
     return block.receive(this);
   }
 
-  receive(block?: Block): OperatorType {
-    if (!block) return [[this]];
+  receive(block: Block): OperatorType {
     block.removeSelf();
+
     if (block instanceof List) {
       return this.add(block.removeChildren(0));
     } else {
@@ -143,6 +142,7 @@ class List extends StructureCollection<Block> {
         let lastSize = last.getSize();
         return [[last], { id: last.id, offset: lastSize }];
       }
+
       return this.add(block);
     }
   }
@@ -158,22 +158,6 @@ class List extends StructureCollection<Block> {
     super.restore(state);
   }
 
-  getType(): string {
-    return `${this.type}>${this.listType}`;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.list += 1;
-    return res;
-  }
-
-  getRaw(): IRawType {
-    let raw = super.getRaw();
-    raw.listType = this.listType;
-    return raw;
-  }
-
   createEmpty(): List {
     return this.getComponentFactory().buildList(
       this.listType,
@@ -183,18 +167,26 @@ class List extends StructureCollection<Block> {
     );
   }
 
+  getType(): string {
+    return `${this.type}>${this.listType}`;
+  }
+
+  getRaw(): IRawType {
+    let raw = super.getRaw();
+    raw.listType = this.listType;
+    return raw;
+  }
+
   render(contentBuilder: BaseBuilder) {
     let content = contentBuilder.buildList(
       this.id,
       () => {
-        return this.children
-          .map((item) => {
-            return contentBuilder.buildListItem(
-              item.render(contentBuilder),
-              item.structureType,
-            );
-          })
-          .toArray();
+        return this.children.toArray().map((item) => {
+          return contentBuilder.buildListItem(
+            item.render(contentBuilder),
+            item.structureType,
+          );
+        });
       },
       this.decorate.getStyle(),
       {

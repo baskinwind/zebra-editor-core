@@ -60,8 +60,8 @@ abstract class PlainText extends Block {
     return this.add("\n", index);
   }
 
-  receive(block?: Block): OperatorType {
-    block?.removeSelf();
+  receive(block: Block): OperatorType {
+    block.removeSelf();
     let size = this.content.length;
 
     // 内容集合组件添加其中的文字内容
@@ -93,12 +93,6 @@ abstract class PlainText extends Block {
 
   getSize() {
     return this.content.length - 1;
-  }
-
-  getStatistic() {
-    let res = super.getStatistic();
-    res.word = this.content.length;
-    return res;
   }
 
   getRaw(): IRawType {

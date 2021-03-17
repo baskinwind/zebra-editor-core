@@ -11,18 +11,14 @@ class Article extends StructureCollection<Block> {
   structureType = StructureType.structure;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Article {
+    let children = (raw.children || []).map((item) => {
+      return componentFactory.typeMap[item.type].create(componentFactory, item);
+    });
+
     let article = componentFactory.buildArticle(raw.style, raw.data);
     if (raw.id) {
       article.id = raw.id;
     }
-    let children = raw.children
-      ? raw.children.map((item) => {
-          return componentFactory.typeMap[item.type].create(
-            componentFactory,
-            item,
-          );
-        })
-      : [];
     article.add(children);
     return article;
   }
@@ -33,29 +29,36 @@ class Article extends StructureCollection<Block> {
 
   childHeadDelete(block: Block): OperatorType {
     let prev = this.getPrev(block);
+    console.log(block);
     // 若在 Article 的第一个
     if (!prev) {
-      if (!block.decorate.isEmpty() || block.type !== ComponentType.paragraph) {
-        block.decorate.clear();
+      console.log(block);
+
+      if (block.type !== ComponentType.paragraph) {
         let exchanged = block.exchangeTo(
           this.getComponentFactory().typeMap.PARAGRAPH,
           [],
         );
-        this.$emit("componentUpdated", [block]);
-        return [exchanged];
+        return [exchanged, { id: exchanged[0].id, offset: 0 }];
       }
 
-      return [[block]];
+      // 首位删除，若修饰器有内容，则清空
+      if (!block.decorate.isEmpty()) {
+        block.decorate.clear();
+        this.$emit("componentUpdated", [block]);
+      }
+
+      return [[block], { id: block.id, offset: 0 }];
     }
     return block.sendTo(prev);
   }
 
   remove(start: number, end?: number): OperatorType {
-    let focus = super.remove(start, end);
+    let operator = super.remove(start, end);
     if (this.getSize() === 0) {
       return this.add(this.getComponentFactory().buildParagraph());
     }
-    return focus;
+    return operator;
   }
 
   getRaw(): IRawType {
@@ -67,7 +70,7 @@ class Article extends StructureCollection<Block> {
   render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildArticle(
       this.id,
-      () => this.children.map((item) => item.render(contentBuilder)).toArray(),
+      () => this.children.toArray().map((item) => item.render(contentBuilder)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

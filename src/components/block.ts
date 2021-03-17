@@ -20,6 +20,11 @@ abstract class Block extends Component {
   // 组件所属的编辑器
   editor?: Editor;
 
+  // 根据 raw 保存的内容恢复组件
+  static create(componentFactory: ComponentFactory, raw: IRawType): Component {
+    throw createError("组件未实现 create 静态方法", this);
+  }
+
   // 将别的组件转换为当前组件类型
   static exchange(
     componentFactory: ComponentFactory,
@@ -29,25 +34,23 @@ abstract class Block extends Component {
     throw createError("组件未实现 exchange 静态方法", this);
   }
 
-  // 根据 raw 保存的内容恢复组件
-  static create(componentFactory: ComponentFactory, raw: IRawType): Component {
-    throw createError("组件未实现 create 静态方法", this);
-  }
-
   constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
     nextTick(() => {
-      this.$emit("blockCreated", this);
       this.init();
     });
   }
 
   // 提供一个初始化的方法，避免继承需要重写 constructor 方法
-  init(): void {}
+  init(): void {
+    this.$emit("blockCreated", this);
+  }
 
   // 将当前组件转换为 builder 类型的组件
   exchangeTo(builder: BlockType, args: any[]): Block[] {
-    if (builder === this.constructor) return [this];
+    if (builder === this.constructor) {
+      return [this];
+    }
 
     return builder.exchange(this.getComponentFactory(), this, args);
   }
@@ -57,25 +60,22 @@ abstract class Block extends Component {
     collection: StructureCollection<Block>,
     index?: number,
   ): OperatorType {
-    if (index === undefined) {
-      index = collection.getSize();
-    }
-
-    let newBlock = collection.addChildren(index, [this]);
-    return [newBlock];
+    return collection.add([this], index);
   }
 
   // 从其父组件内移除
   removeSelf(): OperatorType {
     let parent = this.getParent();
     let index = parent.findChildrenIndex(this);
-    parent.removeChildren(index, index + 1);
-    return [[this]];
+    return parent.remove(index, index + 1);
   }
 
   // 替换为另一个组件
   replaceSelf(block: Block | Block[]): OperatorType {
-    if (!Array.isArray(block)) block = [block];
+    if (!Array.isArray(block)) {
+      block = [block];
+    }
+
     let parent = this.getParent();
     parent.replaceChild(block, this);
     return [[...block, this], { id: block[0].id, offset: 0 }];
@@ -98,14 +98,6 @@ abstract class Block extends Component {
     return;
   }
 
-  // 添加子组件
-  add(
-    component: string | Component | Component[],
-    index?: number,
-  ): OperatorType {
-    return [[this]];
-  }
-
   // 在一些组件中 Enter 被使用，导致不能在组件下方或上方创建新行
   // 使用该 api 创建上方或是下方的新行
   addEmptyParagraph(bottom: boolean): OperatorType {
@@ -114,6 +106,14 @@ abstract class Block extends Component {
     let paragraph = this.getComponentFactory().buildParagraph();
     parent.add(paragraph, index + (bottom ? 1 : 0));
     return [[paragraph], { id: paragraph.id, offset: 0 }];
+  }
+
+  // 添加子组件
+  add(
+    component: string | Component | Component[],
+    index?: number,
+  ): OperatorType {
+    return [[this]];
   }
 
   // 移除子组件
@@ -132,36 +132,27 @@ abstract class Block extends Component {
   }
 
   // 接收另一组件
-  receive(component?: Component): OperatorType {
+  receive(component: Component): OperatorType {
     return [[this]];
   }
 
   destory() {
-    super.destory();
     this.active = false;
     this.parent = undefined;
     nextTick(() => {
       this.$emit("blockDestoryed", this);
+      super.destory();
     });
   }
 
   // 判断该组件是否为空，为空并不代表无效
   isEmpty(): boolean {
-    return false;
+    return true;
   }
 
-  // 获取统计数据
-  getStatistic() {
-    return {
-      word: 0,
-      image: 0,
-      audio: 0,
-      video: 0,
-      table: 0,
-      list: 0,
-      code: 0,
-      block: 0,
-    };
+  // 创建一个空的当前组件
+  createEmpty(): Block {
+    throw createError("组件未实现 createEmpty 方法", this);
   }
 
   // 获取父节点
@@ -174,11 +165,6 @@ abstract class Block extends Component {
   // 获取子组件的长度
   getSize(): number {
     return 0;
-  }
-
-  // 创建一个空的当前组件
-  createEmpty(): Block {
-    throw createError("组件未实现 createEmpty 方法", this);
   }
 
   getComponentFactory() {

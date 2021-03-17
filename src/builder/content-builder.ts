@@ -1,8 +1,8 @@
 import BaseBuilder, { mapData } from "./base-builder";
 import Editor from "../editor/editor";
 import ComponentType from "../const/component-type";
-import Block from "../components/block";
 import StructureType from "../const/structure-type";
+import { headerType } from "../components/header";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
   editor: Editor;
@@ -170,7 +170,33 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return parapraph;
   }
 
-  buildCode(
+  buildHeader(
+    id: string,
+    type: headerType,
+    getChildren: () => HTMLElement[],
+    style: mapData,
+    data: mapData,
+  ): HTMLElement {
+    let containDocument = this.editor.mountedDocument;
+    let header = containDocument.createElement(type);
+    header.id = id;
+    header.classList.add(`zebra-editor-${type}`);
+    header.dataset.type = ComponentType.header;
+    header.dataset.structure = StructureType.content;
+    let children = getChildren();
+    if (children.length) {
+      children.forEach((component) => {
+        header?.appendChild(component);
+      });
+    } else {
+      header.classList.add(`zebra-editor-empty`);
+      header.appendChild(containDocument.createElement("br"));
+    }
+    this.addStyle(header, style, data);
+    return header;
+  }
+
+  buildCodeBlock(
     id: string,
     content: string,
     language: string,

@@ -54,6 +54,10 @@ body {
 }
 pre {
   position: relative;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: rgba(248, 248, 248, 1);
 }
 pre::before {
   z-index: 10;
