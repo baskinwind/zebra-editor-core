@@ -1,15 +1,10 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
 
 module.exports = {
+  target: "web",
   mode: "development",
   entry: "./dev/index.js",
-  stats: "errors-only",
-  output: {
-    filename: "index.js",
-    path: path.resolve(__dirname, "../example"),
-  },
   devtool: "source-map",
   module: {
     rules: [
@@ -25,16 +20,15 @@ module.exports = {
     ],
   },
   devServer: {
-    clientLogLevel: "silent",
-    contentBase: path.join(__dirname, "static"),
+    port: 9000,
+    open: true,
     hot: true,
+    clientLogLevel: "warn",
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "dev/index.html",
-      inject: true,
     }),
   ],
   resolve: {
