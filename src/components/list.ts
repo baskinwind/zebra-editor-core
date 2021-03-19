@@ -180,6 +180,7 @@ class List extends StructureCollection<Block> {
   render(contentBuilder: BaseBuilder) {
     let content = contentBuilder.buildList(
       this.id,
+      this.listType,
       () => {
         return this.children.toArray().map((item) => {
           return contentBuilder.buildListItem(
@@ -189,10 +190,7 @@ class List extends StructureCollection<Block> {
         });
       },
       this.decorate.getStyle(),
-      {
-        ...this.decorate.getData(),
-        tag: this.listType,
-      },
+      this.decorate.getData(),
     );
     return content;
   }

@@ -35,6 +35,7 @@ class ComponentFactory {
       [ComponentType.media]: Media,
       [ComponentType.code]: CodeBlock,
       [ComponentType.inlineImage]: InlineImage,
+      [ComponentType.customerCollection]: CustomerCollection,
     };
   }
 

@@ -1,6 +1,7 @@
 import BaseBuilder, { mapData } from "./base-builder";
 import StructureType from "../const/structure-type";
 import { headerType } from "../components/header";
+import { listType } from "../components/list";
 
 class HtmlBuilder extends BaseBuilder<string> {
   formatStyle(styleName: string) {
@@ -115,12 +116,13 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildList(
     id: string,
+    listType: listType,
     getChildren: () => string[],
     style: mapData,
     data: mapData,
   ): string {
     return this.buildHtml(
-      data.tag || "ul",
+      listType,
       "zebra-editor-list",
       style,
       getChildren().join(""),

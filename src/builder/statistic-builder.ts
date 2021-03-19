@@ -1,5 +1,6 @@
 import { headerType } from "../components/header";
 import BaseBuilder from "./base-builder";
+import { listType } from "../components/list";
 
 interface IStatistic {
   word: number;
@@ -75,7 +76,7 @@ class StatisticBuilder extends BaseBuilder<any> {
     getChildren();
   }
 
-  buildList(id: string, getChildren: () => void) {
+  buildList(id: string, listType: listType, getChildren: () => void) {
     getChildren();
     this.statistic.block += 1;
     this.statistic.list += 1;

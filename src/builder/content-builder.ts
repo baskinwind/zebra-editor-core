@@ -3,6 +3,7 @@ import Editor from "../editor/editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { headerType } from "../components/header";
+import { listType } from "../components/list";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
   editor: Editor;
@@ -114,12 +115,13 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildList(
     id: string,
+    listType: listType,
     getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let tag: string = data.tag || "ul";
+    let tag: string = listType;
     let list = containDocument.createElement(tag);
     list.id = id;
     list.classList.add("zebra-editor-list");

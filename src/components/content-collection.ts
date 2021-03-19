@@ -209,19 +209,19 @@ abstract class ContentCollection extends Collection<Inline> {
       acc = [];
     };
 
-    this.children.forEach((value) => {
-      if (value instanceof Character) {
-        let decorate = value.decorate;
+    this.children.forEach((each) => {
+      if (each instanceof Character) {
+        let decorate = each.decorate;
         if (!decorate) return;
         if (!decorate.isSame(prevDecorate)) {
           createCharacterList();
           prevDecorate = decorate;
         }
-        acc.push(value);
+        acc.push(each);
         return;
       }
       createCharacterList();
-      content.push(value);
+      content.push(each);
     });
 
     createCharacterList();
@@ -229,20 +229,20 @@ abstract class ContentCollection extends Collection<Inline> {
   }
 
   getRaw(): IRawType {
-    let children = this.fromatChildren().map((item) => {
-      if (item.getRaw) {
-        return item.getRaw();
+    let children = this.fromatChildren().map((each) => {
+      if (each.getRaw) {
+        return each.getRaw();
       }
       // 无 type 说明是字符串
       // @ts-ignore
       let raw: IRawType = {
-        content: item[0],
+        content: each[0],
       };
-      if (item[1]) {
-        raw.style = item[1];
+      if (each[1]) {
+        raw.style = each[1];
       }
-      if (item[2]) {
-        raw.data = item[2];
+      if (each[2]) {
+        raw.data = each[2];
       }
       return raw;
     });

@@ -1,5 +1,6 @@
 import { headerType } from "../components/header";
 import BaseBuilder, { mapData } from "./base-builder";
+import { listType } from "../components/list";
 
 class MarkdownBuilder extends BaseBuilder {
   listIndent: number = -1;
@@ -115,11 +116,12 @@ class MarkdownBuilder extends BaseBuilder {
 
   buildList(
     id: string,
+    listType: listType,
     getChildren: () => [string, string][],
     style: mapData,
     data: mapData,
   ) {
-    let ordered = data.tag === "ol";
+    let ordered = listType === "ol";
     this.listIndent += 1;
     let res = getChildren()
       .map(([item, type]: [string, string], index: number) => {

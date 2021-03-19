@@ -2,7 +2,6 @@ import Editor from "../editor/editor";
 import ComponentFactory, { getDefaultComponentFactory } from ".";
 import Component, { OperatorType, IRawType, ISnapshoot } from "./component";
 import StructureCollection from "./structure-collection";
-import ComponentType from "../const/component-type";
 import nextTick from "../util/next-tick";
 import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
