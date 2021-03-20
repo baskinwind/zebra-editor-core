@@ -23,11 +23,11 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     component.forEach((each) => {
       each.parent = this;
       each.active = true;
-      each.recordSnapshoot();
     });
 
+    this.$emit("componentWillChange", this);
     let newBlockList = super.addChildren(index, component);
-    this.$emit("componentUpdated", newBlockList);
+    this.$emit("componentChanged", newBlockList);
     return newBlockList;
   }
 
@@ -38,13 +38,10 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
   }
 
   removeChildren(start: number, end: number = -1) {
+    this.$emit("componentWillChange", this);
     let removed = super.removeChildren(start, end);
 
-    removed.forEach((each) => {
-      each.active = false;
-      each.parent = undefined;
-      each.recordSnapshoot();
-    });
+    removed.forEach((each) => each.destory());
 
     // 当子元素被全部删除时，若后续无新添加的子元素，则移除自身
     if (this.getSize() === 0) {
@@ -55,7 +52,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       });
     }
 
-    this.$emit("componentUpdated", removed);
+    this.$emit("componentChanged", removed);
     return removed;
   }
 
@@ -73,18 +70,16 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     if (index === -1) {
       throw createError("替换组件不在子组件列表内", block);
     }
+    oldComponent.destory();
 
-    oldComponent.active = false;
-    oldComponent.parent = undefined;
-    oldComponent.recordSnapshoot();
     block.forEach((each) => {
       each.parent = this;
       each.active = true;
-      each.recordSnapshoot();
     });
 
+    this.$emit("componentWillChange", this);
     this.children = this.children.splice(index, 1, ...block);
-    this.$emit("componentUpdated", [oldComponent, ...block]);
+    this.$emit("componentChanged", [oldComponent, ...block]);
     return block;
   }
 
@@ -165,6 +160,11 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     let raw = super.getRaw();
     raw.children = this.children.toArray().map((each) => each.getRaw());
     return raw;
+  }
+
+  destory() {
+    this.children.forEach((each) => each.destory());
+    super.destory();
   }
 }
 

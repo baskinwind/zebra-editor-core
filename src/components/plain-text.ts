@@ -7,6 +7,7 @@ import { StoreData } from "../decorate";
 import { createError } from "../util/handle-error";
 import Character from "./character";
 import ComponentType from "../const/component-type";
+import { getTextLength } from "../util/text-util";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
   content: string;
@@ -31,14 +32,15 @@ abstract class PlainText extends Block {
     }
 
     index = index === undefined ? this.content.length : index;
-    let addString = [...string];
-    this.content.splice(index, 0, ...addString);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentWillChange", this);
+    this.content.splice(index, 0, ...string);
+    this.$emit("componentChanged", [this]);
 
-    return [[this], { id: this.id, offset: index + addString.length }];
+    return [[this], { id: this.id, offset: index + getTextLength(string) }];
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
+    this.$emit("componentWillChange", this);
     // 首位删除变成段落
     if (start < 0 && end === 0) {
       let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph], []);
@@ -46,7 +48,7 @@ abstract class PlainText extends Block {
     }
 
     this.content.splice(start, end - start);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
     return [[this], { id: this.id, offset: start }];
   }
 

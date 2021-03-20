@@ -36,9 +36,9 @@ class Media extends Block {
 
   setSrc(src: string) {
     if (this.src === src) return;
+    this.$emit("componentWillChange", this);
     this.src = src;
-    this.$emit("componentUpdated", [this]);
-    this.recordSnapshoot();
+    this.$emit("componentChanged", [this]);
   }
 
   exchangeTo(builder: BlockType, args: any[]): Block[] {
@@ -72,12 +72,12 @@ class Media extends Block {
 
     // 首位分割
     if (index === 0) {
-      parent.addChildren(componentIndex, block);
+      parent.add(componentIndex, ...block);
     }
 
     // 末位分割
     if (index === 1) {
-      parent.addChildren(componentIndex + 1, block);
+      parent.add(componentIndex + 1, ...block);
     }
 
     return [block, { id: block[0].id, offset: 0 }];

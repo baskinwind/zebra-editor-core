@@ -24,6 +24,8 @@ const editor = new Editor("root", article, {
   contentBuilder: ContentBuilder,
 });
 
+console.log(editor);
+
 new Vue({
   el: "#operator",
   template: "#operator-template",

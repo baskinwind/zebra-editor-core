@@ -55,11 +55,12 @@ abstract class ContentCollection extends Collection<Inline> {
       return [[this], { id: this.id, offset: start }];
     }
 
+    this.$emit("componentWillChange", this);
     for (let i = start; i <= end; i++) {
       this.getChild(i)?.modifyDecorate(style, data);
     }
+    this.$emit("componentChanged", [this]);
 
-    this.$emit("componentUpdated", [this]);
     return [[this], { id: this.id, offset: start }, { id: this.id, offset: end }];
   }
 
@@ -78,8 +79,9 @@ abstract class ContentCollection extends Collection<Inline> {
       }
     });
 
+    this.$emit("componentWillChange", this);
     this.addChildren(index, needAddInline);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
     return [[this], { id: this.id, offset: index + inline.length }];
   }
 
@@ -95,8 +97,9 @@ abstract class ContentCollection extends Collection<Inline> {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
+    this.$emit("componentWillChange", this);
     this.removeChildren(start, end);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
     return [[this], { id: this.id, offset: start }];
   }
 
@@ -109,7 +112,7 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     // 如果是从中间分段，则保持段落类型
-    let tail = this.children.slice(index).toArray();
+    let tail = this.children.toArray().slice(index);
     this.removeChildren(index);
     let newCollection = this.createEmpty() as ContentCollection;
     newCollection.add(0, ...tail);
@@ -120,6 +123,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
 
+    this.$emit("componentWillChange", this);
     let splitBlock = this.splitChild(index);
     let needAddBlockList: Block[] = [];
 
@@ -139,7 +143,7 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     parent.add(blockIndex + 1, ...needAddBlockList);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
     return [needAddBlockList, { id: splitBlock.id, offset: 0 }];
   }
 
@@ -178,11 +182,12 @@ abstract class ContentCollection extends Collection<Inline> {
       return [[]];
     }
 
+    this.$emit("componentWillChange", this);
     // 移除接收到的组件
     block.removeSelf();
 
     this.children = this.children.push(...block.children);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
 
     return [[this], { id: this.id, offset: size }];
   }
@@ -213,8 +218,6 @@ abstract class ContentCollection extends Collection<Inline> {
 
       lastFormated.inlines.push(each);
     });
-
-    console.log(formated);
 
     return formated;
   }

@@ -3,52 +3,7 @@ import Block from "../components/block";
 import Editor from "../editor/editor";
 import ComponentType from "../const/component-type";
 import nextTick from "./next-tick";
-
-let delayUpdateQueue: Set<string> = new Set();
-let inLoop = false;
-
-// 添加延迟更新的组件 id，通常发生在大批量删除或历史回退时
-const delayUpdate = (...id: string[]) => {
-  id.forEach((each) => delayUpdateQueue.add(each));
-};
-
-// 判断是否需要延迟更新
-const needUpdate = () => {
-  return delayUpdateQueue.size !== 0;
-};
-
-const updateDelay = (editor: Editor) => {
-  if (!delayUpdateQueue.size) {
-    return;
-  }
-  delayUpdateQueue.forEach((id) => update(editor, editor.storeManage.getBlockById(id)));
-  delayUpdateQueue.clear();
-  nextTick(() => {
-    document.dispatchEvent(new Event("editorChange"));
-  });
-};
-
-// 更新组件
-const updateComponent = (editor: Editor, ...component: Component[]) => {
-  // 清空延迟更新队列
-  updateDelay(editor);
-
-  // 不需要更新
-  if (!component) return;
-
-  component.forEach((each) => update(editor, each));
-
-  handleRecallQueue(editor);
-
-  // 避免过度触发 editorChange 事件
-  if (!inLoop) {
-    inLoop = true;
-    nextTick(() => {
-      inLoop = false;
-      document.dispatchEvent(new Event("editorChange"));
-    });
-  }
-};
+import StructureType from "../const/structure-type";
 
 const recallQueue: [Block, string, HTMLElement, HTMLElement][] = [];
 
@@ -75,9 +30,34 @@ const handleRecallQueue = (editor: Editor) => {
   }
 };
 
+let inLoop = false;
+
+// 更新组件
+const updateComponent = (editor: Editor, component: Component) => {
+  if (!editor.mountedDocument) return;
+
+  update(editor, component);
+
+  handleRecallQueue(editor);
+
+  // 避免过度触发 editorChange 事件
+  if (!inLoop) {
+    inLoop = true;
+    nextTick(() => {
+      inLoop = false;
+      document.dispatchEvent(new Event("editorChange"));
+    });
+  }
+};
+
 const update = (editor: Editor, component: Component) => {
   let containDocument = editor.mountedDocument;
   let oldDom = containDocument.getElementById(component.id);
+
+  // 若结构组件的 DOM 元素已经存在则不需要更新
+  if (component.structureType === StructureType.structure && oldDom) {
+    return;
+  }
 
   // 失效节点清除已存在的 DOM
   if (!component.parent) {
@@ -161,5 +141,3 @@ const update = (editor: Editor, component: Component) => {
 };
 
 export default updateComponent;
-
-export { delayUpdate, needUpdate };

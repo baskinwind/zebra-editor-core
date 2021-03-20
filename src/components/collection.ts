@@ -33,7 +33,7 @@ abstract class Collection<T extends Component> extends Block {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    let removedComponent = this.children.slice(start, end).toArray();
+    let removedComponent = this.children.toArray().slice(start, end);
 
     removedComponent.forEach((each) => {
       each.parent = undefined;
@@ -66,12 +66,6 @@ abstract class Collection<T extends Component> extends Block {
 
   getSize(): number {
     return this.children.size;
-  }
-
-  destory() {
-    this.children.forEach((each) => each.destory());
-    this.children = List();
-    super.destory();
   }
 }
 

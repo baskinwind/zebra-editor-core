@@ -1,6 +1,4 @@
 import Component, { ISnapshoot } from "../components/component";
-import Block from "../components/block";
-import { delayUpdate } from "../util/update-component";
 
 class Record {
   component: Component;
@@ -8,35 +6,26 @@ class Record {
 
   constructor(component: Component) {
     this.component = component;
-  }
-
-  init() {
     this.recordMap = [];
   }
 
   store(stepId: number) {
-    if (stepId === -1) return;
     this.recordMap[stepId] = this.component.snapshoot();
   }
 
   restore(stepId: number) {
-    if (stepId === -1) return;
-    let step = stepId;
-    while (!this.recordMap[step] && step !== -1) {
-      step--;
+    // 找到最近的一个节点解析更新
+    while (!this.recordMap[stepId] && stepId !== -1) {
+      stepId--;
     }
-    if (stepId === -1) return;
+    if (stepId < 0) return;
 
-    this.component.restore(this.recordMap[step]);
-    if (this.component instanceof Block) {
-      delayUpdate(this.component.id);
-    } else {
-      delayUpdate(this.component.parent!.id);
-    }
+    this.component.restore(this.recordMap[stepId]);
+    this.component.$emit("componentChanged", [this.component]);
   }
 
-  clear(index: number) {
-    this.recordMap.splice(index);
+  clear(stepId: number) {
+    this.recordMap.splice(stepId);
   }
 }
 

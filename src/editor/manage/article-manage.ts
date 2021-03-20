@@ -14,9 +14,9 @@ class ArticleManage {
 
   init() {
     this.update = true;
-    this.editor.article.$on("componentUpdated", (component: Component[]) => {
+    this.editor.article.$on("componentChanged", (component: Component[]) => {
       if (this.update) {
-        updateComponent(this.editor, ...component);
+        component.forEach((each) => updateComponent(this.editor, each));
       }
     });
   }

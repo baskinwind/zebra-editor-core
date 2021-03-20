@@ -5,6 +5,7 @@ import StructureCollection from "./structure-collection";
 import nextTick from "../util/next-tick";
 import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
+import ComponentType from "../const/component-type";
 
 export type BlockType = typeof Block;
 export interface IBlockSnapshoot extends ISnapshoot {
@@ -31,15 +32,17 @@ abstract class Block extends Component {
 
   constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
+
     nextTick(() => {
+      if (this.type === ComponentType.article || this.parent) {
+        this.$emit("blockCreated", this);
+      }
       this.init();
     });
   }
 
   // 提供一个初始化的方法，避免继承需要重写 constructor 方法
-  init(): void {
-    this.$emit("blockCreated", this);
-  }
+  init(): void {}
 
   // 将当前组件转换为 builder 类型的组件
   exchangeTo(builder: BlockType, args: any[]): Block[] {
@@ -71,8 +74,9 @@ abstract class Block extends Component {
 
   // 修改组件的表现形式
   modifyDecorate(style?: StoreData, data?: StoreData) {
+    this.$emit("componentWillChange", this);
     super.modifyDecorate(style, data);
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
     return [[this]];
   }
 
@@ -118,9 +122,9 @@ abstract class Block extends Component {
 
   destory() {
     this.active = false;
-    this.parent = undefined;
     nextTick(() => {
       this.$emit("blockDestoryed", this);
+      this.parent = undefined;
       super.destory();
     });
   }

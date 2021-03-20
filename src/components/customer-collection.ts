@@ -64,8 +64,7 @@ class CustomerCollection extends StructureCollection<Block> {
       return operator;
     }
 
-    let newBlock = this.addChildren(index, block);
-    return [newBlock];
+    return this.add(index, ...block);
   }
 
   childHeadDelete(block: Block): OperatorType {

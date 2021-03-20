@@ -61,6 +61,9 @@ abstract class Component extends Event {
     super();
     this.decorate = new Decorate(this, style, data);
     this.record = new Record(this);
+    nextTick(() => {
+      this.$emit("componentCreated", this);
+    });
   }
 
   // 修改组件的表现形式
@@ -81,11 +84,6 @@ abstract class Component extends Event {
   restore(state: ISnapshoot) {
     this.decorate.style = state.style;
     this.decorate.data = state.data;
-  }
-
-  // 记录当前状态
-  recordSnapshoot() {
-    this.$emit("componentSnapshot", this);
   }
 
   // 获取类型

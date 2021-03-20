@@ -53,16 +53,14 @@ class List extends StructureCollection<Block> {
   constructor(type: listType = "ul", children: string[] = [], style?: StoreData, data?: StoreData) {
     super(style, data);
     this.listType = type;
-    this.addChildren(
-      0,
-      children.map((each) => this.getComponentFactory().buildParagraph(each)),
-    );
+    this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
 
   setListType(type: listType = "ol") {
     if (type === this.listType) return;
+    this.$emit("componentWillChange", this);
     this.listType = type;
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
   }
 
   add(index: number, ...block: Block[]): OperatorType {
@@ -75,13 +73,12 @@ class List extends StructureCollection<Block> {
       block[0].isEmpty() &&
       this.getChild(index - 1).isEmpty()
     ) {
-      let operator = this.split(index, ...block);
       this.getChild(index - 1).removeSelf();
+      let operator = this.split(index - 1, ...block);
       return operator;
     }
 
-    let newList = this.addChildren(index, block);
-    return [newList];
+    return super.add(index, ...block);
   }
 
   childHeadDelete(block: Block): OperatorType {
@@ -109,7 +106,7 @@ class List extends StructureCollection<Block> {
     block.removeSelf();
 
     if (block instanceof List) {
-      return this.add(-1, ...block.removeChildren(0));
+      return this.add(-1, ...block.children);
     } else {
       if (block.isEmpty()) {
         let last = this.getChild(this.getSize() - 1);

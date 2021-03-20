@@ -3,7 +3,6 @@ import Inline from "../components/inline";
 import Character from "../components/character";
 import focusAt from "../selection/focus-at";
 import { getCursorPosition, Cursor } from "../selection/util";
-import { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
 import { getTextLength } from "../util/text-util";
 
@@ -32,7 +31,6 @@ const input = (
     // 强制更新
     if (
       start.offset === 0 ||
-      needUpdate() ||
       startNode.nodeName === "BR" ||
       startNode.nodeName === "IMG" ||
       typeof charOrInline !== "string" ||

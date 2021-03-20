@@ -29,20 +29,14 @@ class HistoryManage {
 
   init() {
     this.recordStack = [];
-    this.nowStackIndex = -1;
+    this.nowStackIndex = 0;
     this.createRecordStack();
-    this.initComponentRecord(this.editor.article);
-    this.editor.article.$on("componentSnapshot", (component: Component) => {
-      this.recordSnapshoot(component);
+    this.editor.article.$on("componentCreated", (component: Component) => {
+      component.record.store(this.nowStackIndex);
     });
-  }
-
-  initComponentRecord(component: Component) {
-    component.record.init();
-    component.record.store(this.nowStackIndex);
-    if (component instanceof Collection) {
-      component.children.forEach((each) => this.initComponentRecord(each));
-    }
+    this.editor.article.$on("componentWillChange", (component: Component) => {
+      component.record.store(this.nowStackIndex);
+    });
   }
 
   createRecordStack() {
@@ -64,21 +58,25 @@ class HistoryManage {
     };
     this.createRecordStack();
 
-    // 清除组件内无效的历史快照
-    for (let i = this.nowStackIndex + 1; i < this.recordStack.length; i++) {
-      let componentList = this.recordStack[i].componentList;
-      componentList.forEach((each) => {
-        each.record.clear(this.nowStackIndex + 1);
-      });
+    // 清除历史快照，在重做是会出现该情况
+    if (this.nowStackIndex > this.recordStack.length) {
+      // 清除组件内无效的历史快照
+      for (let i = this.nowStackIndex + 1; i < this.recordStack.length; i++) {
+        let componentList = this.recordStack[i].componentList;
+        componentList.forEach((each) => {
+          each.record.clear(this.nowStackIndex + 1);
+        });
+      }
+      // 清除全局历史栈中无效的历史
+      this.recordStack.splice(this.nowStackIndex + 1);
     }
-    // 清除全局历史栈中无效的历史
-    this.recordStack.splice(this.nowStackIndex + 1);
   }
 
   recordSnapshoot(component: Component) {
-    if (this.nowStackIndex < 0) return;
     component.record.store(this.nowStackIndex);
+
     if (this.nowRecordStack.idList.includes(component.id)) return;
+
     this.nowRecordStack.idList.push(component.id);
     this.nowRecordStack.componentList.push(component);
   }
@@ -91,8 +89,6 @@ class HistoryManage {
       each.record.restore(this.nowStackIndex - 1);
     }
 
-    // 将延迟更新的组件一起更新
-    updateComponent(this.editor);
     this.nowStackIndex -= 1;
     focusAt(this.editor.mountedWindow, nowRecord.selection.start, nowRecord.selection.end);
   }
@@ -105,8 +101,6 @@ class HistoryManage {
       each.record.restore(this.nowStackIndex + 1);
     }
 
-    // 将延迟更新的组件一起更新
-    updateComponent(this.editor);
     this.nowStackIndex += 1;
     focusAt(this.editor.mountedWindow, nowRecord.selection.start, nowRecord.selection.end);
   }

@@ -46,7 +46,7 @@ class Header extends ContentCollection {
     let children = super.createChildren(componentFactory, raw);
 
     let header = componentFactory.buildHeader(raw.headerType || "h1", "", raw.style, raw.data);
-    header.addChildren(0, children);
+    header.add(0, ...children);
     return header;
   }
 
@@ -65,7 +65,7 @@ class Header extends ContentCollection {
         block.decorate.copyData(),
       );
       newHeader.style = styleMap[newHeader.headerType];
-      newHeader.addChildren(0, block.children.toArray());
+      newHeader.add(0, ...block.children);
       newHeaderList.push(newHeader);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");
@@ -87,9 +87,10 @@ class Header extends ContentCollection {
 
   setHeader(type: headerType = "h1") {
     if (this.headerType === type) return;
+    this.$emit("componentWillChange", this);
     this.headerType = type;
     this.style = styleMap[type];
-    this.$emit("componentUpdated", [this]);
+    this.$emit("componentChanged", [this]);
   }
 
   exchangeTo(builder: BlockType, args: any[]): Block[] {

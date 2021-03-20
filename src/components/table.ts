@@ -40,7 +40,7 @@ class Table extends StructureCollection<TableRow> {
     });
 
     let table = componentFactory.buildTable(0, 0, [], [], raw.style, raw.data);
-    table.addChildren(0, children);
+    table.add(0, ...children);
     return table;
   }
 
@@ -151,7 +151,7 @@ class TableRow extends StructureCollection<TableCell> {
   static create(componentFactory: ComponentFactory, raw: IRawType): TableRow {
     let tableRow = new TableRow(raw.children!.length, raw.cellType, [], raw.style, raw.data);
     let children = (raw.children || []).map((each) => TableCell.create(componentFactory, each));
-    tableRow.addChildren(0, children);
+    tableRow.add(0, ...children);
     return tableRow;
   }
 
@@ -174,7 +174,7 @@ class TableRow extends StructureCollection<TableCell> {
       }
     }
 
-    super.addChildren(0, cells);
+    super.add(0, ...cells);
   }
 
   addCell(index: number) {
@@ -214,7 +214,7 @@ class TableRow extends StructureCollection<TableCell> {
   render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildTableRow(
       this.id,
-      () => this.children.map((each) => each.render(contentBuilder)).toArray(),
+      () => this.children.toArray().map((each) => each.render(contentBuilder)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );
@@ -227,10 +227,10 @@ class TableCell extends StructureCollection<TableItem> {
   cellType: "th" | "td";
 
   static create(componentFactory: ComponentFactory, raw: IRawType): TableCell {
-    let tableCell = new TableCell(raw.cellType, "", raw.style, raw.data);
-
     let children = (raw.children || []).map((each) => TableItem.create(componentFactory, each));
-    tableCell.addChildren(0, children);
+
+    let tableCell = new TableCell(raw.cellType, "", raw.style, raw.data);
+    tableCell.add(0, ...children);
 
     return tableCell;
   }
@@ -248,10 +248,7 @@ class TableCell extends StructureCollection<TableItem> {
       children = [children];
     }
 
-    this.addChildren(
-      0,
-      children.map((each) => new TableItem(each)),
-    );
+    this.add(0, ...children.map((each) => new TableItem(each)));
   }
 
   isEmpty() {
@@ -309,7 +306,7 @@ class TableItem extends ContentCollection {
 
   static create(componentFactory: ComponentFactory, raw: IRawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
-    tableItem.addChildren(0, super.createChildren(componentFactory, raw));
+    tableItem.add(0, ...this.createChildren(componentFactory, raw));
     return tableItem;
   }
 

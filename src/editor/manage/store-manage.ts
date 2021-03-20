@@ -1,4 +1,5 @@
 import Block from "../../components/block";
+import { walkTree } from "../../util/walk-tree";
 import Editor from "../editor";
 
 class StoreManage {
@@ -11,6 +12,10 @@ class StoreManage {
 
   init() {
     this.blockStore = {};
+    walkTree(this.editor.article, (each) => {
+      this.blockStore[each.id] = each;
+    });
+
     this.editor.article.$on("blockCreated", (block: Block) => {
       this.blockStore[block.id] = block;
     });
