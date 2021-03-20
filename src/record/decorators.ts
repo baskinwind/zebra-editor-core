@@ -1,6 +1,4 @@
-const initRecordState = <T extends { new (...args: any[]): any }>(
-  constructor: T,
-) => {
+const initRecordState = <T extends { new (...args: any[]): any }>(constructor: T) => {
   abstract class RecordComponent extends constructor {
     constructor(...args: any[]) {
       super(...args);
@@ -10,11 +8,7 @@ const initRecordState = <T extends { new (...args: any[]): any }>(
   return RecordComponent;
 };
 
-const recordMethod = (
-  target: any,
-  propertyKey: string,
-  descriptor: PropertyDescriptor,
-) => {
+const recordMethod = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
   let oldFunc = descriptor.value;
   descriptor.value = function (...args: any[]) {
     let res = oldFunc.call(this, ...args);

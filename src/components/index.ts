@@ -33,7 +33,7 @@ class ComponentFactory {
       [ComponentType.header]: Header,
       [ComponentType.paragraph]: Paragraph,
       [ComponentType.media]: Media,
-      [ComponentType.code]: CodeBlock,
+      [ComponentType.codeBlock]: CodeBlock,
       [ComponentType.inlineImage]: InlineImage,
       [ComponentType.customerCollection]: CustomerCollection,
     };
@@ -72,12 +72,7 @@ class ComponentFactory {
     return new Table(row, col, head, children, style, data);
   }
 
-  buildHeader(
-    type: headerType,
-    text?: string,
-    style: StoreData = {},
-    data: StoreData = {},
-  ) {
+  buildHeader(type: headerType, text?: string, style: StoreData = {}, data: StoreData = {}) {
     return new Header(type, text, style, data);
   }
 
@@ -85,12 +80,7 @@ class ComponentFactory {
     return new Paragraph(text, style, data);
   }
 
-  buildMedia(
-    mediaType: mediaType,
-    src: string,
-    style: StoreData = {},
-    data: StoreData = {},
-  ) {
+  buildMedia(mediaType: mediaType, src: string, style: StoreData = {}, data: StoreData = {}) {
     return new Media(mediaType, src, style, data);
   }
 
@@ -108,8 +98,7 @@ class ComponentFactory {
   }
 }
 
-const getDefaultComponentFactory = (): ComponentFactory =>
-  ComponentFactory.getInstance();
+const getDefaultComponentFactory = (): ComponentFactory => ComponentFactory.getInstance();
 
 export default ComponentFactory;
 

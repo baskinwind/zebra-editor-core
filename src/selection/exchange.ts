@@ -12,8 +12,7 @@ const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
   try {
     let idList = getSelectedIdList(editor.article, start.id, end.id);
     let endToTailSize =
-      editor.storeManage.getBlockById(idList[idList.length - 1]).getSize() -
-      end.offset;
+      editor.storeManage.getBlockById(idList[idList.length - 1]).getSize() - end.offset;
 
     let exchangeList: Block[] = [];
     let idMap: { [key: string]: number } = {};
@@ -23,10 +22,10 @@ const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
       editor.storeManage
         .getBlockById(id)
         .exchangeTo(newBlock, args)
-        .forEach((item) => {
-          if (!idMap[item.id]) {
-            idMap[item.id] = 1;
-            exchangeList.push(item);
+        .forEach((each) => {
+          if (!idMap[each.id]) {
+            idMap[each.id] = 1;
+            exchangeList.push(each);
           }
         });
     });

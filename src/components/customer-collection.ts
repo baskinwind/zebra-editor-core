@@ -15,87 +15,57 @@ class CustomerCollection extends StructureCollection<Block> {
   type: string = ComponentType.customerCollection;
   tag: string;
 
-  static create(
-    componentFactory: ComponentFactory,
-    raw: IRawType,
-  ): CustomerCollection {
-    let children = (raw.children || []).map((item) => {
-      return componentFactory.typeMap[item.type].create(item);
+  static create(componentFactory: ComponentFactory, raw: IRawType): CustomerCollection {
+    let children = (raw.children || []).map((each) => {
+      return componentFactory.typeMap[each.type].create(each);
     });
 
     let collection = componentFactory.buildCustomerCollection(raw.tag);
-    collection.add(children);
+    collection.add(0, ...children);
     return collection;
   }
 
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[] = [],
-  ): Block[] {
+  static exchange(componentFactory: ComponentFactory, block: Block, args: any[] = []): Block[] {
     let parent = block.getParent();
-
     let prev = parent.getPrev(block);
     let index = parent.findChildrenIndex(block);
     block.removeSelf();
 
     // 当前一块内容为 CustomerCollection，并且 tag 一致，直接添加
     if (prev instanceof CustomerCollection && prev.tag === args[0]) {
-      prev.add(block);
+      prev.add(-1, block);
     } else {
       // 否则新生成一个 CustomerCollection
       let newList = componentFactory.buildCustomerCollection(args[0]);
-      newList.add(block, 0);
-      parent.add(newList, index);
+      newList.add(0, block);
+      parent.add(index, newList);
     }
     return [block];
   }
 
-  constructor(
-    tag: string = "div",
-    children: (string | Block)[] = [],
-    style?: StoreData,
-    data?: StoreData,
-  ) {
+  constructor(tag: string = "div", children: string[] = [], style?: StoreData, data?: StoreData) {
     super(style, data);
     this.tag = tag;
-    let block = children.map((item) => {
-      if (typeof item === "string") {
-        item = this.getComponentFactory().buildParagraph(item);
-      }
-      return item;
-    });
-    this.add(block, 0);
+    this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
 
-  add(block: Block | Block[], index: number = 0): OperatorType {
-    // 连续输入空行，截断列表
-    if (typeof index === "number" && index > 1) {
-      let now = this.getChild(index - 1);
-      if (now?.isEmpty() && !Array.isArray(block) && block.isEmpty()) {
-        let operator = this.split(index, block);
-        now.removeSelf();
-        return operator;
-      }
-    }
+  add(index: number, ...block: Block[]): OperatorType {
+    index = index < 0 ? this.getSize() + 1 + index : index;
 
-    if (!Array.isArray(block)) {
-      block = [block];
+    // 连续输入空行，截断列表
+    if (
+      index > 1 &&
+      block.length === 1 &&
+      block[0].isEmpty() &&
+      this.getChild(index - 1).isEmpty()
+    ) {
+      let operator = this.split(index, ...block);
+      this.getChild(index - 1).removeSelf();
+      return operator;
     }
 
     let newBlock = this.addChildren(index, block);
     return [newBlock];
-  }
-
-  removeChildren(start: number, end: number = -1): Block[] {
-    let removed = super.removeChildren(start, end);
-
-    // 若子元素全部删除，将自己也删除
-    if (this.getSize() === 0) {
-      this.removeSelf();
-    }
-
-    return removed;
   }
 
   childHeadDelete(block: Block): OperatorType {
@@ -111,7 +81,7 @@ class CustomerCollection extends StructureCollection<Block> {
 
     // 第一项时，直接将该列表项添加到父元素上
     block.removeSelf();
-    return parent.add(block, index);
+    return parent.add(index, block);
   }
 
   sendTo(block: Block): OperatorType {
@@ -126,7 +96,7 @@ class CustomerCollection extends StructureCollection<Block> {
       return [[last], { id: last.id, offset: lastSize }];
     }
 
-    return this.add(block);
+    return this.add(-1, block);
   }
 
   snapshoot(): IListSnapshoot {
@@ -163,7 +133,7 @@ class CustomerCollection extends StructureCollection<Block> {
     let content = contentBuilder.buildCustomerCollection(
       this.id,
       this.tag,
-      () => this.children.toArray().map((item) => item.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentBuilder)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

@@ -1,6 +1,6 @@
-// @ts-nocheck
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
+import { getTextLength } from "../util/text-util";
 import { createError } from "../util/handle-error";
 
 export interface Cursor {
@@ -9,21 +9,15 @@ export interface Cursor {
 }
 
 // 获取光标所在的组件
-export const getCursorElement = (
-  element: HTMLElement | Node | null | undefined,
-): HTMLElement => {
-  if (element === null || element === undefined)
-    throw createError("获取光标所在节点失败", undefined, "selection");
+export const getCursorElement = (element?: HTMLElement | null): HTMLElement => {
+  if (!element) throw createError("获取光标所在节点失败", undefined, "selection");
   // 文本节点处理
   if (element.nodeType === 3) {
     return getCursorElement(element.parentElement);
   }
 
-  if (
-    element.dataset &&
-    element.dataset.structure === StructureType.structure
-  ) {
-    return getCursorElement(element.children[0]);
+  if (element.dataset && element.dataset.structure === StructureType.structure) {
+    return getCursorElement(element.children[0] as HTMLElement);
   }
 
   if (
@@ -38,9 +32,7 @@ export const getCursorElement = (
 };
 
 // 获取光标所在的文本节点
-export const getContainer = (
-  element: Element | Node | null | undefined,
-): HTMLElement => {
+export const getContainer = (element?: HTMLElement | null): HTMLElement => {
   if (element === null || element === undefined)
     throw createError("容器节点获取失败", undefined, "selection");
   // 文本节点处理
@@ -53,11 +45,11 @@ export const getContainer = (
     return getContainer(element.parentElement);
   }
 
-  return element;
+  return element as HTMLElement;
 };
 
 // 获取元素的长度，修正图片长度为 0 的错误
-export const getElememtSize = (element?: Element): number => {
+export const getElememtSize = (element?: HTMLElement): number => {
   if (element === undefined) return 0;
   if (
     element.nodeName === "IMG" ||
@@ -72,18 +64,15 @@ export const getElememtSize = (element?: Element): number => {
   if (element.children && element.children.length) {
     let size = 0;
     for (let i = 0; i < element.children.length; i++) {
-      let item = element.children[i];
-      size += getElememtSize(item);
+      let each = element.children[i] as HTMLElement;
+      size += getElememtSize(each);
     }
     return size;
   }
-  return [...element.textContent].length || 0;
+  return getTextLength(element.textContent);
 };
 
-const findFocusNode = (
-  element: Node,
-  index: number,
-): [boolean, Node, number] => {
+const findFocusNode = (element: HTMLElement, index: number): [boolean, Node, number] => {
   if (
     index === 0 ||
     element.nodeName === "IMG" ||
@@ -100,8 +89,8 @@ const findFocusNode = (
   if (element.children && element.children.length !== 0) {
     let consume = 0;
     for (let i = 0; i < element.children.length; i++) {
-      let item = element.children[i];
-      let res = findFocusNode(item, index - consume);
+      let each = element.children[i] as HTMLElement;
+      let res = findFocusNode(each, index - consume);
       if (res[0]) {
         return res;
       }
@@ -116,11 +105,7 @@ const findFocusNode = (
   }
 
   // 兼容 p 标签内的 br 标签
-  return [
-    true,
-    element.childNodes.length ? element.childNodes[0] : element,
-    index,
-  ];
+  return [true, element.childNodes.length ? element.childNodes[0] : element, index];
 };
 
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
@@ -153,24 +138,22 @@ export const getCursorPosition = (
 };
 
 // 获取光标在 parent 中的偏移量
-export const getOffset = (
-  parent: Element,
-  wrap: Element,
-  offset: number,
-): number => {
-  const countSize = (parent, node) => {
+export const getOffset = (parent: HTMLElement, wrap: HTMLElement, offset: number): number => {
+  const countSize = (parent: HTMLElement, node: HTMLElement) => {
     if (parent === node) return 0;
     let size = 0;
     for (let i = 0; i < parent.children.length; i++) {
-      let elememt = parent.children[i];
-      if (elememt === node) {
+      let each = parent.children[i] as HTMLElement;
+
+      if (each === node) {
         break;
       }
-      if (elememt.contains(node)) {
-        size += countSize(elememt, node);
+
+      if (each.contains(node)) {
+        size += countSize(each, node);
         break;
       } else {
-        size += getElememtSize(elememt);
+        size += getElememtSize(each);
       }
     }
     return size;

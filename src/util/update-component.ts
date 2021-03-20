@@ -8,12 +8,8 @@ let delayUpdateQueue: Set<string> = new Set();
 let inLoop = false;
 
 // 添加延迟更新的组件 id，通常发生在大批量删除或历史回退时
-const delayUpdate = (id: string | string[]) => {
-  if (Array.isArray(id)) {
-    id.forEach((item) => delayUpdateQueue.add(item));
-  } else {
-    delayUpdateQueue.add(id);
-  }
+const delayUpdate = (...id: string[]) => {
+  id.forEach((each) => delayUpdateQueue.add(each));
 };
 
 // 判断是否需要延迟更新
@@ -25,9 +21,7 @@ const updateDelay = (editor: Editor) => {
   if (!delayUpdateQueue.size) {
     return;
   }
-  delayUpdateQueue.forEach((id) =>
-    update(editor, editor.storeManage.getBlockById(id)),
-  );
+  delayUpdateQueue.forEach((id) => update(editor, editor.storeManage.getBlockById(id)));
   delayUpdateQueue.clear();
   nextTick(() => {
     document.dispatchEvent(new Event("editorChange"));
@@ -35,21 +29,14 @@ const updateDelay = (editor: Editor) => {
 };
 
 // 更新组件
-const updateComponent = (
-  editor: Editor,
-  component?: Component | Component[],
-) => {
+const updateComponent = (editor: Editor, ...component: Component[]) => {
   // 清空延迟更新队列
   updateDelay(editor);
 
   // 不需要更新
   if (!component) return;
 
-  if (Array.isArray(component)) {
-    component.forEach((item) => update(editor, item));
-  } else {
-    update(editor, component);
-  }
+  component.forEach((each) => update(editor, each));
 
   handleRecallQueue(editor);
 

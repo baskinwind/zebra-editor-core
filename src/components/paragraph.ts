@@ -11,46 +11,41 @@ class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Paragraph {
-    let children = super.getChildren(componentFactory, raw);
+    let children = super.createChildren(componentFactory, raw);
 
     let paragraph = componentFactory.buildParagraph("", raw.style, raw.data);
     paragraph.addChildren(0, children);
     return paragraph;
   }
 
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[] = [],
-  ): Paragraph[] {
-    let list: Paragraph[] = [];
+  static exchange(componentFactory: ComponentFactory, block: Block): Paragraph[] {
     if (block instanceof Paragraph) {
-      list.push(block);
-    } else if (block instanceof ContentCollection) {
+      return [block];
+    }
+
+    let newParagraphList: Paragraph[] = [];
+    if (block instanceof ContentCollection) {
       let newParagraph = componentFactory.buildParagraph(
         "",
         block.decorate.copyStyle(),
         block.decorate.copyData(),
       );
       newParagraph.addChildren(0, block.children.toArray());
-      list.push(newParagraph);
+      newParagraphList.push(newParagraph);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");
+      // PlainText 末尾可定会有一个空行
       stringList.pop();
-      [...stringList].forEach((item) => {
-        list.push(componentFactory.buildParagraph(item));
+      stringList.forEach((each) => {
+        newParagraphList.push(componentFactory.buildParagraph(each));
       });
     }
 
-    block.replaceSelf(list);
-    return list;
+    block.replaceSelf(...newParagraphList);
+    return newParagraphList;
   }
 
-  constructor(
-    text: string = "",
-    style?: StoreData,
-    data: StoreData = { tag: "p" },
-  ) {
+  constructor(text: string = "", style?: StoreData, data: StoreData = { tag: "p" }) {
     super(text, style, data);
   }
 
@@ -65,7 +60,7 @@ class Paragraph extends ContentCollection {
   render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildParagraph(
       this.id,
-      () => this.getContent(contentBuilder),
+      () => this.getChildren(contentBuilder),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

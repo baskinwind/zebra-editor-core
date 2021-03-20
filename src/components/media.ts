@@ -28,12 +28,7 @@ class Media extends Block {
     );
   }
 
-  constructor(
-    mediaType: mediaType,
-    src: string,
-    style?: StoreData,
-    data?: StoreData,
-  ) {
+  constructor(mediaType: mediaType, src: string, style?: StoreData, data?: StoreData) {
     super(style, data);
     this.mediaType = mediaType;
     this.src = src;
@@ -57,11 +52,7 @@ class Media extends Block {
     data?: StoreData,
   ): OperatorType {
     this.modifyDecorate(style, data);
-    return [
-      [this],
-      { id: this.id, offset: start },
-      { id: this.id, offset: end },
-    ];
+    return [[this], { id: this.id, offset: start }, { id: this.id, offset: end }];
   }
 
   remove(): OperatorType {
@@ -71,9 +62,9 @@ class Media extends Block {
     return [[paragraph], { id: paragraph.id, offset: 0 }];
   }
 
-  split(index: number, block?: Block): OperatorType {
-    if (!block) {
-      block = this.getComponentFactory().buildParagraph();
+  split(index: number, ...block: Block[]): OperatorType {
+    if (block.length === 0) {
+      block.push(this.getComponentFactory().buildParagraph());
     }
 
     let parent = this.getParent();
@@ -81,15 +72,15 @@ class Media extends Block {
 
     // 首位分割
     if (index === 0) {
-      parent.addChildren(componentIndex, [block]);
+      parent.addChildren(componentIndex, block);
     }
 
     // 末位分割
     if (index === 1) {
-      parent.addChildren(componentIndex + 1, [block]);
+      parent.addChildren(componentIndex + 1, block);
     }
 
-    return [[block], { id: block.id, offset: 0 }];
+    return [block, { id: block[0].id, offset: 0 }];
   }
 
   receive(block: Block): OperatorType {

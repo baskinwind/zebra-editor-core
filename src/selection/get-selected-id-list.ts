@@ -3,17 +3,17 @@ import Block from "../components/block";
 import StructureCollection from "../components/structure-collection";
 
 const walkCollection = (
-  structureCollection: StructureCollection,
+  structureCollection: StructureCollection<Block>,
   callback: (block: Block) => boolean,
 ) => {
   for (let i = 0, len = structureCollection.getSize(); i < len; i++) {
-    let item = structureCollection.getChild(i);
-    if (item instanceof StructureCollection) {
-      if (walkCollection(item, callback)) {
+    let each = structureCollection.getChild(i);
+    if (each instanceof StructureCollection) {
+      if (walkCollection(each, callback)) {
         return true;
       }
     } else {
-      if (callback(item)) {
+      if (callback(each)) {
         return true;
       }
     }

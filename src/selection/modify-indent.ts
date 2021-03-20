@@ -23,11 +23,11 @@ const indent = (editor: Editor, block: Block) => {
     }
   } else if (next?.type === ComponentType.list) {
     block.removeSelf();
-    next.add(block, 0);
+    next.add(0, block);
   } else {
     let newList = editor.componentFactory.buildList("ol");
     block.replaceSelf(newList);
-    newList.add(block);
+    newList.add(0, block);
   }
   return block;
 };
@@ -61,8 +61,8 @@ const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
   let newEndId: string = "";
   console.log(idList);
 
-  idList.forEach((item, index) => {
-    let block = editor.storeManage.getBlockById(item);
+  idList.forEach((each, index) => {
+    let block = editor.storeManage.getBlockById(each);
     if (isOutdent) {
       outdent(editor, block);
     } else {
@@ -75,8 +75,6 @@ const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
       newEndId = block.id;
     }
   });
-
-  console.log(newStartId, newEndId);
 
   focusAt(
     editor.mountedWindow,

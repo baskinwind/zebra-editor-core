@@ -1,11 +1,10 @@
 enum ComponentType {
-  media = "MEDIA",
   inlineImage = "INLINEIMAGE",
   character = "CHARACTER",
-  characterList = "CHARACTERLIST",
+  media = "MEDIA",
+  codeBlock = "CODEBLOCK",
   paragraph = "PARAGRAPH",
   header = "HEADER",
-  code = "CODE",
   list = "LIST",
   table = "TABLE",
   tableRow = "TABLEROW",

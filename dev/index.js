@@ -71,8 +71,8 @@ new Vue({
     modifyType(tag) {
       if (tag === "normal") {
         exchange(editor, editor.componentFactory.typeMap.PARAGRAPH);
-      } else if (tag === "code") {
-        exchange(editor, editor.componentFactory.typeMap.CODE);
+      } else if (tag === "codeBlock") {
+        exchange(editor, editor.componentFactory.typeMap.CODEBLOCK);
       } else if (tag === "ul" || tag === "ol" || tag === "nl") {
         exchange(editor, editor.componentFactory.typeMap.LIST, tag);
       } else {
@@ -127,11 +127,7 @@ new Vue({
     addTable() {
       let table = editor.componentFactory.buildTable(3, 3, []);
       insertBlock(editor, table);
-      focusAt(editor.mountedWindow, [
-        table.getChild(0).getChild(0).getChild(0),
-        0,
-        0,
-      ]);
+      focusAt(editor.mountedWindow, [table.getChild(0).getChild(0).getChild(0), 0, 0]);
     },
     modifyTable() {
       modifyTable(editor, {
@@ -158,10 +154,7 @@ new Vue({
       );
     },
     customerInlineImage() {
-      insertInline(
-        editor,
-        editor.componentFactory.buildInlineImage(this.inlineImage),
-      );
+      insertInline(editor, editor.componentFactory.buildInlineImage(this.inlineImage));
     },
 
     insertImage() {
@@ -175,10 +168,7 @@ new Vue({
       );
     },
     customerImage() {
-      insertBlock(
-        editor,
-        editor.componentFactory.buildMedia("image", this.image),
-      );
+      insertBlock(editor, editor.componentFactory.buildMedia("image", this.image));
     },
   },
 });

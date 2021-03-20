@@ -9,11 +9,9 @@ import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
 import { Cursor } from "../selection/util";
+import nextTick from "../util/next-tick";
 
-export type OperatorType =
-  | [Component[], Cursor, Cursor]
-  | [Component[], Cursor]
-  | [Component[]];
+export type OperatorType = [Component[], Cursor, Cursor] | [Component[], Cursor] | [Component[]];
 
 export interface IRawType {
   id?: string;
@@ -110,7 +108,9 @@ abstract class Component extends Event {
   }
 
   destory() {
-    this.$off();
+    nextTick(() => {
+      this.$off();
+    });
   }
 
   // 渲染该组件

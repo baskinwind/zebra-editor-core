@@ -27,75 +27,57 @@ let pledgeCn = [
   "我将生命与荣耀献给守夜人，今夜如此，夜夜皆然。",
 ];
 
-article.add(factory.buildHeader("h1", "A Song of Ice and Fire"));
-article.add(factory.buildHeader("h2", "冰与火之歌"));
+factory.buildHeader("h1", "A Song of Ice and Fire").addInto(article);
+factory.buildHeader("h2", "冰与火之歌").addInto(article);
 
-article.add(factory.buildHeader("h3", "图片"));
-article.add(
-  factory.buildMedia("image", "https://zebrastudio.tech/img/demo/img-1.jpg"),
-);
+factory.buildHeader("h3", "图片").addInto(article);
 
-article.add(factory.buildHeader("h3", "代码块"));
-let code = factory.buildCode(
-  `document.body.innerHTML = greeter(user);`,
-  "javascript",
-);
-code.addInto(article);
+factory.buildMedia("image", "https://zebrastudio.tech/img/demo/img-1.jpg").addInto(article);
 
-article.add(factory.buildHeader("h3", "列表"));
-let ol = factory.buildList("ol", [
-  "权力的游戏",
-  "列王的纷争",
-  "冰雨的风暴",
-  "群鸦的盛宴",
-  "魔龙的狂舞",
-]);
-ol.addInto(article);
+factory.buildHeader("h3", "代码块").addInto(article);
+factory.buildCode(`document.body.innerHTML = greeter(user);`, "javascript").addInto(article);
 
-let ul = factory.buildList("ul", [
-  "琼恩·雪诺",
-  "丹妮莉丝·坦格利安",
-  "艾莉亚·史塔克",
-  "提利昂·兰尼斯特",
-]);
-ul.addInto(article);
+factory.buildHeader("h3", "列表").addInto(article);
+factory
+  .buildList("ol", ["权力的游戏", "列王的纷争", "冰雨的风暴", "群鸦的盛宴", "魔龙的狂舞"])
+  .addInto(article);
 
-article.add(factory.buildHeader("h3", "段落"));
+factory
+  .buildList("ul", ["琼恩·雪诺", "丹妮莉丝·坦格利安", "艾莉亚·史塔克", "提利昂·兰尼斯特"])
+  .addInto(article);
+
+factory.buildHeader("h3", "段落").addInto(article);
 pledge.forEach((item) => {
-  article.add(factory.buildParagraph(item));
+  factory.buildParagraph(item).addInto(article);
 });
 
 pledgeCn.forEach((item) => {
-  article.add(factory.buildParagraph(item));
+  factory.buildParagraph(item).addInto(article);
 });
 
-article.add(factory.buildHeader("h3", "图文混排"));
+factory.buildHeader("h3", "图文混排").addInto(article);
+
 let para = factory.buildParagraph("");
-para.add(
-  factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-1.png"),
-);
+factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-1.png").addInto(para);
 para.addText(" Valar Morghulis ");
-para.add(
-  factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-2.png"),
-);
+factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-2.png").addInto(para);
 para.addText(" 凡人皆有一死 ");
-para.add(
-  factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-3.png"),
-);
+factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-3.png").addInto(para);
 para.addInto(article);
 
-article.add(factory.buildHeader("h3", "表格"));
-let table = factory.buildTable(
-  3,
-  3,
-  ["表头一", "表头二", "表头三"],
-  [
-    ["1-1", "1-2", "1-3"],
-    ["2-1", "2-2", "2-3"],
-    ["3-1", "3-2", "3-3"],
-  ],
-);
-table.addInto(article);
+factory.buildHeader("h3", "表格").addInto(article);
+factory
+  .buildTable(
+    3,
+    3,
+    ["表头一", "表头二", "表头三"],
+    [
+      ["1-1", "1-2", "1-3"],
+      ["2-1", "2-2", "2-3"],
+      ["3-1", "3-2", "3-3"],
+    ],
+  )
+  .addInto(article);
 
 factory.buildParagraph().addInto(article);
 

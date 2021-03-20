@@ -1,10 +1,4 @@
-import {
-  getElememtSize,
-  getContainer,
-  Cursor,
-  getCursorElement,
-  getOffset,
-} from "./util";
+import { getElememtSize, getContainer, Cursor, getCursorElement, getOffset } from "./util";
 import { cloneDeep, throttle } from "lodash";
 import Article from "../components/article";
 
@@ -53,12 +47,7 @@ const getBeforeSelection = () => {
 const getSelection = (contentWindow: Window) => {
   let section = contentWindow.getSelection();
   // 无选区：直接返回保存的选区内容
-  if (
-    !section ||
-    !section.anchorNode ||
-    !section.focusNode ||
-    section?.type === "None"
-  ) {
+  if (!section || !section.anchorNode || !section.focusNode || section?.type === "None") {
     return cloneDeep<selectionType>(selectionStore);
   }
   let anchorNode = section?.anchorNode;
@@ -101,13 +90,12 @@ const getSelection = (contentWindow: Window) => {
   let anchorEle = anchorNode as HTMLElement;
   if (
     anchorEle.dataset &&
-    (anchorEle.dataset.structure === "CONTENT" ||
-      anchorEle.dataset.structure === "CONTENTWRAP")
+    (anchorEle.dataset.structure === "CONTENT" || anchorEle.dataset.structure === "CONTENTWRAP")
   ) {
     let startParent: HTMLElement = getCursorElement(anchorEle);
     let offset = 0;
     for (let i = 0; i < section.anchorOffset; i++) {
-      offset += getElememtSize(anchorEle.children[i]);
+      offset += getElememtSize(anchorEle.children[i] as HTMLElement);
     }
     selectionStore = {
       isCollapsed: true,
@@ -135,14 +123,10 @@ const getSelection = (contentWindow: Window) => {
   let focusOffset = section.focusOffset;
   // EMOJI 标签会导致获取的光标的位置错误
   if (section.anchorNode.nodeType === 3) {
-    anchorOffect = [
-      ...(section.anchorNode.textContent?.substr(0, anchorOffect) || ""),
-    ].length;
+    anchorOffect = [...(section.anchorNode.textContent?.substr(0, anchorOffect) || "")].length;
   }
   if (section.focusNode.nodeType === 3) {
-    focusOffset = [
-      ...(section.focusNode.textContent?.substr(0, focusOffset) || ""),
-    ].length;
+    focusOffset = [...(section.focusNode.textContent?.substr(0, focusOffset) || "")].length;
   }
   let startOffset;
   let startNode;
@@ -174,24 +158,23 @@ const getSelection = (contentWindow: Window) => {
 
   // 修正光标节点的位置
   // 获得光标距离所在段落的位置
-  let startParent: HTMLElement = getCursorElement(startNode);
-  let startContainer: HTMLElement = getContainer(startParent);
-  let endParent: HTMLElement = getCursorElement(endNode);
-  let endContainer: HTMLElement = getContainer(endParent);
-  startOffset = getOffset(startParent, startContainer, startOffset);
-  endOffset = getOffset(endParent, endContainer, endOffset);
+  let startParagtaph: HTMLElement = getCursorElement(startNode as HTMLElement);
+  let startContainer: HTMLElement = getContainer(startNode as HTMLElement);
+  let endParagraph: HTMLElement = getCursorElement(endNode as HTMLElement);
+  let endContainer: HTMLElement = getContainer(endNode as HTMLElement);
+  startOffset = getOffset(startParagtaph, startContainer, startOffset);
+  endOffset = getOffset(endParagraph, endContainer, endOffset);
 
   // 保存选区信息
   selectionStore = {
-    isCollapsed:
-      section?.isCollapsed === undefined ? true : section.isCollapsed,
+    isCollapsed: section?.isCollapsed === undefined ? true : section.isCollapsed,
     range: [
       {
-        id: startParent.id,
+        id: startParagtaph.id,
         offset: startOffset,
       },
       {
-        id: endParent.id,
+        id: endParagraph.id,
         offset: endOffset,
       },
     ],

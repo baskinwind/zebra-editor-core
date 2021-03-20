@@ -6,6 +6,7 @@ import StructureType from "../const/structure-type";
 import { StoreData } from "../decorate";
 import { createError } from "../util/handle-error";
 import Character from "./character";
+import ComponentType from "../const/component-type";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
   content: string;
@@ -15,11 +16,7 @@ abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
 
-  constructor(
-    content: string = "",
-    style: StoreData = {},
-    data: StoreData = {},
-  ) {
+  constructor(content: string = "", style: StoreData = {}, data: StoreData = {}) {
     super(style, data);
     // 纯文本最后必须有一个换行，js 中 emoji 的长度识别有问题
     this.content = [...content];
@@ -28,7 +25,7 @@ abstract class PlainText extends Block {
     }
   }
 
-  add(string: string, index?: number): OperatorType {
+  add(index: number, string: string): OperatorType {
     if (typeof string !== "string") {
       throw createError("纯文本组件仅能输入文字", this);
     }
@@ -42,9 +39,10 @@ abstract class PlainText extends Block {
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
-    // 首位删除变成空行
+    // 首位删除变成段落
     if (start < 0 && end === 0) {
-      return this.replaceSelf(this.getComponentFactory().buildParagraph());
+      let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph], []);
+      return [block, { id: block[0].id, offset: 0 }];
     }
 
     this.content.splice(start, end - start);
@@ -52,12 +50,12 @@ abstract class PlainText extends Block {
     return [[this], { id: this.id, offset: start }];
   }
 
-  split(index: number, block?: Block | Block[]): OperatorType {
-    if (block) {
+  split(index: number, ...block: Block[]): OperatorType {
+    if (block.length) {
       throw createError("纯文本组件仅能输入文字", this);
     }
 
-    return this.add("\n", index);
+    return this.add(index, "\n");
   }
 
   receive(block: Block): OperatorType {
@@ -67,9 +65,10 @@ abstract class PlainText extends Block {
     // 内容集合组件添加其中的文字内容
     if (block instanceof ContentCollection) {
       this.add(
+        -1,
         block.children
-          .filter((item) => item instanceof Character)
-          .map((item) => item.content)
+          .filter((each) => each instanceof Character)
+          .map((each) => each.content)
           .join("") + "\n",
       );
       // 纯文本组件直接合并

@@ -10,15 +10,8 @@ class InlineImage extends Inline {
   content = "";
   src: string;
 
-  static create(
-    componentFactory: ComponentFactory,
-    raw: IRawType,
-  ): InlineImage {
-    return componentFactory.buildInlineImage(
-      raw.src || "",
-      raw.style,
-      raw.data,
-    );
+  static create(componentFactory: ComponentFactory, raw: IRawType): InlineImage {
+    return componentFactory.buildInlineImage(raw.src || "", raw.style, raw.data);
   }
 
   constructor(src: string = "", style?: StoreData, data?: StoreData) {

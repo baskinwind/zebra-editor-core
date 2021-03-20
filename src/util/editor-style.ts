@@ -52,6 +52,9 @@ body {
   left: 0;
   z-index: -1;
 }
+figure {
+  margin: 1em 0;
+}
 pre {
   position: relative;
   padding: 10px;
@@ -71,5 +74,19 @@ pre::before {
 }
 a {
   color: #1890ff;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 0;
+  min-width: 2em;
+}
+table p {
+  margin: 4px 0;
+}
+p:not(.zebra-editor-code-block) code {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: .9em;
+  background-color: #f8f8f8;
 }
 `;

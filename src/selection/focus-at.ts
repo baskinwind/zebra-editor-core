@@ -1,6 +1,7 @@
 import { Cursor, getCursorPosition } from "./util";
 import { getBeforeSelection } from "./get-selection";
 import nextTick from "../util/next-tick";
+import { getTextSurePosition } from "../util/text-util";
 
 // 选中 start 到 end 的内容
 const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
@@ -12,11 +13,6 @@ const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
       end = selection.range[1];
     }
 
-    // 选区参数为数组形式
-    if (Array.isArray(start)) {
-      end = { id: start[0].id, offset: start[2] };
-      start = { id: start[0].id, offset: start[1] };
-    }
     // id 为空字符，说明刚初始化，不进行 focus
     if (start.id === "") return;
     if (!end) {
@@ -60,11 +56,7 @@ type focusNodeType = {
 };
 
 // 从开始节点的某处，选到接收节点的某处
-const focusNode = (
-  contentWindow: Window,
-  start: focusNodeType,
-  end: focusNodeType = start,
-) => {
+const focusNode = (contentWindow: Window, start: focusNodeType, end: focusNodeType = start) => {
   let doc = contentWindow.document;
   let section = contentWindow.getSelection();
   section?.removeAllRanges();
@@ -83,8 +75,7 @@ const focusNode = (
       range.setStartAfter(start.node);
     }
   } else {
-    let sureList = [...(start.node.textContent || "")];
-    range.setStart(start.node, sureList.slice(0, start.index).join("").length);
+    range.setStart(start.node, getTextSurePosition(start.node.textContent, start.index));
   }
   if (
     end.node.nodeName === "IMG" ||
@@ -99,8 +90,7 @@ const focusNode = (
       range.setEndAfter(end.node);
     }
   } else {
-    let sureList = [...(end.node.textContent || "")];
-    range.setEnd(end.node, sureList.slice(0, end.index).join("").length);
+    range.setEnd(end.node, getTextSurePosition(end.node.textContent, end.index));
   }
   section?.addRange(range);
   if (!doc.hasFocus()) {

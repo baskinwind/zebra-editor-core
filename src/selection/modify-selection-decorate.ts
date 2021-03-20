@@ -5,11 +5,7 @@ import focusAt from "./focus-at";
 import { getSelectedIdList } from "./get-selected-id-list";
 
 // 修改选区内的文字
-const modifySelectionDecorate = (
-  editor: Editor,
-  style?: StoreData,
-  data?: StoreData,
-) => {
+const modifySelectionDecorate = (editor: Editor, style?: StoreData, data?: StoreData) => {
   let selection = getSelection(editor.mountedWindow);
   // 为光标时，不需要处理
   if (selection.isCollapsed) {
@@ -32,9 +28,7 @@ const modifySelectionDecorate = (
 
   // 其他情况
   let firstComponent = editor.storeManage.getBlockById(idList[0]);
-  let lastComponent = editor.storeManage.getBlockById(
-    idList[idList.length - 1],
-  );
+  let lastComponent = editor.storeManage.getBlockById(idList[idList.length - 1]);
   firstComponent.modifyContentDecorate(start.offset, -1, style, data);
   lastComponent.modifyContentDecorate(0, end.offset - 1, style, data);
   for (let i = 1; i < idList.length - 1; i++) {

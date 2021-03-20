@@ -1,10 +1,7 @@
 import ComponentFactory from "../components";
 import Article from "../components/article";
-import Block from "../components/block";
-import StructureCollection from "../components/structure-collection";
 import ContentBuilder from "../builder/content-builder";
 import UserOperator from "../operator/user-operator";
-import { createError } from "../util/handle-error";
 import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
@@ -36,15 +33,11 @@ class Editor {
   historyManage: HistoryManage;
   storeManage: StoreManage;
 
-  constructor(
-    idOrElement: string | HTMLElement,
-    article: Article,
-    option: EditorOption,
-  ) {
+  constructor(idOrElement: string | HTMLElement, article: Article, option: EditorOption) {
     if (typeof idOrElement === "string") {
       let dom = document.getElementById(idOrElement);
       if (!dom) {
-        throw createError("请传入正确的节点或节点 id", undefined, "create");
+        throw Error("请传入正确的节点或节点 id");
       }
       this.mountedElement = dom;
     } else {

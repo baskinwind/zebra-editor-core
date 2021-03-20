@@ -10,11 +10,7 @@ class Decorate {
   style: Map<string, any>;
   data: Map<string, any>;
 
-  constructor(
-    component: Component,
-    style: StoreData = {},
-    data: StoreData = {},
-  ) {
+  constructor(component: Component, style: StoreData = {}, data: StoreData = {}) {
     this.component = component;
     this.style = Map(style);
     this.data = Map(data);
@@ -23,36 +19,23 @@ class Decorate {
   copyStyle() {
     return this.style.toObject();
   }
-  mergeStyle(style?: StoreData) {
-    if (!style) return;
-    for (let key in style) {
-      this.setStyle(key, style[key]);
-    }
-  }
   getStyle() {
     return { ...this.component.style, ...this.style.toObject() };
   }
-  setStyle(name: string, value: any) {
-    if (name === "remove") {
-      if (value === "all") {
-        this.clearStyle();
-        return;
+  mergeStyle(style?: StoreData) {
+    if (!style) return;
+
+    // 移除逻辑
+    if (style.remove) {
+      if (style.remove === "all") {
+        this.style = this.style.clear();
+      } else {
+        this.style = this.style.removeAll(style.remove.split(","));
       }
-      this.removeStyle(value as string);
       return;
     }
 
-    this.style = this.style.set(name, value);
-  }
-
-  removeStyle(name: string) {
-    let list = name.split(",");
-    list.forEach((key) => {
-      this.style = this.style.delete(key);
-    });
-  }
-  clearStyle() {
-    this.style = this.style.clear();
+    this.style = this.style.merge(style);
   }
   styleIsEmpty(): boolean {
     return this.style.size === 0;
@@ -61,79 +44,70 @@ class Decorate {
   copyData() {
     return this.data.toObject();
   }
-  mergeData(data?: StoreData) {
-    if (!data) return;
-    for (let key in data) {
-      this.setData(key, data[key]);
-    }
-  }
   getData() {
     return { ...this.component.data, ...this.data.toObject() };
   }
-  setData(name: string, value: any) {
-    if (name === "remove") {
-      if (value === "all") {
-        this.clearData();
-        return;
+  mergeData(data?: StoreData) {
+    if (!data) return;
+
+    // 移除逻辑
+    if (data.remove) {
+      if (data.remove === "all") {
+        this.data = this.data.clear();
+      } else {
+        this.data = this.data.removeAll(data.remove.split(","));
       }
-      this.removeData(value as string);
       return;
     }
-    if (name === "toggle") {
-      this.toggleData(value as string);
+
+    // 切换逻辑
+    if (data.toggle) {
+      let keyList = (data.toggle as string).split(",");
+      let toggleMap: StoreData = {};
+      keyList.forEach((each) => {
+        toggleMap[each] = !this.data.get(each);
+      });
+      this.data = this.data.merge(toggleMap);
+      return;
     }
-    this.data = this.data.set(name, value);
-  }
-  toggleData(name: string) {
-    let list = name.split(",");
-    list.forEach((key) => {
-      const prev = this.data.get(key);
-      this.setData(key, !prev);
-    });
-  }
-  removeData(name: string) {
-    let list = name.split(",");
-    list.forEach((key) => {
-      this.data = this.data.delete(key);
-    });
-  }
-  clearData() {
-    this.data = this.data.clear();
+
+    this.data = this.data.merge(data);
   }
   dataIsEmpty(): boolean {
     return this.data.size === 0;
   }
 
   isSame(decorate?: Decorate): boolean {
-    if (decorate === undefined) return false;
-    if (decorate.style.size !== this.style.size) {
+    if (
+      decorate === undefined ||
+      decorate.style.size !== this.style.size ||
+      decorate.data.size !== this.data.size
+    ) {
       return false;
     }
-    let style = this.getStyle();
-    for (const key in style) {
-      if (decorate.style.get(key) !== style[key]) {
+
+    for (const key in this.style) {
+      if (decorate.style.get(key) !== this.style.get(key)) {
         return false;
       }
     }
-    if (decorate.data.size !== this.data.size) {
-      return false;
-    }
-    let data = this.getData();
-    for (const key in data) {
-      if (decorate.data.get(key) !== data[key]) {
+
+    for (const key in this.data) {
+      if (decorate.data.get(key) !== this.data.get(key)) {
         return false;
       }
     }
+
     return true;
   }
 
   isEmpty(): boolean {
-    return this.styleIsEmpty() && this.dataIsEmpty();
+    return this.style.size === 0 && this.data.size === 0;
   }
 
   clear() {
-    this.clearData();
-    this.clearStyle();
+    this.style = this.style.clear();
+    this.data = this.data.clear();
   }
 }
 

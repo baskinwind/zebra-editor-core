@@ -75,7 +75,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     const table = containDocument.createElement("table");
     table.style.minWidth = "100%";
     table.style.borderCollapse = "collapse";
-    getChildren().forEach((item) => table.appendChild(item));
+    getChildren().forEach((each) => table.appendChild(each));
     figure.appendChild(table);
     this.addStyle(figure, style, data);
     return figure;
@@ -91,7 +91,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     let tr = containDocument.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.structure;
-    getChildren().forEach((item) => tr?.appendChild(item));
+    getChildren().forEach((each) => tr?.appendChild(each));
     this.addStyle(tr, style, data);
     return tr;
   }
@@ -108,7 +108,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     cell.id = id;
     cell.dataset.structure = StructureType.structure;
     cell.contentEditable = "true";
-    getChildren().forEach((item) => cell?.appendChild(item));
+    getChildren().forEach((each) => cell?.appendChild(each));
     this.addStyle(cell, style, data);
     return cell;
   }
@@ -211,28 +211,21 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     // 这个行为阻止不了，但在代码块外加上 p 标签即可修复这个问题。
     // magic code
     let wrap = containDocument.createElement("p");
-    wrap.classList.add("zebra-editor-warp-fixed", "zebra-editor-code");
+    wrap.classList.add("zebra-editor-warp-fixed", "zebra-editor-code-block");
     wrap.id = id;
-    wrap.dataset.type = ComponentType.code;
+    wrap.dataset.type = ComponentType.codeBlock;
     wrap.dataset.structure = StructureType.plainText;
     let pre = containDocument.createElement("pre");
     wrap.appendChild(pre);
     const code = containDocument.createElement("code");
     code.textContent = content;
-    code.dataset.type = ComponentType.characterList;
-    code.dataset.structure = StructureType.partialContent;
     pre.appendChild(code);
     pre.dataset.language = language;
     this.addStyle(pre, style, data);
     return wrap;
   }
 
-  buildeImage(
-    id: string,
-    src: string,
-    style: mapData,
-    data: mapData,
-  ): HTMLElement {
+  buildeImage(id: string, src: string, style: mapData, data: mapData): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
@@ -263,12 +256,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return figure;
   }
 
-  buildeAudio(
-    id: string,
-    src: string,
-    style: mapData,
-    data: mapData,
-  ): HTMLElement {
+  buildeAudio(id: string, src: string, style: mapData, data: mapData): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
@@ -282,12 +270,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return figure;
   }
 
-  buildeVideo(
-    id: string,
-    src: string,
-    style: mapData,
-    data: mapData,
-  ): HTMLElement {
+  buildeVideo(id: string, src: string, style: mapData, data: mapData): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
@@ -301,12 +284,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     return figure;
   }
 
-  buildCharacterList(
-    id: string,
-    charList: string,
-    style: mapData,
-    data: mapData,
-  ): HTMLElement {
+  buildCharacterList(id: string, text: string, style: mapData, data: mapData): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let charWrap;
     let root = containDocument.createElement(data.code ? "code" : "span");
@@ -349,34 +327,22 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
       });
     }
 
-    charWrap.innerText = charList;
+    charWrap.innerText = text;
     this.addStyle(root, style, data);
     root.id = id;
-    root.dataset.type = ComponentType.characterList;
-    root.dataset.structure = StructureType.partialContent;
     return root;
   }
 
-  buildInlineImage(
-    id: string,
-    src: string,
-    style: mapData,
-    data: mapData,
-  ): HTMLElement {
+  buildInlineImage(id: string, src: string, style: mapData, data: mapData): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let span = containDocument.getElementById(id);
-    if (
-      !span ||
-      span.dataset.src !== src ||
-      (data.link && span.dataset.link !== data.link)
-    ) {
+    if (!span || span.dataset.src !== src || (data.link && span.dataset.link !== data.link)) {
       span = containDocument.createElement("span");
       span.contentEditable = "false";
       span.id = id;
       span.dataset.src = src;
       span.dataset.link = data.link || "";
       span.dataset.type = ComponentType.inlineImage;
-      span.dataset.structure = StructureType.partialContent;
       span.classList.add("zebra-editor-inline-image");
       let child;
       let image = containDocument.createElement("img");

@@ -12,8 +12,8 @@ abstract class Collection<T extends Component> extends Block {
 
   // 内部使用，添加子元素
   addChildren(index: number, components: T[]): T[] {
-    components.forEach((item) => {
-      item.parent = this;
+    components.forEach((each) => {
+      each.parent = this;
     });
     this.children = this.children.splice(index, 0, ...components);
     return components;
@@ -35,8 +35,8 @@ abstract class Collection<T extends Component> extends Block {
 
     let removedComponent = this.children.slice(start, end).toArray();
 
-    removedComponent.forEach((item) => {
-      item.parent = undefined;
+    removedComponent.forEach((each) => {
+      each.parent = undefined;
     });
 
     this.children = this.children.splice(start, end - start);
@@ -69,7 +69,7 @@ abstract class Collection<T extends Component> extends Block {
   }
 
   destory() {
-    this.children.forEach((item) => item.destory());
+    this.children.forEach((each) => each.destory());
     this.children = List();
     super.destory();
   }

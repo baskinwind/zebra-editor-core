@@ -6,14 +6,9 @@ class MarkdownBuilder extends BaseBuilder {
   listIndent: number = -1;
   blockIndent: number = 0;
 
-  buildArticle(
-    id: string,
-    getChildren: () => string[],
-    style: mapData,
-    data: mapData,
-  ) {
+  buildArticle(id: string, getChildren: () => string[], style: mapData, data: mapData) {
     return getChildren()
-      .map((item) => item[0])
+      .map((each) => each[0])
       .join("\n\n");
   }
 
@@ -26,41 +21,10 @@ class MarkdownBuilder extends BaseBuilder {
   ) {
     return [
       getChildren()
-        .map((item) => item[0])
+        .map((each) => each[0])
         .join("\n"),
       "customer-collection",
     ];
-  }
-
-  buildBlockquote(
-    id: string,
-    getChildren: () => [string, string][],
-    style: mapData,
-    data: mapData,
-  ) {
-    this.blockIndent += 1;
-    let res = getChildren()
-      .map(([item, type]: [string, string]) => {
-        let arr = item.split("\n");
-        if (type === "paragraph" || type === "header" || type === "media") {
-          arr[arr.length - 1] = `${Array(this.blockIndent)
-            .fill(">")
-            .join("")} ${arr[arr.length - 1]}`;
-          if (this.blockIndent === 1) {
-            arr.unshift("");
-          }
-        } else if (type !== "blockquote") {
-          arr = arr.map((item) => `  ${item}`);
-        }
-        return arr.join("\n");
-      })
-      .join("\n");
-    this.blockIndent -= 1;
-    return [res, "blockquote"];
-  }
-
-  buildHr(id: string, style: mapData, data: mapData) {
-    return ["---", "hr"];
   }
 
   buildTable(
@@ -80,23 +44,14 @@ class MarkdownBuilder extends BaseBuilder {
       res += `| ${Array(col).fill("-").join(" | ")} |\n`;
     }
     res += `| ${Array(col).fill("---").join(" | ")} |\n`;
-    res += children.map((item) => item[0]).join("\n");
+    res += children.map((each) => each[0]).join("\n");
     return [res, "table"];
   }
 
-  buildTableRow(
-    id: string,
-    getChildren: () => [string, string][],
-    style: mapData,
-    data: mapData,
-  ) {
+  buildTableRow(id: string, getChildren: () => [string, string][], style: mapData, data: mapData) {
     let children = getChildren();
     let cellType = children[0][1];
-    return [
-      `| ${children.map((item) => item[0]).join(" | ")} |`,
-      cellType,
-      children.length,
-    ];
+    return [`| ${children.map((each) => each[0]).join(" | ")} |`, cellType, children.length];
   }
 
   buildTableCell(
@@ -108,7 +63,7 @@ class MarkdownBuilder extends BaseBuilder {
   ) {
     return [
       getChildren()
-        .map((item) => item[0])
+        .map((each) => each[0])
         .join("\n"),
       cellType,
     ];
@@ -136,7 +91,7 @@ class MarkdownBuilder extends BaseBuilder {
           let prefix = Array(this.listIndent + 1)
             .fill("  ")
             .join("");
-          arr = arr.map((item) => `${prefix}${item}`);
+          arr = arr.map((each) => `${prefix}${each}`);
         }
         return arr.join("\n");
       })
@@ -150,12 +105,7 @@ class MarkdownBuilder extends BaseBuilder {
     return list;
   }
 
-  buildParagraph(
-    id: string,
-    getChildren: () => string[],
-    style: mapData,
-    data: mapData,
-  ) {
+  buildParagraph(id: string, getChildren: () => string[], style: mapData, data: mapData) {
     let res = getChildren().join("");
     if (res === "") {
       res = "<br />";
@@ -170,20 +120,12 @@ class MarkdownBuilder extends BaseBuilder {
     style: mapData,
     data: mapData,
   ) {
-    let res = `${Array(Number(type[1]))
-      .fill("#")
-      .join("")} ${getChildren().join("")}`;
+    let res = `${Array(Number(type[1])).fill("#").join("")} ${getChildren().join("")}`;
 
     return [res, "header"];
   }
 
-  buildCodeBlock(
-    id: string,
-    content: string,
-    language: string,
-    style: mapData,
-    data: mapData,
-  ) {
+  buildCodeBlock(id: string, content: string, language: string, style: mapData, data: mapData) {
     let code = `\`\`\`${language}\n${content}\`\`\``;
     return [code, "code"];
   }
@@ -203,13 +145,8 @@ class MarkdownBuilder extends BaseBuilder {
     return [`![video](${src})`, "media"];
   }
 
-  buildCharacterList(
-    id: string,
-    charList: string,
-    style: mapData,
-    data: mapData,
-  ) {
-    let res = charList;
+  buildCharacterList(id: string, text: string, style: mapData, data: mapData) {
+    let res = text;
     if (data.code) {
       res = `\`${res}\``;
     }

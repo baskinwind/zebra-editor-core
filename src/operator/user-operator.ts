@@ -1,15 +1,13 @@
 import Editor from "../editor/editor";
 import DirectionType from "../const/direction-type";
-import getSelection, {
-  flushSelection,
-  getBeforeSelection,
-} from "../selection/get-selection";
+import getSelection, { flushSelection, getBeforeSelection } from "../selection/get-selection";
 import backspace from "./backspace";
 import input from "./input";
 import onKeyDown from "./on-keydown";
 import onPaste from "./on-paste";
 import focusAt from "../selection/focus-at";
 import nextTick from "../util/next-tick";
+import { getTextLength } from "../util/text-util";
 
 class UserOperator {
   isFireFox: boolean = navigator.userAgent.indexOf("Firefox") > -1;
@@ -66,7 +64,7 @@ class UserOperator {
     let selection = getSelection(this.editor.mountedWindow);
     let start = {
       id: selection.range[0].id,
-      offset: selection.range[0].offset - [...event.data].length,
+      offset: selection.range[0].offset - getTextLength(event.data),
     };
     // 混合输入会导致获取选区在输入文字的后方
     input(this.editor, event.data, start, event);
@@ -107,7 +105,7 @@ class UserOperator {
       let selection = getSelection(this.editor.mountedWindow);
       start = {
         id: start.id,
-        offset: selection.range[0].offset - [...event.data].length,
+        offset: selection.range[0].offset - getTextLength(event.data),
       };
     }
 
@@ -130,12 +128,7 @@ class UserOperator {
 
     // 功能键特殊处理
     if (event.ctrlKey || event.metaKey) {
-      this.handleFunctionKey(
-        event.ctrlKey || event.metaKey,
-        event.shiftKey,
-        key,
-        event,
-      );
+      this.handleFunctionKey(event.ctrlKey || event.metaKey, event.shiftKey, key, event);
       return;
     }
 
@@ -161,18 +154,11 @@ class UserOperator {
   }
 
   // 保留一些无需控制的行为，其他的都禁止掉，继承时，需先调用 super
-  handleFunctionKey(
-    ctrl: boolean,
-    shift: boolean,
-    key: string,
-    event: KeyboardEvent,
-  ) {
+  handleFunctionKey(ctrl: boolean, shift: boolean, key: string, event: KeyboardEvent) {
     let selection = getSelection(this.editor.mountedWindow);
 
     if (ctrl && key === "enter") {
-      let component = this.editor.storeManage.getBlockById(
-        selection.range[1].id,
-      );
+      let component = this.editor.storeManage.getBlockById(selection.range[1].id);
       let operator = component.addEmptyParagraph(!shift);
       focusAt(this.editor.mountedWindow, operator[1], operator[2]);
       return;

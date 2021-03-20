@@ -13,24 +13,23 @@ import { createError } from "../util/handle-error";
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
-  static getChildren(
-    componentFactory: ComponentFactory,
-    raw: IRawType,
-  ): Inline[] {
+  static createChildren(componentFactory: ComponentFactory, raw: IRawType): Inline[] {
     if (!raw.children) {
       return [];
     }
 
     let children: Inline[] = [];
-    raw.children.forEach((item: IRawType) => {
-      if (componentFactory.typeMap[item.type]) {
-        children.push(componentFactory.typeMap[item.type].create(item));
+    raw.children.forEach((each: IRawType) => {
+      // 其他的 Inline 类型
+      if (componentFactory.typeMap[each.type]) {
+        children.push(componentFactory.typeMap[each.type].create(each));
         return;
       }
 
-      if (!item.content) return;
-      for (let char of item.content) {
-        children.push(new Character(char, item.style, item.data));
+      // 字符的 Inline 类型
+      if (!each.content) return;
+      for (let char of each.content) {
+        children.push(new Character(char, each.style, each.data));
       }
     });
 
@@ -61,32 +60,25 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     this.$emit("componentUpdated", [this]);
-    return [
-      [this],
-      { id: this.id, offset: start },
-      { id: this.id, offset: end },
-    ];
+    return [[this], { id: this.id, offset: start }, { id: this.id, offset: end }];
   }
 
-  add(inline: Inline[] | Inline | string, index?: number): OperatorType {
-    index = index !== undefined ? index : this.getSize();
+  add(index: number, ...inline: Inline[] | string[]): OperatorType {
+    index = index < 0 ? this.getSize() + 1 + index : index;
+    let needAddInline: Inline[] = [];
 
-    if (typeof inline === "string") {
-      let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
-      let list = [];
-      for (let char of inline) {
-        list.push(
-          new Character(char, decorate?.copyStyle(), decorate?.copyData()),
-        );
+    inline.forEach((each: string | Inline) => {
+      if (typeof each === "string") {
+        let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
+        for (let char of each) {
+          needAddInline.push(new Character(char, decorate?.copyStyle(), decorate?.copyData()));
+        }
+      } else {
+        needAddInline.push(each);
       }
-      inline = list;
-    }
+    });
 
-    if (!Array.isArray(inline)) {
-      inline = [inline];
-    }
-
-    this.addChildren(index, inline);
+    this.addChildren(index, needAddInline);
     this.$emit("componentUpdated", [this]);
     return [[this], { id: this.id, offset: index + inline.length }];
   }
@@ -111,42 +103,44 @@ abstract class ContentCollection extends Collection<Inline> {
   splitChild(index: number): ContentCollection {
     let isTail = index === this.getSize();
 
-    // 如果是从中间分段，则保持段落类型
-    if (!isTail) {
-      let tail = this.children.slice(index).toArray();
-      this.removeChildren(index);
-      let newCollection = this.createEmpty() as ContentCollection;
-      newCollection.add(tail, 0);
-      return newCollection;
+    // 如果是从尾部分段，则直接添加一个普通段落
+    if (isTail) {
+      return this.getComponentFactory().buildParagraph();
     }
 
-    // 如果是从尾部分段，则直接添加一个普通段落
-    let newParagraph = this.getComponentFactory().buildParagraph();
-    return newParagraph;
+    // 如果是从中间分段，则保持段落类型
+    let tail = this.children.slice(index).toArray();
+    this.removeChildren(index);
+    let newCollection = this.createEmpty() as ContentCollection;
+    newCollection.add(0, ...tail);
+    return newCollection;
   }
 
-  split(index: number, block?: Block | Block[]): OperatorType {
+  split(index: number, ...block: Block[]): OperatorType {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
 
     let splitBlock = this.splitChild(index);
-    let newBlockList: Block[] = [];
+    let needAddBlockList: Block[] = [];
 
-    if (block) {
-      if (!Array.isArray(block)) {
-        newBlockList.push(block);
-      } else {
-        newBlockList.push(...block);
+    if (block.length) {
+      needAddBlockList.push(...block);
+      // 在首位切割时，若会放入内容，则将空行删除
+      if (this.getSize() === 0) {
+        this.removeSelf();
+        blockIndex -= 1;
       }
     }
 
-    if (splitBlock.getSize() !== 0) {
-      newBlockList.push(splitBlock);
+    // 注：切出的块有可能为空
+    // 若没有添加的块，或切出的块有内容时，添加切出的块
+    if (block.length === 0 || splitBlock.getSize() !== 0) {
+      needAddBlockList.push(splitBlock);
     }
 
-    parent.add(newBlockList, blockIndex + 1);
+    parent.add(blockIndex + 1, ...needAddBlockList);
     this.$emit("componentUpdated", [this]);
-    return [newBlockList, { id: splitBlock.id, offset: 0 }];
+    return [needAddBlockList, { id: splitBlock.id, offset: 0 }];
   }
 
   addText(text: string, index?: number): OperatorType {
@@ -184,7 +178,7 @@ abstract class ContentCollection extends Collection<Inline> {
       return [[]];
     }
 
-    // 确保接收的组件已移除
+    // 移除接收到的组件
     block.removeSelf();
 
     this.children = this.children.push(...block.children);
@@ -195,83 +189,74 @@ abstract class ContentCollection extends Collection<Inline> {
 
   // 将内容进行拆分，适应 HTML 的表现形式
   fromatChildren() {
-    let content: any[] = [];
-    let acc: Character[] = [];
-    let prevDecorate: Decorate;
-
-    let createCharacterList = () => {
-      if (!acc.length) return;
-      content.push([
-        acc.map((character) => character.content).join(""),
-        prevDecorate.styleIsEmpty() ? undefined : prevDecorate.copyStyle(),
-        prevDecorate.dataIsEmpty() ? undefined : prevDecorate.copyData(),
-      ]);
-      acc = [];
-    };
+    let formated: {
+      inlines: Inline[];
+      type: string;
+      decorate: Decorate;
+    }[] = [];
 
     this.children.forEach((each) => {
-      if (each instanceof Character) {
-        let decorate = each.decorate;
-        if (!decorate) return;
-        if (!decorate.isSame(prevDecorate)) {
-          createCharacterList();
-          prevDecorate = decorate;
-        }
-        acc.push(each);
+      let lastFormated = formated[formated.length - 1];
+
+      if (
+        lastFormated === undefined ||
+        lastFormated.type !== each.type ||
+        !lastFormated.decorate.isSame(each.decorate)
+      ) {
+        formated.push({
+          type: each.type,
+          inlines: [each],
+          decorate: each.decorate,
+        });
         return;
       }
-      createCharacterList();
-      content.push(each);
+
+      lastFormated.inlines.push(each);
     });
 
-    createCharacterList();
-    return content;
+    console.log(formated);
+
+    return formated;
   }
 
   getRaw(): IRawType {
-    let children = this.fromatChildren().map((each) => {
-      if (each.getRaw) {
-        return each.getRaw();
-      }
-      // 无 type 说明是字符串
-      // @ts-ignore
-      let raw: IRawType = {
-        content: each[0],
-      };
-      if (each[1]) {
-        raw.style = each[1];
-      }
-      if (each[2]) {
-        raw.data = each[2];
-      }
-      return raw;
-    });
     let raw: IRawType = {
       type: this.type,
-      children: children,
+      children: [],
     };
-    if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.copyStyle();
-    }
-    if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.copyData();
-    }
+
+    this.fromatChildren().map((each) => {
+      if (each.type === ComponentType.character) {
+        let charRaw = each.inlines[0].getRaw();
+        charRaw.content = each.inlines.map((each) => each.content).join("");
+        raw.children!.push(charRaw);
+      } else {
+        raw.children!.push(...each.inlines.map((each) => each.getRaw()));
+      }
+    });
+
     return raw;
   }
 
-  getContent(contentBuilder: BaseBuilder) {
-    return this.fromatChildren().map((item, index) => {
-      if (item.render) {
-        return item.render(contentBuilder);
-      }
+  getChildren(contentBuilder: BaseBuilder) {
+    let childrenRenderList: any[] = [];
 
-      return contentBuilder.buildCharacterList(
-        `${this.id}__${index}`,
-        item[0],
-        item[1] || {},
-        item[2] || {},
-      );
+    this.fromatChildren().map((each, index) => {
+      if (each.type === ComponentType.character) {
+        childrenRenderList.push(
+          contentBuilder.buildCharacterList(
+            `${this.id}__${index}`,
+            each.inlines.map((each) => each.render(contentBuilder)).join(""),
+            each.decorate.getStyle(),
+            each.decorate.getData(),
+          ),
+        );
+      } else {
+        childrenRenderList.push(...each.inlines.map((each) => each.render(contentBuilder)));
+      }
     });
+
+    return childrenRenderList;
   }
 }
 

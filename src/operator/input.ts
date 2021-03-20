@@ -5,6 +5,7 @@ import focusAt from "../selection/focus-at";
 import { getCursorPosition, Cursor } from "../selection/util";
 import { needUpdate } from "../util/update-component";
 import ContentCollection from "../components/content-collection";
+import { getTextLength } from "../util/text-util";
 
 const input = (
   editor: Editor,
@@ -13,7 +14,7 @@ const input = (
   event?: KeyboardEvent | CompositionEvent | InputEvent,
 ) => {
   try {
-    let component = editor.storeManage.getBlockById(start.id);
+    let block = editor.storeManage.getBlockById(start.id);
     let offset = start.offset;
     let startPosition = getCursorPosition(editor.mountedWindow, start);
     if (!startPosition) return;
@@ -21,10 +22,9 @@ const input = (
 
     // 样式边缘的空格，逃脱默认样式，优化体验
     if (
-      component instanceof ContentCollection &&
+      block instanceof ContentCollection &&
       charOrInline === " " &&
-      (startPosition.index === 0 ||
-        startPosition.index >= [...(startNode.nodeValue || "")].length - 1)
+      (startPosition.index <= 0 || startPosition.index >= getTextLength(startNode.nodeValue) - 1)
     ) {
       charOrInline = new Character(charOrInline);
     }
@@ -38,23 +38,21 @@ const input = (
       typeof charOrInline !== "string" ||
       (!event && typeof charOrInline === "string") ||
       startPosition.index === 0 ||
-      startPosition.index >= [...(startNode.nodeValue || "")].length - 1 ||
+      startPosition.index >= getTextLength(startNode.nodeValue) - 1 ||
       event?.defaultPrevented
     ) {
       event?.preventDefault();
-      let operator = component.add(charOrInline, offset);
+      let operator = block.add(offset, charOrInline);
       focusAt(editor.mountedWindow, operator[1], operator[2]);
       return;
     }
 
     // 普通的文字输入，不需要强制更新，默认行为不会破坏文档结构
     charOrInline =
-      typeof charOrInline === "string"
-        ? charOrInline.replace(/\n/g, "")
-        : charOrInline;
+      typeof charOrInline === "string" ? charOrInline.replace(/\n/g, "") : charOrInline;
 
     editor.articleManage.stopUpdate();
-    component.add(charOrInline, offset);
+    block.add(offset, charOrInline);
     editor.articleManage.startUpdate();
   } catch (e) {
     console.warn(e);

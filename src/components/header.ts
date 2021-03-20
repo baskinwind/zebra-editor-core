@@ -43,28 +43,21 @@ class Header extends ContentCollection {
   };
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Header {
-    let children = super.getChildren(componentFactory, raw);
+    let children = super.createChildren(componentFactory, raw);
 
-    let header = componentFactory.buildHeader(
-      raw.headerType || "h1",
-      "",
-      raw.style,
-      raw.data,
-    );
+    let header = componentFactory.buildHeader(raw.headerType || "h1", "", raw.style, raw.data);
     header.addChildren(0, children);
     return header;
   }
 
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[] = [],
-  ): Header[] {
-    let list = [];
+  static exchange(componentFactory: ComponentFactory, block: Block, args: any[] = []): Header[] {
     let headerType = args[0] || "h1";
     if (block instanceof Header && block.headerType === headerType) {
-      list.push(block);
-    } else if (block instanceof ContentCollection) {
+      return [block];
+    }
+
+    let newHeaderList = [];
+    if (block instanceof ContentCollection) {
       let newHeader = componentFactory.buildHeader(
         headerType,
         "",
@@ -73,25 +66,20 @@ class Header extends ContentCollection {
       );
       newHeader.style = styleMap[newHeader.headerType];
       newHeader.addChildren(0, block.children.toArray());
-      list.push(newHeader);
+      newHeaderList.push(newHeader);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");
       stringList.pop();
-      [...stringList].forEach((item) => {
-        list.push(componentFactory.buildHeader(headerType, item));
+      stringList.forEach((each) => {
+        newHeaderList.push(componentFactory.buildHeader(headerType, each));
       });
     }
 
-    block.replaceSelf(list);
-    return list;
+    block.replaceSelf(...newHeaderList);
+    return newHeaderList;
   }
 
-  constructor(
-    type: headerType,
-    text?: string,
-    style?: StoreData,
-    data?: StoreData,
-  ) {
+  constructor(type: headerType, text?: string, style?: StoreData, data?: StoreData) {
     super(text, style, data);
     this.headerType = type;
     this.style = styleMap[type];
@@ -105,13 +93,8 @@ class Header extends ContentCollection {
   }
 
   exchangeTo(builder: BlockType, args: any[]): Block[] {
-    // 不知道为什么 if 内的 this 识别不了
-    let self = this;
-    if (builder === this.constructor && args[0]) {
-      if (args[0] !== self.headerType) {
-        self.setHeader(args[0]);
-        return [this];
-      }
+    if (builder === (this.constructor as BlockType)) {
+      this.setHeader(args[0]);
       return [this];
     }
 
@@ -153,7 +136,7 @@ class Header extends ContentCollection {
     return contentBuilder.buildHeader(
       this.id,
       this.headerType,
-      () => this.getContent(contentBuilder),
+      () => this.getChildren(contentBuilder),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

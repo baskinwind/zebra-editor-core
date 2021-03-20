@@ -56,7 +56,7 @@ const createEditor = (
       if (!article) return;
       let lastTyle = article.getChild(article.getSize() - 1).structureType;
       if (lastTyle !== StructureType.content) {
-        article.add(editor.componentFactory.buildParagraph());
+        article.add(-1, editor.componentFactory.buildParagraph());
       }
     });
 

@@ -9,9 +9,7 @@ class HtmlBuilder extends BaseBuilder<string> {
   }
 
   getStyle(style: mapData) {
-    let styleFormat = Object.keys(style).map(
-      (key) => `${this.formatStyle(key)}:${style[key]};`,
-    );
+    let styleFormat = Object.keys(style).map((key) => `${this.formatStyle(key)}:${style[key]};`);
     if (styleFormat.length) {
       return ` style="${styleFormat.join("")}"`;
     }
@@ -33,23 +31,13 @@ class HtmlBuilder extends BaseBuilder<string> {
     children: string,
     data: mapData = {},
   ): string {
-    return `<${tag}${className ? ` class=${className}` : ""}${this.getStyle(
-      style,
-    )}${this.getData(data)}>${children}</${tag}>`;
+    return `<${tag}${className ? ` class=${className}` : ""}${this.getStyle(style)}${this.getData(
+      data,
+    )}>${children}</${tag}>`;
   }
 
-  buildArticle(
-    id: string,
-    getChildren: () => string[],
-    style: mapData,
-    data: mapData,
-  ): string {
-    return this.buildHtml(
-      "article",
-      "zebra-editor-article",
-      style,
-      getChildren().join(""),
-    );
+  buildArticle(id: string, getChildren: () => string[], style: mapData, data: mapData): string {
+    return this.buildHtml("article", "zebra-editor-article", style, getChildren().join(""));
   }
 
   buildCustomerCollection(
@@ -59,20 +47,10 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData,
   ): string {
-    return this.buildHtml(
-      "div",
-      "zebra-editor-customer-collection",
-      style,
-      getChildren().join(""),
-    );
+    return this.buildHtml("div", "zebra-editor-customer-collection", style, getChildren().join(""));
   }
 
-  buildTable(
-    id: string,
-    getChildren: () => string[],
-    style: mapData,
-    data: mapData,
-  ) {
+  buildTable(id: string, getChildren: () => string[], style: mapData, data: mapData) {
     let table = this.buildHtml(
       "table",
       "",
@@ -85,18 +63,8 @@ class HtmlBuilder extends BaseBuilder<string> {
     return this.buildHtml("figure", "zebra-editor-table", style, table);
   }
 
-  buildTableRow(
-    id: string,
-    getChildren: () => string[],
-    style: mapData,
-    data: mapData,
-  ) {
-    return this.buildHtml(
-      "tr",
-      "zebra-editor-tr",
-      style,
-      getChildren().join(""),
-    );
+  buildTableRow(id: string, getChildren: () => string[], style: mapData, data: mapData) {
+    return this.buildHtml("tr", "zebra-editor-tr", style, getChildren().join(""));
   }
 
   buildTableCell(
@@ -106,12 +74,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData,
   ) {
-    return this.buildHtml(
-      cellType,
-      `zebra-editor-${cellType}`,
-      style,
-      getChildren().join(""),
-    );
+    return this.buildHtml(cellType, `zebra-editor-${cellType}`, style, getChildren().join(""));
   }
 
   buildList(
@@ -121,12 +84,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData,
   ): string {
-    return this.buildHtml(
-      listType,
-      "zebra-editor-list",
-      style,
-      getChildren().join(""),
-    );
+    return this.buildHtml(listType, "zebra-editor-list", style, getChildren().join(""));
   }
 
   buildListItem(list: string, structureType: StructureType): string {
@@ -137,12 +95,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     return this.buildHtml("li", "zebra-editor-list-item", style, list);
   }
 
-  buildParagraph(
-    id: string,
-    getChildren: () => string[],
-    style: mapData,
-    data: mapData,
-  ): string {
+  buildParagraph(id: string, getChildren: () => string[], style: mapData, data: mapData): string {
     let tag = data.tag || "p";
     return this.buildHtml(
       tag,
@@ -174,16 +127,9 @@ class HtmlBuilder extends BaseBuilder<string> {
     style: mapData,
     data: mapData,
   ): string {
-    return `<pre class="zebra-editor-code" ${this.getStyle({
-      ...style,
-      position: "relative",
-    })}${this.getData(data)}><span ${this.getStyle({
-      position: "absolute",
-      right: "10px",
-      top: "10px",
-      textTransform: "uppercase",
-      color: "#ccc",
-    })}>${language}</span><code>${content}</code></pre>`;
+    return `<pre class="zebra-editor-code-block"${this.getStyle(style)}${this.getData(
+      data,
+    )} data-language="${language}"><code>${content}</code></pre>`;
   }
 
   buildeImage(id: string, src: string, style: mapData, data: mapData): string {
@@ -192,34 +138,23 @@ class HtmlBuilder extends BaseBuilder<string> {
       image = `<a href="${data.link}">${image}</a>`;
     }
     let className = `zebra-editor-image`;
-    return `<figure class="${className}"${this.getStyle(
-      style,
-    )}>${image}</figure>`;
+    return `<figure class="${className}"${this.getStyle(style)}>${image}</figure>`;
   }
 
   buildeAudio(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<audio src="${src}" alt="${data.alt}" />`;
     let className = `zebra-editor-image`;
-    return `<figure class="${className}"${this.getStyle(
-      style,
-    )}>${image}</figure>`;
+    return `<figure class="${className}"${this.getStyle(style)}>${image}</figure>`;
   }
 
   buildeVideo(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<video src="${src}" alt="${data.alt}" />`;
     let className = `zebra-editor-image`;
-    return `<figure class="${className}"${this.getStyle(
-      style,
-    )}>${image}</figure>`;
+    return `<figure class="${className}"${this.getStyle(style)}>${image}</figure>`;
   }
 
-  buildCharacterList(
-    id: string,
-    charList: string,
-    style: mapData,
-    data: mapData,
-  ): string {
-    let content = charList;
+  buildCharacterList(id: string, text: string, style: mapData, data: mapData): string {
+    let content = text;
     if (data.link) {
       content = `<a href=${data.link}>${content}</a>`;
     }
@@ -242,12 +177,7 @@ class HtmlBuilder extends BaseBuilder<string> {
     return content;
   }
 
-  buildInlineImage(
-    id: string,
-    src: string,
-    style: mapData,
-    data: mapData,
-  ): string {
+  buildInlineImage(id: string, src: string, style: mapData, data: mapData): string {
     let image = `<img src="${src}" alt="${data.alt || ""}" />`;
     if (data.link) {
       image = `<a href="${data.link}">${image}</a>`;

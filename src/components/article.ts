@@ -11,15 +11,15 @@ class Article extends StructureCollection<Block> {
   structureType = StructureType.structure;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): Article {
-    let children = (raw.children || []).map((item) => {
-      return componentFactory.typeMap[item.type].create(componentFactory, item);
+    let children = (raw.children || []).map((each) => {
+      return componentFactory.typeMap[each.type].create(componentFactory, each);
     });
 
     let article = componentFactory.buildArticle(raw.style, raw.data);
     if (raw.id) {
       article.id = raw.id;
     }
-    article.add(children);
+    article.add(0, ...children);
     return article;
   }
 
@@ -29,34 +29,29 @@ class Article extends StructureCollection<Block> {
 
   childHeadDelete(block: Block): OperatorType {
     let prev = this.getPrev(block);
-    console.log(block);
-    // 若在 Article 的第一个
-    if (!prev) {
-      console.log(block);
-
-      if (block.type !== ComponentType.paragraph) {
-        let exchanged = block.exchangeTo(
-          this.getComponentFactory().typeMap.PARAGRAPH,
-          [],
-        );
-        return [exchanged, { id: exchanged[0].id, offset: 0 }];
-      }
-
-      // 首位删除，若修饰器有内容，则清空
-      if (!block.decorate.isEmpty()) {
-        block.decorate.clear();
-        this.$emit("componentUpdated", [block]);
-      }
-
-      return [[block], { id: block.id, offset: 0 }];
+    if (prev) {
+      return block.sendTo(prev);
     }
-    return block.sendTo(prev);
+
+    // 若在 Article 的第一个
+    if (block.type !== ComponentType.paragraph) {
+      let exchanged = block.exchangeTo(this.getComponentFactory().typeMap.PARAGRAPH, []);
+      return [exchanged, { id: exchanged[0].id, offset: 0 }];
+    }
+
+    // 首位删除，若修饰器有内容，则清空
+    if (!block.decorate.isEmpty()) {
+      block.modifyDecorate({ remove: "all" }, { remove: "all" });
+    }
+
+    return [[block], { id: block.id, offset: 0 }];
   }
 
   remove(start: number, end?: number): OperatorType {
     let operator = super.remove(start, end);
+    // 确保文章至少有一个空白行
     if (this.getSize() === 0) {
-      return this.add(this.getComponentFactory().buildParagraph());
+      return this.add(0, this.getComponentFactory().buildParagraph());
     }
     return operator;
   }
@@ -70,7 +65,7 @@ class Article extends StructureCollection<Block> {
   render(contentBuilder: BaseBuilder) {
     return contentBuilder.buildArticle(
       this.id,
-      () => this.children.toArray().map((item) => item.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentBuilder)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

@@ -1,6 +1,7 @@
 import { headerType } from "../components/header";
 import BaseBuilder from "./base-builder";
 import { listType } from "../components/list";
+import { getTextLength } from "../util/text-util";
 
 interface IStatistic {
   word: number;
@@ -99,7 +100,7 @@ class StatisticBuilder extends BaseBuilder<any> {
   buildCodeBlock(id: string, content: string) {
     this.statistic.block += 1;
     this.statistic.codeBlock += 1;
-    this.statistic.word += [...content].length;
+    this.statistic.word += getTextLength(content);
   }
 
   buildeImage(id: string, src: string) {
@@ -117,8 +118,8 @@ class StatisticBuilder extends BaseBuilder<any> {
     this.statistic.video += 1;
   }
 
-  buildCharacterList(id: string, charList: string) {
-    this.statistic.word += [...charList].length;
+  buildCharacterList(id: string, text: string) {
+    this.statistic.word += getTextLength(text);
   }
 
   buildInlineImage(id: string, src: string) {

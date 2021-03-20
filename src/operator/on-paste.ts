@@ -24,18 +24,16 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
   let index = selection.range[0].offset;
 
   // 纯文本组件直接输入即可
-  if (nowComponent.structureType === StructureType.plainText) {
-    let operator = nowComponent.add(rowData.join("\n"), index);
+  if (nowComponent.type === StructureType.plainText) {
+    let operator = nowComponent.add(index, rowData.join("\n"));
     focusAt(editor.mountedWindow, operator[1], operator[2]);
     return;
   }
 
   // 过滤掉空行
-  rowData = rowData.filter((item) => {
-    return item.trim().length !== 0;
-  });
+  rowData = rowData.filter((each) => each.trim().length !== 0);
 
-  let operator = nowComponent.add(rowData[0], index);
+  let operator = nowComponent.add(index, rowData[0]);
   if (rowData.length === 1) {
     return focusAt(editor.mountedWindow, operator[1], operator[2]);
   }
@@ -44,7 +42,7 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
   for (let i = 1; i < rowData.length; i++) {
     list.push(editor.componentFactory.buildParagraph(rowData[i]));
   }
-  operator = nowComponent.split(index + rowData[0].length, list);
+  operator = nowComponent.split(index + rowData[0].length, ...list);
   let endId = operator[0][0].id;
   focusAt(editor.mountedWindow, {
     id: endId,

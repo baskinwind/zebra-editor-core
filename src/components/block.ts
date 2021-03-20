@@ -25,11 +25,7 @@ abstract class Block extends Component {
   }
 
   // 将别的组件转换为当前组件类型
-  static exchange(
-    componentFactory: ComponentFactory,
-    component: Component,
-    args?: any[],
-  ): Block[] {
+  static exchange(componentFactory: ComponentFactory, component: Component, args?: any[]): Block[] {
     throw createError("组件未实现 exchange 静态方法", this);
   }
 
@@ -55,11 +51,8 @@ abstract class Block extends Component {
   }
 
   // 添加到某个组件内，被添加的组件必须为 StructureCollection 类型
-  addInto(
-    collection: StructureCollection<Block>,
-    index?: number,
-  ): OperatorType {
-    return collection.add([this], index);
+  addInto(collection: StructureCollection<Block>, index: number = -1): OperatorType {
+    return collection.add(index, this);
   }
 
   // 从其父组件内移除
@@ -70,11 +63,7 @@ abstract class Block extends Component {
   }
 
   // 替换为另一个组件
-  replaceSelf(block: Block | Block[]): OperatorType {
-    if (!Array.isArray(block)) {
-      block = [block];
-    }
-
+  replaceSelf(...block: Block[]): OperatorType {
     let parent = this.getParent();
     parent.replaceChild(block, this);
     return [[...block, this], { id: block[0].id, offset: 0 }];
@@ -88,12 +77,7 @@ abstract class Block extends Component {
   }
 
   // 修改子组件的表现形式，仅在 ContentCollection 组件内有效
-  modifyContentDecorate(
-    start: number,
-    end: number,
-    style?: StoreData,
-    data?: StoreData,
-  ) {
+  modifyContentDecorate(start: number, end: number, style?: StoreData, data?: StoreData) {
     return;
   }
 
@@ -103,15 +87,12 @@ abstract class Block extends Component {
     let parent = this.getParent();
     let index = parent.findChildrenIndex(this);
     let paragraph = this.getComponentFactory().buildParagraph();
-    parent.add(paragraph, index + (bottom ? 1 : 0));
+    parent.add(index + (bottom ? 1 : 0), paragraph);
     return [[paragraph], { id: paragraph.id, offset: 0 }];
   }
 
   // 添加子组件
-  add(
-    component: string | Component | Component[],
-    index?: number,
-  ): OperatorType {
+  add(index: number, ...component: (string | Component)[]): OperatorType {
     return [[this]];
   }
 
@@ -121,7 +102,7 @@ abstract class Block extends Component {
   }
 
   // 在 index 处切分组件
-  split(index: number, component?: Component | Component[]): OperatorType {
+  split(index: number, ...component: Component[]): OperatorType {
     return [[this]];
   }
 
@@ -167,9 +148,7 @@ abstract class Block extends Component {
   }
 
   getComponentFactory() {
-    return this.editor
-      ? this.editor.componentFactory
-      : getDefaultComponentFactory();
+    return this.editor ? this.editor.componentFactory : getDefaultComponentFactory();
   }
 }
 

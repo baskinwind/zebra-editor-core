@@ -3,10 +3,9 @@ import Block from "./block";
 import Collection, { ICollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
+import nextTick from "../util/next-tick";
 
-abstract class StructureCollection<
-  T extends Block = Block
-> extends Collection<T> {
+abstract class StructureCollection<T extends Block> extends Collection<T> {
   structureType = StructureType.structure;
 
   createEmpty(): StructureCollection<T> {
@@ -16,15 +15,15 @@ abstract class StructureCollection<
   // 查找组件的位置
   findChildrenIndex(idOrBlock: string | Block): number {
     let blockId = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
-    let index = this.children.findIndex((item) => item.id === blockId);
+    let index = this.children.findIndex((each) => each.id === blockId);
     return index;
   }
 
   addChildren(index: number, component: T[]): T[] {
-    component.forEach((item) => {
-      item.parent = this;
-      item.active = true;
-      item.recordSnapshoot();
+    component.forEach((each) => {
+      each.parent = this;
+      each.active = true;
+      each.recordSnapshoot();
     });
 
     let newBlockList = super.addChildren(index, component);
@@ -32,15 +31,8 @@ abstract class StructureCollection<
     return newBlockList;
   }
 
-  add(block: T | T[], index?: number): OperatorType {
-    if (index === undefined) {
-      index = this.getSize();
-    }
-
-    if (!Array.isArray(block)) {
-      block = [block];
-    }
-
+  add(index: number, ...block: T[]): OperatorType {
+    index = index < 0 ? this.getSize() + 1 + index : index;
     this.addChildren(index, block);
     return [block];
   }
@@ -48,11 +40,20 @@ abstract class StructureCollection<
   removeChildren(start: number, end: number = -1) {
     let removed = super.removeChildren(start, end);
 
-    removed.forEach((item) => {
-      item.active = false;
-      item.parent = undefined;
-      item.recordSnapshoot();
+    removed.forEach((each) => {
+      each.active = false;
+      each.parent = undefined;
+      each.recordSnapshoot();
     });
+
+    // 当子元素被全部删除时，若后续无新添加的子元素，则移除自身
+    if (this.getSize() === 0) {
+      nextTick(() => {
+        if (this.getSize() === 0) {
+          this.removeSelf();
+        }
+      });
+    }
 
     this.$emit("componentUpdated", removed);
     return removed;
@@ -76,10 +77,10 @@ abstract class StructureCollection<
     oldComponent.active = false;
     oldComponent.parent = undefined;
     oldComponent.recordSnapshoot();
-    block.forEach((item) => {
-      item.parent = this;
-      item.active = true;
-      item.recordSnapshoot();
+    block.forEach((each) => {
+      each.parent = this;
+      each.active = true;
+      each.recordSnapshoot();
     });
 
     this.children = this.children.splice(index, 1, ...block);
@@ -94,11 +95,11 @@ abstract class StructureCollection<
 
     let tail = this.removeChildren(index);
     let newCollection = this.createEmpty();
-    newCollection.add(tail, 0);
+    newCollection.add(0, ...tail);
     return newCollection;
   }
 
-  split(index: number, block?: Block | Block[]): OperatorType {
+  split(index: number, ...block: Block[]): OperatorType {
     let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
     let changedBlock = [];
@@ -107,17 +108,17 @@ abstract class StructureCollection<
       let newCollection = this.splitChild(index);
       if (newCollection.getSize() !== 0) {
         changedBlock.push(newCollection);
-        parent.add(newCollection, componentIndex + 1);
+        parent.add(componentIndex + 1, newCollection);
       }
     } else {
       componentIndex -= 1;
     }
 
-    if (block) {
-      if (!Array.isArray(block)) block = [block];
+    if (block.length) {
       changedBlock.push(...block);
-      return parent.add(block, componentIndex + 1);
+      return parent.add(componentIndex + 1, ...block);
     }
+
     return [changedBlock];
   }
 
@@ -127,15 +128,15 @@ abstract class StructureCollection<
   }
 
   restore(state: ICollectionSnapshoot<T>) {
-    this.children.forEach((item) => {
-      if (item.parent === this) {
-        item.active = false;
-        item.parent = undefined;
+    this.children.forEach((each) => {
+      if (each.parent === this) {
+        each.active = false;
+        each.parent = undefined;
       }
     });
-    state.children.forEach((item) => {
-      item.active = true;
-      item.parent = this;
+    state.children.forEach((each) => {
+      each.active = true;
+      each.parent = this;
     });
     super.restore(state);
   }
@@ -162,7 +163,7 @@ abstract class StructureCollection<
 
   getRaw(): IRawType {
     let raw = super.getRaw();
-    raw.children = this.children.toArray().map((item) => item.getRaw());
+    raw.children = this.children.toArray().map((each) => each.getRaw());
     return raw;
   }
 }

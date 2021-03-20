@@ -8,23 +8,14 @@ import { StoreData } from "../decorate";
 import Block from "./block";
 
 class CodeBlock extends PlainText {
-  type = ComponentType.code;
+  type = ComponentType.codeBlock;
   language: string;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): CodeBlock {
-    return componentFactory.buildCode(
-      raw.content,
-      raw.language,
-      raw.style,
-      raw.data,
-    );
+    return componentFactory.buildCode(raw.content, raw.language, raw.style, raw.data);
   }
 
-  static exchange(
-    componentFactory: ComponentFactory,
-    block: Block,
-    args: any[] = [],
-  ): CodeBlock[] {
+  static exchange(componentFactory: ComponentFactory, block: Block, args: any[] = []): CodeBlock[] {
     let parent = block.getParent();
     let prev = parent.getPrev(block);
 
@@ -34,7 +25,7 @@ class CodeBlock extends PlainText {
     } else {
       let code = componentFactory.buildCode();
       if (block instanceof ContentCollection) {
-        code.add(block.children.map((item) => item.content).join(""), 0);
+        code.add(0, block.children.map((each) => each.content).join(""));
       }
       block.replaceSelf(code);
       return [code];
