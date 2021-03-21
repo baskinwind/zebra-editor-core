@@ -69,10 +69,11 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
-    figure.id = id;
     figure.dataset.structure = StructureType.structure;
+    figure.dataset.realdom = "child";
     figure.contentEditable = "false";
     const table = containDocument.createElement("table");
+    table.id = id;
     table.style.minWidth = "100%";
     table.style.borderCollapse = "collapse";
     getChildren().forEach((each) => table.appendChild(each));
@@ -137,6 +138,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   buildListItem(list: HTMLElement, structureType: StructureType): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let li = containDocument.createElement("li");
+    list.dataset.inlist = "true";
     li.appendChild(list);
     let style: mapData = {};
     if (structureType !== StructureType.content) {
