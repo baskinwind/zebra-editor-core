@@ -2,7 +2,7 @@ import Inline from "../components/inline";
 import getSelection from "./get-selection";
 import deleteSelection from "../operator/delete-selection";
 import input from "../operator/input";
-import Editor from "../editor/editor";
+import Editor from "../editor";
 
 // 在光标处插入一个内容块
 const insertInline = (editor: Editor, component: string | Inline) => {

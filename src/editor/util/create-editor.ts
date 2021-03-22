@@ -1,4 +1,4 @@
-import Editor from "../editor";
+import Editor from "..";
 import editorStyle from "../../util/editor-style";
 import nextTick from "../../util/next-tick";
 import Article from "../../components/article";

@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import Block from "../components/block";
 import getSelection from "./get-selection";
 import deleteSelection from "../operator/delete-selection";

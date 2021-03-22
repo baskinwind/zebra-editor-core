@@ -1,6 +1,6 @@
 import Component from "../components/component";
 import Block from "../components/block";
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import nextTick from "./next-tick";
 import StructureType from "../const/structure-type";
 import Inline from "../components/inline";

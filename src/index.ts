@@ -8,7 +8,7 @@ import HtmlBuilder from "./builder/html-builder";
 import StatisticBuilder from "./builder/statistic-builder";
 
 // 用户操作处理
-import UserOperator from "./operator/user-operator";
+import Operator from "./operator";
 
 // 选区相关操作
 import focusAt from "./selection/focus-at";
@@ -33,7 +33,7 @@ export {
   HtmlBuilder,
   MarkdownBuilder,
   StatisticBuilder,
-  UserOperator,
+  Operator,
   focusAt,
   getSelection,
   insertBlock,
@@ -43,6 +43,6 @@ export {
   modifyTable,
   modifyIndent,
   exchange,
-  nextTick as nextTicket,
+  nextTick,
   updateComponent,
 };

@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import getSelection from "../selection/get-selection";
 import enter from "../operator/enter";

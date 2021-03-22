@@ -2,7 +2,7 @@ import Component from "../../components/component";
 import { Cursor } from "../../selection/util";
 import focusAt from "../../selection/focus-at";
 import updateComponent from "../../util/update-component";
-import Editor from "../editor";
+import Editor from "..";
 import getSelection from "../../selection/get-selection";
 
 interface recoreType {

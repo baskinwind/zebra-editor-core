@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import focusAt from "../selection/focus-at";
 import { getSelectedIdList } from "../selection/get-selected-id-list";
 import { Cursor } from "../selection/util";

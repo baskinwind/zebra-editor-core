@@ -1,4 +1,4 @@
-import Editor from "../editor";
+import Editor from "..";
 import nextTick from "../../util/next-tick";
 import Component, { IRawType } from "../../components/component";
 import updateComponent from "../../util/update-component";

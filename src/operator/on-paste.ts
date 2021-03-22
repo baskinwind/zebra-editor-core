@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import StructureType from "../const/structure-type";
 import getSelection from "../selection/get-selection";
 import deleteSelection from "../operator/delete-selection";

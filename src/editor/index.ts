@@ -1,7 +1,7 @@
 import ComponentFactory from "../components";
 import Article from "../components/article";
 import ContentBuilder from "../builder/content-builder";
-import UserOperator from "../operator/user-operator";
+import Operator from "../operator";
 import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
@@ -9,7 +9,7 @@ import createEditor from "./util/create-editor";
 
 export interface EditorOption {
   placeholder?: string;
-  userOperator: typeof UserOperator;
+  operator: typeof Operator;
   contentBuilder: typeof ContentBuilder;
   componentFactory: typeof ComponentFactory;
   onError?: (error: Error) => void;
@@ -25,7 +25,7 @@ class Editor {
   mountedWindow!: Window;
   mountedDocument!: Document;
 
-  userOperator: UserOperator;
+  userOperator: Operator;
   componentFactory: ComponentFactory;
   contentBuilder: ContentBuilder;
 
@@ -48,7 +48,7 @@ class Editor {
     this.article = article;
     this.placeholder = option.placeholder || "";
 
-    this.userOperator = new option.userOperator(this);
+    this.userOperator = new option.operator(this);
     this.contentBuilder = new option.contentBuilder(this);
     this.componentFactory = new option.componentFactory(this);
 

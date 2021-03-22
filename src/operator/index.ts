@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import DirectionType from "../const/direction-type";
 import getSelection, { flushSelection, getBeforeSelection } from "../selection/get-selection";
 import backspace from "./backspace";
@@ -9,7 +9,7 @@ import focusAt from "../selection/focus-at";
 import nextTick from "../util/next-tick";
 import { getTextLength } from "../util/text-util";
 
-class UserOperator {
+class Operator {
   isFireFox: boolean = navigator.userAgent.indexOf("Firefox") > -1;
 
   editor: Editor;
@@ -199,4 +199,4 @@ class UserOperator {
   onTab(event: KeyboardEvent) {}
 }
 
-export default UserOperator;
+export default Operator;

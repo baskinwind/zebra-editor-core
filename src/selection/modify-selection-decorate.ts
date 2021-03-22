@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import { StoreData } from "../decorate";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";

@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import ComponentFactory, { getDefaultComponentFactory } from ".";
 import Component, { OperatorType, IRawType, ISnapshoot } from "./component";
 import StructureCollection from "./structure-collection";

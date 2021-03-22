@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import StructureType from "../const/structure-type";
 import focusAt from "../selection/focus-at";
 import { Cursor } from "../selection/util";

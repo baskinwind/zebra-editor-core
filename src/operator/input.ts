@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import Inline from "../components/inline";
 import Character from "../components/character";
 import focusAt from "../selection/focus-at";

@@ -1,6 +1,6 @@
 import Block from "../../components/block";
 import { walkTree } from "../../util/walk-tree";
-import Editor from "../editor";
+import Editor from "..";
 
 class StoreManage {
   editor: Editor;

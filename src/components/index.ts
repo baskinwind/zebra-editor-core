@@ -1,4 +1,4 @@
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import { StoreData } from "../decorate";
 import Article from "./article";
 import List, { listType } from "./list";

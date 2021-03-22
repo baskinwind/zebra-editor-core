@@ -1,5 +1,5 @@
 import BaseBuilder, { mapData } from "./base-builder";
-import Editor from "../editor/editor";
+import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { headerType } from "../components/header";
