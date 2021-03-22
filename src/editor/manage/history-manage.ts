@@ -1,14 +1,17 @@
-import Collection from "../../components/collection";
 import Component from "../../components/component";
 import { Cursor } from "../../selection/util";
 import focusAt from "../../selection/focus-at";
 import updateComponent from "../../util/update-component";
 import Editor from "../editor";
+import getSelection from "../../selection/get-selection";
 
 interface recoreType {
-  componentList: Component[];
-  idList: string[];
-  selection: {
+  componentList: Map<string, Component>;
+  startSelection: {
+    start: Cursor;
+    end: Cursor;
+  };
+  endSelection: {
     start: Cursor;
     end: Cursor;
   };
@@ -22,6 +25,12 @@ class HistoryManage {
   nowStackIndex: number = 0;
   // 最新的历史栈
   nowRecordStack!: recoreType;
+  // 是否在一次 eventLoop 中
+  inLoop = false;
+  // 是否在 undo 过程中
+  inUndo = false;
+  // 是否在 redo 过程中
+  inRedo = false;
 
   constructor(editor: Editor) {
     this.editor = editor;
@@ -29,36 +38,66 @@ class HistoryManage {
 
   init() {
     this.recordStack = [];
-    this.nowStackIndex = 0;
+    this.nowStackIndex = -1;
     this.createRecordStack();
-    this.editor.article.$on("componentCreated", (component: Component) => {
-      component.record.store(this.nowStackIndex);
+    setTimeout(() => {
+      if (!this.editor.mountedWindow) return;
+      let selection = getSelection(this.editor.mountedWindow);
+      this.nowRecordStack.endSelection = {
+        start: selection.range[0],
+        end: selection.range[1],
+      };
     });
-    this.editor.article.$on("componentWillChange", (component: Component) => {
-      component.record.store(this.nowStackIndex);
+
+    this.editor.article.$on("blockCreated", (component: Component) => {
+      this.recordSnapshoot(component);
+    });
+    this.editor.article.$on("componentWillChange", () => {
+      if (this.inRedo || this.inUndo) return;
+      this.createRecord();
+    });
+    this.editor.article.$on("componentChanged", (component: Component[]) => {
+      if (this.inRedo || this.inUndo) return;
+      this.createRecord();
+      component.forEach((each) => this.recordSnapshoot(each));
     });
   }
 
   createRecordStack() {
     this.nowRecordStack = {
-      componentList: [],
-      idList: [],
-      selection: {
+      componentList: new Map(),
+      startSelection: {
+        start: { id: "", offset: -1 },
+        end: { id: "", offset: -1 },
+      },
+      endSelection: {
         start: { id: "", offset: -1 },
         end: { id: "", offset: -1 },
       },
     };
     this.recordStack.push(this.nowRecordStack);
+    this.nowStackIndex += 1;
   }
 
-  createRecord(start: Cursor, end: Cursor) {
-    this.nowRecordStack.selection = {
-      start,
-      end,
-    };
+  createRecord() {
+    if (this.inLoop) return;
     this.createRecordStack();
+    this.inLoop = true;
+    let selection = getSelection(this.editor.mountedWindow);
+    this.nowRecordStack.startSelection = {
+      start: selection.range[0],
+      end: selection.range[1],
+    };
+    setTimeout(() => {
+      this.inLoop = false;
+      let selection = getSelection(this.editor.mountedWindow);
+      this.nowRecordStack.endSelection = {
+        start: selection.range[0],
+        end: selection.range[1],
+      };
+    });
 
-    // 清除历史快照，在重做是会出现该情况
+    // 清除历史快照，重做后在进行编辑会触发该情况
     if (this.nowStackIndex > this.recordStack.length) {
       // 清除组件内无效的历史快照
       for (let i = this.nowStackIndex + 1; i < this.recordStack.length; i++) {
@@ -74,39 +113,45 @@ class HistoryManage {
 
   recordSnapshoot(component: Component) {
     component.record.store(this.nowStackIndex);
+    this.nowRecordStack.componentList.set(component.id, component);
+  }
 
-    if (this.nowRecordStack.idList.includes(component.id)) return;
+  canUndo() {
+    return this.nowStackIndex !== 0;
+  }
 
-    this.nowRecordStack.idList.push(component.id);
-    this.nowRecordStack.componentList.push(component);
+  canRedo() {
+    return this.nowStackIndex !== this.recordStack.length - 1;
   }
 
   undo() {
-    if (this.nowStackIndex === -1) return;
+    if (!this.canUndo()) return;
+    this.inUndo = true;
     let nowRecord = this.recordStack[this.nowStackIndex];
-    for (let i = 0; i < nowRecord.componentList.length; i++) {
-      const each = nowRecord.componentList[i];
+    this.nowRecordStack.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex - 1);
-    }
-
+    });
+    updateComponent(this.editor, ...this.nowRecordStack.componentList.values());
     this.nowStackIndex -= 1;
-    focusAt(this.editor.mountedWindow, nowRecord.selection.start, nowRecord.selection.end);
+    focusAt(
+      this.editor.mountedWindow,
+      nowRecord.startSelection.start,
+      nowRecord.startSelection.end,
+    );
+    this.inUndo = false;
   }
 
   redo() {
-    if (this.nowStackIndex === this.recordStack.length - 1) return;
+    if (!this.canRedo()) return;
+    this.inRedo = true;
     let nowRecord = this.recordStack[this.nowStackIndex + 1];
-    for (let i = 0; i < nowRecord.componentList.length; i++) {
-      const each = nowRecord.componentList[i];
+    this.nowRecordStack.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex + 1);
-    }
-
+    });
+    updateComponent(this.editor, ...this.nowRecordStack.componentList.values());
     this.nowStackIndex += 1;
-    focusAt(this.editor.mountedWindow, nowRecord.selection.start, nowRecord.selection.end);
-  }
-
-  getNowRecordId() {
-    return this.nowStackIndex;
+    focusAt(this.editor.mountedWindow, nowRecord.endSelection.start, nowRecord.endSelection.end);
+    this.inRedo = false;
   }
 }
 

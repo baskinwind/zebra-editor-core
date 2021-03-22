@@ -21,7 +21,6 @@ class Record {
     if (stepId < 0) return;
 
     this.component.restore(this.recordMap[stepId]);
-    this.component.$emit("componentChanged", [this.component]);
   }
 
   clear(stepId: number) {

@@ -27,7 +27,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
 
     this.$emit("componentWillChange", this);
     let newBlockList = super.addChildren(index, component);
-    this.$emit("componentChanged", newBlockList);
+    this.$emit("componentChanged", [...newBlockList, this]);
     return newBlockList;
   }
 
@@ -52,7 +52,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       });
     }
 
-    this.$emit("componentChanged", removed);
+    this.$emit("componentChanged", [...removed, this]);
     return removed;
   }
 
@@ -79,7 +79,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
 
     this.$emit("componentWillChange", this);
     this.children = this.children.splice(index, 1, ...block);
-    this.$emit("componentChanged", [oldComponent, ...block]);
+    this.$emit("componentChanged", [oldComponent, ...block, this]);
     return block;
   }
 

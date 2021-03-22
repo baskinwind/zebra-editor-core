@@ -54,6 +54,8 @@ const updateComponent = (editor: Editor, ...component: Component[]) => {
 };
 
 const update = (editor: Editor, component: Component) => {
+  if (component.type === ComponentType.article) return;
+
   let containDocument = editor.mountedDocument;
   let oldDom = getTrueDom(containDocument.getElementById(component.id));
 

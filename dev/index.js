@@ -24,7 +24,7 @@ const editor = new Editor("root", article, {
   contentBuilder: ContentBuilder,
 });
 
-console.log(editor);
+window.editor = editor;
 
 new Vue({
   el: "#operator",
