@@ -26,7 +26,7 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
   // 纯文本组件直接输入即可
   if (nowComponent.type === StructureType.plainText) {
     let operator = nowComponent.add(index, rowData.join("\n"));
-    focusAt(editor.mountedWindow, operator[1], operator[2]);
+    focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
     return;
   }
 
@@ -35,7 +35,7 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
 
   let operator = nowComponent.add(index, rowData[0]);
   if (rowData.length === 1) {
-    return focusAt(editor.mountedWindow, operator[1], operator[2]);
+    return focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
   }
 
   let list = [];
@@ -43,9 +43,8 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
     list.push(editor.componentFactory.buildParagraph(rowData[i]));
   }
   operator = nowComponent.split(index + rowData[0].length, ...list);
-  let endId = operator[0][0].id;
   focusAt(editor.mountedWindow, {
-    id: endId,
+    id: list[0].id,
     offset: rowData[rowData.length - 1].length,
   });
   return;

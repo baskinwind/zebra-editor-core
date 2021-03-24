@@ -21,7 +21,7 @@ const backspace = (
       if (start.offset === 0) {
         event?.preventDefault();
         let operator = block.remove(-1, 0);
-        return focusAt(editor.mountedWindow, operator[1], operator[2]);
+        return focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
       }
 
       editor.articleManage.stopUpdate();
@@ -33,7 +33,7 @@ const backspace = (
     // 非文字组件删除需要强制更新
     event?.preventDefault();
     let operator = block.remove(start.offset, start.offset + 1);
-    return focusAt(editor.mountedWindow, operator[1], operator[2]);
+    return focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
   }
 
   // 选区状态时处理，需要阻止默认行为

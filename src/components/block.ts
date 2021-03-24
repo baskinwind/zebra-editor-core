@@ -66,17 +66,17 @@ abstract class Block extends Component {
   }
 
   // 替换为另一个组件
-  replaceSelf(...block: Block[]): OperatorType {
+  replaceSelf(...blockList: Block[]): OperatorType {
     let parent = this.getParent();
-    parent.replaceChild(block, this);
-    return [[...block, this], { id: block[0].id, offset: 0 }];
+    parent.replaceChild(blockList, this);
+    return [{ id: blockList[0].id, offset: 0 }];
   }
 
   // 修改组件的表现形式
   modifyDecorate(style?: StoreData, data?: StoreData) {
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     super.modifyDecorate(style, data);
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
     return [[this]];
   }
 
@@ -92,32 +92,32 @@ abstract class Block extends Component {
     let index = parent.findChildrenIndex(this);
     let paragraph = this.getComponentFactory().buildParagraph();
     parent.add(index + (bottom ? 1 : 0), paragraph);
-    return [[paragraph], { id: paragraph.id, offset: 0 }];
+    return [{ id: paragraph.id, offset: 0 }];
   }
 
   // 添加子组件
-  add(index: number, ...component: (string | Component)[]): OperatorType {
-    return [[this]];
+  add(index: number, ...children: (string | Component)[]): OperatorType {
+    return;
   }
 
   // 移除子组件
   remove(start: number, end?: number): OperatorType {
-    return [[this]];
+    return;
   }
 
   // 在 index 处切分组件
-  split(index: number, ...component: Component[]): OperatorType {
-    return [[this]];
+  split(index: number, ...componentList: Component[]): OperatorType {
+    return;
   }
 
   // 将自己发送到另一组件
   sendTo(component: Component): OperatorType {
-    return [[this]];
+    return;
   }
 
   // 接收另一组件
   receive(component: Component): OperatorType {
-    return [[this]];
+    return;
   }
 
   destory() {

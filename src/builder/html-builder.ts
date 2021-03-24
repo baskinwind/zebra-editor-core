@@ -1,7 +1,7 @@
 import BaseBuilder, { mapData } from "./base-builder";
 import StructureType from "../const/structure-type";
-import { headerType } from "../components/header";
-import { listType } from "../components/list";
+import { HeaderType } from "../components/header";
+import { ListType } from "../components/list";
 
 class HtmlBuilder extends BaseBuilder<string> {
   formatStyle(styleName: string) {
@@ -79,7 +79,7 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildList(
     id: string,
-    listType: listType,
+    listType: ListType,
     getChildren: () => string[],
     style: mapData,
     data: mapData,
@@ -107,7 +107,7 @@ class HtmlBuilder extends BaseBuilder<string> {
 
   buildHeader(
     id: string,
-    type: headerType,
+    type: HeaderType,
     getChildren: () => string[],
     style: mapData,
     data: mapData,

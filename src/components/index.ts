@@ -1,9 +1,9 @@
 import Editor from "../editor";
 import { StoreData } from "../decorate";
 import Article from "./article";
-import List, { listType } from "./list";
+import List, { ListType } from "./list";
 import Table from "./table";
-import Header, { headerType } from "./header";
+import Header, { HeaderType } from "./header";
 import Paragraph from "./paragraph";
 import Media, { mediaType } from "./media";
 import CodeBlock from "./code-block";
@@ -53,7 +53,7 @@ class ComponentFactory {
   }
 
   buildList(
-    type: listType = "ul",
+    type: ListType = "ul",
     children: string[] = [],
     style: StoreData = {},
     data: StoreData = {},
@@ -72,7 +72,7 @@ class ComponentFactory {
     return new Table(row, col, head, children, style, data);
   }
 
-  buildHeader(type: headerType, text?: string, style: StoreData = {}, data: StoreData = {}) {
+  buildHeader(type: HeaderType, text?: string, style: StoreData = {}, data: StoreData = {}) {
     return new Header(type, text, style, data);
   }
 

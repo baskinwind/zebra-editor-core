@@ -6,7 +6,7 @@ import {
   HtmlBuilder,
   MarkdownBuilder,
   StatisticBuilder,
-  UserOperator,
+  Operator,
   exchange,
   modifySelectionDecorate,
   modifyDecorate,
@@ -16,11 +16,11 @@ import {
   modifyIndent,
   focusAt,
 } from "../src";
-import Editor from "../src/editor/editor";
+import Editor from "../src/editor";
 
 const editor = new Editor("root", article, {
   componentFactory: ComponentFactory,
-  userOperator: UserOperator,
+  operator: Operator,
   contentBuilder: ContentBuilder,
 });
 

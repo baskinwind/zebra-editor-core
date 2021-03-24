@@ -36,9 +36,9 @@ class Media extends Block {
 
   setSrc(src: string) {
     if (this.src === src) return;
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.src = src;
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
   }
 
   exchangeTo(builder: BlockType, args: any[]): Block[] {
@@ -52,19 +52,22 @@ class Media extends Block {
     data?: StoreData,
   ): OperatorType {
     this.modifyDecorate(style, data);
-    return [[this], { id: this.id, offset: start }, { id: this.id, offset: end }];
+    return [
+      { id: this.id, offset: start },
+      { id: this.id, offset: end },
+    ];
   }
 
   remove(): OperatorType {
     let paragraph = this.getComponentFactory().buildParagraph();
     this.replaceSelf(paragraph);
 
-    return [[paragraph], { id: paragraph.id, offset: 0 }];
+    return [{ id: paragraph.id, offset: 0 }];
   }
 
-  split(index: number, ...block: Block[]): OperatorType {
-    if (block.length === 0) {
-      block.push(this.getComponentFactory().buildParagraph());
+  split(index: number, ...blockList: Block[]): OperatorType {
+    if (blockList.length === 0) {
+      blockList.push(this.getComponentFactory().buildParagraph());
     }
 
     let parent = this.getParent();
@@ -72,25 +75,25 @@ class Media extends Block {
 
     // 首位分割
     if (index === 0) {
-      parent.add(componentIndex, ...block);
+      parent.add(componentIndex, ...blockList);
     }
 
     // 末位分割
     if (index === 1) {
-      parent.add(componentIndex + 1, ...block);
+      parent.add(componentIndex + 1, ...blockList);
     }
 
-    return [block, { id: block[0].id, offset: 0 }];
+    return [{ id: blockList[0].id, offset: 0 }];
   }
 
   receive(block: Block): OperatorType {
     if (block.isEmpty()) {
       block.removeSelf();
-      return [[block], { id: this.id, offset: 1 }];
+      return [{ id: this.id, offset: 1 }];
     }
 
     super.removeSelf();
-    return [[this], { id: block.id, offset: 0 }];
+    return [{ id: block.id, offset: 0 }];
   }
 
   snapshoot(): IMediaSnapshoot {

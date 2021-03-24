@@ -1,6 +1,6 @@
 import StructureType from "../const/structure-type";
-import { headerType } from "../components/header";
-import { listType } from "../components/list";
+import { HeaderType } from "../components/header";
+import { ListType } from "../components/list";
 
 export interface mapData {
   [key: string]: any;
@@ -37,7 +37,7 @@ abstract class BaseBuilder<T = any> {
 
   abstract buildList(
     id: string,
-    listType: listType,
+    listType: ListType,
     getChildren: () => T[],
     style: mapData,
     data: mapData,
@@ -49,7 +49,7 @@ abstract class BaseBuilder<T = any> {
 
   abstract buildHeader(
     id: string,
-    type: headerType,
+    type: HeaderType,
     getChildren: () => T[],
     style: mapData,
     data: mapData,

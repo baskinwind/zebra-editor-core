@@ -7,14 +7,14 @@ import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import BaseBuilder from "../builder/base-builder";
 
-export type listType = "ol" | "ul";
+export type ListType = "ol" | "ul";
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
-  listType: listType;
+  listType: ListType;
 }
 
 class List extends StructureCollection<Block> {
   type = ComponentType.list;
-  listType: listType;
+  listType: ListType;
 
   static create(componentFactory: ComponentFactory, raw: IRawType): List {
     let children = (raw.children || []).map((each: IRawType) =>
@@ -50,35 +50,35 @@ class List extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(type: listType = "ul", children: string[] = [], style?: StoreData, data?: StoreData) {
+  constructor(type: ListType = "ul", children: string[] = [], style?: StoreData, data?: StoreData) {
     super(style, data);
     this.listType = type;
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
 
-  setListType(type: listType = "ol") {
+  setListType(type: ListType = "ol") {
     if (type === this.listType) return;
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.listType = type;
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
   }
 
-  add(index: number, ...block: Block[]): OperatorType {
+  add(index: number, ...blockList: Block[]): OperatorType {
     index = index < 0 ? this.getSize() + 1 + index : index;
 
     // 连续输入空行，截断列表
     if (
       index > 1 &&
-      block.length === 1 &&
-      block[0].isEmpty() &&
+      blockList.length === 1 &&
+      blockList[0].isEmpty() &&
       this.getChild(index - 1).isEmpty()
     ) {
       this.getChild(index - 1).removeSelf();
-      let operator = this.split(index - 1, ...block);
+      let operator = this.split(index - 1, ...blockList);
       return operator;
     }
 
-    return super.add(index, ...block);
+    return super.add(index, ...blockList);
   }
 
   childHeadDelete(block: Block): OperatorType {
@@ -87,7 +87,7 @@ class List extends StructureCollection<Block> {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.getPrev(block);
-      if (!prev) return [[this]];
+      if (!prev) return;
       return block.sendTo(prev);
     }
 
@@ -111,7 +111,7 @@ class List extends StructureCollection<Block> {
       if (block.isEmpty()) {
         let last = this.getChild(this.getSize() - 1);
         let lastSize = last.getSize();
-        return [[last], { id: last.id, offset: lastSize }];
+        return [{ id: last.id, offset: lastSize }];
       }
 
       return this.add(-1, block);

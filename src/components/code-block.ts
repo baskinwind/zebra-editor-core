@@ -43,9 +43,9 @@ class CodeBlock extends PlainText {
   }
 
   setLanguage(language: string) {
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.language = language;
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
   }
 
   createEmpty() {

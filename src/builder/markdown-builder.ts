@@ -1,6 +1,6 @@
-import { headerType } from "../components/header";
+import { HeaderType } from "../components/header";
 import BaseBuilder, { mapData } from "./base-builder";
-import { listType } from "../components/list";
+import { ListType } from "../components/list";
 
 class MarkdownBuilder extends BaseBuilder {
   listIndent: number = -1;
@@ -71,7 +71,7 @@ class MarkdownBuilder extends BaseBuilder {
 
   buildList(
     id: string,
-    listType: listType,
+    listType: ListType,
     getChildren: () => [string, string][],
     style: mapData,
     data: mapData,
@@ -115,7 +115,7 @@ class MarkdownBuilder extends BaseBuilder {
 
   buildHeader(
     id: string,
-    type: headerType,
+    type: HeaderType,
     getChildren: () => string[],
     style: mapData,
     data: mapData,

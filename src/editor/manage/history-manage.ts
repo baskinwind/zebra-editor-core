@@ -27,10 +27,6 @@ class HistoryManage {
   nowRecordStack!: recoreType;
   // 是否在一次 eventLoop 中
   inLoop = false;
-  // 是否在 undo 过程中
-  inUndo = false;
-  // 是否在 redo 过程中
-  inRedo = false;
 
   constructor(editor: Editor) {
     this.editor = editor;
@@ -40,26 +36,15 @@ class HistoryManage {
     this.recordStack = [];
     this.nowStackIndex = -1;
     this.createRecordStack();
-    setTimeout(() => {
-      if (!this.editor.mountedWindow) return;
-      let selection = getSelection(this.editor.mountedWindow);
-      this.nowRecordStack.endSelection = {
-        start: selection.range[0],
-        end: selection.range[1],
-      };
-    });
-
     this.editor.article.$on("blockCreated", (component: Component) => {
       this.recordSnapshoot(component);
     });
     this.editor.article.$on("componentWillChange", () => {
-      if (this.inRedo || this.inUndo) return;
       this.createRecord();
     });
-    this.editor.article.$on("componentChanged", (component: Component[]) => {
-      if (this.inRedo || this.inUndo) return;
+    this.editor.article.$on("updateComponent", (componentList: Component[]) => {
       this.createRecord();
-      component.forEach((each) => this.recordSnapshoot(each));
+      componentList.forEach((each) => this.recordSnapshoot(each));
     });
   }
 
@@ -126,7 +111,6 @@ class HistoryManage {
 
   undo() {
     if (!this.canUndo()) return;
-    this.inUndo = true;
     let nowRecord = this.recordStack[this.nowStackIndex];
     this.nowRecordStack.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex - 1);
@@ -138,12 +122,10 @@ class HistoryManage {
       nowRecord.startSelection.start,
       nowRecord.startSelection.end,
     );
-    this.inUndo = false;
   }
 
   redo() {
     if (!this.canRedo()) return;
-    this.inRedo = true;
     let nowRecord = this.recordStack[this.nowStackIndex + 1];
     this.nowRecordStack.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex + 1);
@@ -151,7 +133,6 @@ class HistoryManage {
     updateComponent(this.editor, ...this.nowRecordStack.componentList.values());
     this.nowStackIndex += 1;
     focusAt(this.editor.mountedWindow, nowRecord.endSelection.start, nowRecord.endSelection.end);
-    this.inRedo = false;
   }
 }
 

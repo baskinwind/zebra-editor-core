@@ -1,6 +1,6 @@
-import { headerType } from "../components/header";
+import { HeaderType } from "../components/header";
 import BaseBuilder from "./base-builder";
-import { listType } from "../components/list";
+import { ListType } from "../components/list";
 import { getTextLength } from "../util/text-util";
 
 interface IStatistic {
@@ -77,7 +77,7 @@ class StatisticBuilder extends BaseBuilder<any> {
     getChildren();
   }
 
-  buildList(id: string, listType: listType, getChildren: () => void) {
+  buildList(id: string, listType: ListType, getChildren: () => void) {
     getChildren();
     this.statistic.block += 1;
     this.statistic.list += 1;
@@ -91,7 +91,7 @@ class StatisticBuilder extends BaseBuilder<any> {
     this.statistic.paragraph += 1;
   }
 
-  buildHeader(id: string, type: headerType, getChildren: () => void) {
+  buildHeader(id: string, type: HeaderType, getChildren: () => void) {
     getChildren();
     this.statistic.block += 1;
     this.statistic.header[type] += 1;

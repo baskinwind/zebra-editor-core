@@ -13,7 +13,7 @@ const enter = (editor: Editor, start: Cursor, end: Cursor = start, event?: Keybo
     let component = editor.storeManage.getBlockById(idList[0]);
     component.remove(start.offset, end.offset);
     let operator = component.split(start.offset);
-    return focusAt(editor.mountedWindow, operator[1], operator[2]);
+    return focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
   }
 
   // 选中多行

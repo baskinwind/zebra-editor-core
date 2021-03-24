@@ -11,7 +11,7 @@ import { createError } from "../util/handle-error";
 import { Cursor } from "../selection/util";
 import nextTick from "../util/next-tick";
 
-export type OperatorType = [Component[], Cursor, Cursor] | [Component[], Cursor] | [Component[]];
+export type OperatorType = [Cursor?, Cursor?] | undefined;
 
 export interface IRawType {
   id?: string;
@@ -114,6 +114,14 @@ abstract class Component extends Event {
   // 渲染该组件
   render(contentBuilder: BaseBuilder): any {
     throw createError("请为组件添加 render 函数");
+  }
+
+  componentWillChange() {
+    this.$emit("componentWillChange", this);
+  }
+
+  updateComponent(componentList: Component[]) {
+    this.$emit("updateComponent", componentList);
   }
 
   // 将事件进行冒泡

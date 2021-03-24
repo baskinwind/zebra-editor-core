@@ -2,8 +2,8 @@ import BaseBuilder, { mapData } from "./base-builder";
 import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { headerType } from "../components/header";
-import { listType } from "../components/list";
+import { HeaderType } from "../components/header";
+import { ListType } from "../components/list";
 
 class ContentBuilder extends BaseBuilder<HTMLElement> {
   editor: Editor;
@@ -69,11 +69,11 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
+    figure.id = id;
     figure.dataset.structure = StructureType.structure;
-    figure.dataset.realdom = "child";
+    figure.dataset.wrap = "true";
     figure.contentEditable = "false";
     const table = containDocument.createElement("table");
-    table.id = id;
     table.style.minWidth = "100%";
     table.style.borderCollapse = "collapse";
     getChildren().forEach((each) => table.appendChild(each));
@@ -116,7 +116,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildList(
     id: string,
-    listType: listType,
+    listType: ListType,
     getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData,
@@ -138,7 +138,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
   buildListItem(list: HTMLElement, structureType: StructureType): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let li = containDocument.createElement("li");
-    list.dataset.inlist = "true";
+    list.dataset.inList = "true";
     li.appendChild(list);
     let style: mapData = {};
     if (structureType !== StructureType.content) {
@@ -176,7 +176,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
 
   buildHeader(
     id: string,
-    type: headerType,
+    type: HeaderType,
     getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData,

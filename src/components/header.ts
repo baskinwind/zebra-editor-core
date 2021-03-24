@@ -9,9 +9,9 @@ import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
 
-export type headerType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type HeaderType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 export interface IHeaderSnapshoot extends ICollectionSnapshoot<Inline> {
-  headerType: headerType;
+  headerType: HeaderType;
 }
 
 const styleMap = {
@@ -37,7 +37,7 @@ const styleMap = {
 
 class Header extends ContentCollection {
   type = ComponentType.header;
-  headerType: headerType;
+  headerType: HeaderType;
   data = {
     bold: true,
   };
@@ -79,18 +79,18 @@ class Header extends ContentCollection {
     return newHeaderList;
   }
 
-  constructor(type: headerType, text?: string, style?: StoreData, data?: StoreData) {
+  constructor(type: HeaderType, text?: string, style?: StoreData, data?: StoreData) {
     super(text, style, data);
     this.headerType = type;
     this.style = styleMap[type];
   }
 
-  setHeader(type: headerType = "h1") {
+  setHeader(type: HeaderType = "h1") {
     if (this.headerType === type) return;
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.headerType = type;
     this.style = styleMap[type];
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
   }
 
   exchangeTo(builder: BlockType, args: any[]): Block[] {

@@ -126,7 +126,7 @@ class Table extends StructureCollection<TableRow> {
 
   receive(block: Block): OperatorType {
     this.removeSelf();
-    return [[block], { id: block.id, offset: 0 }];
+    return [{ id: block.id, offset: 0 }];
   }
 
   restore(state: ITableSnapshoot) {
@@ -269,7 +269,7 @@ class TableCell extends StructureCollection<TableItem> {
   childHeadDelete(tableItem: TableItem): OperatorType {
     let prev = this.getPrev(tableItem);
     if (!prev) {
-      return [[tableItem], { id: tableItem.id, offset: 0 }];
+      return [{ id: tableItem.id, offset: 0 }];
     }
 
     return tableItem.sendTo(prev);

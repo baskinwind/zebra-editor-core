@@ -41,7 +41,7 @@ const input = (
     ) {
       event?.preventDefault();
       let operator = block.add(offset, charOrInline);
-      focusAt(editor.mountedWindow, operator[1], operator[2]);
+      focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
       return;
     }
 

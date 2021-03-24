@@ -6,29 +6,35 @@ import StructureType from "../const/structure-type";
 import Inline from "../components/inline";
 import ComponentType from "../const/component-type";
 
-const getTrueDom = (element: HTMLElement | null): HTMLElement | null => {
-  if (element?.dataset.inlist) {
+const getWrapDom = (containDocument: Document, id: string): HTMLElement | null => {
+  let element = containDocument.getElementById(id);
+  if (element?.dataset.inList) {
     return element!.parentElement!;
   }
   return element;
 };
 
-const recallQueue: [Block, string, HTMLElement, HTMLElement][] = [];
+const getParentDom = (containDocument: Document, id: string): HTMLElement | null => {
+  let element = containDocument.getElementById(id);
+  if (element?.dataset.wrap) {
+    return element!.children[0] as HTMLElement;
+  }
+  return element;
+};
+
+const recallQueue: [string, HTMLElement, HTMLElement][] = [];
 
 const handleRecallQueue = (editor: Editor) => {
   let containDocument = editor.mountedDocument;
 
   while (recallQueue.length) {
-    const [component, afterComId, dom, parentDom] = recallQueue.pop()!;
-    const parentComponent = component.parent;
+    const [afterComId, newDom, parentDom] = recallQueue.pop()!;
 
-    if (!parentComponent) continue;
-
-    let afterDom = getTrueDom(containDocument.getElementById(afterComId));
+    let afterDom = getWrapDom(containDocument, afterComId);
     if (afterDom) {
-      parentDom.insertBefore(dom, afterDom);
+      parentDom.insertBefore(newDom, afterDom);
     } else {
-      recallQueue.push([component, afterComId, dom, parentDom]);
+      recallQueue.push([afterComId, newDom, parentDom]);
     }
   }
 };
@@ -36,10 +42,10 @@ const handleRecallQueue = (editor: Editor) => {
 let inLoop = false;
 
 // 更新组件
-const updateComponent = (editor: Editor, ...component: Component[]) => {
+const updateComponent = (editor: Editor, ...componentList: Component[]) => {
   if (!editor.mountedDocument) return;
 
-  component.forEach((each) => update(editor, each));
+  componentList.forEach((each) => update(editor, each));
 
   handleRecallQueue(editor);
 
@@ -57,7 +63,7 @@ const update = (editor: Editor, component: Component) => {
   if (component.type === ComponentType.article) return;
 
   let containDocument = editor.mountedDocument;
-  let oldDom = getTrueDom(containDocument.getElementById(component.id));
+  let oldDom = getWrapDom(containDocument, component.id);
 
   // 失效节点清除已存在的 DOM
   if (!component.parent) {
@@ -99,7 +105,7 @@ const update = (editor: Editor, component: Component) => {
     }
 
     let parentComponent = component.parent;
-    let parentDom = containDocument.getElementById(parentComponent.id);
+    let parentDom = getParentDom(containDocument, parentComponent.id);
 
     // 未找到父组件对应的元素时，更新父组件
     if (!parentDom) {
@@ -113,11 +119,11 @@ const update = (editor: Editor, component: Component) => {
       parentDom.appendChild(newDom);
     } else {
       let afterComId = parentComponent.getChild(index + 1).id;
-      let afterDom = getTrueDom(containDocument.getElementById(afterComId));
+      let afterDom = getWrapDom(containDocument, afterComId);
       if (afterDom) {
         parentDom.insertBefore(newDom, afterDom);
       } else {
-        recallQueue.push([component, afterComId, newDom, parentDom]);
+        recallQueue.push([afterComId, newDom, parentDom]);
       }
     }
   }

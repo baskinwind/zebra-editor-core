@@ -19,26 +19,25 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return index;
   }
 
-  addChildren(index: number, component: T[]): T[] {
-    component.forEach((each) => {
+  addChildren(index: number, componentList: T[]): T[] {
+    componentList.forEach((each) => {
       each.parent = this;
       each.active = true;
     });
-
-    this.$emit("componentWillChange", this);
-    let newBlockList = super.addChildren(index, component);
-    this.$emit("componentChanged", [...newBlockList, this]);
+    this.componentWillChange();
+    let newBlockList = super.addChildren(index, componentList);
+    this.updateComponent([...newBlockList, this]);
     return newBlockList;
   }
 
-  add(index: number, ...block: T[]): OperatorType {
+  add(index: number, ...blockList: T[]): OperatorType {
     index = index < 0 ? this.getSize() + 1 + index : index;
-    this.addChildren(index, block);
-    return [block];
+    this.addChildren(index, blockList);
+    return;
   }
 
   removeChildren(start: number, end: number = -1) {
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     let removed = super.removeChildren(start, end);
 
     removed.forEach((each) => each.destory());
@@ -52,7 +51,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       });
     }
 
-    this.$emit("componentChanged", [...removed, this]);
+    this.updateComponent([...removed, this]);
     return removed;
   }
 
@@ -61,26 +60,26 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    let removed = this.removeChildren(start, end);
-    return [removed];
+    this.removeChildren(start, end);
+    return;
   }
 
-  replaceChild(block: T[], oldComponent: T): Block[] {
+  replaceChild(blockList: T[], oldComponent: T): Block[] {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
-      throw createError("替换组件不在子组件列表内", block);
+      throw createError("替换组件不在子组件列表内", blockList);
     }
     oldComponent.destory();
 
-    block.forEach((each) => {
+    blockList.forEach((each) => {
       each.parent = this;
       each.active = true;
     });
 
-    this.$emit("componentWillChange", this);
-    this.children = this.children.splice(index, 1, ...block);
-    this.$emit("componentChanged", [oldComponent, ...block, this]);
-    return block;
+    this.componentWillChange();
+    this.children = this.children.splice(index, 1, ...blockList);
+    this.updateComponent([oldComponent, ...blockList, this]);
+    return blockList;
   }
 
   splitChild(index: number): StructureCollection<T> {
@@ -94,7 +93,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return newCollection;
   }
 
-  split(index: number, ...block: Block[]): OperatorType {
+  split(index: number, ...blockList: Block[]): OperatorType {
     let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
     let changedBlock = [];
@@ -109,17 +108,17 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       componentIndex -= 1;
     }
 
-    if (block.length) {
-      changedBlock.push(...block);
-      return parent.add(componentIndex + 1, ...block);
+    if (blockList.length) {
+      changedBlock.push(...blockList);
+      return parent.add(componentIndex + 1, ...blockList);
     }
 
-    return [changedBlock];
+    return;
   }
 
   // 定义当组件的子组件的首位发生删除时的行为，实现类需完善该逻辑
   childHeadDelete(block: T): OperatorType {
-    return [[block]];
+    return;
   }
 
   restore(state: ICollectionSnapshoot<T>) {

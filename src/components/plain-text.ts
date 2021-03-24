@@ -32,28 +32,28 @@ abstract class PlainText extends Block {
     }
 
     index = index === undefined ? this.content.length : index;
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.content.splice(index, 0, ...string);
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
 
-    return [[this], { id: this.id, offset: index + getTextLength(string) }];
+    return [{ id: this.id, offset: index + getTextLength(string) }];
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     // 首位删除变成段落
     if (start < 0 && end === 0) {
       let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph], []);
-      return [block, { id: block[0].id, offset: 0 }];
+      return [{ id: block[0].id, offset: 0 }];
     }
 
     this.content.splice(start, end - start);
-    this.$emit("componentChanged", [this]);
-    return [[this], { id: this.id, offset: start }];
+    this.updateComponent([this]);
+    return [{ id: this.id, offset: start }];
   }
 
-  split(index: number, ...block: Block[]): OperatorType {
-    if (block.length) {
+  split(index: number, ...blockList: Block[]): OperatorType {
+    if (blockList.length) {
       throw createError("纯文本组件仅能输入文字", this);
     }
 
@@ -78,7 +78,7 @@ abstract class PlainText extends Block {
       this.content.push(...block.content);
     }
 
-    return [[this], { id: this.id, offset: size }];
+    return [{ id: this.id, offset: size }];
   }
 
   snapshoot(): IPlainTextSnapshoot {

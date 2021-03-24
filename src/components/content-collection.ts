@@ -52,16 +52,19 @@ abstract class ContentCollection extends Collection<Inline> {
     end = end < 0 ? this.getSize() + end : end;
 
     if (start > end || (!style && !data)) {
-      return [[this], { id: this.id, offset: start }];
+      return [{ id: this.id, offset: start }];
     }
 
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     for (let i = start; i <= end; i++) {
       this.getChild(i)?.modifyDecorate(style, data);
     }
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
 
-    return [[this], { id: this.id, offset: start }, { id: this.id, offset: end }];
+    return [
+      { id: this.id, offset: start },
+      { id: this.id, offset: end },
+    ];
   }
 
   add(index: number, ...inline: Inline[] | string[]): OperatorType {
@@ -79,10 +82,10 @@ abstract class ContentCollection extends Collection<Inline> {
       }
     });
 
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.addChildren(index, needAddInline);
-    this.$emit("componentChanged", [this]);
-    return [[this], { id: this.id, offset: index + inline.length }];
+    this.updateComponent([this]);
+    return [{ id: this.id, offset: index + inline.length }];
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
@@ -97,10 +100,10 @@ abstract class ContentCollection extends Collection<Inline> {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     this.removeChildren(start, end);
-    this.$emit("componentChanged", [this]);
-    return [[this], { id: this.id, offset: start }];
+    this.updateComponent([this]);
+    return [{ id: this.id, offset: start }];
   }
 
   splitChild(index: number): ContentCollection {
@@ -119,16 +122,16 @@ abstract class ContentCollection extends Collection<Inline> {
     return newCollection;
   }
 
-  split(index: number, ...block: Block[]): OperatorType {
+  split(index: number, ...blockList: Block[]): OperatorType {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
 
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     let splitBlock = this.splitChild(index);
     let needAddBlockList: Block[] = [];
 
-    if (block.length) {
-      needAddBlockList.push(...block);
+    if (blockList.length) {
+      needAddBlockList.push(...blockList);
       // 在首位切割时，若会放入内容，则将空行删除
       if (this.getSize() === 0) {
         this.removeSelf();
@@ -138,13 +141,13 @@ abstract class ContentCollection extends Collection<Inline> {
 
     // 注：切出的块有可能为空
     // 若没有添加的块，或切出的块有内容时，添加切出的块
-    if (block.length === 0 || splitBlock.getSize() !== 0) {
+    if (blockList.length === 0 || splitBlock.getSize() !== 0) {
       needAddBlockList.push(splitBlock);
     }
 
     parent.add(blockIndex + 1, ...needAddBlockList);
-    this.$emit("componentChanged", [this]);
-    return [needAddBlockList, { id: splitBlock.id, offset: 0 }];
+    this.updateComponent([this]);
+    return [{ id: splitBlock.id, offset: 0 }];
   }
 
   addText(text: string, index?: number): OperatorType {
@@ -156,7 +159,7 @@ abstract class ContentCollection extends Collection<Inline> {
     }
 
     this.addChildren(index, charList);
-    return [[this], { id: this.id, offset: index + charList.length }];
+    return [{ id: this.id, offset: index + charList.length }];
   }
 
   // 在组件上下添加空余的行
@@ -179,17 +182,17 @@ abstract class ContentCollection extends Collection<Inline> {
 
     // ContentCollection 组件仅能接收 ContentCollection 组件
     if (!(block instanceof ContentCollection)) {
-      return [[]];
+      return [];
     }
 
-    this.$emit("componentWillChange", this);
+    this.componentWillChange();
     // 移除接收到的组件
     block.removeSelf();
 
     this.children = this.children.push(...block.children);
-    this.$emit("componentChanged", [this]);
+    this.updateComponent([this]);
 
-    return [[this], { id: this.id, offset: size }];
+    return [{ id: this.id, offset: size }];
   }
 
   // 将内容进行拆分，适应 HTML 的表现形式

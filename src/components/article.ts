@@ -36,7 +36,7 @@ class Article extends StructureCollection<Block> {
     // 若在 Article 的第一个
     if (block.type !== ComponentType.paragraph) {
       let exchanged = block.exchangeTo(this.getComponentFactory().typeMap.PARAGRAPH, []);
-      return [exchanged, { id: exchanged[0].id, offset: 0 }];
+      return [{ id: exchanged[0].id, offset: 0 }];
     }
 
     // 首位删除，若修饰器有内容，则清空
@@ -44,7 +44,7 @@ class Article extends StructureCollection<Block> {
       block.modifyDecorate({ remove: "all" }, { remove: "all" });
     }
 
-    return [[block], { id: block.id, offset: 0 }];
+    return [{ id: block.id, offset: 0 }];
   }
 
   remove(start: number, end?: number): OperatorType {

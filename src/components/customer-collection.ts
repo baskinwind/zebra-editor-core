@@ -49,22 +49,22 @@ class CustomerCollection extends StructureCollection<Block> {
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
 
-  add(index: number, ...block: Block[]): OperatorType {
+  add(index: number, ...blockList: Block[]): OperatorType {
     index = index < 0 ? this.getSize() + 1 + index : index;
 
     // 连续输入空行，截断列表
     if (
       index > 1 &&
-      block.length === 1 &&
-      block[0].isEmpty() &&
+      blockList.length === 1 &&
+      blockList[0].isEmpty() &&
       this.getChild(index - 1).isEmpty()
     ) {
-      let operator = this.split(index, ...block);
+      let operator = this.split(index, ...blockList);
       this.getChild(index - 1).removeSelf();
       return operator;
     }
 
-    return this.add(index, ...block);
+    return this.add(index, ...blockList);
   }
 
   childHeadDelete(block: Block): OperatorType {
@@ -74,7 +74,7 @@ class CustomerCollection extends StructureCollection<Block> {
     // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.getPrev(block);
-      if (!prev) return [[this]];
+      if (!prev) return;
       return block.sendTo(prev);
     }
 
@@ -92,7 +92,7 @@ class CustomerCollection extends StructureCollection<Block> {
       block.removeSelf();
       let last = this.getChild(this.getSize() - 1);
       let lastSize = last.getSize();
-      return [[last], { id: last.id, offset: lastSize }];
+      return [{ id: last.id, offset: lastSize }];
     }
 
     return this.add(-1, block);

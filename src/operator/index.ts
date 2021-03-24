@@ -160,7 +160,7 @@ class Operator {
     if (ctrl && key === "enter") {
       let component = this.editor.storeManage.getBlockById(selection.range[1].id);
       let operator = component.addEmptyParagraph(!shift);
-      focusAt(this.editor.mountedWindow, operator[1], operator[2]);
+      focusAt(this.editor.mountedWindow, operator?.[0], operator?.[1]);
       return;
     }
 

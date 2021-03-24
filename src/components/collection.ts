@@ -11,12 +11,12 @@ abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
 
   // 内部使用，添加子元素
-  addChildren(index: number, components: T[]): T[] {
-    components.forEach((each) => {
+  addChildren(index: number, componentList: T[]): T[] {
+    componentList.forEach((each) => {
       each.parent = this;
     });
-    this.children = this.children.splice(index, 0, ...components);
-    return components;
+    this.children = this.children.splice(index, 0, ...componentList);
+    return componentList;
   }
 
   // 内部使用，移除子元素

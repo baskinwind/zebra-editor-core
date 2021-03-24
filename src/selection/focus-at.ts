@@ -50,13 +50,13 @@ const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
   }
 };
 
-type focusNodeType = {
+type FocusNodeType = {
   node: Element | Node;
   index: number;
 };
 
 // 从开始节点的某处，选到接收节点的某处
-const focusNode = (contentWindow: Window, start: focusNodeType, end: focusNodeType = start) => {
+const focusNode = (contentWindow: Window, start: FocusNodeType, end: FocusNodeType = start) => {
   let doc = contentWindow.document;
   let section = contentWindow.getSelection();
   section?.removeAllRanges();
