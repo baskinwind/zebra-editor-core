@@ -5,7 +5,6 @@ import StructureCollection from "./structure-collection";
 import nextTick from "../util/next-tick";
 import { StoreData } from "../decorate/index";
 import { createError } from "../util/handle-error";
-import ComponentType from "../const/component-type";
 
 export type BlockType = typeof Block;
 export interface IBlockSnapshoot extends ISnapshoot {
@@ -32,13 +31,8 @@ abstract class Block extends Component {
 
   constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
-
-    nextTick(() => {
-      if (this.type === ComponentType.article || this.parent) {
-        this.$emit("blockCreated", this);
-      }
-      this.init();
-    });
+    this.$emit("blockCreated", this);
+    this.init();
   }
 
   // 提供一个初始化的方法，避免继承需要重写 constructor 方法

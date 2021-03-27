@@ -5,6 +5,10 @@ export const walkTree = (
   structureCollection: StructureCollection<Block>,
   callback: (block: Block) => boolean | void,
 ) => {
+  if (callback(structureCollection)) {
+    return true;
+  }
+
   for (let i = 0, len = structureCollection.getSize(); i < len; i++) {
     let each = structureCollection.getChild(i);
     if (each instanceof StructureCollection) {

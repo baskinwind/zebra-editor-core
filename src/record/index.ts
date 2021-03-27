@@ -15,7 +15,7 @@ class Record {
 
   restore(stepId: number) {
     // 找到最近的一个节点解析更新
-    while (!this.recordMap[stepId] && stepId !== -1) {
+    while (!this.recordMap[stepId] && stepId >= 0) {
       stepId--;
     }
     if (stepId < 0) return;

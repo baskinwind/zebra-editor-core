@@ -4,6 +4,7 @@ import focusAt from "../../selection/focus-at";
 import updateComponent from "../../util/update-component";
 import Editor from "..";
 import getSelection from "../../selection/get-selection";
+import { walkTree } from "../../util/walk-tree";
 
 interface recoreType {
   componentList: Map<string, Component>;
@@ -36,6 +37,11 @@ class HistoryManage {
     this.recordStack = [];
     this.nowStackIndex = -1;
     this.createRecordStack();
+
+    walkTree(this.editor.article, (each) => {
+      each.record.store(this.nowStackIndex);
+    });
+
     this.editor.article.$on("blockCreated", (component: Component) => {
       this.recordSnapshoot(component);
     });
@@ -66,24 +72,9 @@ class HistoryManage {
 
   createRecord() {
     if (this.inLoop) return;
-    this.createRecordStack();
-    this.inLoop = true;
-    let selection = getSelection(this.editor.mountedWindow);
-    this.nowRecordStack.startSelection = {
-      start: selection.range[0],
-      end: selection.range[1],
-    };
-    setTimeout(() => {
-      this.inLoop = false;
-      let selection = getSelection(this.editor.mountedWindow);
-      this.nowRecordStack.endSelection = {
-        start: selection.range[0],
-        end: selection.range[1],
-      };
-    });
 
     // 清除历史快照，重做后在进行编辑会触发该情况
-    if (this.nowStackIndex > this.recordStack.length) {
+    if (this.nowStackIndex < this.recordStack.length) {
       // 清除组件内无效的历史快照
       for (let i = this.nowStackIndex + 1; i < this.recordStack.length; i++) {
         let componentList = this.recordStack[i].componentList;
@@ -94,6 +85,23 @@ class HistoryManage {
       // 清除全局历史栈中无效的历史
       this.recordStack.splice(this.nowStackIndex + 1);
     }
+
+    this.createRecordStack();
+    this.inLoop = true;
+    let selection = getSelection(this.editor.mountedWindow);
+    this.nowRecordStack.startSelection = {
+      start: selection.range[0],
+      end: selection.range[1],
+    };
+
+    setTimeout(() => {
+      this.inLoop = false;
+      let selection = getSelection(this.editor.mountedWindow);
+      this.nowRecordStack.endSelection = {
+        start: selection.range[0],
+        end: selection.range[1],
+      };
+    });
   }
 
   recordSnapshoot(component: Component) {
@@ -112,10 +120,10 @@ class HistoryManage {
   undo() {
     if (!this.canUndo()) return;
     let nowRecord = this.recordStack[this.nowStackIndex];
-    this.nowRecordStack.componentList.forEach((each) => {
+    nowRecord.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex - 1);
     });
-    updateComponent(this.editor, ...this.nowRecordStack.componentList.values());
+    updateComponent(this.editor, ...nowRecord.componentList.values());
     this.nowStackIndex -= 1;
     focusAt(
       this.editor.mountedWindow,
@@ -127,10 +135,10 @@ class HistoryManage {
   redo() {
     if (!this.canRedo()) return;
     let nowRecord = this.recordStack[this.nowStackIndex + 1];
-    this.nowRecordStack.componentList.forEach((each) => {
+    nowRecord.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex + 1);
     });
-    updateComponent(this.editor, ...this.nowRecordStack.componentList.values());
+    updateComponent(this.editor, ...nowRecord.componentList.values());
     this.nowStackIndex += 1;
     focusAt(this.editor.mountedWindow, nowRecord.endSelection.start, nowRecord.endSelection.end);
   }
