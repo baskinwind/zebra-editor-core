@@ -5,7 +5,7 @@ import StructureCollection from "./structure-collection";
 import Block from "./block";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 
 export type ListType = "ol" | "ul";
 export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
@@ -148,13 +148,13 @@ class List extends StructureCollection<Block> {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    let content = contentBuilder.buildList(
+  render(contentView: BaseView) {
+    let content = contentView.buildList(
       this.id,
       this.listType,
       () => {
         return this.children.toArray().map((each) => {
-          return contentBuilder.buildListItem(each.render(contentBuilder), each.structureType);
+          return contentView.buildListItem(each.render(contentView), each.structureType);
         });
       },
       this.decorate.getStyle(),

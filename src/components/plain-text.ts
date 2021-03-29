@@ -7,7 +7,7 @@ import { StoreData } from "../decorate";
 import { createError } from "../util/handle-error";
 import Character from "./character";
 import ComponentType from "../const/component-type";
-import { getTextLength } from "../util/text-util";
+import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 
 export interface IPlainTextSnapshoot extends IBlockSnapshoot {
   content: string;
@@ -36,7 +36,7 @@ abstract class PlainText extends Block {
     this.content.splice(index, 0, ...string);
     this.updateComponent([this]);
 
-    return [{ id: this.id, offset: index + getTextLength(string) }];
+    return [{ id: this.id, offset: index + getUtf8TextLengthFromJsOffset(string) }];
   }
 
   remove(start: number, end: number = start + 1): OperatorType {

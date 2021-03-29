@@ -4,7 +4,7 @@ import Character from "../components/character";
 import focusAt from "../selection/focus-at";
 import { getCursorPosition, Cursor } from "../selection/util";
 import ContentCollection from "../components/content-collection";
-import { getTextLength } from "../util/text-util";
+import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 
 const input = (
   editor: Editor,
@@ -23,7 +23,7 @@ const input = (
     if (
       block instanceof ContentCollection &&
       charOrInline === " " &&
-      (startPosition.index <= 0 || startPosition.index >= getTextLength(startNode.nodeValue) - 1)
+      (startPosition.index <= 0 || startPosition.index >= getUtf8TextLengthFromJsOffset(startNode.nodeValue) - 1)
     ) {
       charOrInline = new Character(charOrInline);
     }
@@ -34,14 +34,14 @@ const input = (
       startNode.nodeName === "BR" ||
       startNode.nodeName === "IMG" ||
       typeof charOrInline !== "string" ||
-      (!event && typeof charOrInline === "string") ||
       startPosition.index === 0 ||
-      startPosition.index >= getTextLength(startNode.nodeValue) - 1 ||
+      startPosition.index >= getUtf8TextLengthFromJsOffset(startNode.nodeValue) - 1 ||
+      (!event && typeof charOrInline === "string") ||
       event?.defaultPrevented
     ) {
       event?.preventDefault();
       let operator = block.add(offset, charOrInline);
-      focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
+      focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
       return;
     }
 

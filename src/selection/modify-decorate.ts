@@ -20,7 +20,7 @@ const modifyDecorate = (
     block.modifyDecorate(style, data);
   });
   if (focus) {
-    focusAt(editor.mountedWindow);
+    focusAt(editor.mountedWindow, selection.range[0], selection.range[1]);
   }
 };
 

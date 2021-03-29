@@ -1,16 +1,16 @@
 import ComponentFactory from "../components";
 import Article from "../components/article";
-import ContentBuilder from "../builder/content-builder";
+import ContentView from "../view/dom-view";
 import Operator from "../operator";
 import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
-import createEditor from "./util/create-editor";
+import createEditor from "./create-editor";
 
 export interface EditorOption {
   placeholder?: string;
   operator: typeof Operator;
-  contentBuilder: typeof ContentBuilder;
+  contentView: typeof ContentView;
   componentFactory: typeof ComponentFactory;
   onError?: (error: Error) => void;
   beforeCreate?: (document: Document, window: Window | null) => void;
@@ -27,11 +27,11 @@ class Editor {
 
   userOperator: Operator;
   componentFactory: ComponentFactory;
-  contentBuilder: ContentBuilder;
+  contentView: ContentView;
 
-  articleManage: ArticleManage;
-  historyManage: HistoryManage;
   storeManage: StoreManage;
+  historyManage: HistoryManage;
+  articleManage: ArticleManage;
 
   constructor(idOrElement: string | HTMLElement, article: Article, option: EditorOption) {
     if (typeof idOrElement === "string") {
@@ -49,12 +49,12 @@ class Editor {
     this.placeholder = option.placeholder || "";
 
     this.userOperator = new option.operator(this);
-    this.contentBuilder = new option.contentBuilder(this);
+    this.contentView = new option.contentView(this);
     this.componentFactory = new option.componentFactory(this);
 
-    this.articleManage = new ArticleManage(this);
-    this.historyManage = new HistoryManage(this);
     this.storeManage = new StoreManage(this);
+    this.historyManage = new HistoryManage(this);
+    this.articleManage = new ArticleManage(this);
     this.init(article);
 
     createEditor(

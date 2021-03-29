@@ -1,18 +1,10 @@
 import { Cursor, getCursorPosition } from "./util";
-import { getBeforeSelection } from "./get-selection";
 import nextTick from "../util/next-tick";
-import { getTextSurePosition } from "../util/text-util";
+import { getJsTextLengthFromUtf8Offset } from "../util/text-util";
 
 // 选中 start 到 end 的内容
-const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
+const focusAt = (contentWindow: Window, start: Cursor, end?: Cursor) => {
   try {
-    if (!start) {
-      // 若无选区，则使用前一步的选区内容
-      let selection = getBeforeSelection();
-      start = selection.range[0];
-      end = selection.range[1];
-    }
-
     // id 为空字符，说明刚初始化，不进行 focus
     if (start.id === "") return;
     if (!end) {
@@ -75,8 +67,9 @@ const focusNode = (contentWindow: Window, start: FocusNodeType, end: FocusNodeTy
       range.setStartAfter(start.node);
     }
   } else {
-    range.setStart(start.node, getTextSurePosition(start.node.textContent, start.index));
+    range.setStart(start.node, getJsTextLengthFromUtf8Offset(start.node.textContent, start.index));
   }
+
   if (
     end.node.nodeName === "IMG" ||
     end.node.nodeName === "AUDIO" ||
@@ -90,8 +83,9 @@ const focusNode = (contentWindow: Window, start: FocusNodeType, end: FocusNodeTy
       range.setEndAfter(end.node);
     }
   } else {
-    range.setEnd(end.node, getTextSurePosition(end.node.textContent, end.index));
+    range.setEnd(end.node, getJsTextLengthFromUtf8Offset(end.node.textContent, end.index));
   }
+
   section?.addRange(range);
   if (!doc.hasFocus()) {
     let contentEdit = start.node.parentElement;
@@ -102,6 +96,7 @@ const focusNode = (contentWindow: Window, start: FocusNodeType, end: FocusNodeTy
       contentEdit.focus();
     }
   }
+
   nextTick(() => {
     document.dispatchEvent(new Event("editorChange"));
   });

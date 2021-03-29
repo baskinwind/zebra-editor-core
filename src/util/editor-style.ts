@@ -1,32 +1,34 @@
 export default `
 html, body {
   height: 100%;
-  margin: 0;
 }
 body {
+  margin: 0;
   padding: 10px;
   box-sizing: border-box;
-  font-family: -apple-system;
   font-size: 16px;
+  line-height: 1.15;
 }
 * {
   box-sizing: border-box;
+}
+article {
+  overflow: auto
 }
 [contenteditable="true"] {
   outline: none;
 }
 
 #zebra-editor-contain {
-  min-height: 100%;
+  height: 100%;
   white-space: pre-wrap;
   overflow: auto;
 }
-article {
-  overflow: auto;
-}
+
+/** loading 态的图片显示效果 */
 .zebra-editor-image-loading {
   position: relative;
-  background: #f8f8f8;
+  background: rgba(248, 248, 248, 1);
 }
 .zebra-editor-image-loading img {
   height: 40px;
@@ -44,6 +46,8 @@ article {
   text-align: center;
   color: #ccc;
 }
+
+/** placeholder */
 .zebra-editor-article > :first-child {
   position: relative;
 }
@@ -71,7 +75,7 @@ th, td {
 
 p:not(.zebra-editor-code-block) code {
   padding: 2px 2px;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: .9em;
   background-color: rgba(248, 248, 248, 1);
 }

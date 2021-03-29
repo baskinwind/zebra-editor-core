@@ -3,7 +3,7 @@ import { OperatorType, IRawType } from "./component";
 import { ICollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 
@@ -98,6 +98,7 @@ class CustomerCollection extends StructureCollection<Block> {
     return this.add(-1, block);
   }
 
+
   snapshoot(): IListSnapshoot {
     let snap = super.snapshoot() as IListSnapshoot;
     snap.tag = this.tag;
@@ -128,11 +129,11 @@ class CustomerCollection extends StructureCollection<Block> {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    let content = contentBuilder.buildCustomerCollection(
+  render(contentView: BaseView) {
+    let content = contentView.buildCustomerCollection(
       this.id,
       this.tag,
-      () => this.children.toArray().map((each) => each.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentView)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

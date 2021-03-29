@@ -1,11 +1,11 @@
 import Editor from "../editor";
 import StructureType from "../const/structure-type";
 import getSelection from "../selection/get-selection";
-import deleteSelection from "../operator/delete-selection";
+import deleteSelection from "./delete-selection";
 import focusAt from "../selection/focus-at";
 
 // 复制内容
-const onPaste = (editor: Editor, event: ClipboardEvent) => {
+const paste = (editor: Editor, event: ClipboardEvent) => {
   event.preventDefault();
   // 获取复制的内容
   let copyInData = event.clipboardData?.getData("text/plain");
@@ -21,28 +21,28 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
   }
 
   let nowComponent = editor.storeManage.getBlockById(selection.range[0].id);
-  let index = selection.range[0].offset;
+  let start = selection.range[0];
 
   // 纯文本组件直接输入即可
   if (nowComponent.type === StructureType.plainText) {
-    let operator = nowComponent.add(index, rowData.join("\n"));
-    focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
+    let operator = nowComponent.add(start.offset, rowData.join("\n"));
+    focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
     return;
   }
 
   // 过滤掉空行
   rowData = rowData.filter((each) => each.trim().length !== 0);
 
-  let operator = nowComponent.add(index, rowData[0]);
+  let operator = nowComponent.add(start.offset, rowData[0]);
   if (rowData.length === 1) {
-    return focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
+    return focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
   }
 
   let list = [];
   for (let i = 1; i < rowData.length; i++) {
     list.push(editor.componentFactory.buildParagraph(rowData[i]));
   }
-  operator = nowComponent.split(index + rowData[0].length, ...list);
+  operator = nowComponent.split(start.offset + rowData[0].length, ...list);
   focusAt(editor.mountedWindow, {
     id: list[0].id,
     offset: rowData[rowData.length - 1].length,
@@ -50,4 +50,4 @@ const onPaste = (editor: Editor, event: ClipboardEvent) => {
   return;
 };
 
-export default onPaste;
+export default paste;

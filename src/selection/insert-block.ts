@@ -14,9 +14,9 @@ const insertBlock = (editor: Editor, ...blockList: Block[]) => {
 
   try {
     let nowComponent = editor.storeManage.getBlockById(selection.range[0].id);
-    let start = selection.range[0].offset;
-    let operator = nowComponent.split(start, ...blockList);
-    focusAt(editor.mountedWindow, operator?.[0], operator?.[1]);
+    let start = selection.range[0];
+    let operator = nowComponent.split(start.offset, ...blockList);
+    focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
   } catch (e) {
     console.warn(e);
   }

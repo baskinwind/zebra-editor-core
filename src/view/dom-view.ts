@@ -1,11 +1,11 @@
-import BaseBuilder, { mapData } from "./base-builder";
+import BaseView, { mapData } from "./base-view";
 import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { HeaderType } from "../components/header";
 import { ListType } from "../components/list";
 
-class ContentBuilder extends BaseBuilder<HTMLElement> {
+class ContentBuilder extends BaseView<HTMLElement> {
   editor: Editor;
 
   constructor(editor: Editor) {
@@ -244,6 +244,7 @@ class ContentBuilder extends BaseBuilder<HTMLElement> {
     image.addEventListener("load", () => {
       figure?.classList.remove("zebra-editor-image-loading");
     });
+
     if (data.link) {
       figure.dataset.link = data.link;
       let link = containDocument.createElement("a");

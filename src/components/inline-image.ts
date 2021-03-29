@@ -1,6 +1,6 @@
 import ComponentFactory from ".";
 import Inline from "./inline";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate/index";
 import { IRawType } from "./component";
@@ -25,8 +25,9 @@ class InlineImage extends Inline {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildInlineImage(
+
+  render(contentView: BaseView) {
+    return contentView.buildInlineImage(
       this.id,
       this.src,
       this.decorate.getStyle(),

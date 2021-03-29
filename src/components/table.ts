@@ -3,7 +3,7 @@ import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
@@ -133,10 +133,13 @@ class Table extends StructureCollection<TableRow> {
     super.restore(state);
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildTable(
+
+
+  
+  render(contentView: BaseView) {
+    return contentView.buildTable(
       this.id,
-      () => this.children.toArray().map((each) => each.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentView)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );
@@ -211,10 +214,10 @@ class TableRow extends StructureCollection<TableCell> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildTableRow(
+  render(contentView: BaseView) {
+    return contentView.buildTableRow(
       this.id,
-      () => this.children.toArray().map((each) => each.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentView)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );
@@ -286,11 +289,11 @@ class TableCell extends StructureCollection<TableItem> {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildTableCell(
+  render(contentView: BaseView) {
+    return contentView.buildTableCell(
       this.id,
       this.cellType,
-      () => this.children.toArray().map((each) => each.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentView)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );
@@ -330,10 +333,10 @@ class TableItem extends ContentCollection {
     return super.split(index);
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildParagraph(
+  render(contentView: BaseView) {
+    return contentView.buildParagraph(
       this.id,
-      () => this.getChildren(contentBuilder),
+      () => this.getChildren(contentView),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

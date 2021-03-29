@@ -6,7 +6,7 @@ export interface mapData {
   [key: string]: any;
 }
 
-abstract class BaseBuilder<T = any> {
+abstract class BaseView<T = any> {
   constructor() {
     this.init();
   }
@@ -74,4 +74,4 @@ abstract class BaseBuilder<T = any> {
   abstract buildInlineImage(id: string, src: string, style: mapData, data: mapData): T;
 }
 
-export default BaseBuilder;
+export default BaseView;

@@ -1,5 +1,5 @@
 import ComponentFactory from ".";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import { OperatorType, IRawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
@@ -62,10 +62,10 @@ class Article extends StructureCollection<Block> {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildArticle(
+  render(contentView: BaseView) {
+    return contentView.buildArticle(
       this.id,
-      () => this.children.toArray().map((each) => each.render(contentBuilder)),
+      () => this.children.toArray().map((each) => each.render(contentView)),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

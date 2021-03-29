@@ -1,6 +1,6 @@
+import { cloneDeep } from "lodash";
+import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 import { getElememtSize, getContainer, Cursor, getCursorElement, getOffset } from "./util";
-import { cloneDeep, throttle } from "lodash";
-import Article from "../components/article";
 
 export interface selectionType {
   isCollapsed: boolean;
@@ -21,28 +21,6 @@ let selectionStore: selectionType = {
   ],
 };
 
-const initSelection = (article: Article) => {
-  let block = article.getChild(0);
-  selectionStore = {
-    isCollapsed: true,
-    range: [
-      {
-        id: block.id,
-        offset: 0,
-      },
-      {
-        id: block.id,
-        offset: 0,
-      },
-    ],
-  };
-};
-
-// 获取之前选区的内容
-const getBeforeSelection = () => {
-  return cloneDeep<selectionType>(selectionStore);
-};
-
 // 获取选区信息，从 range[0].id 组件的 offset 位置开始，到 range[1].id 的 offset 位置结束
 const getSelection = (contentWindow: Window) => {
   let section = contentWindow.getSelection();
@@ -50,7 +28,7 @@ const getSelection = (contentWindow: Window) => {
   if (!section || !section.anchorNode || !section.focusNode || section?.type === "None") {
     return cloneDeep<selectionType>(selectionStore);
   }
-  let anchorNode = section?.anchorNode;
+  let anchorNode = section.anchorNode as HTMLElement;
 
   // 当选区不在生成的文章中时，直接返回之前的选区对象
   let rootDom = contentWindow.document.getElementById("zebra-editor-contain");
@@ -58,11 +36,8 @@ const getSelection = (contentWindow: Window) => {
     return cloneDeep<selectionType>(selectionStore);
   }
 
-  if (
-    rootDom === anchorNode ||
-    // @ts-ignore
-    (anchorNode.dataset && anchorNode.dataset.type === "ARTICLE")
-  ) {
+  // 选中 Article 节点
+  if (rootDom === anchorNode || (anchorNode.dataset && anchorNode.dataset.type === "ARTICLE")) {
     let startBlock = rootDom;
     let endBlock = rootDom;
     while (startBlock.dataset && startBlock.dataset.structure !== "CONTENT") {
@@ -87,15 +62,12 @@ const getSelection = (contentWindow: Window) => {
     return cloneDeep<selectionType>(selectionStore);
   }
 
-  let anchorEle = anchorNode as HTMLElement;
-  if (
-    anchorEle.dataset &&
-    (anchorEle.dataset.structure === "CONTENT" || anchorEle.dataset.structure === "CONTENTWRAP")
-  ) {
-    let startParent: HTMLElement = getCursorElement(anchorEle);
+  // 选中 content 节点
+  if (anchorNode.dataset && anchorNode.dataset.structure === "CONTENT") {
+    let startParent: HTMLElement = getCursorElement(anchorNode);
     let offset = 0;
     for (let i = 0; i < section.anchorOffset; i++) {
-      offset += getElememtSize(anchorEle.children[i] as HTMLElement);
+      offset += getElememtSize(anchorNode.children[i] as HTMLElement);
     }
     selectionStore = {
       isCollapsed: true,
@@ -119,27 +91,27 @@ const getSelection = (contentWindow: Window) => {
   // 4：anchorNode 在 focusNode 节点前
   // 获得选区的开始节点和结束节点（文档顺序）
   let posiType = section.anchorNode.compareDocumentPosition(section.focusNode);
-  let anchorOffect = section.anchorOffset;
+  let anchorOffset = section.anchorOffset;
   let focusOffset = section.focusOffset;
   // EMOJI 标签会导致获取的光标的位置错误
   if (section.anchorNode.nodeType === 3) {
-    anchorOffect = [...(section.anchorNode.textContent?.substr(0, anchorOffect) || "")].length;
+    anchorOffset = getUtf8TextLengthFromJsOffset(section.anchorNode.textContent, anchorOffset);
   }
   if (section.focusNode.nodeType === 3) {
-    focusOffset = [...(section.focusNode.textContent?.substr(0, focusOffset) || "")].length;
+    focusOffset = getUtf8TextLengthFromJsOffset(section.focusNode.textContent, focusOffset);
   }
   let startOffset;
   let startNode;
   let endOffset;
   let endNode;
   if (posiType === 0) {
-    if (anchorOffect > focusOffset) {
+    if (anchorOffset > focusOffset) {
       startOffset = focusOffset;
       startNode = section?.focusNode;
-      endOffset = anchorOffect;
+      endOffset = anchorOffset;
       endNode = section?.anchorNode;
     } else {
-      startOffset = anchorOffect;
+      startOffset = anchorOffset;
       startNode = section?.anchorNode;
       endOffset = focusOffset;
       endNode = section?.focusNode;
@@ -147,10 +119,10 @@ const getSelection = (contentWindow: Window) => {
   } else if (posiType === 2) {
     startOffset = focusOffset;
     startNode = section?.focusNode;
-    endOffset = anchorOffect;
+    endOffset = anchorOffset;
     endNode = section?.anchorNode;
   } else {
-    startOffset = anchorOffect;
+    startOffset = anchorOffset;
     startNode = section?.anchorNode;
     endOffset = focusOffset;
     endNode = section?.focusNode;
@@ -165,7 +137,6 @@ const getSelection = (contentWindow: Window) => {
   startOffset = getOffset(startParagtaph, startContainer, startOffset);
   endOffset = getOffset(endParagraph, endContainer, endOffset);
 
-  // 保存选区信息
   selectionStore = {
     isCollapsed: section?.isCollapsed === undefined ? true : section.isCollapsed,
     range: [
@@ -179,12 +150,8 @@ const getSelection = (contentWindow: Window) => {
       },
     ],
   };
+
   return cloneDeep<selectionType>(selectionStore);
 };
 
-// 至少隔 300 毫秒后，才能保存当前选取的内容，避免过度触发该 API
-const flushSelection = throttle(getSelection, 300);
-
 export default getSelection;
-
-export { initSelection, flushSelection, getBeforeSelection };

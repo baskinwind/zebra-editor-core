@@ -3,7 +3,7 @@ import { IRawType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 
@@ -57,10 +57,10 @@ class Paragraph extends ContentCollection {
     );
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildParagraph(
+  render(contentView: BaseView) {
+    return contentView.buildParagraph(
       this.id,
-      () => this.getChildren(contentBuilder),
+      () => this.getChildren(contentView),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

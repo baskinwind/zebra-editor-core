@@ -6,7 +6,7 @@ import Inline from "./inline";
 import Character from "./character";
 import ComponentFactory from ".";
 import ComponentType from "../const/component-type";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
 
@@ -244,21 +244,21 @@ abstract class ContentCollection extends Collection<Inline> {
     return raw;
   }
 
-  getChildren(contentBuilder: BaseBuilder) {
+  getChildren(contentView: BaseView) {
     let childrenRenderList: any[] = [];
 
     this.fromatChildren().map((each, index) => {
       if (each.type === ComponentType.character) {
         childrenRenderList.push(
-          contentBuilder.buildCharacterList(
+          contentView.buildCharacterList(
             `${this.id}__${index}`,
-            each.inlines.map((each) => each.render(contentBuilder)).join(""),
+            each.inlines.map((each) => each.render(contentView)).join(""),
             each.decorate.getStyle(),
             each.decorate.getData(),
           ),
         );
       } else {
-        childrenRenderList.push(...each.inlines.map((each) => each.render(contentBuilder)));
+        childrenRenderList.push(...each.inlines.map((each) => each.render(contentView)));
       }
     });
 

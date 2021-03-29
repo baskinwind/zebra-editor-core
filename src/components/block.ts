@@ -31,7 +31,14 @@ abstract class Block extends Component {
 
   constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
-    this.$emit("blockCreated", this);
+
+    // 事件必须在下一微任务触发，原因如下：
+    // 事件需要冒泡到 Article 中才有效，而 model 的更改在一次微任务中结束
+    // 可以这么任务只有加入到 Article 中的组件才是有效的组件
+    nextTick(() => {
+      this.$emit("blockCreated", this);
+    });
+
     this.init();
   }
 

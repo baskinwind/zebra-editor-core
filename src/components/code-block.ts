@@ -1,5 +1,5 @@
 import ComponentFactory from ".";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import { IRawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
@@ -63,8 +63,9 @@ class CodeBlock extends PlainText {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildCodeBlock(
+
+  render(contentView: BaseView) {
+    return contentView.buildCodeBlock(
       this.id,
       this.content.join(""),
       this.language,

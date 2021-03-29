@@ -1,7 +1,7 @@
 import ComponentFactory from ".";
 import { OperatorType, IRawType } from "./component";
 import Block, { BlockType, IBlockSnapshoot } from "./block";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { StoreData } from "../decorate/index";
@@ -124,14 +124,14 @@ class Media extends Block {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
+  render(contentView: BaseView) {
     let map = {
       image: "buildeImage",
       audio: "buildeAudio",
       video: "buildeVideo",
     };
 
-    return contentBuilder[map[this.mediaType]](
+    return contentView[map[this.mediaType]](
       this.id,
       this.src,
       this.decorate.getStyle(),

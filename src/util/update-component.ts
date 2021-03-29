@@ -74,10 +74,10 @@ const update = (editor: Editor, component: Component) => {
   }
 
   let inList = component.parent.type === ComponentType.list;
-  let newDom: HTMLElement = component.render(editor.contentBuilder);
+  let newDom: HTMLElement = component.render(editor.contentView);
   if (inList) {
-    newDom = editor.contentBuilder.buildListItem(
-      component.render(editor.contentBuilder),
+    newDom = editor.contentView.buildListItem(
+      component.render(editor.contentView),
       component.structureType,
     );
   }

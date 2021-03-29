@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import Decorate, { StoreData } from "../decorate";
 import Record from "../record";
 import Collection from "./collection";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
@@ -112,7 +112,7 @@ abstract class Component extends Event {
   }
 
   // 渲染该组件
-  render(contentBuilder: BaseBuilder): any {
+  render(contentView: BaseView): any {
     throw createError("请为组件添加 render 函数");
   }
 

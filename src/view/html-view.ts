@@ -1,9 +1,9 @@
-import BaseBuilder, { mapData } from "./base-builder";
+import BaseView, { mapData } from "./base-view";
 import StructureType from "../const/structure-type";
 import { HeaderType } from "../components/header";
 import { ListType } from "../components/list";
 
-class HtmlBuilder extends BaseBuilder<string> {
+class HtmlBuilder extends BaseView<string> {
   formatStyle(styleName: string) {
     return styleName.replace(/([A-Z])/, "-$1").toLocaleLowerCase();
   }

@@ -15,7 +15,9 @@ class ArticleManage {
   init() {
     this.update = true;
     this.editor.article.$on("updateComponent", (componentList: Component[]) => {
-      updateComponent(this.editor, ...componentList);
+      if (this.update) {
+        updateComponent(this.editor, ...componentList);
+      }
     });
   }
 
@@ -47,7 +49,7 @@ class ArticleManage {
     const newArticle = raw ? this.createByRaw(raw) : this.createEmpty();
     this.editor.init(newArticle);
 
-    editorDom.appendChild(newArticle.render(this.editor.contentBuilder));
+    editorDom.appendChild(newArticle.render(this.editor.contentView));
     nextTick(() => {
       document.dispatchEvent(new Event("editorChange"));
     });
@@ -65,7 +67,7 @@ class ArticleManage {
     let editorDom = this.editor.mountedDocument.getElementById("zebra-editor-contain");
     if (!editorDom) return;
     editorDom.innerHTML = "";
-    editorDom.appendChild(this.editor.article.render(this.editor.contentBuilder));
+    editorDom.appendChild(this.editor.article.render(this.editor.contentView));
   }
 }
 

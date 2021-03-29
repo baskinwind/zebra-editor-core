@@ -4,7 +4,7 @@ import Inline from "./inline";
 import Block, { BlockType } from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import BaseBuilder from "../builder/base-builder";
+import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { StoreData } from "../decorate";
 import { ICollectionSnapshoot } from "./collection";
@@ -133,11 +133,11 @@ class Header extends ContentCollection {
     return raw;
   }
 
-  render(contentBuilder: BaseBuilder) {
-    return contentBuilder.buildHeader(
+  render(contentView: BaseView) {
+    return contentView.buildHeader(
       this.id,
       this.headerType,
-      () => this.getChildren(contentBuilder),
+      () => this.getChildren(contentView),
       this.decorate.getStyle(),
       this.decorate.getData(),
     );

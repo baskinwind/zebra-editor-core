@@ -1,8 +1,11 @@
-import Editor from "..";
-import editorStyle from "../../util/editor-style";
-import nextTick from "../../util/next-tick";
-import Article from "../../components/article";
-import StructureType from "../../const/structure-type";
+import Editor from ".";
+import editorStyle from "../util/editor-style";
+import nextTick from "../util/next-tick";
+import Article from "../components/article";
+import StructureType from "../const/structure-type";
+import getSelection from "../selection/get-selection";
+import deleteSelection from "../operator/delete-selection";
+import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 
 // 将组件挂载到某个节点上
 const createEditor = (
@@ -41,7 +44,7 @@ const createEditor = (
     let editorDom = iframe.contentDocument.createElement("div");
     editorDom.id = "zebra-editor-contain";
     editorDom.contentEditable = "true";
-    editorDom.appendChild(article.render(editor.contentBuilder));
+    editorDom.appendChild(article.render(editor.contentView));
     iframe.contentDocument.body.appendChild(editorDom);
 
     // placeholder
@@ -89,6 +92,14 @@ const createEditor = (
       }
     });
 
+    editorDom.addEventListener("cut", (event) => {
+      try {
+        operator.onCut(event);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+
     editorDom.addEventListener("paste", (event) => {
       console.info("仅可复制文本内容");
       try {
@@ -98,25 +109,22 @@ const createEditor = (
       }
     });
 
-    editorDom.addEventListener("cut", (event) => {
-      try {
-        operator.onCut(event);
-      } catch (e) {
-        console.warn(e);
-      }
-    });
-
     editorDom.addEventListener("compositionstart", (event) => {
-      try {
-        operator.onCompositionStart(event as CompositionEvent);
-      } catch (e) {
-        console.warn(e);
+      let selection = getSelection(iframe.contentWindow!);
+      if (!selection.isCollapsed) {
+        deleteSelection(editor, selection.range[0], selection.range[1]);
       }
     });
 
     editorDom.addEventListener("compositionend", (event) => {
       try {
-        operator.onCompositionEnd(event as CompositionEvent);
+        let selection = getSelection(iframe.contentWindow!);
+        let start = {
+          id: selection.range[0].id,
+          offset: selection.range[0].offset - getUtf8TextLengthFromJsOffset(event.data),
+        };
+
+        operator.onInput(event.data, start, event);
       } catch (e) {
         console.warn(e);
       }
@@ -124,7 +132,19 @@ const createEditor = (
 
     editorDom.addEventListener("beforeinput", (event: any) => {
       try {
-        operator.onBeforeInput(event);
+        // 排除已经处理的输入
+        if (
+          event.inputType === "insertCompositionText" ||
+          event.inputType === "deleteContentBackward" ||
+          !event.data
+        ) {
+          return;
+        }
+
+        let selection = getSelection(iframe.contentWindow!);
+        if (!selection.isCollapsed) {
+          deleteSelection(editor, selection.range[0], selection.range[1]);
+        }
       } catch (e) {
         console.warn(e);
       }
@@ -132,7 +152,22 @@ const createEditor = (
 
     editorDom.addEventListener("input", (event: any) => {
       try {
-        operator.onInput(event);
+        // 排除已经处理的输入
+        if (
+          event.inputType === "insertCompositionText" ||
+          event.inputType === "deleteContentBackward" ||
+          !event.data
+        ) {
+          return;
+        }
+
+        let selection = getSelection(iframe.contentWindow!);
+        let start = {
+          id: selection.range[0].id,
+          offset: selection.range[0].offset - getUtf8TextLengthFromJsOffset(event.data),
+        };
+
+        operator.onInput(event.data, start, event);
       } catch (e) {
         console.warn(e);
       }
@@ -163,18 +198,19 @@ const createEditor = (
       }
     });
 
+    // 如果先前有选区控制选中
     editorDom.addEventListener("mousedown", (event) => {
       let focus = iframe.contentDocument?.hasFocus();
       let selection = iframe.contentWindow?.getSelection();
 
       if (!focus && !selection?.isCollapsed && selection?.anchorNode) {
-        let contentEdit = selection.anchorNode.parentElement;
-        while (contentEdit && contentEdit?.contentEditable !== "true") {
-          contentEdit = contentEdit.parentElement;
+        let editedDom = selection.anchorNode.parentElement;
+        while (editedDom && editedDom?.contentEditable !== "true") {
+          editedDom = editedDom.parentElement;
         }
-        if (contentEdit) {
+        if (editedDom) {
           event.preventDefault();
-          contentEdit.focus();
+          editedDom.focus();
         }
       }
     });

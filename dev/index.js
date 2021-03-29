@@ -2,10 +2,8 @@ import "./index.styl";
 import article from "./article";
 import {
   ComponentFactory,
-  ContentBuilder,
-  HtmlBuilder,
-  MarkdownBuilder,
-  StatisticBuilder,
+  DomView,
+  HtmlView,
   Operator,
   exchange,
   modifySelectionDecorate,
@@ -21,7 +19,7 @@ import Editor from "../src/editor";
 const editor = new Editor("root", article, {
   componentFactory: ComponentFactory,
   operator: Operator,
-  contentBuilder: ContentBuilder,
+  contentView: DomView,
 });
 
 window.editor = editor;
@@ -55,13 +53,7 @@ new Vue({
       editor.articleManage.flush();
     },
     logHtml() {
-      console.log(editor.article.render(new HtmlBuilder()));
-    },
-    logMD() {
-      console.log(editor.article.render(new MarkdownBuilder()));
-    },
-    logStatistic() {
-      console.log(editor.article.render(new StatisticBuilder()));
+      console.log(editor.article.render(new HtmlView()));
     },
     logRawData() {
       console.log(JSON.stringify(editor.article.getRaw()));

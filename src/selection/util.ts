@@ -1,6 +1,6 @@
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { getTextLength } from "../util/text-util";
+import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 import { createError } from "../util/handle-error";
 
 export interface Cursor {
@@ -69,7 +69,7 @@ export const getElememtSize = (element?: HTMLElement): number => {
     }
     return size;
   }
-  return getTextLength(element.textContent);
+  return getUtf8TextLengthFromJsOffset(element.textContent);
 };
 
 const findFocusNode = (element: HTMLElement, index: number): [boolean, Node, number] => {

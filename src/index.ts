@@ -2,10 +2,8 @@
 import ComponentFactory, { getDefaultComponentFactory } from "./components";
 
 // 内容生成器
-import ContentBuilder from "./builder/content-builder";
-import MarkdownBuilder from "./builder/markdown-builder";
-import HtmlBuilder from "./builder/html-builder";
-import StatisticBuilder from "./builder/statistic-builder";
+import DomView from "./view/dom-view";
+import HtmlView from "./view/html-view";
 
 // 用户操作处理
 import Operator from "./operator";
@@ -29,10 +27,8 @@ import nextTick from "./util/next-tick";
 export {
   ComponentFactory,
   getDefaultComponentFactory,
-  ContentBuilder,
-  HtmlBuilder,
-  MarkdownBuilder,
-  StatisticBuilder,
+  DomView,
+  HtmlView,
   Operator,
   focusAt,
   getSelection,
