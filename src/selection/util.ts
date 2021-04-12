@@ -51,12 +51,12 @@ export const getContainer = (element?: HTMLElement | null): HTMLElement => {
 // 获取元素的长度，修正图片长度为 0 的错误
 export const getElememtSize = (element?: HTMLElement): number => {
   if (element === undefined) return 0;
+
   if (
     element.nodeName === "IMG" ||
     element.nodeName === "AUDIO" ||
     element.nodeName === "VIDEO" ||
-    element.contentEditable === "false" ||
-    (element.dataset && element.dataset.type === ComponentType.inlineImage)
+    element.contentEditable === "false"
   ) {
     return 1;
   }
@@ -69,12 +69,12 @@ export const getElememtSize = (element?: HTMLElement): number => {
     }
     return size;
   }
+
   return getUtf8TextLengthFromJsOffset(element.textContent);
 };
 
 const findFocusNode = (element: HTMLElement, index: number): [boolean, Node, number] => {
   if (
-    index === 0 ||
     element.nodeName === "IMG" ||
     element.nodeName === "AUDIO" ||
     element.nodeName === "VIDEO" ||
@@ -83,11 +83,13 @@ const findFocusNode = (element: HTMLElement, index: number): [boolean, Node, num
     if (index <= 1) {
       return [true, element, index];
     }
+
     return [false, element, 1];
   }
 
   if (element.children && element.children.length !== 0) {
     let consume = 0;
+
     for (let i = 0; i < element.children.length; i++) {
       let each = element.children[i] as HTMLElement;
       let res = findFocusNode(each, index - consume);
@@ -96,6 +98,7 @@ const findFocusNode = (element: HTMLElement, index: number): [boolean, Node, num
       }
       consume += res[2];
     }
+
     return [false, element, consume];
   }
 
@@ -104,8 +107,7 @@ const findFocusNode = (element: HTMLElement, index: number): [boolean, Node, num
     return [false, element.childNodes[0], charLength];
   }
 
-  // 兼容 p 标签内的 br 标签
-  return [true, element.childNodes.length ? element.childNodes[0] : element, index];
+  return [true, element.childNodes[0], index];
 };
 
 // 将某个组件的某个位置，转换为某个 dom 节点中的某个位置，方便 rang 对象使用
@@ -118,18 +120,14 @@ export const getCursorPosition = (
 } => {
   let dom = contentWindow.document.getElementById(cursor.id);
   if (!dom) throw createError("该节点已失效", undefined, "selection");
+
   if (dom.dataset && dom.dataset.type === ComponentType.media) {
     return {
       node: dom.children[0],
       index: cursor.offset === 0 ? 0 : 1,
     };
   }
-  if (dom.contentEditable === "false") {
-    return {
-      node: dom,
-      index: cursor.offset === 0 ? 0 : 1,
-    };
-  }
+
   let focusInfo = findFocusNode(dom, cursor.offset);
   return {
     node: focusInfo[1],
@@ -158,5 +156,6 @@ export const getOffset = (parent: HTMLElement, wrap: HTMLElement, offset: number
     }
     return size;
   };
+
   return countSize(parent, wrap) + offset;
 };

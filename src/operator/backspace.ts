@@ -18,9 +18,9 @@ const backspace = (
     // 优化段落内删除逻辑，不需要整段更新
     if (event && [StructureType.content, StructureType.plainText].includes(block.structureType)) {
       // 当删除发生在首位时，需要强制更新
-      if (start.offset === 0) {
+      if (start.offset <= 1) {
         event?.preventDefault();
-        let operator = block.remove(-1, 0);
+        let operator = block.remove(start.offset - 1, start.offset);
         return focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
       }
 

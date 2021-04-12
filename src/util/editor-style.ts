@@ -68,6 +68,11 @@ pre {
   background-color: rgba(248, 248, 248, 1);
 }
 
+table {
+  min-width: 100%;
+  border-collapse: collapse
+}
+
 th, td {
   border: 1px solid #ccc;
   min-width: 2em;

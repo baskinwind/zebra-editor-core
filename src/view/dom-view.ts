@@ -68,18 +68,13 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let figure = containDocument.createElement("figure");
-    figure.id = id;
-    figure.dataset.structure = StructureType.structure;
-    figure.dataset.wrap = "true";
-    figure.contentEditable = "false";
     const table = containDocument.createElement("table");
-    table.style.minWidth = "100%";
-    table.style.borderCollapse = "collapse";
+    table.id = id;
+    table.dataset.structure = StructureType.structure;
+    table.contentEditable = "false";
     getChildren().forEach((each) => table.appendChild(each));
-    figure.appendChild(table);
-    this.addStyle(figure, style, data);
-    return figure;
+    this.addStyle(table, style, data);
+    return table;
   }
 
   buildTableRow(
@@ -168,7 +163,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
       });
     } else {
       parapraph.classList.add(`zebra-editor-empty`);
-      parapraph.appendChild(containDocument.createElement("br"));
+      parapraph.appendChild(containDocument.createTextNode("\u200b"));
     }
     this.addStyle(parapraph, style, data);
     return parapraph;
@@ -194,7 +189,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
       });
     } else {
       header.classList.add(`zebra-editor-empty`);
-      header.appendChild(containDocument.createElement("br"));
+      header.appendChild(containDocument.createTextNode("\u200b"));
     }
     this.addStyle(header, style, data);
     return header;
@@ -208,23 +203,17 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    // FIXED: Chrome 下，如果代码块的下一个内容块不是 p 标签时，
-    // 下一行在首字母进行中文输入后按下删除键，那一行会被删除，
-    // 这个行为阻止不了，但在代码块外加上 p 标签即可修复这个问题。
-    // magic code
-    let wrap = containDocument.createElement("p");
-    wrap.classList.add("zebra-editor-warp-fixed", "zebra-editor-code-block");
-    wrap.id = id;
-    wrap.dataset.type = ComponentType.codeBlock;
-    wrap.dataset.structure = StructureType.plainText;
     let pre = containDocument.createElement("pre");
-    wrap.appendChild(pre);
+    pre.classList.add("zebra-editor-warp-fixed", "zebra-editor-code-block");
+    pre.id = id;
+    pre.dataset.type = ComponentType.codeBlock;
+    pre.dataset.structure = StructureType.plainText;
     const code = containDocument.createElement("code");
     code.textContent = content;
     pre.appendChild(code);
     pre.dataset.language = language;
     this.addStyle(pre, style, data);
-    return wrap;
+    return pre;
   }
 
   buildeImage(id: string, src: string, style: mapData, data: mapData): HTMLElement {
@@ -235,6 +224,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     figure.dataset.src = src;
+    figure.contentEditable = "false";
     let child;
     let image = containDocument.createElement("img");
     image.src = src;
@@ -266,6 +256,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     figure.classList.add("zebra-editor-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
+    figure.contentEditable = "false";
     let audio = containDocument.createElement("audio");
     audio.src = src;
     figure.appendChild(audio);
@@ -280,6 +271,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     figure.classList.add("zebra-editor-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
+    figure.contentEditable = "false";
     let video = containDocument.createElement("video");
     video.src = src;
     figure.appendChild(video);

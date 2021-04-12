@@ -109,7 +109,7 @@ const update = (editor: Editor, component: Component) => {
 
     // 未找到父组件对应的元素时，更新父组件
     if (!parentDom) {
-      update(editor, parentComponent);
+      // update(editor, parentComponent);
       return;
     }
 

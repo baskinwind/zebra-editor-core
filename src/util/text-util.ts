@@ -11,5 +11,5 @@ export const getUtf8TextLengthFromJsOffset = (
   offset?: number,
 ): number => {
   if (!text) return 0;
-  return [...text.substr(0, offset)].length;
+  return [...text.substr(0, offset)].filter((each) => each.charCodeAt(0) !== 8203).length;
 };
