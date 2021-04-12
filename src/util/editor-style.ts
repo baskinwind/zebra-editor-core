@@ -20,9 +20,7 @@ article {
 }
 
 #zebra-editor-contain {
-  height: 100%;
   white-space: pre-wrap;
-  overflow: auto;
 }
 
 /** loading 态的图片显示效果 */

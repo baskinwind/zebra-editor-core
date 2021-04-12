@@ -16,7 +16,7 @@ const getWrapDom = (containDocument: Document, id: string): HTMLElement | null =
 
 const getParentDom = (containDocument: Document, id: string): HTMLElement | null => {
   let element = containDocument.getElementById(id);
-  if (element?.dataset.wrap) {
+  if (element?.dataset.type === "table") {
     return element!.children[0] as HTMLElement;
   }
   return element;
@@ -107,9 +107,8 @@ const update = (editor: Editor, component: Component) => {
     let parentComponent = component.parent;
     let parentDom = getParentDom(containDocument, parentComponent.id);
 
-    // 未找到父组件对应的元素时，更新父组件
+    // 未找到父组件对应的元素时，由父组件控制
     if (!parentDom) {
-      // update(editor, parentComponent);
       return;
     }
 

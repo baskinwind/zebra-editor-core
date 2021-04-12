@@ -68,13 +68,19 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
+    let figure = containDocument.createElement("figure");
+    figure.id = id;
+    figure.classList.add("zebra-editor-table");
+    figure.dataset.type = ComponentType.table;
+    figure.dataset.structure = StructureType.structure;
+    figure.contentEditable = "false";
     const table = containDocument.createElement("table");
     table.id = id;
     table.dataset.structure = StructureType.structure;
-    table.contentEditable = "false";
     getChildren().forEach((each) => table.appendChild(each));
-    this.addStyle(table, style, data);
-    return table;
+    figure.appendChild(table);
+    this.addStyle(figure, style, data);
+    return figure;
   }
 
   buildTableRow(
@@ -121,7 +127,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     let list = containDocument.createElement(tag);
     list.id = id;
     list.classList.add("zebra-editor-list");
-    list.dataset.type = ComponentType.article;
+    list.dataset.type = ComponentType.list;
     list.dataset.structure = StructureType.structure;
     getChildren().forEach((component) => {
       list?.appendChild(component);
