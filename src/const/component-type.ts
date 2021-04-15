@@ -4,7 +4,7 @@ enum ComponentType {
   media = "MEDIA",
   codeBlock = "CODEBLOCK",
   paragraph = "PARAGRAPH",
-  header = "HEADER",
+  heading = "HEADING",
   list = "LIST",
   table = "TABLE",
   tableRow = "TABLEROW",

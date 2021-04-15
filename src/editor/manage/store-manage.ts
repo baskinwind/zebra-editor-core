@@ -19,13 +19,6 @@ class StoreManage {
     this.editor.article.$on("blockCreated", (block: Block) => {
       this.blockStore[block.id] = block;
     });
-    this.editor.article.$on("blockDestoryed", (block: Block) => {
-      block.editor = undefined;
-    });
-  }
-
-  saveBlock(block: Block) {
-    this.blockStore[block.id] = block;
   }
 
   getBlockById(id: string): Block {

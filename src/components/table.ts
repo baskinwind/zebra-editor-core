@@ -133,9 +133,6 @@ class Table extends StructureCollection<TableRow> {
     super.restore(state);
   }
 
-
-
-  
   render(contentView: BaseView) {
     return contentView.buildTable(
       this.id,

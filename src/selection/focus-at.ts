@@ -4,42 +4,40 @@ import { getJsTextLengthFromUtf8Offset } from "../util/text-util";
 
 // 选中 start 到 end 的内容
 const focusAt = (contentWindow: Window, start: Cursor, end?: Cursor) => {
-  try {
-    // id 为空字符，说明刚初始化，不进行 focus
-    if (start.id === "") return;
-    if (!end) {
-      end = { id: start.id, offset: start.offset };
-    }
+  nextTick(() => {
+    try {
+      // id 为空字符，说明刚初始化，不进行 focus
+      if (start.id === "") return;
+      if (!end) {
+        end = { id: start.id, offset: start.offset };
+      }
 
-    let block = contentWindow.document.getElementById(start.id);
-    if (!block) return;
+      let block = contentWindow.document.getElementById(start.id);
+      if (!block) return;
 
-    // 让 focus 的节点移入视口内
-    nextTick(() => {
-      // @ts-ignore
       block?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
       });
-    });
 
-    start.offset = start.offset === -1 ? 0 : start.offset;
-    end.offset = end.offset === -1 ? 0 : end.offset;
-    let startPosition = getCursorPosition(contentWindow, start);
-    if (!startPosition) return;
-    let endPosition = startPosition;
-    if (end) {
-      let temp = getCursorPosition(contentWindow, end);
-      if (temp) {
-        endPosition = temp;
+      start.offset = start.offset === -1 ? 0 : start.offset;
+      end.offset = end.offset === -1 ? 0 : end.offset;
+      let startPosition = getCursorPosition(contentWindow, start);
+      if (!startPosition) return;
+      let endPosition = startPosition;
+      if (end) {
+        let temp = getCursorPosition(contentWindow, end);
+        if (temp) {
+          endPosition = temp;
+        }
       }
+      focusNode(contentWindow, startPosition, endPosition);
+    } catch (e) {
+      console.warn(e);
+      let rootDom = contentWindow.document.getElementById("zebra-editor-contain");
+      rootDom?.blur();
     }
-    focusNode(contentWindow, startPosition, endPosition);
-  } catch (e) {
-    console.warn(e);
-    let rootDom = contentWindow.document.getElementById("zebra-editor-contain");
-    rootDom?.blur();
-  }
+  });
 };
 
 type FocusNodeType = {

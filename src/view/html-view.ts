@@ -1,6 +1,6 @@
 import BaseView, { mapData } from "./base-view";
 import StructureType from "../const/structure-type";
-import { HeaderType } from "../components/header";
+import { HeadingType } from "../components/heading";
 import { ListType } from "../components/list";
 
 class HtmlBuilder extends BaseView<string> {
@@ -40,7 +40,7 @@ class HtmlBuilder extends BaseView<string> {
     return this.buildHtml("article", "zebra-editor-article", style, getChildren().join(""));
   }
 
-  buildCustomerCollection(
+  buildCustomCollection(
     id: string,
     tag: string,
     getChildren: () => string[],
@@ -105,9 +105,9 @@ class HtmlBuilder extends BaseView<string> {
     );
   }
 
-  buildHeader(
+  buildHeading(
     id: string,
-    type: HeaderType,
+    type: HeadingType,
     getChildren: () => string[],
     style: mapData,
     data: mapData,

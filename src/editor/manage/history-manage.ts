@@ -42,14 +42,11 @@ class HistoryManage {
       each.record.store(this.nowStackIndex);
     });
 
-    this.editor.article.$on("blockCreated", (component: Component) => {
-      this.recordSnapshoot(component);
-    });
     this.editor.article.$on("componentWillChange", () => {
       this.createRecord();
     });
+
     this.editor.article.$on("updateComponent", (componentList: Component[]) => {
-      this.createRecord();
       componentList.forEach((each) => this.recordSnapshoot(each));
     });
   }

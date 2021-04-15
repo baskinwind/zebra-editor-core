@@ -3,13 +3,13 @@ import { StoreData } from "../decorate";
 import Article from "./article";
 import List, { ListType } from "./list";
 import Table from "./table";
-import Header, { HeaderType } from "./header";
+import Heading, { HeadingType } from "./heading";
 import Paragraph from "./paragraph";
 import Media, { mediaType } from "./media";
 import CodeBlock from "./code-block";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
-import CustomerCollection from "./customer-collection";
+import CustomCollection from "./custom-collection";
 
 class ComponentFactory {
   static bulider: ComponentFactory;
@@ -30,26 +30,30 @@ class ComponentFactory {
       [ComponentType.article]: Article,
       [ComponentType.list]: List,
       [ComponentType.table]: Table,
-      [ComponentType.header]: Header,
+      [ComponentType.heading]: Heading,
       [ComponentType.paragraph]: Paragraph,
       [ComponentType.media]: Media,
       [ComponentType.codeBlock]: CodeBlock,
       [ComponentType.inlineImage]: InlineImage,
-      [ComponentType.customerCollection]: CustomerCollection,
+      [ComponentType.customerCollection]: CustomCollection,
     };
   }
 
   buildArticle(style: StoreData = {}, data: StoreData = {}) {
-    return new Article(style, data);
+    let article = new Article(style, data);
+    article.setEditor(this.editor);
+    return article;
   }
 
-  buildCustomerCollection(
+  buildCustomCollection(
     tag: string = "div",
     children: string[] = [],
     style: StoreData = {},
     data: StoreData = {},
   ) {
-    return new CustomerCollection(tag, children, style, data);
+    let customCollection = new CustomCollection(tag, children, style, data);
+    customCollection.setEditor(this.editor);
+    return customCollection;
   }
 
   buildList(
@@ -58,7 +62,9 @@ class ComponentFactory {
     style: StoreData = {},
     data: StoreData = {},
   ) {
-    return new List(type, children, style, data);
+    let list = new List(type, children, style, data);
+    list.setEditor(this.editor);
+    return list;
   }
 
   buildTable(
@@ -69,19 +75,27 @@ class ComponentFactory {
     style: StoreData = {},
     data: StoreData = {},
   ) {
-    return new Table(row, col, head, children, style, data);
+    let table = new Table(row, col, head, children, style, data);
+    table.setEditor(this.editor);
+    return table;
   }
 
-  buildHeader(type: HeaderType, text?: string, style: StoreData = {}, data: StoreData = {}) {
-    return new Header(type, text, style, data);
+  buildHeading(type: HeadingType, text?: string, style: StoreData = {}, data: StoreData = {}) {
+    let heading = new Heading(type, text, style, data);
+    heading.setEditor(this.editor);
+    return heading;
   }
 
   buildParagraph(text?: string, style: StoreData = {}, data: StoreData = {}) {
-    return new Paragraph(text, style, data);
+    let paragraph = new Paragraph(text, style, data);
+    paragraph.setEditor(this.editor);
+    return paragraph;
   }
 
   buildMedia(mediaType: mediaType, src: string, style: StoreData = {}, data: StoreData = {}) {
-    return new Media(mediaType, src, style, data);
+    let media = new Media(mediaType, src, style, data);
+    media.setEditor(this.editor);
+    return media;
   }
 
   buildCode(
@@ -90,11 +104,14 @@ class ComponentFactory {
     style: StoreData = {},
     data: StoreData = {},
   ) {
-    return new CodeBlock(content, language, style, data);
+    let code = new CodeBlock(content, language, style, data);
+    code.setEditor(this.editor);
+    return code;
   }
 
   buildInlineImage(src: string, style: StoreData = {}, data: StoreData = {}) {
-    return new InlineImage(src, style, data);
+    let image = new InlineImage(src, style, data);
+    return image;
   }
 }
 

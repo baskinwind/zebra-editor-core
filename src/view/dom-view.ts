@@ -2,7 +2,7 @@ import BaseView, { mapData } from "./base-view";
 import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { HeaderType } from "../components/header";
+import { HeadingType } from "../components/heading";
 import { ListType } from "../components/list";
 
 class ContentBuilder extends BaseView<HTMLElement> {
@@ -29,7 +29,12 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let article = containDocument.createElement("article");
+    let article = containDocument.getElementById(id);
+    if (article) {
+      this.addStyle(article, style, data);
+      return article;
+    }
+    article = containDocument.createElement("article");
     article.id = id;
     article.classList.add("zebra-editor-article");
     article.dataset.type = ComponentType.article;
@@ -41,7 +46,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return article;
   }
 
-  buildCustomerCollection(
+  buildCustomCollection(
     id: string,
     tag: string,
     getChildren: () => HTMLElement[],
@@ -49,7 +54,12 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let collection = containDocument.createElement(tag);
+    let collection = containDocument.getElementById(id);
+    if (collection) {
+      this.addStyle(collection, style, data);
+      return collection;
+    }
+    collection = containDocument.createElement(tag);
     collection.id = id;
     collection.classList.add("zebra-editor-customer");
     collection.dataset.type = ComponentType.customerCollection;
@@ -68,15 +78,18 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let figure = containDocument.createElement("figure");
+    let figure = containDocument.getElementById(id);
+    if (figure) {
+      this.addStyle(figure, style, data);
+      return figure;
+    }
+    figure = containDocument.createElement("figure");
     figure.id = id;
     figure.classList.add("zebra-editor-table");
     figure.dataset.type = ComponentType.table;
     figure.dataset.structure = StructureType.structure;
     figure.contentEditable = "false";
     const table = containDocument.createElement("table");
-    table.id = id;
-    table.dataset.structure = StructureType.structure;
     getChildren().forEach((each) => table.appendChild(each));
     figure.appendChild(table);
     this.addStyle(figure, style, data);
@@ -90,7 +103,12 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let tr = containDocument.createElement("tr");
+    let tr = containDocument.getElementById(id);
+    if (tr) {
+      this.addStyle(tr, style, data);
+      return tr;
+    }
+    tr = containDocument.createElement("tr");
     tr.id = id;
     tr.dataset.structure = StructureType.structure;
     getChildren().forEach((each) => tr?.appendChild(each));
@@ -106,7 +124,12 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let cell = containDocument.createElement(cellType);
+    let cell = containDocument.getElementById(id);
+    if (cell) {
+      this.addStyle(cell, style, data);
+      return cell;
+    }
+    cell = containDocument.createElement(cellType);
     cell.id = id;
     cell.dataset.structure = StructureType.structure;
     cell.contentEditable = "true";
@@ -123,8 +146,13 @@ class ContentBuilder extends BaseView<HTMLElement> {
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
+    let list = containDocument.getElementById(id);
+    if (list) {
+      this.addStyle(list, style, data);
+      return list;
+    }
     let tag: string = listType;
-    let list = containDocument.createElement(tag);
+    list = containDocument.createElement(tag);
     list.id = id;
     list.classList.add("zebra-editor-list");
     list.dataset.type = ComponentType.list;
@@ -175,30 +203,30 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return parapraph;
   }
 
-  buildHeader(
+  buildHeading(
     id: string,
-    type: HeaderType,
+    type: HeadingType,
     getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
-    let header = containDocument.createElement(type);
-    header.id = id;
-    header.classList.add(`zebra-editor-${type}`);
-    header.dataset.type = ComponentType.header;
-    header.dataset.structure = StructureType.content;
+    let heading = containDocument.createElement(type);
+    heading.id = id;
+    heading.classList.add(`zebra-editor-${type}`);
+    heading.dataset.type = ComponentType.heading;
+    heading.dataset.structure = StructureType.content;
     let children = getChildren();
     if (children.length) {
       children.forEach((component) => {
-        header?.appendChild(component);
+        heading?.appendChild(component);
       });
     } else {
-      header.classList.add(`zebra-editor-empty`);
-      header.appendChild(containDocument.createTextNode("\u200b"));
+      heading.classList.add(`zebra-editor-empty`);
+      heading.appendChild(containDocument.createTextNode("\u200b"));
     }
-    this.addStyle(header, style, data);
-    return header;
+    this.addStyle(heading, style, data);
+    return heading;
   }
 
   buildCodeBlock(

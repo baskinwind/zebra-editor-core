@@ -27,17 +27,17 @@ let pledgeCn = [
   "我将生命与荣耀献给守夜人，今夜如此，夜夜皆然。",
 ];
 
-factory.buildHeader("h1", "A Song of Ice and Fire").addInto(article);
-factory.buildHeader("h2", "冰与火之歌").addInto(article);
+factory.buildHeading("h1", "A Song of Ice and Fire").addInto(article);
+factory.buildHeading("h2", "冰与火之歌").addInto(article);
 
-factory.buildHeader("h3", "图片").addInto(article);
+factory.buildHeading("h3", "图片").addInto(article);
 
 factory.buildMedia("image", "https://zebrastudio.tech/img/demo/img-1.jpg").addInto(article);
 
-factory.buildHeader("h3", "代码块").addInto(article);
+factory.buildHeading("h3", "代码块").addInto(article);
 factory.buildCode(`document.body.innerHTML = greeter(user);`, "javascript").addInto(article);
 
-factory.buildHeader("h3", "列表").addInto(article);
+factory.buildHeading("h3", "列表").addInto(article);
 factory
   .buildList("ol", ["权力的游戏", "列王的纷争", "冰雨的风暴", "群鸦的盛宴", "魔龙的狂舞"])
   .addInto(article);
@@ -46,7 +46,7 @@ factory
   .buildList("ul", ["琼恩·雪诺", "丹妮莉丝·坦格利安", "艾莉亚·史塔克", "提利昂·兰尼斯特"])
   .addInto(article);
 
-factory.buildHeader("h3", "段落").addInto(article);
+factory.buildHeading("h3", "段落").addInto(article);
 pledge.forEach((item) => {
   factory.buildParagraph(item).addInto(article);
 });
@@ -55,7 +55,7 @@ pledgeCn.forEach((item) => {
   factory.buildParagraph(item).addInto(article);
 });
 
-factory.buildHeader("h3", "图文混排").addInto(article);
+factory.buildHeading("h3", "图文混排").addInto(article);
 
 let para = factory.buildParagraph("");
 factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-1.png").addInto(para);
@@ -65,7 +65,7 @@ para.addText(" 凡人皆有一死 ");
 factory.buildInlineImage("https://zebrastudio.tech/img/demo/emoji-3.png").addInto(para);
 para.addInto(article);
 
-factory.buildHeader("h3", "表格").addInto(article);
+factory.buildHeading("h3", "表格").addInto(article);
 factory
   .buildTable(
     3,

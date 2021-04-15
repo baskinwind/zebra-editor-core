@@ -10,6 +10,7 @@ import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
 import { Cursor } from "../selection/util";
 import nextTick from "../util/next-tick";
+import Editor from "../editor";
 
 export type OperatorType = [Cursor?, Cursor?] | undefined;
 
@@ -25,8 +26,8 @@ export interface IRawType {
   src?: string;
   // for Media
   mediaType?: string;
-  // fro Header
-  headerType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  // fro Heading
+  headingType?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   // for List
   listType?: "ul" | "ol";
   // for TableRow

@@ -32,9 +32,9 @@ abstract class Block extends Component {
   constructor(style?: StoreData, data?: StoreData) {
     super(style, data);
 
-    // 事件必须在下一微任务触发，原因如下：
-    // 事件需要冒泡到 Article 中才有效，而 model 的更改在一次微任务中结束
-    // 可以这么任务只有加入到 Article 中的组件才是有效的组件
+    // 事件需在下一微任务触发，原因如下：
+    // 事件冒泡到 Article 中才有效，而 model 的更改是一次同步任务
+    // 只有加入到 Article 中的组件才是有效的组件，但组件创建之后，并不需要一定加入到 article 中
     nextTick(() => {
       this.$emit("blockCreated", this);
     });
@@ -123,11 +123,12 @@ abstract class Block extends Component {
 
   destory() {
     this.active = false;
-    nextTick(() => {
-      this.$emit("blockDestoryed", this);
-      this.parent = undefined;
-      super.destory();
-    });
+    this.parent = undefined;
+    super.destory();
+  }
+
+  setEditor(editor?: Editor) {
+    this.editor = editor;
   }
 
   // 判断该组件是否为空，为空并不代表无效

@@ -1,7 +1,7 @@
 enum StructureType {
   // 结构组件，比如 List Table TableRow 等
   structure = "STRUCTURE",
-  // 内容组件，比如 Paragraph Header 等
+  // 内容组件，比如 Paragraph Heading 等
   content = "CONTENT",
   // 多媒体组件
   media = "MEDIA",

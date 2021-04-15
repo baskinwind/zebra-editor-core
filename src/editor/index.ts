@@ -6,6 +6,7 @@ import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
 import createEditor from "./create-editor";
+import Event from "./event";
 
 export interface EditorOption {
   placeholder?: string;
@@ -17,7 +18,7 @@ export interface EditorOption {
   afterCreate?: (document: Document, window: Window | null) => void;
 }
 
-class Editor {
+class Editor extends Event {
   mountedElement: HTMLElement;
   article!: Article;
   placeholder: string;
@@ -34,6 +35,7 @@ class Editor {
   articleManage: ArticleManage;
 
   constructor(idOrElement: string | HTMLElement, article: Article, option: EditorOption) {
+    super();
     if (typeof idOrElement === "string") {
       let dom = document.getElementById(idOrElement);
       if (!dom) {
@@ -44,7 +46,7 @@ class Editor {
       this.mountedElement = idOrElement;
     }
 
-    article.editor = this;
+    article.setEditor(this);
     this.article = article;
     this.placeholder = option.placeholder || "";
 

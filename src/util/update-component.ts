@@ -16,7 +16,7 @@ const getWrapDom = (containDocument: Document, id: string): HTMLElement | null =
 
 const getParentDom = (containDocument: Document, id: string): HTMLElement | null => {
   let element = containDocument.getElementById(id);
-  if (element?.dataset.type === "table") {
+  if (element?.dataset.type === ComponentType.table) {
     return element!.children[0] as HTMLElement;
   }
   return element;
@@ -82,6 +82,10 @@ const update = (editor: Editor, component: Component) => {
     );
   }
 
+  if (oldDom === newDom) {
+    return;
+  }
+
   if (component instanceof Inline) {
     if (oldDom) {
       oldDom.replaceWith(newDom);
@@ -92,9 +96,6 @@ const update = (editor: Editor, component: Component) => {
   }
 
   if (component instanceof Block) {
-    // 若结构组件的 DOM 元素已经存在则不需要更新
-    if (component.active && component.structureType === StructureType.structure && oldDom) return;
-
     if (oldDom) {
       if (component.active) {
         oldDom?.replaceWith(newDom);
