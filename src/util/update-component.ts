@@ -45,7 +45,9 @@ let inLoop = false;
 const updateComponent = (editor: Editor, ...componentList: Component[]) => {
   if (!editor.mountedDocument) return;
 
-  componentList.forEach((each) => update(editor, each));
+  componentList
+    .sort((each) => (each.structureType === StructureType.structure ? -1 : 1))
+    .forEach((each) => update(editor, each));
 
   handleRecallQueue(editor);
 

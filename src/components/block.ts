@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import Editor from "../editor";
 import ComponentFactory, { getDefaultComponentFactory } from ".";
 import Component, { OperatorType, IRawType, ISnapshoot } from "./component";
@@ -139,6 +140,16 @@ abstract class Block extends Component {
   // 创建一个空的当前组件
   createEmpty(): Block {
     throw createError("组件未实现 createEmpty 方法", this);
+  }
+
+  clone(): Block {
+    let newBlock = { ...this };
+    Object.setPrototypeOf(newBlock, Object.getPrototypeOf(this));
+    newBlock.id = uuidv4();
+    nextTick(() => {
+      newBlock.$emit("blockCreated", newBlock);
+    });
+    return newBlock;
   }
 
   // 获取父节点

@@ -59,14 +59,13 @@ const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
   let idList = getSelectedIdList(editor.article, start.id, end.id);
   let newStartId: string = "";
   let newEndId: string = "";
-  console.log(idList);
 
   idList.forEach((each, index) => {
     let block = editor.storeManage.getBlockById(each);
     if (isOutdent) {
-      outdent(editor, block);
+      block = outdent(editor, block);
     } else {
-      indent(editor, block);
+      block = indent(editor, block);
     }
     if (index === 0) {
       newStartId = block.id;
