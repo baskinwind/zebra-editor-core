@@ -42,7 +42,7 @@ class HistoryManage {
       each.record.store(this.nowStackIndex);
     });
 
-    this.editor.article.$on("componentWillChange", () => {
+    this.editor.article.$on("willChange", () => {
       this.createRecord();
     });
 

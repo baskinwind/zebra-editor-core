@@ -4,6 +4,7 @@ import focusAt from "./focus-at";
 import { getSelectedIdList } from "./get-selected-id-list";
 import Block from "../components/block";
 import ComponentType from "../const/component-type";
+import { ListEnum } from "../components/list";
 
 const indent = (editor: Editor, block: Block) => {
   while (
@@ -25,7 +26,7 @@ const indent = (editor: Editor, block: Block) => {
     block.removeSelf();
     next.add(0, block);
   } else {
-    let newList = editor.componentFactory.buildList("ol");
+    let newList = editor.componentFactory.buildList(ListEnum.ul);
     block.replaceSelf(newList);
     newList.add(0, block);
   }

@@ -1,23 +1,27 @@
 import ComponentFactory from ".";
-import { OperatorType, IRawType } from "./component";
-import { ICollectionSnapshoot } from "./collection";
+import { OperatorType, RawType } from "./component";
+import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import ComponentType from "../const/component-type";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 import BaseView from "../view/base-view";
 
-export type ListType = "ol" | "ul";
-export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
-  listType: ListType;
+export enum ListEnum {
+  ol = "ol",
+  ul = "ul",
+}
+
+export interface ListSnapshoot extends CollectionSnapshoot<Block> {
+  listType: ListEnum;
 }
 
 class List extends StructureCollection<Block> {
   type = ComponentType.list;
-  listType: ListType;
+  listType: ListEnum;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): List {
-    let children = (raw.children || []).map((each: IRawType) =>
+  static create(componentFactory: ComponentFactory, raw: RawType): List {
+    let children = (raw.children || []).map((each: RawType) =>
       componentFactory.typeMap[each.type].create(each),
     );
 
@@ -50,15 +54,20 @@ class List extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(type: ListType = "ul", children: string[] = [], style?: StoreData, data?: StoreData) {
+  constructor(
+    type: ListEnum = ListEnum.ul,
+    children: string[] = [],
+    style?: AnyObject,
+    data?: AnyObject,
+  ) {
     super(style, data);
     this.listType = type;
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
 
-  setListType(type: ListType = "ol") {
+  setListType(type: ListEnum = ListEnum.ul) {
     if (type === this.listType) return;
-    this.componentWillChange();
+    this.willChange();
     this.listType = type;
     this.updateComponent([this]);
   }
@@ -118,13 +127,13 @@ class List extends StructureCollection<Block> {
     }
   }
 
-  snapshoot(): IListSnapshoot {
-    let snap = super.snapshoot() as IListSnapshoot;
+  snapshoot(): ListSnapshoot {
+    let snap = super.snapshoot() as ListSnapshoot;
     snap.listType = this.listType;
     return snap;
   }
 
-  restore(state: IListSnapshoot) {
+  restore(state: ListSnapshoot) {
     this.listType = state.listType;
     super.restore(state);
   }
@@ -142,7 +151,7 @@ class List extends StructureCollection<Block> {
     return `${this.type}>${this.listType}`;
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.listType = this.listType;
     return raw;

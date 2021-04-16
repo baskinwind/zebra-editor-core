@@ -1,14 +1,14 @@
 import Editor from "../editor";
 import getSelection from "./get-selection";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 import focusAt from "./focus-at";
 import { getSelectedIdList } from "./get-selected-id-list";
 
 // 修改选中组件的样式
 const modifyDecorate = (
   editor: Editor,
-  style?: StoreData,
-  data?: StoreData,
+  style?: AnyObject,
+  data?: AnyObject,
   focus: boolean = true,
 ) => {
   let selection = getSelection(editor.mountedWindow);

@@ -1,9 +1,9 @@
 import { List } from "immutable";
 import Component from "./component";
-import Block, { IBlockSnapshoot } from "./block";
+import Block, { BlockSnapshoot } from "./block";
 import { createError } from "../util/handle-error";
 
-export interface ICollectionSnapshoot<T> extends IBlockSnapshoot {
+export interface CollectionSnapshoot<T> extends BlockSnapshoot {
   children: List<T>;
 }
 
@@ -43,13 +43,13 @@ abstract class Collection<T extends Component> extends Block {
     return removedComponent;
   }
 
-  snapshoot(): ICollectionSnapshoot<T> {
-    let snap = super.snapshoot() as ICollectionSnapshoot<T>;
+  snapshoot(): CollectionSnapshoot<T> {
+    let snap = super.snapshoot() as CollectionSnapshoot<T>;
     snap.children = this.children;
     return snap;
   }
 
-  restore(state: ICollectionSnapshoot<T>) {
+  restore(state: CollectionSnapshoot<T>) {
     this.children = state.children;
     super.restore(state);
   }

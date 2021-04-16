@@ -1,8 +1,8 @@
-import Component, { ISnapshoot } from "../components/component";
+import Component, { Snapshoot } from "../components/component";
 
 class Record {
   component: Component;
-  recordMap: ISnapshoot[] = [];
+  recordMap: Snapshoot[] = [];
 
   constructor(component: Component) {
     this.component = component;

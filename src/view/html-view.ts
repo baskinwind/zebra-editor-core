@@ -1,7 +1,7 @@
 import BaseView, { mapData } from "./base-view";
 import StructureType from "../const/structure-type";
-import { HeadingType } from "../components/heading";
-import { ListType } from "../components/list";
+import { HeadingEnum } from "../components/heading";
+import { ListEnum } from "../components/list";
 
 class HtmlBuilder extends BaseView<string> {
   formatStyle(styleName: string) {
@@ -79,7 +79,7 @@ class HtmlBuilder extends BaseView<string> {
 
   buildList(
     id: string,
-    listType: ListType,
+    listType: ListEnum,
     getChildren: () => string[],
     style: mapData,
     data: mapData,
@@ -107,7 +107,7 @@ class HtmlBuilder extends BaseView<string> {
 
   buildHeading(
     id: string,
-    type: HeadingType,
+    type: HeadingEnum,
     getChildren: () => string[],
     style: mapData,
     data: mapData,

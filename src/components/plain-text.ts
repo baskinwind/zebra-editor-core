@@ -1,15 +1,15 @@
 import ComponentFactory from ".";
-import Component, { OperatorType, IRawType } from "./component";
-import Block, { IBlockSnapshoot } from "./block";
+import Component, { OperatorType, RawType } from "./component";
+import Block, { BlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 import { createError } from "../util/handle-error";
 import Character from "./character";
 import ComponentType from "../const/component-type";
 import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 
-export interface IPlainTextSnapshoot extends IBlockSnapshoot {
+export interface PlainTextSnapshoot extends BlockSnapshoot {
   content: string;
 }
 
@@ -17,7 +17,7 @@ abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
 
-  constructor(content: string = "", style: StoreData = {}, data: StoreData = {}) {
+  constructor(content: string = "", style: AnyObject = {}, data: AnyObject = {}) {
     super(style, data);
     // 纯文本最后必须有一个换行，js 中 emoji 的长度识别有问题
     this.content = [...content];
@@ -32,7 +32,7 @@ abstract class PlainText extends Block {
     }
 
     index = index === undefined ? this.content.length : index;
-    this.componentWillChange();
+    this.willChange();
     this.content.splice(index, 0, ...string);
     this.updateComponent([this]);
 
@@ -40,7 +40,7 @@ abstract class PlainText extends Block {
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
-    this.componentWillChange();
+    this.willChange();
     // 首位删除变成段落
     if (start < 0 && end === 0) {
       let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph], []);
@@ -81,13 +81,13 @@ abstract class PlainText extends Block {
     return [{ id: this.id, offset: size }];
   }
 
-  snapshoot(): IPlainTextSnapshoot {
-    let snap = super.snapshoot() as IPlainTextSnapshoot;
+  snapshoot(): PlainTextSnapshoot {
+    let snap = super.snapshoot() as PlainTextSnapshoot;
     snap.content = this.content.join("");
     return snap;
   }
 
-  restore(state: IPlainTextSnapshoot) {
+  restore(state: PlainTextSnapshoot) {
     this.content = [...state.content];
     super.restore(state);
   }
@@ -96,7 +96,7 @@ abstract class PlainText extends Block {
     return this.content.length - 1;
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.content = this.content.join("");
     return raw;

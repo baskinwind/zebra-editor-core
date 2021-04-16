@@ -1,6 +1,6 @@
 import Editor from "..";
 import nextTick from "../../util/next-tick";
-import Component, { IRawType } from "../../components/component";
+import Component, { RawType } from "../../components/component";
 import updateComponent from "../../util/update-component";
 
 class ArticleManage {
@@ -35,12 +35,12 @@ class ArticleManage {
     return article;
   }
 
-  createByRaw(raw: IRawType) {
+  createByRaw(raw: RawType) {
     if (!raw.type) return this.createEmpty();
     return this.editor.componentFactory.typeMap[raw.type].create(this.editor.componentFactory, raw);
   }
 
-  newArticle(raw?: IRawType) {
+  newArticle(raw?: RawType) {
     let editorDom = this.editor.mountedDocument.getElementById("zebra-editor-contain");
     if (!editorDom) return;
     editorDom.innerHTML = "";

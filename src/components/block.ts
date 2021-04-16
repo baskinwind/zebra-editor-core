@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import Editor from "../editor";
 import ComponentFactory, { getDefaultComponentFactory } from ".";
-import Component, { OperatorType, IRawType, ISnapshoot } from "./component";
+import Component, { OperatorType, RawType, Snapshoot } from "./component";
 import StructureCollection from "./structure-collection";
 import nextTick from "../util/next-tick";
-import { StoreData } from "../decorate/index";
+import { AnyObject } from "../decorate/index";
 import { createError } from "../util/handle-error";
 
 export type BlockType = typeof Block;
-export interface IBlockSnapshoot extends ISnapshoot {
+export interface BlockSnapshoot extends Snapshoot {
   active: boolean;
 }
 
@@ -21,7 +21,7 @@ abstract class Block extends Component {
   editor?: Editor;
 
   // 根据 raw 保存的内容恢复组件
-  static create(componentFactory: ComponentFactory, raw: IRawType): Component {
+  static create(componentFactory: ComponentFactory, raw: RawType): Component {
     throw createError("组件未实现 create 静态方法", this);
   }
 
@@ -30,7 +30,7 @@ abstract class Block extends Component {
     throw createError("组件未实现 exchange 静态方法", this);
   }
 
-  constructor(style?: StoreData, data?: StoreData) {
+  constructor(style?: AnyObject, data?: AnyObject) {
     super(style, data);
 
     // 事件需在下一微任务触发，原因如下：
@@ -75,15 +75,15 @@ abstract class Block extends Component {
   }
 
   // 修改组件的表现形式
-  modifyDecorate(style?: StoreData, data?: StoreData) {
-    this.componentWillChange();
+  modifyDecorate(style?: AnyObject, data?: AnyObject) {
+    this.willChange();
     super.modifyDecorate(style, data);
     this.updateComponent([this]);
-    return [[this]];
+    return;
   }
 
   // 修改子组件的表现形式，仅在 ContentCollection 组件内有效
-  modifyContentDecorate(start: number, end: number, style?: StoreData, data?: StoreData) {
+  modifyContentDecorate(start: number, end: number, style?: AnyObject, data?: AnyObject) {
     return;
   }
 
@@ -144,6 +144,13 @@ abstract class Block extends Component {
 
   clone(): Block {
     let newBlock = { ...this };
+    newBlock.style = {
+      ...this.style,
+    };
+    newBlock.data = {
+      ...this.data,
+    };
+
     Object.setPrototypeOf(newBlock, Object.getPrototypeOf(this));
     newBlock.id = uuidv4();
     nextTick(() => {

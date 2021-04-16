@@ -1,16 +1,16 @@
 import ComponentFactory from ".";
-import { IRawType } from "./component";
+import { RawType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): Paragraph {
+  static create(componentFactory: ComponentFactory, raw: RawType): Paragraph {
     let children = super.createChildren(componentFactory, raw);
 
     let paragraph = componentFactory.buildParagraph("", raw.style, raw.data);
@@ -45,7 +45,7 @@ class Paragraph extends ContentCollection {
     return newParagraphList;
   }
 
-  constructor(text: string = "", style?: StoreData, data: StoreData = { tag: "p" }) {
+  constructor(text: string = "", style?: AnyObject, data: AnyObject = { tag: "p" }) {
     super(text, style, data);
   }
 

@@ -1,5 +1,5 @@
-import Decorate, { StoreData } from "../decorate";
-import { OperatorType, IRawType } from "./component";
+import Decorate, { AnyObject } from "../decorate";
+import { OperatorType, RawType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
@@ -13,13 +13,13 @@ import { createError } from "../util/handle-error";
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
-  static createChildren(componentFactory: ComponentFactory, raw: IRawType): Inline[] {
+  static createChildren(componentFactory: ComponentFactory, raw: RawType): Inline[] {
     if (!raw.children) {
       return [];
     }
 
     let children: Inline[] = [];
-    raw.children.forEach((each: IRawType) => {
+    raw.children.forEach((each: RawType) => {
       // 其他的 Inline 类型
       if (componentFactory.typeMap[each.type]) {
         children.push(componentFactory.typeMap[each.type].create(each));
@@ -36,7 +36,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
-  constructor(text: string = "", style?: StoreData, data?: StoreData) {
+  constructor(text: string = "", style?: AnyObject, data?: AnyObject) {
     super(style, data);
     if (text) {
       this.addText(text, 0);
@@ -46,8 +46,8 @@ abstract class ContentCollection extends Collection<Inline> {
   modifyContentDecorate(
     start: number = 0,
     end: number = -1,
-    style?: StoreData,
-    data?: StoreData,
+    style?: AnyObject,
+    data?: AnyObject,
   ): OperatorType {
     end = end < 0 ? this.getSize() + end : end;
 
@@ -55,7 +55,7 @@ abstract class ContentCollection extends Collection<Inline> {
       return [{ id: this.id, offset: start }];
     }
 
-    this.componentWillChange();
+    this.willChange();
     for (let i = start; i <= end; i++) {
       this.getChild(i)?.modifyDecorate(style, data);
     }
@@ -82,7 +82,7 @@ abstract class ContentCollection extends Collection<Inline> {
       }
     });
 
-    this.componentWillChange();
+    this.willChange();
     this.addChildren(index, needAddInline);
     this.updateComponent([this]);
     return [{ id: this.id, offset: index + inline.length }];
@@ -100,7 +100,7 @@ abstract class ContentCollection extends Collection<Inline> {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    this.componentWillChange();
+    this.willChange();
     this.removeChildren(start, end);
     this.updateComponent([this]);
     return [{ id: this.id, offset: start }];
@@ -126,7 +126,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
 
-    this.componentWillChange();
+    this.willChange();
     let splitBlock = this.splitChild(index);
     let needAddBlockList: Block[] = [];
 
@@ -147,7 +147,7 @@ abstract class ContentCollection extends Collection<Inline> {
 
     parent.add(blockIndex + 1, ...needAddBlockList);
     this.updateComponent([this]);
-    return [{ id: splitBlock.id, offset: 0 }];
+    return [{ id: needAddBlockList[0].id, offset: 0 }];
   }
 
   addText(text: string, index?: number): OperatorType {
@@ -182,10 +182,10 @@ abstract class ContentCollection extends Collection<Inline> {
 
     // ContentCollection 组件仅能接收 ContentCollection 组件
     if (!(block instanceof ContentCollection)) {
-      return [];
+      return;
     }
 
-    this.componentWillChange();
+    this.willChange();
     // 移除接收到的组件
     block.removeSelf();
 
@@ -196,7 +196,7 @@ abstract class ContentCollection extends Collection<Inline> {
   }
 
   // 将内容进行拆分，适应 HTML 的表现形式
-  fromatChildren() {
+  formatChildren() {
     let formated: {
       inlines: Inline[];
       type: string;
@@ -225,13 +225,13 @@ abstract class ContentCollection extends Collection<Inline> {
     return formated;
   }
 
-  getRaw(): IRawType {
-    let raw: IRawType = {
+  getRaw(): RawType {
+    let raw: RawType = {
       type: this.type,
       children: [],
     };
 
-    this.fromatChildren().map((each) => {
+    this.formatChildren().forEach((each) => {
       if (each.type === ComponentType.character) {
         let charRaw = each.inlines[0].getRaw();
         charRaw.content = each.inlines.map((each) => each.content).join("");
@@ -247,7 +247,7 @@ abstract class ContentCollection extends Collection<Inline> {
   getChildren(contentView: BaseView) {
     let childrenRenderList: any[] = [];
 
-    this.fromatChildren().map((each, index) => {
+    this.formatChildren().forEach((each, index) => {
       if (each.type === ComponentType.character) {
         childrenRenderList.push(
           contentView.buildCharacterList(

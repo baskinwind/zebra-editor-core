@@ -1,18 +1,18 @@
 import ComponentFactory from ".";
-import { OperatorType, IRawType } from "./component";
+import { OperatorType, RawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { StoreData } from "../decorate";
-import { ICollectionSnapshoot } from "./collection";
+import { AnyObject } from "../decorate";
+import { CollectionSnapshoot } from "./collection";
 import { createError } from "../util/handle-error";
 import nextTick from "../util/next-tick";
 
 type tableCellType = string | string[];
 
-interface ITableSnapshoot extends ICollectionSnapshoot<TableRow> {
+interface TableSnapshoot extends CollectionSnapshoot<TableRow> {
   col: number;
   needHead: boolean;
 }
@@ -34,7 +34,7 @@ class Table extends StructureCollection<TableRow> {
     return table;
   }
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): Table {
+  static create(componentFactory: ComponentFactory, raw: RawType): Table {
     let children = (raw.children || []).map((each) => {
       return TableRow.create(componentFactory, each);
     });
@@ -49,8 +49,8 @@ class Table extends StructureCollection<TableRow> {
     col: number,
     head: tableCellType[] | boolean = true,
     rows: tableCellType[][] = [],
-    style?: StoreData,
-    data?: StoreData,
+    style?: AnyObject,
+    data?: AnyObject,
   ) {
     super(style, data);
 
@@ -59,11 +59,11 @@ class Table extends StructureCollection<TableRow> {
       if (head === true) {
         head = [];
       }
-      tableRows.push(new TableRow(col, "th", head));
+      tableRows.push(new TableRow(col, TableCellEnum.th, head));
     }
 
     for (let i = 0; i < row; i++) {
-      tableRows.push(new TableRow(col, "td", rows[i]));
+      tableRows.push(new TableRow(col, TableCellEnum.td, rows[i]));
     }
 
     this.add(0, ...tableRows);
@@ -112,13 +112,13 @@ class Table extends StructureCollection<TableRow> {
   }
 
   setHead(head: boolean) {
-    let hasHead = this.getChild(0).cellType === "th";
+    let hasHead = this.getChild(0).cellType === TableCellEnum.th;
 
     if (head === hasHead) return;
 
     if (head) {
       let colNumber = this.getChild(0).getSize();
-      this.add(0, new TableRow(colNumber, "th", []));
+      this.add(0, new TableRow(colNumber, TableCellEnum.th, []));
     } else {
       this.remove(0, 1);
     }
@@ -129,7 +129,7 @@ class Table extends StructureCollection<TableRow> {
     return [{ id: block.id, offset: 0 }];
   }
 
-  restore(state: ITableSnapshoot) {
+  restore(state: TableSnapshoot) {
     super.restore(state);
   }
 
@@ -143,12 +143,17 @@ class Table extends StructureCollection<TableRow> {
   }
 }
 
+export enum TableCellEnum {
+  th = "th",
+  td = "td",
+}
+
 class TableRow extends StructureCollection<TableCell> {
   type: ComponentType = ComponentType.tableRow;
   parent?: Table;
-  cellType: "th" | "td";
+  cellType: TableCellEnum;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): TableRow {
+  static create(componentFactory: ComponentFactory, raw: RawType): TableRow {
     let tableRow = new TableRow(raw.children!.length, raw.cellType, [], raw.style, raw.data);
     let children = (raw.children || []).map((each) => TableCell.create(componentFactory, each));
     tableRow.add(0, ...children);
@@ -157,10 +162,10 @@ class TableRow extends StructureCollection<TableCell> {
 
   constructor(
     size: number,
-    cellType: "th" | "td" = "td",
+    cellType: TableCellEnum = TableCellEnum.td,
     children: tableCellType[] = [],
-    style?: StoreData,
-    data?: StoreData,
+    style?: AnyObject,
+    data?: AnyObject,
   ) {
     super(style, data);
     this.cellType = cellType;
@@ -224,9 +229,9 @@ class TableRow extends StructureCollection<TableCell> {
 class TableCell extends StructureCollection<TableItem> {
   type: ComponentType = ComponentType.tableCell;
   parent?: TableRow;
-  cellType: "th" | "td";
+  cellType: TableCellEnum;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): TableCell {
+  static create(componentFactory: ComponentFactory, raw: RawType): TableCell {
     let children = (raw.children || []).map((each) => TableItem.create(componentFactory, each));
 
     let tableCell = new TableCell(raw.cellType, "", raw.style, raw.data);
@@ -236,10 +241,10 @@ class TableCell extends StructureCollection<TableItem> {
   }
 
   constructor(
-    cellType: "th" | "td" = "td",
+    cellType: TableCellEnum = TableCellEnum.td,
     children: tableCellType = "",
-    style?: StoreData,
-    data?: StoreData,
+    style?: AnyObject,
+    data?: AnyObject,
   ) {
     super(style, data);
     this.cellType = cellType;
@@ -300,11 +305,11 @@ class TableCell extends StructureCollection<TableItem> {
 class TableItem extends ContentCollection {
   type = ComponentType.tableItem;
   parent?: TableCell;
-  style: StoreData = {
+  style: AnyObject = {
     textAlign: "center",
   };
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): TableItem {
+  static create(componentFactory: ComponentFactory, raw: RawType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
     tableItem.add(0, ...this.createChildren(componentFactory, raw));
     return tableItem;

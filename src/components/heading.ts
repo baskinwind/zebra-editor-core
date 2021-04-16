@@ -1,17 +1,25 @@
 import ComponentFactory from ".";
-import { IRawType } from "./component";
+import { RawType } from "./component";
 import Inline from "./inline";
 import Block, { BlockType } from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { StoreData } from "../decorate";
-import { ICollectionSnapshoot } from "./collection";
+import { AnyObject } from "../decorate";
+import { CollectionSnapshoot } from "./collection";
 
-export type HeadingType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-export interface IHeadingSnapshoot extends ICollectionSnapshoot<Inline> {
-  headingType: HeadingType;
+export enum HeadingEnum {
+  h1 = "h1",
+  h2 = "h2",
+  h3 = "h3",
+  h4 = "h4",
+  h5 = "h5",
+  h6 = "h6",
+}
+
+export interface HeadingSnapshoot extends CollectionSnapshoot<Inline> {
+  headingType: HeadingEnum;
 }
 
 const styleMap = {
@@ -37,15 +45,20 @@ const styleMap = {
 
 class Heading extends ContentCollection {
   type = ComponentType.heading;
-  headingType: HeadingType;
+  headingType: HeadingEnum;
   data = {
     bold: true,
   };
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): Heading {
+  static create(componentFactory: ComponentFactory, raw: RawType): Heading {
     let children = super.createChildren(componentFactory, raw);
 
-    let heading = componentFactory.buildHeading(raw.headingType || "h1", "", raw.style, raw.data);
+    let heading = componentFactory.buildHeading(
+      raw.headingType || HeadingEnum.h1,
+      "",
+      raw.style,
+      raw.data,
+    );
     heading.add(0, ...children);
     return heading;
   }
@@ -79,15 +92,15 @@ class Heading extends ContentCollection {
     return newHeadingList;
   }
 
-  constructor(type: HeadingType, text?: string, style?: StoreData, data?: StoreData) {
+  constructor(type: HeadingEnum, text?: string, style?: AnyObject, data?: AnyObject) {
     super(text, style, data);
     this.headingType = type;
     this.style = styleMap[type];
   }
 
-  setHeading(type: HeadingType = "h1") {
+  setHeading(type: HeadingEnum = HeadingEnum.h1) {
     if (this.headingType === type) return;
-    this.componentWillChange();
+    this.willChange();
     this.headingType = type;
     this.style = styleMap[type];
     this.updateComponent([this]);
@@ -102,13 +115,13 @@ class Heading extends ContentCollection {
     return builder.exchange(this.getComponentFactory(), this, args);
   }
 
-  snapshoot(): IHeadingSnapshoot {
-    let snap = super.snapshoot() as IHeadingSnapshoot;
+  snapshoot(): HeadingSnapshoot {
+    let snap = super.snapshoot() as HeadingSnapshoot;
     snap.headingType = this.headingType;
     return snap;
   }
 
-  restore(state: IHeadingSnapshoot) {
+  restore(state: HeadingSnapshoot) {
     this.headingType = state.headingType;
     this.style = styleMap[state.headingType];
     super.restore(state);
@@ -127,7 +140,7 @@ class Heading extends ContentCollection {
     return `${this.type}>${this.headingType}`;
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.headingType = this.headingType;
     return raw;

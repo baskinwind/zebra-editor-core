@@ -2,8 +2,8 @@ import BaseView, { mapData } from "./base-view";
 import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { HeadingType } from "../components/heading";
-import { ListType } from "../components/list";
+import { HeadingEnum } from "../components/heading";
+import { ListEnum } from "../components/list";
 
 class ContentBuilder extends BaseView<HTMLElement> {
   editor: Editor;
@@ -140,19 +140,18 @@ class ContentBuilder extends BaseView<HTMLElement> {
 
   buildList(
     id: string,
-    listType: ListType,
+    listType: ListEnum,
     getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let list = containDocument.getElementById(id);
-    if (list) {
+    if (list && list.tagName.toLowerCase() === listType) {
       this.addStyle(list, style, data);
       return list;
     }
-    let tag: string = listType;
-    list = containDocument.createElement(tag);
+    list = containDocument.createElement(listType);
     list.id = id;
     list.classList.add("zebra-editor-list");
     list.dataset.type = ComponentType.list;
@@ -205,7 +204,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
 
   buildHeading(
     id: string,
-    type: HeadingType,
+    type: HeadingEnum,
     getChildren: () => HTMLElement[],
     style: mapData,
     data: mapData,
@@ -258,7 +257,6 @@ class ContentBuilder extends BaseView<HTMLElement> {
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
     figure.dataset.src = src;
-    figure.contentEditable = "false";
     let child;
     let image = containDocument.createElement("img");
     image.src = src;
@@ -290,7 +288,6 @@ class ContentBuilder extends BaseView<HTMLElement> {
     figure.classList.add("zebra-editor-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
-    figure.contentEditable = "false";
     let audio = containDocument.createElement("audio");
     audio.src = src;
     figure.appendChild(audio);
@@ -305,7 +302,6 @@ class ContentBuilder extends BaseView<HTMLElement> {
     figure.classList.add("zebra-editor-image");
     figure.dataset.type = ComponentType.media;
     figure.dataset.structure = StructureType.content;
-    figure.contentEditable = "false";
     let video = containDocument.createElement("video");
     video.src = src;
     figure.appendChild(video);

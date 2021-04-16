@@ -1,34 +1,34 @@
 import ComponentFactory from ".";
-import { OperatorType, IRawType } from "./component";
-import Block, { BlockType, IBlockSnapshoot } from "./block";
+import { OperatorType, RawType } from "./component";
+import Block, { BlockType, BlockSnapshoot } from "./block";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
-import { StoreData } from "../decorate/index";
+import { AnyObject } from "../decorate/index";
 
-export type mediaType = "image" | "audio" | "video";
+export type MediaType = "image" | "audio" | "video";
 
-export interface IMediaSnapshoot extends IBlockSnapshoot {
-  mediaType: mediaType;
+export interface MediaSnapshoot extends BlockSnapshoot {
+  mediaType: MediaType;
   src: string;
 }
 
 class Media extends Block {
   src: string;
-  mediaType: mediaType;
+  mediaType: MediaType;
   type = ComponentType.media;
   structureType = StructureType.media;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): Media {
+  static create(componentFactory: ComponentFactory, raw: RawType): Media {
     return componentFactory.buildMedia(
-      raw.mediaType as mediaType,
+      raw.mediaType as MediaType,
       raw.src || "",
       raw.style,
       raw.data,
     );
   }
 
-  constructor(mediaType: mediaType, src: string, style?: StoreData, data?: StoreData) {
+  constructor(mediaType: MediaType, src: string, style?: AnyObject, data?: AnyObject) {
     super(style, data);
     this.mediaType = mediaType;
     this.src = src;
@@ -36,7 +36,7 @@ class Media extends Block {
 
   setSrc(src: string) {
     if (this.src === src) return;
-    this.componentWillChange();
+    this.willChange();
     this.src = src;
     this.updateComponent([this]);
   }
@@ -48,8 +48,8 @@ class Media extends Block {
   modifyContentDecorate(
     start: number,
     end: number,
-    style?: StoreData,
-    data?: StoreData,
+    style?: AnyObject,
+    data?: AnyObject,
   ): OperatorType {
     this.modifyDecorate(style, data);
     return [
@@ -96,14 +96,14 @@ class Media extends Block {
     return [{ id: block.id, offset: 0 }];
   }
 
-  snapshoot(): IMediaSnapshoot {
-    let snap = super.snapshoot() as IMediaSnapshoot;
+  snapshoot(): MediaSnapshoot {
+    let snap = super.snapshoot() as MediaSnapshoot;
     snap.mediaType = this.mediaType;
     snap.src = this.src;
     return snap;
   }
 
-  restore(state: IMediaSnapshoot) {
+  restore(state: MediaSnapshoot) {
     this.mediaType = state.mediaType;
     this.src = state.src;
     super.restore(state);
@@ -117,7 +117,7 @@ class Media extends Block {
     return `${this.type}>${this.mediaType}`;
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.src = this.src;
     raw.mediaType = this.mediaType;

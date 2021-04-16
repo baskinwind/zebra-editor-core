@@ -1,13 +1,13 @@
 import ComponentFactory from ".";
-import { OperatorType, IRawType } from "./component";
-import { ICollectionSnapshoot } from "./collection";
+import { OperatorType, RawType } from "./component";
+import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 
-export interface IListSnapshoot extends ICollectionSnapshoot<Block> {
+export interface CustomCollectionSnapshoot extends CollectionSnapshoot<Block> {
   tag: string;
 }
 
@@ -15,7 +15,7 @@ class CustomCollection extends StructureCollection<Block> {
   type: string = ComponentType.customerCollection;
   tag: string;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): CustomCollection {
+  static create(componentFactory: ComponentFactory, raw: RawType): CustomCollection {
     let children = (raw.children || []).map((each) => {
       return componentFactory.typeMap[each.type].create(each);
     });
@@ -43,7 +43,7 @@ class CustomCollection extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(tag: string = "div", children: string[] = [], style?: StoreData, data?: StoreData) {
+  constructor(tag: string = "div", children: string[] = [], style?: AnyObject, data?: AnyObject) {
     super(style, data);
     this.tag = tag;
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
@@ -98,13 +98,13 @@ class CustomCollection extends StructureCollection<Block> {
     return this.add(-1, block);
   }
 
-  snapshoot(): IListSnapshoot {
-    let snap = super.snapshoot() as IListSnapshoot;
+  snapshoot(): CustomCollectionSnapshoot {
+    let snap = super.snapshoot() as CustomCollectionSnapshoot;
     snap.tag = this.tag;
     return snap;
   }
 
-  restore(state: IListSnapshoot) {
+  restore(state: CustomCollectionSnapshoot) {
     this.tag = state.tag;
     super.restore(state);
   }
@@ -122,7 +122,7 @@ class CustomCollection extends StructureCollection<Block> {
     return `${this.type}>${this.tag}`;
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.tag = this.tag;
     return raw;

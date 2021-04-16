@@ -1,11 +1,11 @@
 import Editor from "../editor";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 import Article from "./article";
-import List, { ListType } from "./list";
+import List, { ListEnum } from "./list";
 import Table from "./table";
-import Heading, { HeadingType } from "./heading";
+import Heading, { HeadingEnum } from "./heading";
 import Paragraph from "./paragraph";
-import Media, { mediaType } from "./media";
+import Media, { MediaType } from "./media";
 import CodeBlock from "./code-block";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
@@ -39,7 +39,7 @@ class ComponentFactory {
     };
   }
 
-  buildArticle(style: StoreData = {}, data: StoreData = {}) {
+  buildArticle(style: AnyObject = {}, data: AnyObject = {}) {
     let article = new Article(style, data);
     article.setEditor(this.editor);
     return article;
@@ -48,8 +48,8 @@ class ComponentFactory {
   buildCustomCollection(
     tag: string = "div",
     children: string[] = [],
-    style: StoreData = {},
-    data: StoreData = {},
+    style: AnyObject = {},
+    data: AnyObject = {},
   ) {
     let customCollection = new CustomCollection(tag, children, style, data);
     customCollection.setEditor(this.editor);
@@ -57,10 +57,10 @@ class ComponentFactory {
   }
 
   buildList(
-    type: ListType = "ul",
+    type: ListEnum = ListEnum.ul,
     children: string[] = [],
-    style: StoreData = {},
-    data: StoreData = {},
+    style: AnyObject = {},
+    data: AnyObject = {},
   ) {
     let list = new List(type, children, style, data);
     list.setEditor(this.editor);
@@ -72,27 +72,27 @@ class ComponentFactory {
     col: number,
     head: string[] = [],
     children: (string[] | string)[][] = [],
-    style: StoreData = {},
-    data: StoreData = {},
+    style: AnyObject = {},
+    data: AnyObject = {},
   ) {
     let table = new Table(row, col, head, children, style, data);
     table.setEditor(this.editor);
     return table;
   }
 
-  buildHeading(type: HeadingType, text?: string, style: StoreData = {}, data: StoreData = {}) {
+  buildHeading(type: HeadingEnum, text?: string, style: AnyObject = {}, data: AnyObject = {}) {
     let heading = new Heading(type, text, style, data);
     heading.setEditor(this.editor);
     return heading;
   }
 
-  buildParagraph(text?: string, style: StoreData = {}, data: StoreData = {}) {
+  buildParagraph(text?: string, style: AnyObject = {}, data: AnyObject = {}) {
     let paragraph = new Paragraph(text, style, data);
     paragraph.setEditor(this.editor);
     return paragraph;
   }
 
-  buildMedia(mediaType: mediaType, src: string, style: StoreData = {}, data: StoreData = {}) {
+  buildMedia(mediaType: MediaType, src: string, style: AnyObject = {}, data: AnyObject = {}) {
     let media = new Media(mediaType, src, style, data);
     media.setEditor(this.editor);
     return media;
@@ -101,15 +101,15 @@ class ComponentFactory {
   buildCode(
     content: string = "",
     language: string = "",
-    style: StoreData = {},
-    data: StoreData = {},
+    style: AnyObject = {},
+    data: AnyObject = {},
   ) {
     let code = new CodeBlock(content, language, style, data);
     code.setEditor(this.editor);
     return code;
   }
 
-  buildInlineImage(src: string, style: StoreData = {}, data: StoreData = {}) {
+  buildInlineImage(src: string, style: AnyObject = {}, data: AnyObject = {}) {
     let image = new InlineImage(src, style, data);
     return image;
   }

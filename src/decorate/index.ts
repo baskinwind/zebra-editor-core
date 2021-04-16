@@ -1,7 +1,7 @@
 import { Map } from "immutable";
 import Component from "../components/component";
 
-export interface StoreData {
+export interface AnyObject {
   [key: string]: any;
 }
 
@@ -10,7 +10,7 @@ class Decorate {
   style: Map<string, any>;
   data: Map<string, any>;
 
-  constructor(component: Component, style: StoreData = {}, data: StoreData = {}) {
+  constructor(component: Component, style: AnyObject = {}, data: AnyObject = {}) {
     this.component = component;
     this.style = Map(style);
     this.data = Map(data);
@@ -22,7 +22,7 @@ class Decorate {
   getStyle() {
     return { ...this.component.style, ...this.style.toObject() };
   }
-  mergeStyle(style?: StoreData) {
+  mergeStyle(style?: AnyObject) {
     if (!style) return;
 
     // 移除逻辑
@@ -47,7 +47,7 @@ class Decorate {
   getData() {
     return { ...this.component.data, ...this.data.toObject() };
   }
-  mergeData(data?: StoreData) {
+  mergeData(data?: AnyObject) {
     if (!data) return;
 
     // 移除逻辑
@@ -63,7 +63,7 @@ class Decorate {
     // 切换逻辑
     if (data.toggle) {
       let keyList = (data.toggle as string).split(",");
-      let toggleMap: StoreData = {};
+      let toggleMap: AnyObject = {};
       keyList.forEach((each) => {
         toggleMap[each] = !this.data.get(each);
       });

@@ -1,17 +1,17 @@
 import ComponentFactory from ".";
 import BaseView from "../view/base-view";
-import { IRawType } from "./component";
+import { RawType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
-import { StoreData } from "../decorate";
+import { AnyObject } from "../decorate";
 import Block from "./block";
 
 class CodeBlock extends PlainText {
   type = ComponentType.codeBlock;
   language: string;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): CodeBlock {
+  static create(componentFactory: ComponentFactory, raw: RawType): CodeBlock {
     return componentFactory.buildCode(raw.content, raw.language, raw.style, raw.data);
   }
 
@@ -35,15 +35,15 @@ class CodeBlock extends PlainText {
   constructor(
     content: string = "",
     language: string = "",
-    style: StoreData = {},
-    data: StoreData = {},
+    style: AnyObject = {},
+    data: AnyObject = {},
   ) {
     super(content, style, data);
     this.language = language;
   }
 
   setLanguage(language: string) {
-    this.componentWillChange();
+    this.willChange();
     this.language = language;
     this.updateComponent([this]);
   }
@@ -57,7 +57,7 @@ class CodeBlock extends PlainText {
     );
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.language = this.language;
     return raw;

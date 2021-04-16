@@ -1,6 +1,6 @@
-import { OperatorType, IRawType } from "./component";
+import { OperatorType, RawType } from "./component";
 import Block from "./block";
-import Collection, { ICollectionSnapshoot } from "./collection";
+import Collection, { CollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
 import nextTick from "../util/next-tick";
@@ -24,7 +24,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       each.parent = this;
       each.active = true;
     });
-    this.componentWillChange();
+    this.willChange();
     let newBlockList = super.addChildren(index, componentList);
     this.updateComponent([...newBlockList, this]);
     return newBlockList;
@@ -37,7 +37,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
   }
 
   removeChildren(start: number, end: number = -1) {
-    this.componentWillChange();
+    this.willChange();
     let removed = super.removeChildren(start, end);
 
     removed.forEach((each) => each.destory());
@@ -76,7 +76,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       each.active = true;
     });
 
-    this.componentWillChange();
+    this.willChange();
     this.children = this.children.splice(index, 1, ...blockList);
     this.updateComponent([oldComponent, ...blockList, this]);
     return blockList;
@@ -121,7 +121,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return;
   }
 
-  restore(state: ICollectionSnapshoot<T>) {
+  restore(state: CollectionSnapshoot<T>) {
     this.children.forEach((each) => {
       if (each.parent === this) {
         each.active = false;
@@ -155,7 +155,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return this.getChild(index + 1);
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.children = this.children.toArray().map((each) => each.getRaw());
     return raw;

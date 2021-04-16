@@ -1,6 +1,6 @@
 import ComponentFactory from ".";
 import BaseView from "../view/base-view";
-import { OperatorType, IRawType } from "./component";
+import { OperatorType, RawType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
@@ -10,7 +10,7 @@ class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;
 
-  static create(componentFactory: ComponentFactory, raw: IRawType): Article {
+  static create(componentFactory: ComponentFactory, raw: RawType): Article {
     let children = (raw.children || []).map((each) => {
       return componentFactory.typeMap[each.type].create(componentFactory, each);
     });
@@ -56,7 +56,7 @@ class Article extends StructureCollection<Block> {
     return operator;
   }
 
-  getRaw(): IRawType {
+  getRaw(): RawType {
     let raw = super.getRaw();
     raw.id = this.id;
     return raw;
