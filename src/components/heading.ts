@@ -100,7 +100,7 @@ class Heading extends ContentCollection {
 
   setHeading(type: HeadingEnum = HeadingEnum.h1) {
     if (this.headingType === type) return;
-    this.willChange();
+    this.componentWillChange();
     this.headingType = type;
     this.style = styleMap[type];
     this.updateComponent([this]);

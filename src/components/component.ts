@@ -111,8 +111,8 @@ abstract class Component extends Event {
   // 渲染该组件
   abstract render(contentView: BaseView): any;
 
-  willChange() {
-    this.$emit("willChange", this);
+  componentWillChange() {
+    this.$emit("componentWillChange", this);
   }
 
   updateComponent(componentList: Component[]) {

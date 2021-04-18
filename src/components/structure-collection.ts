@@ -24,7 +24,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       each.parent = this;
       each.active = true;
     });
-    this.willChange();
+    this.componentWillChange();
     let newBlockList = super.addChildren(index, componentList);
     this.updateComponent([...newBlockList, this]);
     return newBlockList;
@@ -37,21 +37,18 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
   }
 
   removeChildren(start: number, end: number = -1) {
-    this.willChange();
+    this.componentWillChange();
     let removed = super.removeChildren(start, end);
 
     removed.forEach((each) => each.destory());
 
+    this.updateComponent([...removed, this]);
+
     // 当子元素被全部删除时，若后续无新添加的子元素，则移除自身
     if (this.getSize() === 0) {
-      nextTick(() => {
-        if (this.getSize() === 0) {
-          this.removeSelf();
-        }
-      });
+      this.removeSelf();
     }
 
-    this.updateComponent([...removed, this]);
     return removed;
   }
 
@@ -76,7 +73,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
       each.active = true;
     });
 
-    this.willChange();
+    this.componentWillChange();
     this.children = this.children.splice(index, 1, ...blockList);
     this.updateComponent([oldComponent, ...blockList, this]);
     return blockList;

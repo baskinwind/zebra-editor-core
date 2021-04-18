@@ -32,7 +32,7 @@ abstract class PlainText extends Block {
     }
 
     index = index === undefined ? this.content.length : index;
-    this.willChange();
+    this.componentWillChange();
     this.content.splice(index, 0, ...string);
     this.updateComponent([this]);
 
@@ -40,7 +40,7 @@ abstract class PlainText extends Block {
   }
 
   remove(start: number, end: number = start + 1): OperatorType {
-    this.willChange();
+    this.componentWillChange();
     // 首位删除变成段落
     if (start < 0 && end === 0) {
       let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph], []);

@@ -34,7 +34,7 @@ const handleRecallQueue = (editor: Editor) => {
     if (afterDom) {
       parentDom.insertBefore(newDom, afterDom);
     } else {
-      recallQueue.push([afterComId, newDom, parentDom]);
+      recallQueue.unshift([afterComId, newDom, parentDom]);
     }
   }
 };

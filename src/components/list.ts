@@ -67,7 +67,7 @@ class List extends StructureCollection<Block> {
 
   setListType(type: ListEnum = ListEnum.ul) {
     if (type === this.listType) return;
-    this.willChange();
+    this.componentWillChange();
     this.listType = type;
     this.updateComponent([this]);
   }

@@ -46,8 +46,12 @@ new Vue({
       return text.replace(/\_(\w)/g, (all, letter) => letter.toUpperCase());
     },
 
-    undo() {},
-    redo() {},
+    undo() {
+      editor.historyManage.undo();
+    },
+    redo() {
+      editor.historyManage.redo();
+    },
 
     showArticle() {
       editor.articleManage.flush();
@@ -70,7 +74,7 @@ new Vue({
       } else if (tag === "ul" || tag === "ol" || tag === "nl") {
         exchange(editor, editor.componentFactory.typeMap.LIST, tag);
       } else {
-        exchange(editor, editor.componentFactory.typeMap.HEADER, tag);
+        exchange(editor, editor.componentFactory.typeMap.HEADING, tag);
       }
     },
 

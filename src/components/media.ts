@@ -36,7 +36,7 @@ class Media extends Block {
 
   setSrc(src: string) {
     if (this.src === src) return;
-    this.willChange();
+    this.componentWillChange();
     this.src = src;
     this.updateComponent([this]);
   }

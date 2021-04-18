@@ -55,7 +55,7 @@ abstract class ContentCollection extends Collection<Inline> {
       return [{ id: this.id, offset: start }];
     }
 
-    this.willChange();
+    this.componentWillChange();
     for (let i = start; i <= end; i++) {
       this.getChild(i)?.modifyDecorate(style, data);
     }
@@ -82,7 +82,7 @@ abstract class ContentCollection extends Collection<Inline> {
       }
     });
 
-    this.willChange();
+    this.componentWillChange();
     this.addChildren(index, needAddInline);
     this.updateComponent([this]);
     return [{ id: this.id, offset: index + inline.length }];
@@ -100,7 +100,7 @@ abstract class ContentCollection extends Collection<Inline> {
       throw createError(`start：${start}、end：${end}不合法。`, this);
     }
 
-    this.willChange();
+    this.componentWillChange();
     this.removeChildren(start, end);
     this.updateComponent([this]);
     return [{ id: this.id, offset: start }];
@@ -126,7 +126,7 @@ abstract class ContentCollection extends Collection<Inline> {
     let parent = this.getParent();
     let blockIndex = parent.findChildrenIndex(this);
 
-    this.willChange();
+    this.componentWillChange();
     let splitBlock = this.splitChild(index);
     let needAddBlockList: Block[] = [];
 
@@ -185,7 +185,7 @@ abstract class ContentCollection extends Collection<Inline> {
       return;
     }
 
-    this.willChange();
+    this.componentWillChange();
     // 移除接收到的组件
     block.removeSelf();
 

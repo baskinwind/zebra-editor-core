@@ -76,7 +76,7 @@ abstract class Block extends Component {
 
   // 修改组件的表现形式
   modifyDecorate(style?: AnyObject, data?: AnyObject) {
-    this.willChange();
+    this.componentWillChange();
     super.modifyDecorate(style, data);
     this.updateComponent([this]);
     return;

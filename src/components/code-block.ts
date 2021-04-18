@@ -43,7 +43,7 @@ class CodeBlock extends PlainText {
   }
 
   setLanguage(language: string) {
-    this.willChange();
+    this.componentWillChange();
     this.language = language;
     this.updateComponent([this]);
   }
@@ -62,7 +62,6 @@ class CodeBlock extends PlainText {
     raw.language = this.language;
     return raw;
   }
-
 
   render(contentView: BaseView) {
     return contentView.buildCodeBlock(

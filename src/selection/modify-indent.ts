@@ -46,6 +46,10 @@ const outdent = (editor: Editor, block: Block) => {
   if (parent.type === ComponentType.article) {
     return block;
   }
+  if (parent.getSize() === 1) {
+    parent.replaceSelf(block);
+    return block;
+  }
   let index = parent.findChildrenIndex(block);
   block.removeSelf();
   parent.split(index, block);
