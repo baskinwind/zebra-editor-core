@@ -2,6 +2,7 @@ import Editor from "..";
 import nextTick from "../../util/next-tick";
 import Component, { RawType } from "../../components/component";
 import updateComponent from "../../util/update-component";
+import Article from "../../components/article";
 
 class ArticleManage {
   editor: Editor;
@@ -14,6 +15,12 @@ class ArticleManage {
 
   init() {
     this.update = true;
+    let editorDom = this.editor.mountedDocument.getElementById("zebra-editor-contain");
+    editorDom?.appendChild(this.editor.article.render(this.editor.contentView));
+    nextTick(() => {
+      document.dispatchEvent(new Event("editorChange"));
+    });
+
     this.editor.article.$on("updateComponent", (componentList: Component[]) => {
       if (this.update) {
         updateComponent(this.editor, ...componentList);
@@ -40,13 +47,21 @@ class ArticleManage {
     return this.editor.componentFactory.typeMap[raw.type].create(this.editor.componentFactory, raw);
   }
 
-  newArticle(raw?: RawType) {
+  newArticle(article?: RawType | Article) {
     let editorDom = this.editor.mountedDocument.getElementById("zebra-editor-contain");
     if (!editorDom) return;
     editorDom.innerHTML = "";
-    this.editor.article.destory();
+    this.editor?.article.destory();
+    let newArticle: Article;
 
-    const newArticle = raw ? this.createByRaw(raw) : this.createEmpty();
+    if (typeof article === "string") {
+      newArticle = this.createByRaw(article);
+    } else if (!article) {
+      newArticle = this.createEmpty();
+    } else {
+      newArticle = article as Article;
+    }
+
     this.editor.init(newArticle);
 
     editorDom.appendChild(newArticle.render(this.editor.contentView));

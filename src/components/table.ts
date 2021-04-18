@@ -69,10 +69,18 @@ class Table extends StructureCollection<TableRow> {
     this.add(0, ...tableRows);
   }
 
+  getRowSize() {
+    return this.getChild(0).getSize();
+  }
+
   addRow(index: number) {
     let cellSize = this.getChild(0).getSize();
     let newTableRow = new TableRow(cellSize);
     this.add(index, newTableRow);
+  }
+
+  getColSize() {
+    return this.getChild(0).getChild(0).getSize();
   }
 
   addCol(index: number) {
@@ -109,6 +117,10 @@ class Table extends StructureCollection<TableRow> {
 
   setCol(col: number) {
     this.children.forEach((each) => each.setSize(col));
+  }
+
+  hasHead(): boolean {
+    return this.getChild(0).cellType === TableCellEnum.th;
   }
 
   setHead(head: boolean) {

@@ -34,7 +34,7 @@ class Editor extends Event {
   historyManage: HistoryManage;
   articleManage: ArticleManage;
 
-  constructor(idOrElement: string | HTMLElement, article: Article, option: EditorOption) {
+  constructor(idOrElement: string | HTMLElement, option: EditorOption) {
     super();
     if (typeof idOrElement === "string") {
       let dom = document.getElementById(idOrElement);
@@ -46,8 +46,6 @@ class Editor extends Event {
       this.mountedElement = idOrElement;
     }
 
-    article.setEditor(this);
-    this.article = article;
     this.placeholder = option.placeholder || "";
 
     this.userOperator = new option.operator(this);
@@ -57,11 +55,9 @@ class Editor extends Event {
     this.storeManage = new StoreManage(this);
     this.historyManage = new HistoryManage(this);
     this.articleManage = new ArticleManage(this);
-    this.init(article);
 
     createEditor(
       this.mountedElement,
-      this.article,
       this,
       (document: Document, window: Window) => {
         this.mountedDocument = document;
@@ -73,6 +69,8 @@ class Editor extends Event {
   }
 
   init(article: Article) {
+    article.active = true;
+    article.setEditor(this);
     this.article = article;
     this.articleManage.init();
     this.historyManage.init();

@@ -43,10 +43,24 @@ class CustomCollection extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(tag: string = "div", children: string[] = [], style?: AnyObject, data?: AnyObject) {
+  constructor(
+    tag: string = "div",
+    children: (string | Block)[] = [],
+    style?: AnyObject,
+    data?: AnyObject,
+  ) {
     super(style, data);
     this.tag = tag;
-    this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
+    this.add(
+      0,
+      ...children.map((each) => {
+        if (typeof each === "string") {
+          return this.getComponentFactory().buildParagraph(each);
+        } else {
+          return each;
+        }
+      }),
+    );
   }
 
   add(index: number, ...blockList: Block[]): OperatorType {
@@ -64,7 +78,7 @@ class CustomCollection extends StructureCollection<Block> {
       return operator;
     }
 
-    return this.add(index, ...blockList);
+    return super.add(index, ...blockList);
   }
 
   childHeadDelete(block: Block): OperatorType {

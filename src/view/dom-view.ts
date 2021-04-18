@@ -1,9 +1,10 @@
-import BaseView, { mapData } from "./base-view";
+import BaseView from "./base-view";
 import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { HeadingEnum } from "../components/heading";
 import { ListEnum } from "../components/list";
+import { AnyObject } from "../decorate";
 
 class ContentBuilder extends BaseView<HTMLElement> {
   editor: Editor;
@@ -13,7 +14,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     this.editor = editor;
   }
 
-  addStyle(dom: HTMLElement, style?: mapData, data?: mapData) {
+  addStyle(dom: HTMLElement, style?: AnyObject, data?: AnyObject) {
     dom.setAttribute("style", "");
     if (style) {
       for (let key in style) {
@@ -25,8 +26,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
   buildArticle(
     id: string,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let article = containDocument.getElementById(id);
@@ -50,8 +51,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
     id: string,
     tag: string,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let collection = containDocument.getElementById(id);
@@ -74,8 +75,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
   buildTable(
     id: string,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.getElementById(id);
@@ -99,8 +100,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
   buildTableRow(
     id: string,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let tr = containDocument.getElementById(id);
@@ -120,8 +121,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
     id: string,
     cellType: "th" | "td",
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let cell = containDocument.getElementById(id);
@@ -142,8 +143,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
     id: string,
     listType: ListEnum,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let list = containDocument.getElementById(id);
@@ -168,7 +169,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     let li = containDocument.createElement("li");
     list.dataset.inList = "true";
     li.appendChild(list);
-    let style: mapData = {};
+    let style: AnyObject = {};
     if (structureType !== StructureType.content) {
       style.display = "block";
     }
@@ -179,8 +180,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
   buildParagraph(
     id: string,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     const tag: string = data.tag || "p";
@@ -206,8 +207,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
     id: string,
     type: HeadingEnum,
     getChildren: () => HTMLElement[],
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let heading = containDocument.createElement(type);
@@ -232,8 +233,8 @@ class ContentBuilder extends BaseView<HTMLElement> {
     id: string,
     content: string,
     language: string,
-    style: mapData,
-    data: mapData,
+    style: AnyObject,
+    data: AnyObject,
   ): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let pre = containDocument.createElement("pre");
@@ -249,7 +250,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return pre;
   }
 
-  buildeImage(id: string, src: string, style: mapData, data: mapData): HTMLElement {
+  buildeImage(id: string, src: string, style: AnyObject, data: AnyObject): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
@@ -281,7 +282,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return figure;
   }
 
-  buildeAudio(id: string, src: string, style: mapData, data: mapData): HTMLElement {
+  buildeAudio(id: string, src: string, style: AnyObject, data: AnyObject): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
@@ -295,7 +296,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return figure;
   }
 
-  buildeVideo(id: string, src: string, style: mapData, data: mapData): HTMLElement {
+  buildeVideo(id: string, src: string, style: AnyObject, data: AnyObject): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let figure = containDocument.createElement("figure");
     figure.id = id;
@@ -309,7 +310,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return figure;
   }
 
-  buildCharacterList(id: string, text: string, style: mapData, data: mapData): HTMLElement {
+  buildCharacterList(id: string, text: string, style: AnyObject, data: AnyObject): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let charWrap;
     let root = containDocument.createElement(data.code ? "code" : "span");
@@ -358,7 +359,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
     return root;
   }
 
-  buildInlineImage(id: string, src: string, style: mapData, data: mapData): HTMLElement {
+  buildInlineImage(id: string, src: string, style: AnyObject, data: AnyObject): HTMLElement {
     let containDocument = this.editor.mountedDocument;
     let span = containDocument.getElementById(id);
     if (!span || span.dataset.src !== src || (data.link && span.dataset.link !== data.link)) {

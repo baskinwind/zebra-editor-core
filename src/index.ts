@@ -11,6 +11,7 @@ import Operator from "./operator";
 // 选区相关操作
 import focusAt from "./selection/focus-at";
 import getSelection from "./selection/get-selection";
+import { getSelectedIdList } from "./selection/get-selected-id-list";
 import insertBlock from "./selection/insert-block";
 import insertInline from "./selection/insert-inline";
 import modifyDecorate from "./selection/modify-decorate";
@@ -23,8 +24,10 @@ import exchange from "./selection/exchange";
 import updateComponent from "./util/update-component";
 
 import nextTick from "./util/next-tick";
+import Editor from "./editor";
 
 export {
+  Editor,
   ComponentFactory,
   getDefaultComponentFactory,
   DomView,
@@ -32,6 +35,7 @@ export {
   Operator,
   focusAt,
   getSelection,
+  getSelectedIdList,
   insertBlock,
   insertInline,
   modifyDecorate,

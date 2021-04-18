@@ -3,7 +3,8 @@ import nextTick from "../util/next-tick";
 import { getJsTextLengthFromUtf8Offset } from "../util/text-util";
 
 // 选中 start 到 end 的内容
-const focusAt = (contentWindow: Window, start: Cursor, end?: Cursor) => {
+const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
+  if (!start) return;
   try {
     // id 为空字符，说明刚初始化，不进行 focus
     if (start.id === "") return;

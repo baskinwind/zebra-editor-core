@@ -10,18 +10,15 @@ import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 // 将组件挂载到某个节点上
 const createEditor = (
   root: HTMLElement,
-  article: Article,
   editor: Editor,
   beforeCreate?: (document: Document, window: Window) => void,
   afterCreate?: (document: Document, window: Window) => void,
 ) => {
-  article.active = true;
   let operator = editor.userOperator;
 
   // 生成 iframe 并获取 document 与 window 对象
   root.innerHTML = "";
   let iframe = document.createElement("iframe");
-  iframe.id = `iframe-${article.id}`;
   iframe.width = "100%";
   iframe.height = "100%";
   iframe.style.border = "none";
@@ -44,7 +41,6 @@ const createEditor = (
     let editorDom = iframe.contentDocument.createElement("div");
     editorDom.id = "zebra-editor-contain";
     editorDom.contentEditable = "true";
-    editorDom.appendChild(article.render(editor.contentView));
     iframe.contentDocument.body.appendChild(editorDom);
 
     // placeholder
@@ -57,9 +53,14 @@ const createEditor = (
     document.addEventListener("editorChange", (e) => {
       let article = editor.article;
       if (!article) return;
-      let lastTyle = article.getChild(article.getSize() - 1).structureType;
-      if (lastTyle !== StructureType.content) {
-        article.add(-1, editor.componentFactory.buildParagraph());
+      let size = article.getSize();
+      if (size === 0) {
+        article.add(0, editor.componentFactory.buildParagraph());
+      } else {
+        let lastTyle = article.getChild(size - 1).structureType;
+        if (lastTyle !== StructureType.content) {
+          article.add(-1, editor.componentFactory.buildParagraph());
+        }
       }
     });
 
