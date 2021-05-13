@@ -1,4 +1,3 @@
-import ComponentFactory from ".";
 import { RawType } from "./component";
 import Inline from "./inline";
 import Block, { BlockType } from "./block";
@@ -8,6 +7,7 @@ import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
 import { CollectionSnapshoot } from "./collection";
+import ComponentFactory from "../factory";
 
 export enum HeadingEnum {
   h1 = "h1",

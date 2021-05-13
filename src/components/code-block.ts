@@ -1,4 +1,3 @@
-import ComponentFactory from ".";
 import BaseView from "../view/base-view";
 import { RawType } from "./component";
 import PlainText from "./plain-text";
@@ -6,6 +5,7 @@ import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
 import Block from "./block";
+import ComponentFactory from "../factory";
 
 class CodeBlock extends PlainText {
   type = ComponentType.codeBlock;

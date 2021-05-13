@@ -14,10 +14,10 @@ const paste = (editor: Editor, event: ClipboardEvent) => {
   if (rowData.length === 0) return;
 
   // 移除选中区域
-  let selection = getSelection(editor.mountedWindow);
+  let selection = getSelection(editor);
   if (!selection.isCollapsed) {
     deleteSelection(editor, selection.range[0], selection.range[1]);
-    selection = getSelection(editor.mountedWindow);
+    selection = getSelection(editor);
   }
 
   let nowComponent = editor.storeManage.getBlockById(selection.range[0].id);
@@ -26,7 +26,7 @@ const paste = (editor: Editor, event: ClipboardEvent) => {
   // 纯文本组件直接输入即可
   if (nowComponent.type === StructureType.plainText) {
     let operator = nowComponent.add(start.offset, rowData.join("\n"));
-    focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+    focusAt(editor, operator?.[0] || start, operator?.[1]);
     return;
   }
 
@@ -35,7 +35,7 @@ const paste = (editor: Editor, event: ClipboardEvent) => {
 
   let operator = nowComponent.add(start.offset, rowData[0]);
   if (rowData.length === 1) {
-    return focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+    return focusAt(editor, operator?.[0] || start, operator?.[1]);
   }
 
   let list = [];
@@ -43,7 +43,7 @@ const paste = (editor: Editor, event: ClipboardEvent) => {
     list.push(editor.componentFactory.buildParagraph(rowData[i]));
   }
   operator = nowComponent.split(start.offset + rowData[0].length, ...list);
-  focusAt(editor.mountedWindow, {
+  focusAt(editor, {
     id: list[0].id,
     offset: rowData[rowData.length - 1].length,
   });

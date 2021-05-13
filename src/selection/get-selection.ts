@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash";
+import Editor from "../editor";
 import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
 import { getElememtSize, getContainer, Cursor, getCursorElement, getOffset } from "./util";
 
@@ -22,7 +23,8 @@ let selectionStore: selectionType = {
 };
 
 // 获取选区信息，从 range[0].id 组件的 offset 位置开始，到 range[1].id 的 offset 位置结束
-const getSelection = (contentWindow: Window) => {
+const getSelection = (editor: Editor) => {
+  let contentWindow = editor.mountedWindow;
   let section = contentWindow.getSelection();
   // 无选区：直接返回保存的选区内容
   if (!section || !section.anchorNode || !section.focusNode || section?.type === "None") {

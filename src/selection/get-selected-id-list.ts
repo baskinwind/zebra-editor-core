@@ -21,7 +21,7 @@ const walkCollection = (
   return false;
 };
 
-export const getSelectedIdList = (
+const getSelectedIdList = (
   article: Article,
   startId: string,
   endId: string = startId,
@@ -40,3 +40,5 @@ export const getSelectedIdList = (
   });
   return selectedId;
 };
+
+export default getSelectedIdList;

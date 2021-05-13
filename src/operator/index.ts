@@ -43,7 +43,7 @@ class Operator {
   }
 
   onCut(event: ClipboardEvent) {
-    let selection = getSelection(this.editor.mountedWindow);
+    let selection = getSelection(this.editor);
     setTimeout(() => {
       backspace(this.editor, selection.range[0], selection.range[1]);
     }, 30);
@@ -77,7 +77,7 @@ class Operator {
     if (key === "enter") {
       let component = this.editor.storeManage.getBlockById(start.id);
       let operator = component.addEmptyParagraph(!shift);
-      focusAt(this.editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+      focusAt(this.editor, operator?.[0] || start, operator?.[1]);
       return;
     }
 
@@ -104,7 +104,7 @@ class Operator {
     const key = event.key.toLowerCase();
     let {
       range: [start, end],
-    } = getSelection(this.editor.mountedWindow);
+    } = getSelection(this.editor);
 
     // 非功能按键放过
     if (event.ctrlKey || event.metaKey) {

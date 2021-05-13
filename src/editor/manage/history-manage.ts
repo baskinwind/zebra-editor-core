@@ -85,7 +85,7 @@ class HistoryManage {
 
     this.createRecordStack();
     this.inLoop = true;
-    let selection = getSelection(this.editor.mountedWindow);
+    let selection = getSelection(this.editor);
     this.nowRecordStack.startSelection = {
       start: selection.range[0],
       end: selection.range[1],
@@ -93,7 +93,7 @@ class HistoryManage {
 
     setTimeout(() => {
       this.inLoop = false;
-      let selection = getSelection(this.editor.mountedWindow);
+      let selection = getSelection(this.editor);
       this.nowRecordStack.endSelection = {
         start: selection.range[0],
         end: selection.range[1],
@@ -122,11 +122,7 @@ class HistoryManage {
     });
     updateComponent(this.editor, ...nowRecord.componentList.values());
     this.nowStackIndex -= 1;
-    focusAt(
-      this.editor.mountedWindow,
-      nowRecord.startSelection.start,
-      nowRecord.startSelection.end,
-    );
+    focusAt(this.editor, nowRecord.startSelection.start, nowRecord.startSelection.end);
   }
 
   redo() {
@@ -137,7 +133,7 @@ class HistoryManage {
     });
     updateComponent(this.editor, ...nowRecord.componentList.values());
     this.nowStackIndex += 1;
-    focusAt(this.editor.mountedWindow, nowRecord.endSelection.start, nowRecord.endSelection.end);
+    focusAt(this.editor, nowRecord.endSelection.start, nowRecord.endSelection.end);
   }
 }
 

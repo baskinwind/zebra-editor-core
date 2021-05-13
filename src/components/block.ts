@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import Editor from "../editor";
-import ComponentFactory, { getDefaultComponentFactory } from ".";
 import Component, { OperatorType, RawType, Snapshoot } from "./component";
 import StructureCollection from "./structure-collection";
 import nextTick from "../util/next-tick";
 import { AnyObject } from "../decorate/index";
 import { createError } from "../util/handle-error";
+import ComponentFactory, { getDefaultComponentFactory } from "../factory";
 
 export type BlockType = typeof Block;
 export interface BlockSnapshoot extends Snapshoot {

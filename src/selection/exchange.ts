@@ -2,11 +2,11 @@ import Editor from "../editor";
 import Block, { BlockType } from "../components/block";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
-import { getSelectedIdList } from "./get-selected-id-list";
+import getSelectedIdList from "./get-selected-id-list";
 
 // 修改选区中整块内容的呈现
 const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
-  let selection = getSelection(editor.mountedWindow);
+  let selection = getSelection(editor);
   let start = selection.range[0];
   let end = selection.range[1];
   try {
@@ -60,7 +60,7 @@ const exchange = (editor: Editor, newBlock: BlockType, ...args: any[]) => {
       tailIndex -= 1;
     }
 
-    focusAt(editor.mountedWindow, nowStart, nowEnd);
+    focusAt(editor, nowStart, nowEnd);
   } catch (err) {
     console.warn(err);
   }

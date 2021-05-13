@@ -1,10 +1,10 @@
-import ComponentFactory from ".";
 import { OperatorType, RawType } from "./component";
 import Block, { BlockType, BlockSnapshoot } from "./block";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { AnyObject } from "../decorate/index";
+import ComponentFactory from "../factory";
 
 export type MediaType = "image" | "audio" | "video";
 

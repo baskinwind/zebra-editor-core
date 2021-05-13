@@ -1,4 +1,3 @@
-import ComponentFactory from ".";
 import { OperatorType, RawType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
@@ -9,6 +8,7 @@ import { AnyObject } from "../decorate";
 import { CollectionSnapshoot } from "./collection";
 import { createError } from "../util/handle-error";
 import nextTick from "../util/next-tick";
+import ComponentFactory from "../factory";
 
 type tableCellType = string | string[];
 

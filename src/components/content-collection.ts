@@ -4,11 +4,11 @@ import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
 import Character from "./character";
-import ComponentFactory from ".";
 import ComponentType from "../const/component-type";
 import BaseView from "../view/base-view";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
+import ComponentFactory from "../factory";
 
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;

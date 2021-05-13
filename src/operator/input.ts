@@ -23,7 +23,8 @@ const input = (
     if (
       block instanceof ContentCollection &&
       charOrInline === " " &&
-      (startPosition.index <= 0 || startPosition.index >= getUtf8TextLengthFromJsOffset(startNode.nodeValue) - 1)
+      (startPosition.index <= 0 ||
+        startPosition.index >= getUtf8TextLengthFromJsOffset(startNode.nodeValue) - 1)
     ) {
       charOrInline = new Character(charOrInline);
     }
@@ -41,7 +42,7 @@ const input = (
     ) {
       event?.preventDefault();
       let operator = block.add(offset, charOrInline);
-      focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+      focusAt(editor, operator?.[0] || start, operator?.[1]);
       return;
     }
 

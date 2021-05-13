@@ -1,4 +1,3 @@
-import ComponentFactory from "../components";
 import Article from "../components/article";
 import ContentView from "../view/dom-view";
 import Operator from "../operator";
@@ -6,7 +5,7 @@ import ArticleManage from "./manage/article-manage";
 import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
 import createEditor from "./create-editor";
-import Event from "./event";
+import ComponentFactory from "../factory";
 
 export interface EditorOption {
   placeholder?: string;
@@ -18,7 +17,7 @@ export interface EditorOption {
   afterCreate?: (document: Document, window: Window | null) => void;
 }
 
-class Editor extends Event {
+class Editor {
   mountedElement: HTMLElement;
   article!: Article;
   placeholder: string;
@@ -35,7 +34,6 @@ class Editor extends Event {
   articleManage: ArticleManage;
 
   constructor(idOrElement: string | HTMLElement, option: EditorOption) {
-    super();
     if (typeof idOrElement === "string") {
       let dom = document.getElementById(idOrElement);
       if (!dom) {

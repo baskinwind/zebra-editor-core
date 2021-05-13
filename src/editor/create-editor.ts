@@ -111,7 +111,7 @@ const createEditor = (
     });
 
     editorDom.addEventListener("compositionstart", (event) => {
-      let selection = getSelection(iframe.contentWindow!);
+      let selection = getSelection(editor);
       if (!selection.isCollapsed) {
         deleteSelection(editor, selection.range[0], selection.range[1]);
       }
@@ -119,7 +119,7 @@ const createEditor = (
 
     editorDom.addEventListener("compositionend", (event) => {
       try {
-        let selection = getSelection(iframe.contentWindow!);
+        let selection = getSelection(editor);
         let start = {
           id: selection.range[0].id,
           offset: selection.range[0].offset - getUtf8TextLengthFromJsOffset(event.data),
@@ -142,7 +142,7 @@ const createEditor = (
           return;
         }
 
-        let selection = getSelection(iframe.contentWindow!);
+        let selection = getSelection(editor);
         if (!selection.isCollapsed) {
           deleteSelection(editor, selection.range[0], selection.range[1]);
         }
@@ -162,7 +162,7 @@ const createEditor = (
           return;
         }
 
-        let selection = getSelection(iframe.contentWindow!);
+        let selection = getSelection(editor);
         let start = {
           id: selection.range[0].id,
           offset: selection.range[0].offset - getUtf8TextLengthFromJsOffset(event.data),

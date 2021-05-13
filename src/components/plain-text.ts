@@ -1,4 +1,3 @@
-import ComponentFactory from ".";
 import Component, { OperatorType, RawType } from "./component";
 import Block, { BlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";

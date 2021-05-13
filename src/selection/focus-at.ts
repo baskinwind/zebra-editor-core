@@ -1,10 +1,12 @@
 import { Cursor, getCursorPosition } from "./util";
 import nextTick from "../util/next-tick";
 import { getJsTextLengthFromUtf8Offset } from "../util/text-util";
+import Editor from "../editor";
 
 // 选中 start 到 end 的内容
-const focusAt = (contentWindow: Window, start?: Cursor, end?: Cursor) => {
+const focusAt = (editor: Editor, start?: Cursor, end?: Cursor) => {
   if (!start) return;
+  let contentWindow = editor.mountedWindow;
   try {
     // id 为空字符，说明刚初始化，不进行 focus
     if (start.id === "") return;

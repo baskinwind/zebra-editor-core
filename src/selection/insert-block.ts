@@ -6,17 +6,17 @@ import focusAt from "./focus-at";
 
 // 在光标处插入一个内容块
 const insertBlock = (editor: Editor, ...blockList: Block[]) => {
-  let selection = getSelection(editor.mountedWindow);
+  let selection = getSelection(editor);
   if (!selection.isCollapsed) {
     deleteSelection(editor, selection.range[0], selection.range[1]);
-    selection = getSelection(editor.mountedWindow);
+    selection = getSelection(editor);
   }
 
   try {
     let nowComponent = editor.storeManage.getBlockById(selection.range[0].id);
     let start = selection.range[0];
     let operator = nowComponent.split(start.offset, ...blockList);
-    focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+    focusAt(editor, operator?.[0] || start, operator?.[1]);
   } catch (e) {
     console.warn(e);
   }

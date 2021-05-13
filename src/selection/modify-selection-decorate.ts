@@ -2,11 +2,11 @@ import Editor from "../editor";
 import { AnyObject } from "../decorate";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
-import { getSelectedIdList } from "./get-selected-id-list";
+import getSelectedIdList from "./get-selected-id-list";
 
 // 修改选区内的文字
 const modifySelectionDecorate = (editor: Editor, style?: AnyObject, data?: AnyObject) => {
-  let selection = getSelection(editor.mountedWindow);
+  let selection = getSelection(editor);
   // 为光标时，不需要处理
   if (selection.isCollapsed) {
     return;
@@ -23,7 +23,7 @@ const modifySelectionDecorate = (editor: Editor, style?: AnyObject, data?: AnyOb
   if (idList.length === 1) {
     let component = editor.storeManage.getBlockById(idList[0]);
     component.modifyContentDecorate(start.offset, end.offset - 1, style, data);
-    return focusAt(editor.mountedWindow, start, end);
+    return focusAt(editor, start, end);
   }
 
   // 其他情况
@@ -35,7 +35,7 @@ const modifySelectionDecorate = (editor: Editor, style?: AnyObject, data?: AnyOb
     let component = editor.storeManage.getBlockById(idList[i]);
     component.modifyContentDecorate(0, -1, style, data);
   }
-  focusAt(editor.mountedWindow, start, end);
+  focusAt(editor, start, end);
 };
 
 export default modifySelectionDecorate;

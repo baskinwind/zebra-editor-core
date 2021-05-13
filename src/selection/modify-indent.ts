@@ -1,7 +1,7 @@
 import Editor from "../editor";
 import getSelection from "./get-selection";
 import focusAt from "./focus-at";
-import { getSelectedIdList } from "./get-selected-id-list";
+import getSelectedIdList from "./get-selected-id-list";
 import Block from "../components/block";
 import ComponentType from "../const/component-type";
 import { ListEnum } from "../components/list";
@@ -58,7 +58,7 @@ const outdent = (editor: Editor, block: Block) => {
 
 // 修改选中组件的缩进
 const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
-  let selection = getSelection(editor.mountedWindow);
+  let selection = getSelection(editor);
   let start = selection.range[0];
   let end = selection.range[1];
   let idList = getSelectedIdList(editor.article, start.id, end.id);
@@ -80,11 +80,7 @@ const modifyIndent = (editor: Editor, isOutdent: boolean = false) => {
     }
   });
 
-  focusAt(
-    editor.mountedWindow,
-    { id: newStartId, offset: start.offset },
-    { id: newEndId, offset: end.offset },
-  );
+  focusAt(editor, { id: newStartId, offset: start.offset }, { id: newEndId, offset: end.offset });
 };
 
 export default modifyIndent;

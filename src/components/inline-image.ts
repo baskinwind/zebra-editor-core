@@ -1,9 +1,9 @@
-import ComponentFactory from ".";
 import Inline from "./inline";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate/index";
 import { RawType } from "./component";
+import ComponentFactory from "../factory";
 
 class InlineImage extends Inline {
   type = ComponentType.inlineImage;

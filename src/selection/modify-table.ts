@@ -11,7 +11,7 @@ const modifyTable = (
     head?: boolean;
   },
 ) => {
-  let selection = getSelection(editor.mountedWindow);
+  let selection = getSelection(editor);
   if (!selection.isCollapsed) return;
   let id = selection.range[0].id;
   let component = editor.storeManage.getBlockById(id);

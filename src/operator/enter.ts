@@ -1,6 +1,6 @@
 import Editor from "../editor";
 import focusAt from "../selection/focus-at";
-import { getSelectedIdList } from "../selection/get-selected-id-list";
+import getSelectedIdList from "../selection/get-selected-id-list";
 import { Cursor } from "../selection/util";
 
 // 在 start - end 处换行
@@ -13,7 +13,7 @@ const enter = (editor: Editor, start: Cursor, end: Cursor = start, event?: Keybo
     let component = editor.storeManage.getBlockById(idList[0]);
     component.remove(start.offset, end.offset);
     let operator = component.split(start.offset);
-    return focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+    return focusAt(editor, operator?.[0] || start, operator?.[1]);
   }
 
   // 选中多行
@@ -24,7 +24,7 @@ const enter = (editor: Editor, start: Cursor, end: Cursor = start, event?: Keybo
   for (let i = 1; i < idList.length - 1; i++) {
     editor.storeManage.getBlockById(idList[i]).removeSelf();
   }
-  focusAt(editor.mountedWindow, {
+  focusAt(editor, {
     id: lastComponent.id,
     offset: 0,
   });

@@ -1,4 +1,3 @@
-import ComponentFactory from ".";
 import { OperatorType, RawType } from "./component";
 import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
@@ -6,6 +5,7 @@ import Block from "./block";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
 import BaseView from "../view/base-view";
+import ComponentFactory from "../factory";
 
 export enum ListEnum {
   ol = "ol",

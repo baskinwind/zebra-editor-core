@@ -1,6 +1,6 @@
 import Editor from "../editor";
 import focusAt from "../selection/focus-at";
-import { getSelectedIdList } from "../selection/get-selected-id-list";
+import getSelectedIdList from "../selection/get-selected-id-list";
 import { Cursor } from "../selection/util";
 
 // 删除 start 到 end 的内容
@@ -17,7 +17,7 @@ const deleteSelection = (editor: Editor, start: Cursor, end?: Cursor) => {
   if (idList.length === 1) {
     let block = editor.storeManage.getBlockById(idList[0]);
     let operator = block.remove(start.offset, end.offset);
-    return focusAt(editor.mountedWindow, operator?.[0] || start, operator?.[1]);
+    return focusAt(editor, operator?.[0] || start, operator?.[1]);
   }
 
   let headBlock = editor.storeManage.getBlockById(idList[0]);
@@ -33,7 +33,7 @@ const deleteSelection = (editor: Editor, start: Cursor, end?: Cursor) => {
   // 首尾行合并
   tailBlock.sendTo(headBlock);
 
-  return focusAt(editor.mountedWindow, {
+  return focusAt(editor, {
     id: headBlock.id,
     offset: start.offset,
   });
