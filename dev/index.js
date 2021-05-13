@@ -16,10 +16,13 @@ import {
 } from "../src";
 import Editor from "../src/editor";
 
-const editor = new Editor("root", article, {
+const editor = new Editor("root", {
   componentFactory: ComponentFactory,
   operator: Operator,
   contentView: DomView,
+  afterCreate() {
+    editor.init(article);
+  },
 });
 
 window.editor = editor;
