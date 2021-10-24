@@ -44,30 +44,20 @@ class ComponentFactory {
     };
   }
 
-  buildArticle(style: AnyObject = {}, data: AnyObject = {}) {
-    let article = new Article(style, data);
+  buildArticle() {
+    let article = new Article();
     article.setEditor(this.editor);
     return article;
   }
 
-  buildCustomCollection(
-    tag: string = "div",
-    children: string[] = [],
-    style: AnyObject = {},
-    data: AnyObject = {},
-  ) {
-    let customCollection = new CustomCollection(tag, children, style, data);
+  buildCustomCollection(tag: string = "div", children: string[] = []) {
+    let customCollection = new CustomCollection(tag, children);
     customCollection.setEditor(this.editor);
     return customCollection;
   }
 
-  buildList(
-    type: ListEnum = ListEnum.ul,
-    children: string[] = [],
-    style: AnyObject = {},
-    data: AnyObject = {},
-  ) {
-    let list = new List(type, children, style, data);
+  buildList(type: ListEnum = ListEnum.ul, children: string[] = []) {
+    let list = new List(type, children);
     list.setEditor(this.editor);
     return list;
   }
@@ -77,45 +67,38 @@ class ComponentFactory {
     col: number,
     head: string[] = [],
     children: (string[] | string)[][] = [],
-    style: AnyObject = {},
-    data: AnyObject = {},
   ) {
-    let table = new Table(row, col, head, children, style, data);
+    let table = new Table(row, col, head, children);
     table.setEditor(this.editor);
     return table;
   }
 
-  buildHeading(type: HeadingEnum, text?: string, style: AnyObject = {}, data: AnyObject = {}) {
-    let heading = new Heading(type, text, style, data);
+  buildHeading(type: HeadingEnum, text?: string) {
+    let heading = new Heading(type, text);
     heading.setEditor(this.editor);
     return heading;
   }
 
-  buildParagraph(text?: string, style: AnyObject = {}, data: AnyObject = {}) {
-    let paragraph = new Paragraph(text, style, data);
+  buildParagraph(text?: string) {
+    let paragraph = new Paragraph(text);
     paragraph.setEditor(this.editor);
     return paragraph;
   }
 
-  buildMedia(mediaType: MediaType, src: string, style: AnyObject = {}, data: AnyObject = {}) {
-    let media = new Media(mediaType, src, style, data);
+  buildMedia(mediaType: MediaType, src: string) {
+    let media = new Media(mediaType, src);
     media.setEditor(this.editor);
     return media;
   }
 
-  buildCode(
-    content: string = "",
-    language: string = "",
-    style: AnyObject = {},
-    data: AnyObject = {},
-  ) {
-    let code = new CodeBlock(content, language, style, data);
+  buildCode(content: string = "", language: string = "") {
+    let code = new CodeBlock(content, language);
     code.setEditor(this.editor);
     return code;
   }
 
-  buildInlineImage(src: string, style: AnyObject = {}, data: AnyObject = {}) {
-    let image = new InlineImage(src, style, data);
+  buildInlineImage(src: string) {
+    let image = new InlineImage(src);
     return image;
   }
 }

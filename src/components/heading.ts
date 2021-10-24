@@ -8,6 +8,7 @@ import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
 import { CollectionSnapshoot } from "./collection";
 import ComponentFactory from "../factory";
+import { head } from "lodash";
 
 export enum HeadingEnum {
   h1 = "h1",
@@ -53,13 +54,9 @@ class Heading extends ContentCollection {
   static create(componentFactory: ComponentFactory, json: JSONType): Heading {
     let children = super.createChildren(componentFactory, json);
 
-    let heading = componentFactory.buildHeading(
-      json.headingType || HeadingEnum.h1,
-      "",
-      json.style,
-      json.data,
-    );
+    let heading = componentFactory.buildHeading(json.headingType || HeadingEnum.h1, "");
     heading.add(0, ...children);
+    heading.modifyDecorate(json.style, json.data);
     return heading;
   }
 
@@ -71,12 +68,8 @@ class Heading extends ContentCollection {
 
     let newHeadingList = [];
     if (block instanceof ContentCollection) {
-      let newHeading = componentFactory.buildHeading(
-        headingType,
-        "",
-        block.decorate.copyStyle(),
-        block.decorate.copyData(),
-      );
+      let newHeading = componentFactory.buildHeading(headingType, "");
+      newHeading.modifyDecorate(block.decorate.copyStyle(), block.decorate.copyData());
       newHeading.style = styleMap[newHeading.headingType];
       newHeading.add(0, ...block.children);
       newHeadingList.push(newHeading);
@@ -94,8 +87,8 @@ class Heading extends ContentCollection {
     return newHeadingList;
   }
 
-  constructor(type: HeadingEnum, text?: string, style?: AnyObject, data?: AnyObject) {
-    super(text, style, data);
+  constructor(type: HeadingEnum, text?: string) {
+    super(text);
     this.headingType = type;
     this.style = styleMap[type];
   }
@@ -130,12 +123,9 @@ class Heading extends ContentCollection {
   }
 
   createEmpty() {
-    return this.getComponentFactory().buildHeading(
-      this.headingType,
-      "",
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
+    const heading = this.getComponentFactory().buildHeading(this.headingType, "");
+    heading.modifyDecorate(this.decorate.copyStyle(), this.decorate.copyData());
+    return heading;
   }
 
   getType(): string {

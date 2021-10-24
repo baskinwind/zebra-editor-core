@@ -54,9 +54,9 @@ abstract class Component extends Event {
   data: AnyObject = {};
   style: AnyObject = {};
 
-  constructor(style: AnyObject = {}, data: AnyObject = {}) {
+  constructor() {
     super();
-    this.decorate = new Decorate(this, style, data);
+    this.decorate = new Decorate(this);
     this.record = new Record(this);
   }
 
@@ -98,7 +98,6 @@ abstract class Component extends Event {
     this.$off();
   }
 
-  // 渲染该组件
   abstract render(contentView: BaseView): any;
 
   componentWillChange() {

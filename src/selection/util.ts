@@ -1,7 +1,7 @@
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
-import { createError } from "../util/handle-error";
+import { createError } from "../util";
 
 export interface Cursor {
   id: string;

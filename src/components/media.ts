@@ -20,16 +20,13 @@ class Media extends Block {
   structureType = StructureType.media;
 
   static create(componentFactory: ComponentFactory, json: JSONType): Media {
-    return componentFactory.buildMedia(
-      json.mediaType as MediaType,
-      json.src || "",
-      json.style,
-      json.data,
-    );
+    const media = componentFactory.buildMedia(json.mediaType as MediaType, json.src || "");
+    media.modifyDecorate(json.style, json.data);
+    return media;
   }
 
-  constructor(mediaType: MediaType, src: string, style?: AnyObject, data?: AnyObject) {
-    super(style, data);
+  constructor(mediaType: MediaType, src: string) {
+    super();
     this.mediaType = mediaType;
     this.src = src;
   }

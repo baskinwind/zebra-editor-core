@@ -6,9 +6,9 @@ import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
 import { CollectionSnapshoot } from "./collection";
-import { createError } from "../util/handle-error";
-import nextTick from "../util/next-tick";
+import { createError } from "../util";
 import ComponentFactory from "../factory";
+import { nextTick } from "../util";
 
 type tableCellType = string | string[];
 
@@ -34,12 +34,13 @@ class Table extends StructureCollection<TableRow> {
     return table;
   }
 
-  static create(componentFactory: ComponentFactory, raw: JSONType): Table {
-    let children = (raw.children || []).map((each) => {
+  static create(componentFactory: ComponentFactory, json: JSONType): Table {
+    let children = (json.children || []).map((each) => {
       return TableRow.create(componentFactory, each);
     });
 
-    let table = componentFactory.buildTable(0, 0, [], [], raw.style, raw.data);
+    let table = componentFactory.buildTable(0, 0, [], []);
+    table.modifyDecorate(json.style, json.data);
     table.add(0, ...children);
     return table;
   }
@@ -49,10 +50,8 @@ class Table extends StructureCollection<TableRow> {
     col: number,
     head: tableCellType[] | boolean = true,
     rows: tableCellType[][] = [],
-    style?: AnyObject,
-    data?: AnyObject,
   ) {
-    super(style, data);
+    super();
 
     let tableRows = [];
     if (head) {
@@ -165,9 +164,10 @@ class TableRow extends StructureCollection<TableCell> {
   parent?: Table;
   cellType: TableCellEnum;
 
-  static create(componentFactory: ComponentFactory, raw: JSONType): TableRow {
-    let tableRow = new TableRow(raw.children!.length, raw.cellType, [], raw.style, raw.data);
-    let children = (raw.children || []).map((each) => TableCell.create(componentFactory, each));
+  static create(componentFactory: ComponentFactory, json: JSONType): TableRow {
+    let tableRow = new TableRow(json.children!.length, json.cellType, []);
+    tableRow.modifyDecorate(json.style, json.data);
+    let children = (json.children || []).map((each) => TableCell.create(componentFactory, each));
     tableRow.add(0, ...children);
     return tableRow;
   }
@@ -176,10 +176,8 @@ class TableRow extends StructureCollection<TableCell> {
     size: number,
     cellType: TableCellEnum = TableCellEnum.td,
     children: tableCellType[] = [],
-    style?: AnyObject,
-    data?: AnyObject,
   ) {
-    super(style, data);
+    super();
     this.cellType = cellType;
 
     let cells = [];
@@ -246,19 +244,15 @@ class TableCell extends StructureCollection<TableItem> {
   static create(componentFactory: ComponentFactory, raw: JSONType): TableCell {
     let children = (raw.children || []).map((each) => TableItem.create(componentFactory, each));
 
-    let tableCell = new TableCell(raw.cellType, "", raw.style, raw.data);
+    let tableCell = new TableCell(raw.cellType, "");
+    tableCell.modifyDecorate(raw.style, raw.data);
     tableCell.add(0, ...children);
 
     return tableCell;
   }
 
-  constructor(
-    cellType: TableCellEnum = TableCellEnum.td,
-    children: tableCellType = "",
-    style?: AnyObject,
-    data?: AnyObject,
-  ) {
-    super(style, data);
+  constructor(cellType: TableCellEnum = TableCellEnum.td, children: tableCellType = "") {
+    super();
     this.cellType = cellType;
 
     if (!Array.isArray(children)) {
@@ -322,7 +316,8 @@ class TableItem extends ContentCollection {
   };
 
   static create(componentFactory: ComponentFactory, raw: JSONType): TableItem {
-    let tableItem = new TableItem("", raw.style, raw.data);
+    let tableItem = new TableItem();
+    tableItem.modifyDecorate(raw.style, raw.data);
     tableItem.add(0, ...this.createChildren(componentFactory, raw));
     return tableItem;
   }
@@ -336,7 +331,9 @@ class TableItem extends ContentCollection {
   }
 
   createEmpty() {
-    return new TableItem("", this.decorate.copyStyle(), this.decorate.copyData());
+    const tableImem = new TableItem();
+    tableImem.modifyDecorate(this.decorate.copyStyle(), this.decorate.copyData());
+    return tableImem;
   }
 
   split(index: number, ...tableItem: TableItem[]): OperatorType {

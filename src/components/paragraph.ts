@@ -13,7 +13,8 @@ class Paragraph extends ContentCollection {
   static create(componentFactory: ComponentFactory, json: JSONType): Paragraph {
     let children = super.createChildren(componentFactory, json);
 
-    let paragraph = componentFactory.buildParagraph("", json.style, json.data);
+    let paragraph = componentFactory.buildParagraph();
+    paragraph.modifyDecorate(json.style, json.data);
     paragraph.add(0, ...children);
     return paragraph;
   }
@@ -25,11 +26,8 @@ class Paragraph extends ContentCollection {
 
     let newParagraphList: Paragraph[] = [];
     if (block instanceof ContentCollection) {
-      let newParagraph = componentFactory.buildParagraph(
-        "",
-        block.decorate.copyStyle(),
-        block.decorate.copyData(),
-      );
+      let newParagraph = componentFactory.buildParagraph();
+      newParagraph.modifyDecorate(block.decorate.copyStyle(), block.decorate.copyData());
       newParagraph.add(0, ...block.children);
       newParagraphList.push(newParagraph);
     } else if (block instanceof PlainText) {
@@ -46,16 +44,14 @@ class Paragraph extends ContentCollection {
     return newParagraphList;
   }
 
-  constructor(text: string = "", style?: AnyObject, data: AnyObject = { tag: "p" }) {
-    super(text, style, data);
+  constructor(text: string = "") {
+    super(text);
   }
 
   createEmpty() {
-    return this.getComponentFactory().buildParagraph(
-      "",
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
+    const paragraph = this.getComponentFactory().buildParagraph();
+    paragraph.modifyDecorate(this.decorate.copyStyle(), this.decorate.copyData());
+    return paragraph;
   }
 
   render(contentView: BaseView) {

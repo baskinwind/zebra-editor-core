@@ -4,8 +4,7 @@ import Component, { OperatorType, JSONType, Snapshoot } from "./component";
 import ComponentFactory, { getDefaultComponentFactory } from "../factory";
 import { AnyObject } from "../decorate/index";
 import StructureCollection from "./structure-collection";
-import nextTick from "../util/next-tick";
-import { createError } from "../util/handle-error";
+import { createError } from "../util";
 
 export type BlockType = typeof Block;
 export interface BlockSnapshoot extends Snapshoot {
@@ -26,8 +25,8 @@ abstract class Block extends Component {
     throw createError("component need implement static exchange method", this);
   }
 
-  constructor(style?: AnyObject, data?: AnyObject) {
-    super(style, data);
+  constructor() {
+    super();
 
     this.init();
   }

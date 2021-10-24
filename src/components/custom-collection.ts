@@ -43,13 +43,8 @@ class CustomCollection extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(
-    tag: string = "div",
-    children: (string | Block)[] = [],
-    style?: AnyObject,
-    data?: AnyObject,
-  ) {
-    super(style, data);
+  constructor(tag: string = "div", children: (string | Block)[] = []) {
+    super();
     this.tag = tag;
     this.add(
       0,
@@ -124,12 +119,9 @@ class CustomCollection extends StructureCollection<Block> {
   }
 
   createEmpty(): CustomCollection {
-    return this.getComponentFactory().buildCustomCollection(
-      this.tag,
-      [],
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
+    const collection = this.getComponentFactory().buildCustomCollection(this.tag, []);
+    collection.modifyDecorate(this.decorate.copyStyle(), this.decorate.copyData());
+    return collection;
   }
 
   getType(): string {

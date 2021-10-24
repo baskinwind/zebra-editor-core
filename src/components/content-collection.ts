@@ -7,7 +7,7 @@ import Character from "./character";
 import ComponentType from "../const/component-type";
 import BaseView from "../view/base-view";
 import StructureType from "../const/structure-type";
-import { createError } from "../util/handle-error";
+import { createError } from "../util";
 import ComponentFactory from "../factory";
 
 abstract class ContentCollection extends Collection<Inline> {
@@ -27,15 +27,17 @@ abstract class ContentCollection extends Collection<Inline> {
 
       if (!each.content) return;
       for (let char of each.content) {
-        children.push(new Character(char, each.style, each.data));
+        const chart = new Character(char);
+        chart.modifyDecorate(each.style, each.data);
+        children.push();
       }
     });
 
     return children;
   }
 
-  constructor(text: string = "", style?: AnyObject, data?: AnyObject) {
-    super(style, data);
+  constructor(text: string = "") {
+    super();
     if (text) {
       this.addText(text, 0);
     }
@@ -73,7 +75,9 @@ abstract class ContentCollection extends Collection<Inline> {
       if (typeof each === "string") {
         let decorate = this.children.get(index === 0 ? 0 : index - 1)?.decorate;
         for (let char of each) {
-          needAddInline.push(new Character(char, decorate?.copyStyle(), decorate?.copyData()));
+          const chart = new Character(char);
+          chart.modifyDecorate(decorate?.copyStyle(), decorate?.copyData());
+          needAddInline.push(chart);
         }
       } else {
         needAddInline.push(each);

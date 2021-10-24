@@ -11,11 +11,13 @@ class InlineImage extends Inline {
   src: string;
 
   static create(componentFactory: ComponentFactory, json: JSONType): InlineImage {
-    return componentFactory.buildInlineImage(json.src || "", json.style, json.data);
+    const inlineImage = componentFactory.buildInlineImage(json.src || "");
+    inlineImage.modifyDecorate(json.style, json.data);
+    return inlineImage;
   }
 
-  constructor(src: string = "", style?: AnyObject, data?: AnyObject) {
-    super(style, data);
+  constructor(src: string = "") {
+    super();
     this.src = src;
   }
 

@@ -3,7 +3,6 @@ import { JSONType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
-import { AnyObject } from "../decorate";
 import Block from "./block";
 import ComponentFactory from "../factory";
 
@@ -12,7 +11,9 @@ class CodeBlock extends PlainText {
   language: string;
 
   static create(componentFactory: ComponentFactory, json: JSONType): CodeBlock {
-    return componentFactory.buildCode(json.content, json.language, json.style, json.data);
+    const code = componentFactory.buildCode(json.content, json.language);
+    code.modifyDecorate(json.style, json.data);
+    return code;
   }
 
   static exchange(componentFactory: ComponentFactory, block: Block, args: any[] = []): CodeBlock[] {
@@ -32,13 +33,8 @@ class CodeBlock extends PlainText {
     }
   }
 
-  constructor(
-    content: string = "",
-    language: string = "",
-    style: AnyObject = {},
-    data: AnyObject = {},
-  ) {
-    super(content, style, data);
+  constructor(content: string = "", language: string = "") {
+    super(content);
     this.language = language;
   }
 
@@ -49,12 +45,9 @@ class CodeBlock extends PlainText {
   }
 
   createEmpty() {
-    return this.getComponentFactory().buildCode(
-      "\n",
-      this.language,
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
+    const code = this.getComponentFactory().buildCode("\n", this.language);
+    code.modifyDecorate(this.decorate.copyStyle(), this.decorate.copyData());
+    return code;
   }
 
   getJSON(): JSONType {

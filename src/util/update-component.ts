@@ -1,10 +1,10 @@
 import Component from "../components/component";
 import Block from "../components/block";
 import Editor from "../editor";
-import nextTick from "./next-tick";
 import StructureType from "../const/structure-type";
 import Inline from "../components/inline";
 import ComponentType from "../const/component-type";
+import { nextTick } from "..";
 
 const getWrapDom = (containDocument: Document, id: string): HTMLElement | null => {
   let element = containDocument.getElementById(id);

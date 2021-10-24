@@ -3,7 +3,7 @@ import Block, { BlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
 import { AnyObject } from "../decorate";
-import { createError } from "../util/handle-error";
+import { createError } from "../util";
 import Character from "./character";
 import ComponentType from "../const/component-type";
 import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
@@ -16,8 +16,8 @@ abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
 
-  constructor(content: string = "", style: AnyObject = {}, data: AnyObject = {}) {
-    super(style, data);
+  constructor(content: string = "") {
+    super();
     // fix emoji length
     this.content = [...content];
     if (this.content[this.content.length - 1] !== "\n") {

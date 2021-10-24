@@ -7,13 +7,11 @@ export interface AnyObject {
 
 class Decorate {
   component: Component;
-  style: Map<string, any>;
-  data: Map<string, any>;
+  style: Map<string, any> = Map();
+  data: Map<string, any> = Map();
 
-  constructor(component: Component, style: AnyObject = {}, data: AnyObject = {}) {
+  constructor(component: Component) {
     this.component = component;
-    this.style = Map(style);
-    this.data = Map(data);
   }
 
   copyStyle() {

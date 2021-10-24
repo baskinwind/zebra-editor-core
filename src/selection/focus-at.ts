@@ -1,7 +1,7 @@
 import { Cursor, getCursorPosition } from "./util";
-import nextTick from "../util/next-tick";
 import { getJsTextLengthFromUtf8Offset } from "../util/text-util";
 import Editor from "../editor";
+import { nextTick } from "../util";
 
 // 选中 start 到 end 的内容
 const focusAt = (editor: Editor, start?: Cursor, end?: Cursor) => {

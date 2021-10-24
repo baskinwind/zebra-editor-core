@@ -7,7 +7,7 @@ import paste from "./paste";
 import enter from "./enter";
 import backspace from "./backspace";
 import focusAt from "../selection/focus-at";
-import nextTick from "../util/next-tick";
+import { nextTick } from "../util";
 
 class Operator {
   isFireFox: boolean = navigator.userAgent.indexOf("Firefox") > -1;

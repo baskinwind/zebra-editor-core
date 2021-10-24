@@ -1,13 +1,12 @@
 import Inline from "./inline";
 import ComponentType from "../const/component-type";
-import { AnyObject } from "../decorate";
 
 class Character extends Inline {
   type = ComponentType.character;
   content: string;
 
-  constructor(content: string, style?: AnyObject, data?: AnyObject) {
-    super(style, data);
+  constructor(content: string) {
+    super();
     this.content = content;
   }
 

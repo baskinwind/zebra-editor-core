@@ -1,8 +1,8 @@
 import Editor from "..";
-import nextTick from "../../util/next-tick";
 import Component, { JSONType } from "../../components/component";
 import updateComponent from "../../util/update-component";
 import Article from "../../components/article";
+import { nextTick } from "../../util";
 
 class ArticleManage {
   editor: Editor;

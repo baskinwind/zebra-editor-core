@@ -1,7 +1,7 @@
 import { List } from "immutable";
 import Component from "./component";
 import Block, { BlockSnapshoot } from "./block";
-import { createError } from "../util/handle-error";
+import { createError } from "../util";
 
 export interface CollectionSnapshoot<T> extends BlockSnapshoot {
   children: List<T>;

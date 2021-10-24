@@ -51,13 +51,8 @@ class List extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(
-    type: ListType = ListType.ul,
-    children: string[] = [],
-    style?: AnyObject,
-    data?: AnyObject,
-  ) {
-    super(style, data);
+  constructor(type: ListType = ListType.ul, children: string[] = []) {
+    super();
     this.listType = type;
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
@@ -134,12 +129,9 @@ class List extends StructureCollection<Block> {
   }
 
   createEmpty(): List {
-    return this.getComponentFactory().buildList(
-      this.listType,
-      [],
-      this.decorate.copyStyle(),
-      this.decorate.copyData(),
-    );
+    const list = this.getComponentFactory().buildList(this.listType, []);
+    list.modifyDecorate(this.decorate.copyStyle(), this.decorate.copyData());
+    return list;
   }
 
   getType(): string {

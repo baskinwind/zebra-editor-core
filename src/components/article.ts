@@ -10,14 +10,15 @@ class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;
 
-  static create(componentFactory: ComponentFactory, raw: JSONType): Article {
-    let children = (raw.children || []).map((each) => {
+  static create(componentFactory: ComponentFactory, json: JSONType): Article {
+    let children = (json.children || []).map((each) => {
       return componentFactory.typeMap[each.type].create(componentFactory, each);
     });
 
-    let article = componentFactory.buildArticle(raw.style, raw.data);
-    if (raw.id) {
-      article.id = raw.id;
+    let article = componentFactory.buildArticle();
+    article.modifyDecorate(json.style, json.data);
+    if (json.id) {
+      article.id = json.id;
     }
     article.add(0, ...children);
     return article;

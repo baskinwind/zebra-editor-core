@@ -2,7 +2,7 @@ import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import Collection, { CollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
-import { createError } from "../util/handle-error";
+import { createError } from "../util";
 
 abstract class StructureCollection<T extends Block> extends Collection<T> {
   structureType = StructureType.structure;

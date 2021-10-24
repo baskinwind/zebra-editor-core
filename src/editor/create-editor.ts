@@ -1,10 +1,10 @@
 import Editor from ".";
 import editorStyle from "../util/editor-style";
-import nextTick from "../util/next-tick";
 import StructureType from "../const/structure-type";
 import getSelection from "../selection/get-selection";
 import deleteSelection from "../operator/delete-selection";
 import { getUtf8TextLengthFromJsOffset } from "../util/text-util";
+import { nextTick } from "../util";
 
 // 将组件挂载到某个节点上
 const createEditor = (
