@@ -1,4 +1,4 @@
-import { RawType } from "./component";
+import { JSONType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
@@ -10,10 +10,10 @@ import ComponentFactory from "../factory";
 class Paragraph extends ContentCollection {
   type = ComponentType.paragraph;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): Paragraph {
-    let children = super.createChildren(componentFactory, raw);
+  static create(componentFactory: ComponentFactory, json: JSONType): Paragraph {
+    let children = super.createChildren(componentFactory, json);
 
-    let paragraph = componentFactory.buildParagraph("", raw.style, raw.data);
+    let paragraph = componentFactory.buildParagraph("", json.style, json.data);
     paragraph.add(0, ...children);
     return paragraph;
   }
@@ -34,8 +34,9 @@ class Paragraph extends ContentCollection {
       newParagraphList.push(newParagraph);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");
-      // PlainText 末尾可定会有一个空行
-      stringList.pop();
+      if (!stringList[stringList.length - 1]) {
+        stringList.pop();
+      }
       stringList.forEach((each) => {
         newParagraphList.push(componentFactory.buildParagraph(each));
       });

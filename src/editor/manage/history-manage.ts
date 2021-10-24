@@ -1,10 +1,9 @@
 import Component from "../../components/component";
 import { Cursor } from "../../selection/util";
 import focusAt from "../../selection/focus-at";
-import updateComponent from "../../util/update-component";
-import Editor from "..";
 import getSelection from "../../selection/get-selection";
 import { walkTree } from "../../util/walk-tree";
+import Editor from "..";
 
 interface recoreType {
   componentList: Map<string, Component>;
@@ -120,7 +119,7 @@ class HistoryManage {
     nowRecord.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex - 1);
     });
-    updateComponent(this.editor, ...nowRecord.componentList.values());
+    this.editor.updateComponent(this.editor, ...nowRecord.componentList.values());
     this.nowStackIndex -= 1;
     focusAt(this.editor, nowRecord.startSelection.start, nowRecord.startSelection.end);
   }
@@ -131,7 +130,7 @@ class HistoryManage {
     nowRecord.componentList.forEach((each) => {
       each.record.restore(this.nowStackIndex + 1);
     });
-    updateComponent(this.editor, ...nowRecord.componentList.values());
+    this.editor.updateComponent(this.editor, ...nowRecord.componentList.values());
     this.nowStackIndex += 1;
     focusAt(this.editor, nowRecord.endSelection.start, nowRecord.endSelection.end);
   }

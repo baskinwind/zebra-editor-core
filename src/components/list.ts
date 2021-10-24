@@ -1,4 +1,4 @@
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
@@ -7,34 +7,33 @@ import { AnyObject } from "../decorate";
 import BaseView from "../view/base-view";
 import ComponentFactory from "../factory";
 
-export enum ListEnum {
+export enum ListType {
   ol = "ol",
   ul = "ul",
 }
 
 export interface ListSnapshoot extends CollectionSnapshoot<Block> {
-  listType: ListEnum;
+  listType: ListType;
 }
 
 class List extends StructureCollection<Block> {
   type = ComponentType.list;
-  listType: ListEnum;
+  listType: ListType;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): List {
-    let children = (raw.children || []).map((each: RawType) =>
+  static create(componentFactory: ComponentFactory, json: JSONType): List {
+    let children = (json.children || []).map((each: JSONType) =>
       componentFactory.typeMap[each.type].create(each),
     );
 
-    let list = componentFactory.buildList(raw.listType);
+    let list = componentFactory.buildList(json.listType);
     list.add(0, ...children);
     return list;
   }
 
   static exchange(componentFactory: ComponentFactory, block: Block, args: any[] = []): Block[] {
     let parent = block.getParent();
-    // 属于列表的子元素
-    if (parent instanceof List) {
-      parent.setListType(args[0]);
+    if (parent.type === ComponentType.list) {
+      (parent as List).setListType(args[0]);
       return [block];
     }
 
@@ -42,11 +41,9 @@ class List extends StructureCollection<Block> {
     let index = parent.findChildrenIndex(block);
     block.removeSelf();
 
-    // 当前一块内容为列表，并且列表的类型一致，直接添加到列表项中
-    if (prev instanceof List && prev.listType === args[0]) {
-      prev.add(-1, block);
+    if (parent.type === ComponentType.list && (prev as List).listType === args[0]) {
+      (prev as List).add(-1, block);
     } else {
-      // 否则新生成一个 List
       let newList = componentFactory.buildList(args[0]);
       newList.add(0, block);
       parent.add(index, newList);
@@ -55,7 +52,7 @@ class List extends StructureCollection<Block> {
   }
 
   constructor(
-    type: ListEnum = ListEnum.ul,
+    type: ListType = ListType.ul,
     children: string[] = [],
     style?: AnyObject,
     data?: AnyObject,
@@ -65,7 +62,7 @@ class List extends StructureCollection<Block> {
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
 
-  setListType(type: ListEnum = ListEnum.ul) {
+  setListType(type: ListType = ListType.ul) {
     if (type === this.listType) return;
     this.componentWillChange();
     this.listType = type;
@@ -93,14 +90,12 @@ class List extends StructureCollection<Block> {
   childHeadDelete(block: Block): OperatorType {
     let index = this.findChildrenIndex(block);
 
-    // 不是第一项时，将其发送到前一项
     if (index !== 0) {
       let prev = this.getPrev(block);
       if (!prev) return;
       return block.sendTo(prev);
     }
 
-    // 第一项时，直接将该列表项添加到父元素上
     block.removeSelf();
     let parent = this.getParent();
     let parentIndex = parent.findChildrenIndex(this);
@@ -151,10 +146,10 @@ class List extends StructureCollection<Block> {
     return `${this.type}>${this.listType}`;
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
-    raw.listType = this.listType;
-    return raw;
+  getJSON(): JSONType {
+    let json = super.getJSON();
+    json.listType = this.listType;
+    return json;
   }
 
   render(contentView: BaseView) {

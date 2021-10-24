@@ -1,7 +1,6 @@
 import Editor from ".";
 import editorStyle from "../util/editor-style";
 import nextTick from "../util/next-tick";
-import Article from "../components/article";
 import StructureType from "../const/structure-type";
 import getSelection from "../selection/get-selection";
 import deleteSelection from "../operator/delete-selection";
@@ -216,6 +215,7 @@ const createEditor = (
       }
     });
 
+    // 暂不支持拖拽
     editorDom.addEventListener("dragstart", (event) => {
       event.preventDefault();
     });

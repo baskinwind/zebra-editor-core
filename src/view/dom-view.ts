@@ -3,7 +3,7 @@ import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { HeadingEnum } from "../components/heading";
-import { ListEnum } from "../components/list";
+import { ListType } from "../components/list";
 import { AnyObject } from "../decorate";
 
 class ContentBuilder extends BaseView<HTMLElement> {
@@ -141,7 +141,7 @@ class ContentBuilder extends BaseView<HTMLElement> {
 
   buildList(
     id: string,
-    listType: ListEnum,
+    listType: ListType,
     getChildren: () => HTMLElement[],
     style: AnyObject,
     data: AnyObject,

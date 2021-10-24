@@ -1,4 +1,4 @@
-import { RawType } from "./component";
+import { JSONType } from "./component";
 import Inline from "./inline";
 import Block, { BlockType } from "./block";
 import PlainText from "./plain-text";
@@ -50,14 +50,14 @@ class Heading extends ContentCollection {
     bold: true,
   };
 
-  static create(componentFactory: ComponentFactory, raw: RawType): Heading {
-    let children = super.createChildren(componentFactory, raw);
+  static create(componentFactory: ComponentFactory, json: JSONType): Heading {
+    let children = super.createChildren(componentFactory, json);
 
     let heading = componentFactory.buildHeading(
-      raw.headingType || HeadingEnum.h1,
+      json.headingType || HeadingEnum.h1,
       "",
-      raw.style,
-      raw.data,
+      json.style,
+      json.data,
     );
     heading.add(0, ...children);
     return heading;
@@ -82,7 +82,9 @@ class Heading extends ContentCollection {
       newHeadingList.push(newHeading);
     } else if (block instanceof PlainText) {
       let stringList = block.content.join("").split("\n");
-      stringList.pop();
+      if (!stringList[stringList.length - 1]) {
+        stringList.pop();
+      }
       stringList.forEach((each) => {
         newHeadingList.push(componentFactory.buildHeading(headingType, each));
       });
@@ -140,8 +142,8 @@ class Heading extends ContentCollection {
     return `${this.type}>${this.headingType}`;
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
+  getJSON(): JSONType {
+    let raw = super.getJSON();
     raw.headingType = this.headingType;
     return raw;
   }

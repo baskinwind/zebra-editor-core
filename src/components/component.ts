@@ -8,16 +8,16 @@ import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { Cursor } from "../selection/util";
-import { ListEnum } from "./list";
+import { ListType } from "./list";
 import { HeadingEnum } from "./heading";
 import { TableCellEnum } from "./table";
 
 export type OperatorType = [Cursor?, Cursor?] | undefined;
 
-export interface RawType {
+export interface JSONType {
   id?: string;
   type: ComponentType | string;
-  children?: RawType[];
+  children?: JSONType[];
   style?: AnyObject;
   data?: AnyObject;
   // for CharacterList
@@ -29,7 +29,7 @@ export interface RawType {
   // fro Heading
   headingType?: HeadingEnum;
   // for List
-  listType?: ListEnum;
+  listType?: ListType;
   // for TableRow
   cellType?: TableCellEnum;
   size?: number;
@@ -47,15 +47,10 @@ export interface Snapshoot {
 abstract class Component extends Event {
   id: string = uuidv4();
   parent?: Collection<Component>;
-  // 样式，额外数据
   decorate: Decorate;
-  // 记录管理，用于保存和恢复组件状态
   record: Record;
-  // 方便外部扩展组件
   abstract type: ComponentType | string;
-  // 结构上的作用
   abstract structureType: StructureType;
-  // 默认的数据和样式
   data: AnyObject = {};
   style: AnyObject = {};
 
@@ -65,13 +60,11 @@ abstract class Component extends Event {
     this.record = new Record(this);
   }
 
-  // 修改组件的表现形式
   modifyDecorate(style?: AnyObject, data?: AnyObject) {
     this.decorate.mergeStyle(style);
     this.decorate.mergeData(data);
   }
 
-  // 获得当前组件的快照，用于撤销和回退
   snapshoot(): Snapshoot {
     return {
       style: this.decorate.style,
@@ -79,29 +72,26 @@ abstract class Component extends Event {
     };
   }
 
-  // 回退组件状态
   restore(state: Snapshoot) {
     this.decorate.style = state.style;
     this.decorate.data = state.data;
   }
 
-  // 获取类型
   getType(): string {
     return this.type;
   }
 
-  // 获取用于存储的内容
-  getRaw(): RawType {
-    let raw: RawType = {
+  getJSON(): JSONType {
+    let json: JSONType = {
       type: this.type,
     };
     if (!this.decorate.styleIsEmpty()) {
-      raw.style = this.decorate.copyStyle();
+      json.style = this.decorate.copyStyle();
     }
     if (!this.decorate.dataIsEmpty()) {
-      raw.data = this.decorate.copyData();
+      json.data = this.decorate.copyData();
     }
-    return raw;
+    return json;
   }
 
   destory() {
@@ -119,7 +109,6 @@ abstract class Component extends Event {
     this.$emit("updateComponent", componentList);
   }
 
-  // 将事件进行冒泡
   $emit<T>(eventName: string, event?: T, ...rest: any[]) {
     super.$emit(eventName, event, ...rest);
     if (this.parent) {

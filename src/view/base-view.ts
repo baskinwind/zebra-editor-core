@@ -1,9 +1,9 @@
 import StructureType from "../const/structure-type";
 import { HeadingEnum } from "../components/heading";
-import { ListEnum } from "../components/list";
+import { ListType } from "../components/list";
 import { AnyObject } from "../decorate";
 
-abstract class BaseView<T = any> {
+abstract class BaseView<T extends any = any> {
   constructor() {
     this.init();
   }
@@ -34,7 +34,7 @@ abstract class BaseView<T = any> {
 
   abstract buildList(
     id: string,
-    listType: ListEnum,
+    listType: ListType,
     getChildren: () => T[],
     style: AnyObject,
     data: AnyObject,

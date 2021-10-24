@@ -1,5 +1,5 @@
 import "./index.styl";
-import article from "./article";
+import createArticle from "./article";
 import {
   ComponentFactory,
   DomView,
@@ -13,6 +13,7 @@ import {
   modifyTable,
   modifyIndent,
   focusAt,
+  updateComponent
 } from "../src";
 import Editor from "../src/editor";
 
@@ -20,10 +21,12 @@ const editor = new Editor("root", {
   componentFactory: ComponentFactory,
   operator: Operator,
   contentView: DomView,
+  updateComponent,
   afterCreate() {
-    editor.init(article);
+    editor.init(createArticle(editor.componentFactory));
   },
 });
+
 
 window.editor = editor;
 

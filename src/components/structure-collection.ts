@@ -1,18 +1,16 @@
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import Collection, { CollectionSnapshoot } from "./collection";
 import StructureType from "../const/structure-type";
 import { createError } from "../util/handle-error";
-import nextTick from "../util/next-tick";
 
 abstract class StructureCollection<T extends Block> extends Collection<T> {
   structureType = StructureType.structure;
 
   createEmpty(): StructureCollection<T> {
-    throw createError("组件缺少 createEmpty 方法", this);
+    throw createError("component need implement createEmpty method", this);
   }
 
-  // 查找组件的位置
   findChildrenIndex(idOrBlock: string | Block): number {
     let blockId = typeof idOrBlock === "string" ? idOrBlock : idOrBlock.id;
     let index = this.children.findIndex((each) => each.id === blockId);
@@ -23,6 +21,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     componentList.forEach((each) => {
       each.parent = this;
       each.active = true;
+      each.$emit("blockCreated", each);
     });
     this.componentWillChange();
     let newBlockList = super.addChildren(index, componentList);
@@ -44,7 +43,6 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
 
     this.updateComponent([...removed, this]);
 
-    // 当子元素被全部删除时，若后续无新添加的子元素，则移除自身
     if (this.getSize() === 0) {
       this.removeSelf();
     }
@@ -54,7 +52,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
 
   remove(start: number, end: number = start + 1): OperatorType {
     if (start < 0) {
-      throw createError(`start：${start}、end：${end}不合法。`, this);
+      throw createError(`error position start: ${start} end: ${end}.`, this);
     }
 
     this.removeChildren(start, end);
@@ -64,7 +62,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
   replaceChild(blockList: T[], oldComponent: T): Block[] {
     let index = this.findChildrenIndex(oldComponent);
     if (index === -1) {
-      throw createError("替换组件不在子组件列表内", blockList);
+      throw createError(`cannot replace child at ${index}`, blockList);
     }
     oldComponent.destory();
 
@@ -81,7 +79,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
 
   splitChild(index: number): StructureCollection<T> {
     if (index > this.getSize()) {
-      throw createError("分割点不在列表内", this);
+      throw createError(`cannot split child at ${index}`, this);
     }
 
     let tail = this.removeChildren(index);
@@ -113,7 +111,6 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return;
   }
 
-  // 定义当组件的子组件的首位发生删除时的行为，实现类需完善该逻辑
   childHeadDelete(block: T): OperatorType {
     return;
   }
@@ -132,7 +129,6 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     super.restore(state);
   }
 
-  // 获取前一个组件
   getPrev(idOrBlock: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrBlock);
 
@@ -142,7 +138,6 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return this.getChild(index - 1);
   }
 
-  // 获取后一个组件
   getNext(idOrBlock: string | T): T | undefined {
     let index = this.findChildrenIndex(idOrBlock);
 
@@ -152,10 +147,10 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     return this.getChild(index + 1);
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
-    raw.children = this.children.toArray().map((each) => each.getRaw());
-    return raw;
+  getJSON(): JSONType {
+    let json = super.getJSON();
+    json.children = this.children.toArray().map((each) => each.getJSON());
+    return json;
   }
 
   destory() {

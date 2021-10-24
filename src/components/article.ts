@@ -1,5 +1,5 @@
 import BaseView from "../view/base-view";
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
 import ComponentType from "../const/component-type";
@@ -10,7 +10,7 @@ class Article extends StructureCollection<Block> {
   type = ComponentType.article;
   structureType = StructureType.structure;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): Article {
+  static create(componentFactory: ComponentFactory, raw: JSONType): Article {
     let children = (raw.children || []).map((each) => {
       return componentFactory.typeMap[each.type].create(componentFactory, each);
     });
@@ -56,8 +56,8 @@ class Article extends StructureCollection<Block> {
     return operator;
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
+  getJSON(): JSONType {
+    let raw = super.getJSON();
     raw.id = this.id;
     return raw;
   }

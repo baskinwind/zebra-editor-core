@@ -1,6 +1,6 @@
 import Editor from "..";
 import nextTick from "../../util/next-tick";
-import Component, { RawType } from "../../components/component";
+import Component, { JSONType } from "../../components/component";
 import updateComponent from "../../util/update-component";
 import Article from "../../components/article";
 
@@ -42,12 +42,12 @@ class ArticleManage {
     return article;
   }
 
-  createByRaw(raw: RawType) {
-    if (!raw.type) return this.createEmpty();
-    return this.editor.componentFactory.typeMap[raw.type].create(this.editor.componentFactory, raw);
+  createByJSON(json: JSONType) {
+    if (!json.type) return this.createEmpty();
+    return this.editor.componentFactory.typeMap[json.type].create(this.editor.componentFactory, json);
   }
 
-  newArticle(article?: RawType | Article) {
+  newArticle(article?: JSONType | Article) {
     let editorDom = this.editor.mountedDocument.getElementById("zebra-editor-contain");
     if (!editorDom) return;
     editorDom.innerHTML = "";
@@ -55,7 +55,7 @@ class ArticleManage {
     let newArticle: Article;
 
     if (typeof article === "string") {
-      newArticle = this.createByRaw(article);
+      newArticle = this.createByJSON(article);
     } else if (!article) {
       newArticle = this.createEmpty();
     } else {
@@ -75,7 +75,7 @@ class ArticleManage {
     // 空文章不做存储，示例文章不做存储
     if (article.isEmpty() || /^demo/.test(article.id)) return;
 
-    localStorage.setItem("zebra-editor-article-temp", JSON.stringify(article.getRaw()));
+    localStorage.setItem("zebra-editor-article-temp", JSON.stringify(article.getJSON()));
   }
 
   flush() {

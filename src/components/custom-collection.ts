@@ -1,4 +1,4 @@
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
@@ -15,7 +15,7 @@ class CustomCollection extends StructureCollection<Block> {
   type: string = ComponentType.customerCollection;
   tag: string;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): CustomCollection {
+  static create(componentFactory: ComponentFactory, raw: JSONType): CustomCollection {
     let children = (raw.children || []).map((each) => {
       return componentFactory.typeMap[each.type].create(each);
     });
@@ -136,8 +136,8 @@ class CustomCollection extends StructureCollection<Block> {
     return `${this.type}>${this.tag}`;
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
+  getJSON(): JSONType {
+    let raw = super.getJSON();
     raw.tag = this.tag;
     return raw;
   }

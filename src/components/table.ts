@@ -1,4 +1,4 @@
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
@@ -34,7 +34,7 @@ class Table extends StructureCollection<TableRow> {
     return table;
   }
 
-  static create(componentFactory: ComponentFactory, raw: RawType): Table {
+  static create(componentFactory: ComponentFactory, raw: JSONType): Table {
     let children = (raw.children || []).map((each) => {
       return TableRow.create(componentFactory, each);
     });
@@ -165,7 +165,7 @@ class TableRow extends StructureCollection<TableCell> {
   parent?: Table;
   cellType: TableCellEnum;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): TableRow {
+  static create(componentFactory: ComponentFactory, raw: JSONType): TableRow {
     let tableRow = new TableRow(raw.children!.length, raw.cellType, [], raw.style, raw.data);
     let children = (raw.children || []).map((each) => TableCell.create(componentFactory, each));
     tableRow.add(0, ...children);
@@ -217,8 +217,8 @@ class TableRow extends StructureCollection<TableCell> {
     }
   }
 
-  getRaw() {
-    let raw = super.getRaw();
+  getJSON() {
+    let raw = super.getJSON();
     raw.cellType = this.cellType;
     return raw;
   }
@@ -243,7 +243,7 @@ class TableCell extends StructureCollection<TableItem> {
   parent?: TableRow;
   cellType: TableCellEnum;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): TableCell {
+  static create(componentFactory: ComponentFactory, raw: JSONType): TableCell {
     let children = (raw.children || []).map((each) => TableItem.create(componentFactory, each));
 
     let tableCell = new TableCell(raw.cellType, "", raw.style, raw.data);
@@ -297,8 +297,8 @@ class TableCell extends StructureCollection<TableItem> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  getRaw() {
-    let raw = super.getRaw();
+  getJSON() {
+    let raw = super.getJSON();
     raw.cellType = this.cellType;
     return raw;
   }
@@ -321,7 +321,7 @@ class TableItem extends ContentCollection {
     textAlign: "center",
   };
 
-  static create(componentFactory: ComponentFactory, raw: RawType): TableItem {
+  static create(componentFactory: ComponentFactory, raw: JSONType): TableItem {
     let tableItem = new TableItem("", raw.style, raw.data);
     tableItem.add(0, ...this.createChildren(componentFactory, raw));
     return tableItem;

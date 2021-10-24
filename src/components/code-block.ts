@@ -1,5 +1,5 @@
 import BaseView from "../view/base-view";
-import { RawType } from "./component";
+import { JSONType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
@@ -11,8 +11,8 @@ class CodeBlock extends PlainText {
   type = ComponentType.codeBlock;
   language: string;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): CodeBlock {
-    return componentFactory.buildCode(raw.content, raw.language, raw.style, raw.data);
+  static create(componentFactory: ComponentFactory, json: JSONType): CodeBlock {
+    return componentFactory.buildCode(json.content, json.language, json.style, json.data);
   }
 
   static exchange(componentFactory: ComponentFactory, block: Block, args: any[] = []): CodeBlock[] {
@@ -57,10 +57,10 @@ class CodeBlock extends PlainText {
     );
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
-    raw.language = this.language;
-    return raw;
+  getJSON(): JSONType {
+    let json = super.getJSON();
+    json.language = this.language;
+    return json;
   }
 
   render(contentView: BaseView) {

@@ -2,7 +2,7 @@ import Inline from "./inline";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate/index";
-import { RawType } from "./component";
+import { JSONType } from "./component";
 import ComponentFactory from "../factory";
 
 class InlineImage extends Inline {
@@ -10,8 +10,8 @@ class InlineImage extends Inline {
   content = "";
   src: string;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): InlineImage {
-    return componentFactory.buildInlineImage(raw.src || "", raw.style, raw.data);
+  static create(componentFactory: ComponentFactory, json: JSONType): InlineImage {
+    return componentFactory.buildInlineImage(json.src || "", json.style, json.data);
   }
 
   constructor(src: string = "", style?: AnyObject, data?: AnyObject) {
@@ -19,10 +19,10 @@ class InlineImage extends Inline {
     this.src = src;
   }
 
-  getRaw() {
-    let raw = super.getRaw();
-    raw.src = this.src;
-    return raw;
+  getJSON() {
+    let json = super.getJSON();
+    json.src = this.src;
+    return json;
   }
 
   render(contentView: BaseView) {

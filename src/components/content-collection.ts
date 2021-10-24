@@ -1,5 +1,5 @@
 import Decorate, { AnyObject } from "../decorate";
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import Collection from "./collection";
 import Inline from "./inline";
@@ -13,20 +13,18 @@ import ComponentFactory from "../factory";
 abstract class ContentCollection extends Collection<Inline> {
   structureType = StructureType.content;
 
-  static createChildren(componentFactory: ComponentFactory, raw: RawType): Inline[] {
-    if (!raw.children) {
+  static createChildren(componentFactory: ComponentFactory, json: JSONType): Inline[] {
+    if (!json.children) {
       return [];
     }
 
     let children: Inline[] = [];
-    raw.children.forEach((each: RawType) => {
-      // 其他的 Inline 类型
+    json.children.forEach((each: JSONType) => {
       if (componentFactory.typeMap[each.type]) {
         children.push(componentFactory.typeMap[each.type].create(each));
         return;
       }
 
-      // 字符的 Inline 类型
       if (!each.content) return;
       for (let char of each.content) {
         children.push(new Character(char, each.style, each.data));
@@ -91,13 +89,13 @@ abstract class ContentCollection extends Collection<Inline> {
   remove(start: number, end: number = start + 1): OperatorType {
     let parent = this.getParent();
 
-    // 在段落的首处按下删除时
+    // first of pharagraph
     if (start === -1 && end === 0) {
       return parent.childHeadDelete(this);
     }
 
     if (start < 0) {
-      throw createError(`start：${start}、end：${end}不合法。`, this);
+      throw createError(`error position start: ${start} end: ${end}.`, this);
     }
 
     this.componentWillChange();
@@ -109,12 +107,10 @@ abstract class ContentCollection extends Collection<Inline> {
   splitChild(index: number): ContentCollection {
     let isTail = index === this.getSize();
 
-    // 如果是从尾部分段，则直接添加一个普通段落
     if (isTail) {
       return this.getComponentFactory().buildParagraph();
     }
 
-    // 如果是从中间分段，则保持段落类型
     let tail = this.children.toArray().slice(index);
     this.removeChildren(index);
     let newCollection = this.createEmpty() as ContentCollection;
@@ -132,15 +128,12 @@ abstract class ContentCollection extends Collection<Inline> {
 
     if (blockList.length) {
       needAddBlockList.push(...blockList);
-      // 在首位切割时，若会放入内容，则将空行删除
       if (this.getSize() === 0) {
         this.removeSelf();
         blockIndex -= 1;
       }
     }
 
-    // 注：切出的块有可能为空
-    // 若没有添加的块，或切出的块有内容时，添加切出的块
     if (blockList.length === 0 || splitBlock.getSize() !== 0) {
       needAddBlockList.push(splitBlock);
     }
@@ -162,7 +155,6 @@ abstract class ContentCollection extends Collection<Inline> {
     return [{ id: this.id, offset: index + charList.length }];
   }
 
-  // 在组件上下添加空余的行
   addEmptyParagraph(bottom: boolean): OperatorType {
     let parent = this.getParent();
 
@@ -180,13 +172,11 @@ abstract class ContentCollection extends Collection<Inline> {
   receive(block: Block): OperatorType {
     let size = this.getSize();
 
-    // ContentCollection 组件仅能接收 ContentCollection 组件
     if (!(block instanceof ContentCollection)) {
       return;
     }
 
     this.componentWillChange();
-    // 移除接收到的组件
     block.removeSelf();
 
     this.children = this.children.push(...block.children);
@@ -195,7 +185,6 @@ abstract class ContentCollection extends Collection<Inline> {
     return [{ id: this.id, offset: size }];
   }
 
-  // 将内容进行拆分，适应 HTML 的表现形式
   formatChildren() {
     let formated: {
       inlines: Inline[];
@@ -225,19 +214,19 @@ abstract class ContentCollection extends Collection<Inline> {
     return formated;
   }
 
-  getRaw(): RawType {
-    let raw: RawType = {
+  getJSON(): JSONType {
+    let raw: JSONType = {
       type: this.type,
       children: [],
     };
 
     this.formatChildren().forEach((each) => {
       if (each.type === ComponentType.character) {
-        let charRaw = each.inlines[0].getRaw();
+        let charRaw = each.inlines[0].getJSON();
         charRaw.content = each.inlines.map((each) => each.content).join("");
         raw.children!.push(charRaw);
       } else {
-        raw.children!.push(...each.inlines.map((each) => each.getRaw()));
+        raw.children!.push(...each.inlines.map((each) => each.getJSON()));
       }
     });
 

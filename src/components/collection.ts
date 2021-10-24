@@ -10,7 +10,6 @@ export interface CollectionSnapshoot<T> extends BlockSnapshoot {
 abstract class Collection<T extends Component> extends Block {
   children: List<T> = List();
 
-  // 内部使用，添加子元素
   addChildren(index: number, componentList: T[]): T[] {
     componentList.forEach((each) => {
       each.parent = this;
@@ -19,10 +18,9 @@ abstract class Collection<T extends Component> extends Block {
     return componentList;
   }
 
-  // 内部使用，移除子元素
   removeChildren(start: number, end: number = -1): T[] {
     if (start < 0) {
-      throw createError(`移除起始位置不能小于 0：${start}`, this);
+      throw createError(`error position start: ${start}`, this);
     }
 
     if (end < 0) {
@@ -30,7 +28,7 @@ abstract class Collection<T extends Component> extends Block {
     }
 
     if (start > end) {
-      throw createError(`start：${start}、end：${end}不合法。`, this);
+      throw createError(`error position start: ${start} end: ${end}.`, this);
     }
 
     let removedComponent = this.children.toArray().slice(start, end);
@@ -60,7 +58,7 @@ abstract class Collection<T extends Component> extends Block {
 
   getChild(index: number): T {
     let child = this.children.get(index);
-    if (!child) throw createError(`未找到${index}位置的子组件`, this);
+    if (!child) throw createError(`error child position index: ${index}`, this);
     return child;
   }
 

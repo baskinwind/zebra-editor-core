@@ -1,13 +1,13 @@
 enum StructureType {
-  // 结构组件，比如 List Table TableRow 等
+  // 结构，由 media/plainText/content 组成
   structure = "STRUCTURE",
-  // 内容组件，比如 Paragraph Heading 等
+  // 内容，由 unit 组成
   content = "CONTENT",
-  // 多媒体组件
+  // 多媒体
   media = "MEDIA",
-  // 纯文本组件，代码块
+  // 纯文本
   plainText = "PLAINTEXT",
-  // 单元组件，内容组件由单元组件组成，比如 Character InlineImage 等
+  // 不可分割的最小单元
   unit = "UNIT",
 }
 

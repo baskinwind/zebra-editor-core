@@ -1,4 +1,4 @@
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import Block, { BlockType, BlockSnapshoot } from "./block";
 import BaseView from "../view/base-view";
 import ComponentType from "../const/component-type";
@@ -19,12 +19,12 @@ class Media extends Block {
   type = ComponentType.media;
   structureType = StructureType.media;
 
-  static create(componentFactory: ComponentFactory, raw: RawType): Media {
+  static create(componentFactory: ComponentFactory, json: JSONType): Media {
     return componentFactory.buildMedia(
-      raw.mediaType as MediaType,
-      raw.src || "",
-      raw.style,
-      raw.data,
+      json.mediaType as MediaType,
+      json.src || "",
+      json.style,
+      json.data,
     );
   }
 
@@ -73,12 +73,10 @@ class Media extends Block {
     let parent = this.getParent();
     let componentIndex = parent.findChildrenIndex(this);
 
-    // 首位分割
     if (index === 0) {
       parent.add(componentIndex, ...blockList);
     }
 
-    // 末位分割
     if (index === 1) {
       parent.add(componentIndex + 1, ...blockList);
     }
@@ -117,11 +115,11 @@ class Media extends Block {
     return `${this.type}>${this.mediaType}`;
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
-    raw.src = this.src;
-    raw.mediaType = this.mediaType;
-    return raw;
+  getJSON(): JSONType {
+    let json = super.getJSON();
+    json.src = this.src;
+    json.mediaType = this.mediaType;
+    return json;
   }
 
   render(contentView: BaseView) {

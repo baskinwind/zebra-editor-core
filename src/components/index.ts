@@ -1,5 +1,5 @@
 import Article from "./article";
-import List, { ListEnum } from "./list";
+import List, { ListType } from "./list";
 import Table from "./table";
 import Heading, { HeadingEnum } from "./heading";
 import Paragraph from "./paragraph";
@@ -8,7 +8,7 @@ import CodeBlock from "./code-block";
 import InlineImage from "./inline-image";
 import ComponentType from "../const/component-type";
 import CustomCollection from "./custom-collection";
-import { OperatorType, RawType } from "./component";
+import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import Inline from "./inline";
 import ContentCollection from "./content-collection";
@@ -21,7 +21,7 @@ export {
   StructureCollection,
   Article,
   List,
-  ListEnum,
+  ListType as ListEnum,
   Table,
   Heading,
   HeadingEnum,
@@ -32,6 +32,6 @@ export {
   InlineImage,
   ComponentType,
   CustomCollection,
-  RawType,
+  JSONType as RawType,
   OperatorType,
 };

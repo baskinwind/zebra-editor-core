@@ -1,7 +1,7 @@
 import BaseView from "./base-view";
 import StructureType from "../const/structure-type";
 import { HeadingEnum } from "../components/heading";
-import { ListEnum } from "../components/list";
+import { ListType } from "../components/list";
 import { AnyObject } from "../decorate";
 
 class HtmlView extends BaseView<string> {
@@ -80,7 +80,7 @@ class HtmlView extends BaseView<string> {
 
   buildList(
     id: string,
-    listType: ListEnum,
+    listType: ListType,
     getChildren: () => string[],
     style: AnyObject,
     data: AnyObject,

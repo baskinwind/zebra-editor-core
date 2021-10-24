@@ -6,15 +6,17 @@ import HistoryManage from "./manage/history-manage";
 import StoreManage from "./manage/store-manage";
 import createEditor from "./create-editor";
 import ComponentFactory from "../factory";
+import Component from "../components/component";
 
 export interface EditorOption {
   placeholder?: string;
   operator: typeof Operator;
   contentView: typeof ContentView;
   componentFactory: typeof ComponentFactory;
-  onError?: (error: Error) => void;
+  updateComponent: (editor: Editor, ...componentList: Component[]) => void;
   beforeCreate?: (document: Document, window: Window | null) => void;
   afterCreate?: (document: Document, window: Window | null) => void;
+  onError?: (error: Error) => void;
 }
 
 class Editor {
@@ -32,6 +34,7 @@ class Editor {
   storeManage: StoreManage;
   historyManage: HistoryManage;
   articleManage: ArticleManage;
+  updateComponent: (editor: Editor, ...componentList: Component[]) => void;
 
   constructor(idOrElement: string | HTMLElement, option: EditorOption) {
     if (typeof idOrElement === "string") {
@@ -45,6 +48,7 @@ class Editor {
     }
 
     this.placeholder = option.placeholder || "";
+    this.updateComponent = option.updateComponent;
 
     this.userOperator = new option.operator(this);
     this.contentView = new option.contentView(this);

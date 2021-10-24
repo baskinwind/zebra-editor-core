@@ -11,7 +11,7 @@ class Character extends Inline {
     this.content = content;
   }
 
-  getRaw() {
+  getJSON() {
     return {
       type: this.type,
       content: this.content,

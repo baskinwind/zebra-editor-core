@@ -1,4 +1,4 @@
-import Component, { OperatorType, RawType } from "./component";
+import Component, { OperatorType, JSONType } from "./component";
 import Block, { BlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
@@ -18,7 +18,7 @@ abstract class PlainText extends Block {
 
   constructor(content: string = "", style: AnyObject = {}, data: AnyObject = {}) {
     super(style, data);
-    // 纯文本最后必须有一个换行，js 中 emoji 的长度识别有问题
+    // fix emoji length
     this.content = [...content];
     if (this.content[this.content.length - 1] !== "\n") {
       this.content.push("\n");
@@ -27,7 +27,7 @@ abstract class PlainText extends Block {
 
   add(index: number, string: string): OperatorType {
     if (typeof string !== "string") {
-      throw createError("纯文本组件仅能输入文字", this);
+      throw createError("only text can be added", this);
     }
 
     index = index === undefined ? this.content.length : index;
@@ -40,9 +40,9 @@ abstract class PlainText extends Block {
 
   remove(start: number, end: number = start + 1): OperatorType {
     this.componentWillChange();
-    // 首位删除变成段落
+
     if (start < 0 && end === 0) {
-      let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph], []);
+      let block = this.exchangeTo(this.getComponentFactory().typeMap[ComponentType.paragraph]);
       return [{ id: block[0].id, offset: 0 }];
     }
 
@@ -53,7 +53,7 @@ abstract class PlainText extends Block {
 
   split(index: number, ...blockList: Block[]): OperatorType {
     if (blockList.length) {
-      throw createError("纯文本组件仅能输入文字", this);
+      throw createError("only text can be split", this);
     }
 
     return this.add(index, "\n");
@@ -63,7 +63,6 @@ abstract class PlainText extends Block {
     block.removeSelf();
     let size = this.content.length;
 
-    // 内容集合组件添加其中的文字内容
     if (block instanceof ContentCollection) {
       this.add(
         -1,
@@ -72,7 +71,6 @@ abstract class PlainText extends Block {
           .map((each) => each.content)
           .join("") + "\n",
       );
-      // 纯文本组件直接合并
     } else if (block instanceof PlainText) {
       this.content.push(...block.content);
     }
@@ -95,10 +93,10 @@ abstract class PlainText extends Block {
     return this.content.length - 1;
   }
 
-  getRaw(): RawType {
-    let raw = super.getRaw();
-    raw.content = this.content.join("");
-    return raw;
+  getJSON(): JSONType {
+    let json = super.getJSON();
+    json.content = this.content.join("");
+    return json;
   }
 }
 
