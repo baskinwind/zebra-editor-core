@@ -1,9 +1,9 @@
+import Editor from "..";
 import Component from "../../components/component";
 import { Cursor } from "../../selection/util";
 import focusAt from "../../selection/focus-at";
 import getSelection from "../../selection/get-selection";
 import { walkTree } from "../../util";
-import Editor from "..";
 
 interface recoreType {
   componentList: Map<string, Component>;
@@ -41,11 +41,11 @@ class HistoryManage {
       each.record.store(this.nowStackIndex);
     });
 
-    this.editor.article.$on("componentWillChange", () => {
+    this.editor.$on("componentWillChange", () => {
       this.createRecord();
     });
 
-    this.editor.article.$on("updateComponent", (componentList: Component[]) => {
+    this.editor.$on("updateComponent", (componentList: Component[]) => {
       componentList.forEach((each) => this.recordSnapshoot(each));
     });
   }

@@ -1,4 +1,4 @@
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import StructureCollection from "./structure-collection";
@@ -63,7 +63,7 @@ class Article extends StructureCollection<Block> {
     return raw;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildArticle(
       this.id,
       () => this.children.toArray().map((each) => each.render(contentView)),

@@ -14,22 +14,18 @@ export default class Event {
   }
 
   $off(eventName?: string, fn?: Function) {
-    // 清空所有事件
     if (!eventName) {
       this._events = {};
       return this;
     }
-    // 若没有事件对应的函数列表则不用处理
     const cbs = this._events[eventName];
     if (!cbs) {
       return this;
     }
-    // 清空特定事件
     if (!fn) {
       this._events[eventName] = [];
       return this;
     }
-    // 取消特定事件的特定处理函数
     if (fn) {
       let cb;
       let i = cbs.length;

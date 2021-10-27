@@ -1,8 +1,9 @@
+import Editor from "../editor";
 import { OperatorType, JSONType } from "./component";
 import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
 import ComponentFactory from "../factory";
@@ -43,8 +44,8 @@ class CustomCollection extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(tag: string = "div", children: (string | Block)[] = []) {
-    super();
+  constructor(tag: string = "div", children: (string | Block)[] = [], editor?: Editor) {
+    super(editor);
     this.tag = tag;
     this.add(
       0,
@@ -134,7 +135,7 @@ class CustomCollection extends StructureCollection<Block> {
     return raw;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     let content = contentView.buildCustomCollection(
       this.id,
       this.tag,

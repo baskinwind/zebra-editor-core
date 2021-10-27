@@ -1,3 +1,4 @@
+import Editor from "../editor";
 import Decorate, { AnyObject } from "../decorate";
 import { OperatorType, JSONType } from "./component";
 import Block from "./block";
@@ -5,7 +6,7 @@ import Collection from "./collection";
 import Inline from "./inline";
 import Character from "./character";
 import ComponentType from "../const/component-type";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import StructureType from "../const/structure-type";
 import { createError } from "../util";
 import ComponentFactory from "../factory";
@@ -36,8 +37,8 @@ abstract class ContentCollection extends Collection<Inline> {
     return children;
   }
 
-  constructor(text: string = "") {
-    super();
+  constructor(text: string = "", editor?: Editor) {
+    super(editor);
     if (text) {
       this.addText(text, 0);
     }
@@ -237,7 +238,7 @@ abstract class ContentCollection extends Collection<Inline> {
     return raw;
   }
 
-  getChildren(contentView: BaseView) {
+  getChildren(contentView: AbstractView) {
     let childrenRenderList: any[] = [];
 
     this.formatChildren().forEach((each, index) => {

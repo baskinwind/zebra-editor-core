@@ -1,5 +1,4 @@
 import Editor from "../editor";
-import { AnyObject } from "../decorate";
 import {
   ComponentType,
   Article,
@@ -45,21 +44,15 @@ class ComponentFactory {
   }
 
   buildArticle() {
-    let article = new Article();
-    article.setEditor(this.editor);
-    return article;
+    return new Article(this.editor);
   }
 
   buildCustomCollection(tag: string = "div", children: string[] = []) {
-    let customCollection = new CustomCollection(tag, children);
-    customCollection.setEditor(this.editor);
-    return customCollection;
+    return new CustomCollection(tag, children, this.editor);
   }
 
   buildList(type: ListEnum = ListEnum.ul, children: string[] = []) {
-    let list = new List(type, children);
-    list.setEditor(this.editor);
-    return list;
+    return new List(type, children, this.editor);
   }
 
   buildTable(
@@ -68,43 +61,28 @@ class ComponentFactory {
     head: string[] = [],
     children: (string[] | string)[][] = [],
   ) {
-    let table = new Table(row, col, head, children);
-    table.setEditor(this.editor);
-    return table;
+    return new Table(row, col, head, children, this.editor);
   }
 
   buildHeading(type: HeadingEnum, text?: string) {
-    let heading = new Heading(type, text);
-    heading.setEditor(this.editor);
-    return heading;
+    return new Heading(type, text, this.editor);
   }
 
   buildParagraph(text?: string) {
-    let paragraph = new Paragraph(text);
-    paragraph.setEditor(this.editor);
-    return paragraph;
+    return new Paragraph(text, this.editor);
   }
 
   buildMedia(mediaType: MediaType, src: string) {
-    let media = new Media(mediaType, src);
-    media.setEditor(this.editor);
-    return media;
+    return new Media(mediaType, src, this.editor);
   }
 
   buildCode(content: string = "", language: string = "") {
-    let code = new CodeBlock(content, language);
-    code.setEditor(this.editor);
-    return code;
+    return new CodeBlock(content, language, this.editor);
   }
 
   buildInlineImage(src: string) {
-    let image = new InlineImage(src);
-    return image;
+    return new InlineImage(src);
   }
 }
 
-const getDefaultComponentFactory = (): ComponentFactory => ComponentFactory.getInstance();
-
 export default ComponentFactory;
-
-export { getDefaultComponentFactory };

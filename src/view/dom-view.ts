@@ -1,4 +1,4 @@
-import BaseView from "./base-view";
+import AbstractView from "./base-view";
 import Editor from "../editor";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
@@ -6,7 +6,7 @@ import { HeadingEnum } from "../components/heading";
 import { ListType } from "../components/list";
 import { AnyObject } from "../decorate";
 
-class ContentBuilder extends BaseView<HTMLElement> {
+class ContentBuilder extends AbstractView<HTMLElement> {
   editor: Editor;
 
   constructor(editor: Editor) {

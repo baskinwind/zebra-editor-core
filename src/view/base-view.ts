@@ -3,7 +3,7 @@ import { HeadingEnum } from "../components/heading";
 import { ListType } from "../components/list";
 import { AnyObject } from "../decorate";
 
-abstract class BaseView<T extends any = any> {
+abstract class AbstractView<T extends any = any> {
   constructor() {
     this.init();
   }
@@ -71,4 +71,4 @@ abstract class BaseView<T extends any = any> {
   abstract buildInlineImage(id: string, src: string, style: AnyObject, data: AnyObject): T;
 }
 
-export default BaseView;
+export default AbstractView;

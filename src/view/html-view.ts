@@ -1,10 +1,10 @@
-import BaseView from "./base-view";
+import AbstractView from "./base-view";
 import StructureType from "../const/structure-type";
 import { HeadingEnum } from "../components/heading";
 import { ListType } from "../components/list";
 import { AnyObject } from "../decorate";
 
-class HtmlView extends BaseView<string> {
+class HtmlView extends AbstractView<string> {
   formatStyle(styleName: string) {
     return styleName.replace(/([A-Z])/, "-$1").toLocaleLowerCase();
   }

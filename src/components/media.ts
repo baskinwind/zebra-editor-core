@@ -1,6 +1,7 @@
+import Editor from "../editor";
 import { OperatorType, JSONType } from "./component";
 import Block, { BlockType, BlockSnapshoot } from "./block";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { AnyObject } from "../decorate/index";
@@ -25,8 +26,8 @@ class Media extends Block {
     return media;
   }
 
-  constructor(mediaType: MediaType, src: string) {
-    super();
+  constructor(mediaType: MediaType, src: string, editor?: Editor) {
+    super(editor);
     this.mediaType = mediaType;
     this.src = src;
   }
@@ -119,7 +120,7 @@ class Media extends Block {
     return json;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     let map = {
       image: "buildeImage",
       audio: "buildeAudio",

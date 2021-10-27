@@ -1,10 +1,9 @@
 import { Map } from "immutable";
-import Event from "./event";
 import { v4 as uuidv4 } from "uuid";
 import Decorate, { AnyObject } from "../decorate";
 import Record from "../record";
 import Collection from "./collection";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import StructureType from "../const/structure-type";
 import { Cursor } from "../selection/util";
@@ -44,7 +43,7 @@ export interface Snapshoot {
   data: Map<string, string>;
 }
 
-abstract class Component extends Event {
+abstract class Component {
   id: string = uuidv4();
   parent?: Collection<Component>;
   decorate: Decorate;
@@ -55,7 +54,6 @@ abstract class Component extends Event {
   style: AnyObject = {};
 
   constructor() {
-    super();
     this.decorate = new Decorate(this);
     this.record = new Record(this);
   }
@@ -94,27 +92,9 @@ abstract class Component extends Event {
     return json;
   }
 
-  destory() {
-    this.$off();
-  }
+  destory() {}
 
-  abstract render(contentView: BaseView): any;
-
-  componentWillChange() {
-    this.$emit("componentWillChange", this);
-  }
-
-  updateComponent(componentList: Component[]) {
-    this.$emit("updateComponent", componentList);
-  }
-
-  $emit<T>(eventName: string, event?: T, ...rest: any[]) {
-    super.$emit(eventName, event, ...rest);
-    if (this.parent) {
-      this.parent.$emit(eventName, event, ...rest);
-    }
-    return this;
-  }
+  abstract render(contentView: AbstractView): any;
 }
 
 export default Component;

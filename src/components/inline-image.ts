@@ -1,5 +1,5 @@
 import Inline from "./inline";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate/index";
 import { JSONType } from "./component";
@@ -27,7 +27,7 @@ class InlineImage extends Inline {
     return json;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildInlineImage(
       this.id,
       this.src,

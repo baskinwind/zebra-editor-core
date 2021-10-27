@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Editor from "../editor";
 import Component, { OperatorType, JSONType, Snapshoot } from "./component";
-import ComponentFactory, { getDefaultComponentFactory } from "../factory";
+import ComponentFactory from "../factory";
 import { AnyObject } from "../decorate/index";
 import StructureCollection from "./structure-collection";
 import { createError } from "../util";
@@ -25,8 +25,9 @@ abstract class Block extends Component {
     throw createError("component need implement static exchange method", this);
   }
 
-  constructor() {
+  constructor(editor?: Editor) {
     super();
+    this.editor = editor;
 
     this.init();
   }
@@ -138,8 +139,16 @@ abstract class Block extends Component {
     return 0;
   }
 
+  componentWillChange() {
+    this.editor?.$emit("componentWillChange");
+  }
+
+  updateComponent(componentList: Component[]) {
+    this.editor?.$emit("updateComponent", componentList);
+  }
+
   getComponentFactory() {
-    return this.editor ? this.editor.componentFactory : getDefaultComponentFactory();
+    return this.editor ? this.editor.componentFactory : ComponentFactory.getInstance();
   }
 }
 

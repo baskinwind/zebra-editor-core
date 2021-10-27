@@ -1,6 +1,5 @@
 import Editor from "..";
 import Component, { JSONType } from "../../components/component";
-import updateComponent from "../../util/update-component";
 import Article from "../../components/article";
 import { nextTick } from "../../util";
 
@@ -21,9 +20,9 @@ class ArticleManage {
       document.dispatchEvent(new Event("editorChange"));
     });
 
-    this.editor.article.$on("updateComponent", (componentList: Component[]) => {
+    this.editor.$on("updateComponent", (componentList: Component[]) => {
       if (this.update) {
-        updateComponent(this.editor, ...componentList);
+        this.editor.updateComponent(this.editor, ...componentList);
       }
     });
   }
@@ -44,7 +43,10 @@ class ArticleManage {
 
   createByJSON(json: JSONType) {
     if (!json.type) return this.createEmpty();
-    return this.editor.componentFactory.typeMap[json.type].create(this.editor.componentFactory, json);
+    return this.editor.componentFactory.typeMap[json.type].create(
+      this.editor.componentFactory,
+      json,
+    );
   }
 
   newArticle(article?: JSONType | Article) {

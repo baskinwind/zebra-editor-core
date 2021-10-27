@@ -1,10 +1,10 @@
+import Editor from "../editor";
 import { JSONType } from "./component";
 import Block from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { AnyObject } from "../decorate";
 import ComponentFactory from "../factory";
 
 class Paragraph extends ContentCollection {
@@ -44,8 +44,8 @@ class Paragraph extends ContentCollection {
     return newParagraphList;
   }
 
-  constructor(text: string = "") {
-    super(text);
+  constructor(text: string = "", editor?: Editor) {
+    super(text, editor);
   }
 
   createEmpty() {
@@ -54,7 +54,7 @@ class Paragraph extends ContentCollection {
     return paragraph;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildParagraph(
       this.id,
       () => this.getChildren(contentView),

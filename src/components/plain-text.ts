@@ -1,8 +1,8 @@
-import Component, { OperatorType, JSONType } from "./component";
+import Editor from "../editor";
+import { OperatorType, JSONType } from "./component";
 import Block, { BlockSnapshoot } from "./block";
 import ContentCollection from "./content-collection";
 import StructureType from "../const/structure-type";
-import { AnyObject } from "../decorate";
 import { createError } from "../util";
 import Character from "./character";
 import ComponentType from "../const/component-type";
@@ -16,8 +16,8 @@ abstract class PlainText extends Block {
   content: string[];
   structureType = StructureType.plainText;
 
-  constructor(content: string = "") {
-    super();
+  constructor(content: string = "", editor?: Editor) {
+    super(editor);
     // fix emoji length
     this.content = [...content];
     if (this.content[this.content.length - 1] !== "\n") {

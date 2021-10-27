@@ -13,7 +13,7 @@ import {
   modifyTable,
   modifyIndent,
   focusAt,
-  updateComponent
+  updateComponent,
 } from "../src";
 import Editor from "../src/editor";
 
@@ -26,7 +26,6 @@ const editor = new Editor("root", {
     editor.init(createArticle(editor.componentFactory));
   },
 });
-
 
 window.editor = editor;
 

@@ -1,10 +1,11 @@
+import Editor from "../editor";
 import { OperatorType, JSONType } from "./component";
 import { CollectionSnapshoot } from "./collection";
 import StructureCollection from "./structure-collection";
 import Block from "./block";
 import ComponentType from "../const/component-type";
 import { AnyObject } from "../decorate";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentFactory from "../factory";
 
 export enum ListType {
@@ -51,8 +52,8 @@ class List extends StructureCollection<Block> {
     return [block];
   }
 
-  constructor(type: ListType = ListType.ul, children: string[] = []) {
-    super();
+  constructor(type: ListType = ListType.ul, children: string[] = [], editor?: Editor) {
+    super(editor);
     this.listType = type;
     this.add(0, ...children.map((each) => this.getComponentFactory().buildParagraph(each)));
   }
@@ -144,7 +145,7 @@ class List extends StructureCollection<Block> {
     return json;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     let content = contentView.buildList(
       this.id,
       this.listType,

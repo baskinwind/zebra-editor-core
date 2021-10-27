@@ -7,6 +7,7 @@ import StoreManage from "./manage/store-manage";
 import createEditor from "./create-editor";
 import ComponentFactory from "../factory";
 import Component from "../components/component";
+import Event from "./event";
 
 export interface EditorOption {
   placeholder?: string;
@@ -19,7 +20,7 @@ export interface EditorOption {
   onError?: (error: Error) => void;
 }
 
-class Editor {
+class Editor extends Event {
   mountedElement: HTMLElement;
   article!: Article;
   placeholder: string;
@@ -37,6 +38,8 @@ class Editor {
   updateComponent: (editor: Editor, ...componentList: Component[]) => void;
 
   constructor(idOrElement: string | HTMLElement, option: EditorOption) {
+    super();
+
     if (typeof idOrElement === "string") {
       let dom = document.getElementById(idOrElement);
       if (!dom) {

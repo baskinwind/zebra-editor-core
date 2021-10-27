@@ -1,10 +1,11 @@
+import Editor from "../editor";
+import { AnyObject } from "../decorate";
 import { OperatorType, JSONType } from "./component";
 import Block from "./block";
 import ContentCollection from "./content-collection";
 import StructureCollection from "./structure-collection";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { AnyObject } from "../decorate";
 import { CollectionSnapshoot } from "./collection";
 import { createError } from "../util";
 import ComponentFactory from "../factory";
@@ -50,8 +51,9 @@ class Table extends StructureCollection<TableRow> {
     col: number,
     head: tableCellType[] | boolean = true,
     rows: tableCellType[][] = [],
+    editor?: Editor,
   ) {
-    super();
+    super(editor);
 
     let tableRows = [];
     if (head) {
@@ -144,7 +146,7 @@ class Table extends StructureCollection<TableRow> {
     super.restore(state);
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildTable(
       this.id,
       () => this.children.toArray().map((each) => each.render(contentView)),
@@ -176,8 +178,9 @@ class TableRow extends StructureCollection<TableCell> {
     size: number,
     cellType: TableCellEnum = TableCellEnum.td,
     children: tableCellType[] = [],
+    editor?: Editor,
   ) {
-    super();
+    super(editor);
     this.cellType = cellType;
 
     let cells = [];
@@ -226,7 +229,7 @@ class TableRow extends StructureCollection<TableCell> {
     return parent.addEmptyParagraph(bottom);
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildTableRow(
       this.id,
       () => this.children.toArray().map((each) => each.render(contentView)),
@@ -251,8 +254,12 @@ class TableCell extends StructureCollection<TableItem> {
     return tableCell;
   }
 
-  constructor(cellType: TableCellEnum = TableCellEnum.td, children: tableCellType = "") {
-    super();
+  constructor(
+    cellType: TableCellEnum = TableCellEnum.td,
+    children: tableCellType = "",
+    editor?: Editor,
+  ) {
+    super(editor);
     this.cellType = cellType;
 
     if (!Array.isArray(children)) {
@@ -297,7 +304,7 @@ class TableCell extends StructureCollection<TableItem> {
     return raw;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildTableCell(
       this.id,
       this.cellType,
@@ -344,7 +351,7 @@ class TableItem extends ContentCollection {
     return super.split(index);
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildParagraph(
       this.id,
       () => this.getChildren(contentView),

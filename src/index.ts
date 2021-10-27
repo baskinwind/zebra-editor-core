@@ -1,4 +1,4 @@
-import ComponentFactory, { getDefaultComponentFactory } from "./factory";
+import ComponentFactory from "./factory";
 
 import DomView from "./view/dom-view";
 import HtmlView from "./view/html-view";
@@ -29,7 +29,6 @@ export * from "./components";
 export {
   Editor,
   ComponentFactory,
-  getDefaultComponentFactory,
   DomView,
   HtmlView,
   Operator,

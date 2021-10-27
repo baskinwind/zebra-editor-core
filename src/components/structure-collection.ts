@@ -21,7 +21,7 @@ abstract class StructureCollection<T extends Block> extends Collection<T> {
     componentList.forEach((each) => {
       each.parent = this;
       each.active = true;
-      each.$emit("blockCreated", each);
+      this.editor?.$emit("blockCreated", each);
     });
     this.componentWillChange();
     let newBlockList = super.addChildren(index, componentList);

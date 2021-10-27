@@ -1,14 +1,13 @@
+import Editor from "../editor";
 import { JSONType } from "./component";
 import Inline from "./inline";
 import Block, { BlockType } from "./block";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import ComponentType from "../const/component-type";
-import { AnyObject } from "../decorate";
 import { CollectionSnapshoot } from "./collection";
 import ComponentFactory from "../factory";
-import { head } from "lodash";
 
 export enum HeadingEnum {
   h1 = "h1",
@@ -87,8 +86,8 @@ class Heading extends ContentCollection {
     return newHeadingList;
   }
 
-  constructor(type: HeadingEnum, text?: string) {
-    super(text);
+  constructor(type: HeadingEnum, text?: string, editor?: Editor) {
+    super(text, editor);
     this.headingType = type;
     this.style = styleMap[type];
   }
@@ -138,7 +137,7 @@ class Heading extends ContentCollection {
     return raw;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildHeading(
       this.id,
       this.headingType,

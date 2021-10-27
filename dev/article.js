@@ -1,8 +1,3 @@
-import { getDefaultComponentFactory } from "../src";
-
-let factory = getDefaultComponentFactory();
-let article = factory.buildArticle();
-
 const createArticle = (factory) => {
   let article = factory.buildArticle();
 

@@ -1,10 +1,11 @@
-import BaseView from "../view/base-view";
+import AbstractView from "../view/base-view";
 import { JSONType } from "./component";
 import PlainText from "./plain-text";
 import ContentCollection from "./content-collection";
 import ComponentType from "../const/component-type";
 import Block from "./block";
 import ComponentFactory from "../factory";
+import { Editor } from "..";
 
 class CodeBlock extends PlainText {
   type = ComponentType.codeBlock;
@@ -33,8 +34,8 @@ class CodeBlock extends PlainText {
     }
   }
 
-  constructor(content: string = "", language: string = "") {
-    super(content);
+  constructor(content: string = "", language: string = "", editor?: Editor) {
+    super(content, editor);
     this.language = language;
   }
 
@@ -56,7 +57,7 @@ class CodeBlock extends PlainText {
     return json;
   }
 
-  render(contentView: BaseView) {
+  render(contentView: AbstractView) {
     return contentView.buildCodeBlock(
       this.id,
       this.content.join(""),
