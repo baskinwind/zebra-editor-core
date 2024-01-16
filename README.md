@@ -18,10 +18,6 @@ import { mount } from "zebra-editor-core"
 mount('root');
 ```
 
-## DEMO
-
-[demo](https://acohome.cn/demo/zebra-editor-core/index.html)
-
 ## 为什么？
 
 目前，市面上流行的富文本编辑器主要有三大类：
